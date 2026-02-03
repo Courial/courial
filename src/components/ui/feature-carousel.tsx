@@ -82,18 +82,30 @@ export const HeroSection = React.forwardRef<HTMLDivElement, HeroProps>(
                       visibility: Math.abs(pos) > 1 ? 'hidden' : 'visible',
                     }}
                   >
-                    {/* Phone Frame */}
-                    <div className="relative h-[450px] w-[220px] overflow-hidden rounded-[40px] border-[8px] border-foreground bg-foreground shadow-2xl md:h-[550px] md:w-[270px]">
-                      {/* Notch */}
-                      <div className="absolute left-1/2 top-2 z-10 h-6 w-24 -translate-x-1/2 rounded-full bg-foreground" />
-                      {/* Screen */}
-                      <div className="h-full w-full overflow-hidden rounded-[32px] bg-muted">
-                        <img
-                          src={image.src}
-                          alt={image.alt}
-                          className="h-full w-full object-cover"
-                        />
+                    {/* Phone Frame - Realistic iPhone Style */}
+                    <div className="relative h-[450px] w-[220px] overflow-hidden rounded-[45px] bg-gradient-to-b from-[#2a2a2a] via-[#1a1a1a] to-[#0a0a0a] p-[3px] shadow-[0_25px_50px_-12px_rgba(0,0,0,0.5),0_0_0_1px_rgba(255,255,255,0.1)] md:h-[550px] md:w-[270px]">
+                      {/* Inner bezel */}
+                      <div className="relative h-full w-full overflow-hidden rounded-[42px] bg-gradient-to-b from-[#3a3a3a] to-[#1a1a1a] p-[2px]">
+                        {/* Screen container */}
+                        <div className="relative h-full w-full overflow-hidden rounded-[40px] bg-background">
+                          {/* Dynamic Island */}
+                          <div className="absolute left-1/2 top-3 z-20 h-[28px] w-[90px] -translate-x-1/2 rounded-full bg-black md:h-[32px] md:w-[100px]" />
+                          {/* Screen Content */}
+                          <img
+                            src={image.src}
+                            alt={image.alt}
+                            className="h-full w-full object-cover"
+                          />
+                          {/* Home Indicator */}
+                          <div className="absolute bottom-2 left-1/2 z-20 h-[5px] w-[120px] -translate-x-1/2 rounded-full bg-white/80 md:w-[140px]" />
+                        </div>
                       </div>
+                      {/* Side buttons - Volume */}
+                      <div className="absolute -left-[2px] top-[100px] h-[30px] w-[3px] rounded-l-sm bg-[#2a2a2a]" />
+                      <div className="absolute -left-[2px] top-[140px] h-[50px] w-[3px] rounded-l-sm bg-[#2a2a2a]" />
+                      <div className="absolute -left-[2px] top-[200px] h-[50px] w-[3px] rounded-l-sm bg-[#2a2a2a]" />
+                      {/* Side button - Power */}
+                      <div className="absolute -right-[2px] top-[150px] h-[70px] w-[3px] rounded-r-sm bg-[#2a2a2a]" />
                     </div>
                   </div>
                 );
