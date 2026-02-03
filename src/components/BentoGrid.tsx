@@ -63,11 +63,11 @@ const bentoItems = [
     image: "https://images.unsplash.com/photo-1593941707882-a5bba14938c7?w=600&q=80",
   },
   {
-    title: "Concierge Tasks",
-    description: "Personal assistant at your fingertips",
-    icon: Users,
+    title: "Office Supplies",
+    description: "Stationery, equipment & essentials delivered",
+    icon: Package,
     className: "md:col-span-1",
-    image: "https://images.unsplash.com/photo-1521791136064-7986c2920216?w=600&q=80",
+    image: "https://images.unsplash.com/photo-1507925921958-8a62f3d1a50d?w=600&q=80",
   },
 ];
 
