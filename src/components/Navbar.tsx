@@ -26,7 +26,7 @@ export const Navbar = () => {
         <div className="flex items-center justify-between h-16 lg:h-20">
           {/* Logo */}
           <Link to="/" className="flex items-center">
-            <img src={courialLogo} alt="Courial" className="h-6" />
+            <img src={courialLogo} alt="Courial" className="h-[1.875rem]" />
           </Link>
 
           {/* Desktop Navigation */}
