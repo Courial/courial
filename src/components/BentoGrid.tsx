@@ -21,11 +21,11 @@ const bentoItems = [
     image: "https://images.unsplash.com/photo-1521791136064-7986c2920216?w=600&q=80",
   },
   {
-    title: "Furniture Delivery",
-    description: "From small items to full room setups",
-    icon: Armchair,
+    title: "EV Valet Charging",
+    description: "We charge your electric vehicle while you work",
+    icon: Zap,
     className: "md:col-span-1",
-    image: "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=600&q=80",
+    image: "https://images.unsplash.com/photo-1593941707882-a5bba14938c7?w=600&q=80",
   },
   {
     title: "Pharmacy",
@@ -63,11 +63,11 @@ const bentoItems = [
     image: "https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?w=800&q=80",
   },
   {
-    title: "EV Valet Charging",
-    description: "We charge your electric vehicle while you work",
-    icon: Zap,
+    title: "Furniture Delivery",
+    description: "From small items to full room setups",
+    icon: Armchair,
     className: "md:col-span-1",
-    image: "https://images.unsplash.com/photo-1593941707882-a5bba14938c7?w=600&q=80",
+    image: "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=600&q=80",
   },
   {
     title: "Office Supplies",
