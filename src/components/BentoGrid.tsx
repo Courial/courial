@@ -114,7 +114,7 @@ export const BentoGrid = () => {
             Anything? Possible.
           </h2>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            From essential deliveries to premium concierge services, 
+            From essential deliveries to premium concierge and chauffeur services, 
             we're the one platform that handles it all.
           </p>
         </motion.div>
