@@ -29,7 +29,7 @@ const testimonials = [
 
 export const Testimonials = () => {
   return (
-    <section className="py-24 md:py-32 relative">
+    <section className="py-24 md:py-32 bg-background">
       <div className="container mx-auto px-6">
         {/* Section Header */}
         <motion.div
@@ -39,13 +39,10 @@ export const Testimonials = () => {
           transition={{ duration: 0.5 }}
           className="text-center mb-16"
         >
-          <span className="text-primary font-semibold text-sm uppercase tracking-wider mb-4 block">
-            Testimonials
-          </span>
-          <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6">
-            Loved by <span className="gradient-text-orange">Thousands</span>
+          <h2 className="text-4xl md:text-5xl font-bold mb-4 text-foreground">
+            Loved by <span className="text-primary">thousands</span>
           </h2>
-          <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
             Join a community of 100,000+ people who trust Courial for their delivery needs.
           </p>
         </motion.div>
@@ -61,12 +58,12 @@ export const Testimonials = () => {
               transition={{ duration: 0.5, delay: index * 0.1 }}
               className="group"
             >
-              <div className="h-full rounded-2xl glass-card p-8 transition-all duration-500 hover:border-primary/30">
+              <div className="h-full rounded-xl bg-muted/50 border border-border p-8 transition-all duration-300 hover:border-foreground/20 hover:shadow-lg">
                 {/* Quote Icon */}
-                <Quote className="w-10 h-10 text-primary/30 mb-4" />
+                <Quote className="w-8 h-8 text-muted-foreground/30 mb-4" />
 
                 {/* Content */}
-                <p className="text-foreground/90 mb-6 leading-relaxed">
+                <p className="text-foreground/80 mb-6 leading-relaxed text-sm">
                   "{testimonial.content}"
                 </p>
 
@@ -82,10 +79,10 @@ export const Testimonials = () => {
 
                 {/* Author */}
                 <div>
-                  <div className="font-semibold text-foreground">
+                  <div className="font-semibold text-foreground text-sm">
                     {testimonial.name}
                   </div>
-                  <div className="text-sm text-muted-foreground">
+                  <div className="text-xs text-muted-foreground">
                     {testimonial.role}
                     {testimonial.location && ` • ${testimonial.location}`}
                   </div>
@@ -107,7 +104,7 @@ export const Testimonials = () => {
             href="https://apps.apple.com/us/app/courial-delivery-errands/id1521638262"
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 text-muted-foreground hover:text-primary transition-colors"
+            className="inline-flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors text-sm"
           >
             Read more reviews on the App Store →
           </a>

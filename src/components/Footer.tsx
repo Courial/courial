@@ -1,5 +1,4 @@
 import { Link } from "react-router-dom";
-import { motion } from "framer-motion";
 import { ArrowUpRight } from "lucide-react";
 
 const footerLinks = {
@@ -30,16 +29,16 @@ const footerLinks = {
 
 export const Footer = () => {
   return (
-    <footer className="border-t border-border bg-card/50">
+    <footer className="border-t border-border bg-muted/30">
       <div className="container mx-auto px-6 py-16">
         <div className="grid grid-cols-2 md:grid-cols-5 gap-8 mb-12">
           {/* Brand */}
           <div className="col-span-2 md:col-span-1">
             <Link to="/" className="flex items-center gap-2 mb-4">
-              <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center">
-                <span className="text-primary-foreground font-bold text-lg">C</span>
+              <div className="w-8 h-8 rounded-lg bg-foreground flex items-center justify-center">
+                <span className="text-background font-bold text-lg">C</span>
               </div>
-              <span className="text-xl font-bold tracking-tight">Courial</span>
+              <span className="text-xl font-bold tracking-tight text-foreground">Courial</span>
             </Link>
             <p className="text-sm text-muted-foreground leading-relaxed">
               Trusted on-demand services across mobility, concierge, and task execution.
@@ -49,7 +48,7 @@ export const Footer = () => {
           {/* Links */}
           {Object.entries(footerLinks).map(([category, links]) => (
             <div key={category}>
-              <h4 className="font-semibold text-foreground mb-4 capitalize">
+              <h4 className="font-semibold text-foreground mb-4 capitalize text-sm">
                 {category}
               </h4>
               <ul className="space-y-3">
@@ -57,7 +56,7 @@ export const Footer = () => {
                   <li key={link.name}>
                     <Link
                       to={link.href}
-                      className="text-sm text-muted-foreground hover:text-primary transition-colors"
+                      className="text-sm text-muted-foreground hover:text-foreground transition-colors"
                     >
                       {link.name}
                     </Link>
@@ -80,7 +79,7 @@ export const Footer = () => {
               <a
                 key={social}
                 href="#"
-                className="text-sm text-muted-foreground hover:text-primary transition-colors flex items-center gap-1"
+                className="text-sm text-muted-foreground hover:text-foreground transition-colors flex items-center gap-1"
               >
                 {social}
                 <ArrowUpRight className="w-3 h-3" />

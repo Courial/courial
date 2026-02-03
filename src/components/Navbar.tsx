@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Menu, X, ChevronDown } from "lucide-react";
+import { Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 
@@ -19,16 +19,16 @@ export const Navbar = () => {
       initial={{ y: -20, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.5 }}
-      className="fixed top-0 left-0 right-0 z-50 glass border-b border-border/50"
+      className="fixed top-0 left-0 right-0 z-50 bg-background/95 backdrop-blur-sm border-b border-border"
     >
       <div className="container mx-auto px-6">
         <div className="flex items-center justify-between h-16 lg:h-20">
           {/* Logo */}
           <Link to="/" className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center">
-              <span className="text-primary-foreground font-bold text-lg">C</span>
+            <div className="w-8 h-8 rounded-lg bg-foreground flex items-center justify-center">
+              <span className="text-background font-bold text-lg">C</span>
             </div>
-            <span className="text-xl font-bold tracking-tight">Courial</span>
+            <span className="text-xl font-bold tracking-tight text-foreground">Courial</span>
           </Link>
 
           {/* Desktop Navigation */}
@@ -69,7 +69,7 @@ export const Navbar = () => {
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
-            className="lg:hidden glass border-t border-border/50"
+            className="lg:hidden bg-background border-t border-border"
           >
             <div className="container mx-auto px-6 py-6 flex flex-col gap-4">
               {navLinks.map((link) => (
@@ -77,7 +77,7 @@ export const Navbar = () => {
                   key={link.name}
                   to={link.href}
                   onClick={() => setIsOpen(false)}
-                  className="text-foreground hover:text-primary transition-colors py-2 text-lg font-medium"
+                  className="text-foreground hover:text-muted-foreground transition-colors py-2 text-lg font-medium"
                 >
                   {link.name}
                 </Link>

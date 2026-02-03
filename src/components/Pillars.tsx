@@ -16,7 +16,6 @@ const pillars = [
       "24/7 support",
     ],
     cta: "Book Now",
-    accent: "from-primary/20 to-primary/5",
   },
   {
     icon: Building2,
@@ -31,7 +30,6 @@ const pillars = [
       "Volume discounts",
     ],
     cta: "Partner With Us",
-    accent: "from-blue-500/20 to-blue-500/5",
   },
   {
     icon: Heart,
@@ -46,17 +44,13 @@ const pillars = [
       "Weekly payouts",
     ],
     cta: "Join Our Team",
-    accent: "from-green-500/20 to-green-500/5",
   },
 ];
 
 export const Pillars = () => {
   return (
-    <section className="py-24 md:py-32 relative overflow-hidden">
-      {/* Background Accent */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] rounded-full bg-primary/5 blur-3xl" />
-
-      <div className="container mx-auto px-6 relative z-10">
+    <section className="py-24 md:py-32 bg-background">
+      <div className="container mx-auto px-6">
         {/* Section Header */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -65,13 +59,10 @@ export const Pillars = () => {
           transition={{ duration: 0.5 }}
           className="text-center mb-16"
         >
-          <span className="text-primary font-semibold text-sm uppercase tracking-wider mb-4 block">
-            Three Pillars
-          </span>
-          <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6">
-            Built for <span className="gradient-text-orange">Everyone</span>
+          <h2 className="text-4xl md:text-5xl font-bold mb-4 text-foreground">
+            Built for <span className="text-primary">everyone</span>
           </h2>
-          <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
             Whether you need a helping hand, want to grow your business, 
             or looking for flexible work—we've got you covered.
           </p>
@@ -88,54 +79,47 @@ export const Pillars = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: index * 0.1 }}
-                className="group relative"
+                className="group"
               >
-                <div className="relative h-full rounded-3xl glass-card p-8 overflow-hidden transition-all duration-500 hover:border-primary/50">
-                  {/* Gradient Background */}
-                  <div
-                    className={`absolute inset-0 bg-gradient-to-br ${pillar.accent} opacity-0 group-hover:opacity-100 transition-opacity duration-500`}
-                  />
-
-                  <div className="relative z-10">
-                    {/* Icon */}
-                    <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center mb-6 group-hover:bg-primary/20 transition-colors">
-                      <Icon className="w-7 h-7 text-primary" />
-                    </div>
-
-                    {/* Title */}
-                    <div className="mb-4">
-                      <h3 className="text-2xl font-bold mb-1 group-hover:text-primary transition-colors">
-                        {pillar.title}
-                      </h3>
-                      <p className="text-muted-foreground font-medium">
-                        {pillar.subtitle}
-                      </p>
-                    </div>
-
-                    {/* Description */}
-                    <p className="text-muted-foreground mb-6 leading-relaxed">
-                      {pillar.description}
-                    </p>
-
-                    {/* Features */}
-                    <ul className="space-y-3 mb-8">
-                      {pillar.features.map((feature) => (
-                        <li
-                          key={feature}
-                          className="flex items-center gap-3 text-sm text-muted-foreground"
-                        >
-                          <div className="w-1.5 h-1.5 rounded-full bg-primary" />
-                          {feature}
-                        </li>
-                      ))}
-                    </ul>
-
-                    {/* CTA */}
-                    <Button variant="hero-outline" className="w-full group/btn">
-                      {pillar.cta}
-                      <ArrowRight className="w-4 h-4 transition-transform group-hover/btn:translate-x-1" />
-                    </Button>
+                <div className="h-full rounded-xl bg-muted/50 border border-border p-8 transition-all duration-300 hover:border-foreground/20 hover:shadow-lg">
+                  {/* Icon */}
+                  <div className="w-12 h-12 rounded-lg bg-foreground text-background flex items-center justify-center mb-6">
+                    <Icon className="w-6 h-6" />
                   </div>
+
+                  {/* Title */}
+                  <div className="mb-4">
+                    <h3 className="text-xl font-semibold mb-1 text-foreground">
+                      {pillar.title}
+                    </h3>
+                    <p className="text-muted-foreground text-sm">
+                      {pillar.subtitle}
+                    </p>
+                  </div>
+
+                  {/* Description */}
+                  <p className="text-muted-foreground mb-6 text-sm leading-relaxed">
+                    {pillar.description}
+                  </p>
+
+                  {/* Features */}
+                  <ul className="space-y-2 mb-8">
+                    {pillar.features.map((feature) => (
+                      <li
+                        key={feature}
+                        className="flex items-center gap-3 text-sm text-muted-foreground"
+                      >
+                        <div className="w-1 h-1 rounded-full bg-foreground" />
+                        {feature}
+                      </li>
+                    ))}
+                  </ul>
+
+                  {/* CTA */}
+                  <Button variant="hero-outline" size="sm" className="w-full group/btn">
+                    {pillar.cta}
+                    <ArrowRight className="w-4 h-4 transition-transform group-hover/btn:translate-x-1" />
+                  </Button>
                 </div>
               </motion.div>
             );
