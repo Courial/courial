@@ -95,7 +95,7 @@ export const BentoGrid = () => {
           className="text-center mb-16"
         >
           <h2 className="text-4xl md:text-5xl font-bold mb-4 text-foreground">
-            We deliver <span className="text-primary">everything</span>
+            We deliver everything
           </h2>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
             From essential deliveries to premium concierge services, 

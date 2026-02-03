@@ -63,15 +63,15 @@ export const CTA = () => {
           {/* Trust Badges */}
           <div className="flex flex-wrap items-center justify-center gap-6 text-background/60 text-sm">
             <div className="flex items-center gap-2">
-              <div className="w-1.5 h-1.5 rounded-full bg-primary" />
+              <div className="w-1.5 h-1.5 rounded-full bg-background/60" />
               Free to Download
             </div>
             <div className="flex items-center gap-2">
-              <div className="w-1.5 h-1.5 rounded-full bg-primary" />
+              <div className="w-1.5 h-1.5 rounded-full bg-background/60" />
               No Hidden Fees
             </div>
             <div className="flex items-center gap-2">
-              <div className="w-1.5 h-1.5 rounded-full bg-primary" />
+              <div className="w-1.5 h-1.5 rounded-full bg-background/60" />
               24/7 Support
             </div>
           </div>
