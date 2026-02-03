@@ -18,48 +18,56 @@ const bentoItems = [
     icon: FileText,
     className: "md:col-span-2 md:row-span-2",
     featured: true,
+    image: "https://images.unsplash.com/photo-1497366216548-37526070297c?w=800&q=80",
   },
   {
     title: "Furniture Delivery",
     description: "From small items to full room setups",
     icon: Armchair,
     className: "md:col-span-1",
+    image: "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=600&q=80",
   },
   {
     title: "Pharmacy",
     description: "Prescriptions & medical supplies",
     icon: Pill,
     className: "md:col-span-1",
+    image: "https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=600&q=80",
   },
   {
     title: "Dry Cleaning",
     description: "Pick up and delivery to your door",
     icon: Shirt,
     className: "md:col-span-1",
+    image: "https://images.unsplash.com/photo-1558171813-4c088753af8f?w=600&q=80",
   },
   {
     title: "Groceries",
     description: "Fresh from any store you choose",
     icon: ShoppingBag,
     className: "md:col-span-1",
+    image: "https://images.unsplash.com/photo-1542838132-92c53300491e?w=600&q=80",
   },
   {
     title: "Chauffeur Services",
     description: "Professional drivers for any occasion",
     icon: Car,
     className: "md:col-span-2",
+    image: "https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?w=800&q=80",
   },
   {
     title: "EV Valet Charging",
     description: "We charge your electric vehicle while you work",
     icon: Zap,
     className: "md:col-span-1",
+    image: "https://images.unsplash.com/photo-1593941707882-a5bba14938c7?w=600&q=80",
   },
   {
     title: "Concierge Tasks",
     description: "Personal assistant at your fingertips",
     icon: Users,
     className: "md:col-span-1",
+    image: "https://images.unsplash.com/photo-1521791136064-7986c2920216?w=600&q=80",
   },
 ];
 
@@ -121,8 +129,20 @@ export const BentoGrid = () => {
                   transition-all duration-300 hover:border-foreground/20 hover:shadow-lg
                   ${item.className}`}
               >
+                {/* Background image with 50% opacity and gradient fade */}
+                <div 
+                  className="absolute inset-0 opacity-50 transition-opacity duration-300 group-hover:opacity-60"
+                  style={{
+                    backgroundImage: `url(${item.image})`,
+                    backgroundSize: 'cover',
+                    backgroundPosition: 'center',
+                  }}
+                />
+                {/* Gradient overlay for fade effect */}
+                <div className="absolute inset-0 bg-gradient-to-t from-background via-background/80 to-background/40" />
+                
                 <div className="relative z-10 h-full flex flex-col">
-                  <div className={`w-12 h-12 rounded-lg bg-muted flex items-center justify-center mb-4 
+                  <div className={`w-12 h-12 rounded-lg bg-muted/80 backdrop-blur-sm flex items-center justify-center mb-4 
                     group-hover:bg-foreground group-hover:text-background transition-colors ${item.featured ? 'w-14 h-14' : ''}`}>
                     <Icon className={`${item.featured ? 'w-7 h-7' : 'w-5 h-5'}`} />
                   </div>
