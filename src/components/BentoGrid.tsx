@@ -35,25 +35,11 @@ const bentoItems = [
     image: "https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=600&q=80",
   },
   {
-    title: "Large Catering Orders",
-    description: "Event catering delivered fresh and on time",
-    icon: Package,
-    className: "md:col-span-1",
-    image: "https://images.unsplash.com/photo-1555244162-803834f70033?w=600&q=80",
-  },
-  {
     title: "Dry Cleaning",
     description: "Pick up and delivery to your door",
     icon: Shirt,
     className: "md:col-span-1",
     image: "https://images.unsplash.com/photo-1558171813-4c088753af8f?w=600&q=80",
-  },
-  {
-    title: "Concierge Tasks",
-    description: "Personal assistant at your fingertips",
-    icon: Users,
-    className: "md:col-span-1",
-    image: "https://images.unsplash.com/photo-1521791136064-7986c2920216?w=600&q=80",
   },
   {
     title: "Groceries",
@@ -75,6 +61,13 @@ const bentoItems = [
     icon: Zap,
     className: "md:col-span-1",
     image: "https://images.unsplash.com/photo-1593941707882-a5bba14938c7?w=600&q=80",
+  },
+  {
+    title: "Concierge Tasks",
+    description: "Personal assistant at your fingertips",
+    icon: Users,
+    className: "md:col-span-1",
+    image: "https://images.unsplash.com/photo-1521791136064-7986c2920216?w=600&q=80",
   },
 ];
 
@@ -138,7 +131,7 @@ export const BentoGrid = () => {
               >
                 {/* Background image with 50% opacity and gradient fade */}
                 <div 
-                  className="absolute inset-0 opacity-80 transition-opacity duration-300 group-hover:opacity-90"
+                  className="absolute inset-0 opacity-25 transition-opacity duration-300 group-hover:opacity-35"
                   style={{
                     backgroundImage: `url(${item.image})`,
                     backgroundSize: 'cover',
