@@ -2,7 +2,7 @@ import { Navbar } from "@/components/Navbar";
 import { Hero } from "@/components/Hero";
 import { LogoTicker } from "@/components/LogoTicker";
 import { BentoGrid } from "@/components/BentoGrid";
-import { Pillars } from "@/components/Pillars";
+import { TechShowcase } from "@/components/TechShowcase";
 import { Testimonials } from "@/components/Testimonials";
 import { CTA } from "@/components/CTA";
 import { Footer } from "@/components/Footer";
@@ -14,7 +14,7 @@ const Index = () => {
       <Hero />
       <LogoTicker />
       <BentoGrid />
-      <Pillars />
+      <TechShowcase />
       <Testimonials />
       <CTA />
       <Footer />
