@@ -49,6 +49,13 @@ const bentoItems = [
     image: "https://images.unsplash.com/photo-1542838132-92c53300491e?w=600&q=80",
   },
   {
+    title: "Catering Orders",
+    description: "Corporate meals and event catering delivered",
+    icon: Package,
+    className: "md:col-span-2",
+    image: "https://images.unsplash.com/photo-1555244162-803834f70033?w=800&q=80",
+  },
+  {
     title: "Chauffeur Services",
     description: "Professional drivers for any occasion",
     icon: Car,
