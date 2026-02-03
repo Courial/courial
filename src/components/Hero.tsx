@@ -65,7 +65,7 @@ export const Hero = () => {
             <motion.div
               animate={{ y: [0, -15, 0] }}
               transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-              className="absolute z-20 left-0"
+              className="absolute z-20 left-24"
             >
               <img 
                 src={phoneMockup1} 
@@ -78,12 +78,12 @@ export const Hero = () => {
             <motion.div
               animate={{ y: [0, -10, 0] }}
               transition={{ duration: 5, repeat: Infinity, ease: "easeInOut", delay: 0.5 }}
-              className="absolute z-10 left-36 top-8"
+              className="absolute z-10 -left-4 top-20"
             >
               <img 
                 src={phoneMockup2} 
                 alt="Courial order list app" 
-                className="w-64 md:w-72 opacity-90"
+                className="w-64 md:w-72"
               />
             </motion.div>
           </motion.div>
