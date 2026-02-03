@@ -1,5 +1,6 @@
 import { Navbar } from "@/components/Navbar";
 import { Hero } from "@/components/Hero";
+import { LogoTicker } from "@/components/LogoTicker";
 import { BentoGrid } from "@/components/BentoGrid";
 import { Pillars } from "@/components/Pillars";
 import { Testimonials } from "@/components/Testimonials";
@@ -11,6 +12,7 @@ const Index = () => {
     <div className="min-h-screen bg-background">
       <Navbar />
       <Hero />
+      <LogoTicker />
       <BentoGrid />
       <Pillars />
       <Testimonials />
