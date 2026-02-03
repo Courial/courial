@@ -114,8 +114,9 @@ export const BentoGrid = () => {
             One platform for all your needs.
           </h2>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            From essential deliveries to premium concierge and chauffeur services, 
-            we're the one platform that handles it all.
+            From essential deliveries to white-glove concierge and chauffeur services, 
+            we're the one platform that does it all—powered by our highly vetted Courials 
+            and an uncompromising standard of service.
           </p>
         </motion.div>
 
