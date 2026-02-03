@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
+import courialLogo from "@/assets/courial-logo.png";
 
 const navLinks = [
   { name: "Home", href: "/" },
@@ -24,11 +25,8 @@ export const Navbar = () => {
       <div className="container mx-auto px-6">
         <div className="flex items-center justify-between h-16 lg:h-20">
           {/* Logo */}
-          <Link to="/" className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-lg bg-foreground flex items-center justify-center">
-              <span className="text-background font-bold text-lg">C</span>
-            </div>
-            <span className="text-xl font-bold tracking-tight text-foreground">Courial</span>
+          <Link to="/" className="flex items-center">
+            <img src={courialLogo} alt="Courial" className="h-6" />
           </Link>
 
           {/* Desktop Navigation */}

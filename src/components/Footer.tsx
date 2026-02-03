@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { ArrowUpRight } from "lucide-react";
+import courialLogo from "@/assets/courial-logo.png";
 
 const footerLinks = {
   company: [
@@ -34,11 +35,8 @@ export const Footer = () => {
         <div className="grid grid-cols-2 md:grid-cols-5 gap-8 mb-12">
           {/* Brand */}
           <div className="col-span-2 md:col-span-1">
-            <Link to="/" className="flex items-center gap-2 mb-4">
-              <div className="w-8 h-8 rounded-lg bg-foreground flex items-center justify-center">
-                <span className="text-background font-bold text-lg">C</span>
-              </div>
-              <span className="text-xl font-bold tracking-tight text-foreground">Courial</span>
+            <Link to="/" className="flex items-center mb-4">
+              <img src={courialLogo} alt="Courial" className="h-5" />
             </Link>
             <p className="text-sm text-muted-foreground leading-relaxed">
               Trusted on-demand services across mobility, concierge, and task execution.
