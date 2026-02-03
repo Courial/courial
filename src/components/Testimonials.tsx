@@ -40,7 +40,7 @@ export const Testimonials = () => {
           className="text-center mb-16"
         >
           <h2 className="text-4xl md:text-5xl font-bold mb-4 text-foreground">
-            Loved by <span className="text-primary">thousands</span>
+            Loved by thousands
           </h2>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
             Join a community of 100,000+ people who trust Courial for their delivery needs.
@@ -72,7 +72,7 @@ export const Testimonials = () => {
                   {[...Array(testimonial.rating)].map((_, i) => (
                     <Star
                       key={i}
-                      className="w-4 h-4 fill-primary text-primary"
+                      className="w-4 h-4 fill-foreground text-foreground"
                     />
                   ))}
                 </div>
