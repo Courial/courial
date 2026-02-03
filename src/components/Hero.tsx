@@ -59,18 +59,18 @@ export const Hero = () => {
             initial={{ opacity: 0, x: 30 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.6, delay: 0.2 }}
-            className="relative hidden lg:flex items-center justify-center min-h-[600px]"
+            className="relative hidden lg:flex items-center justify-start min-h-[500px] -ml-12"
           >
             {/* Phone 1 - Front */}
             <motion.div
               animate={{ y: [0, -15, 0] }}
               transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-              className="absolute z-20 right-20"
+              className="absolute z-20 left-0"
             >
               <img 
                 src={phoneMockup1} 
                 alt="Courial delivery tracking app" 
-                className="w-56 md:w-64 drop-shadow-2xl"
+                className="w-72 md:w-80 drop-shadow-2xl mix-blend-multiply"
               />
             </motion.div>
 
@@ -78,12 +78,12 @@ export const Hero = () => {
             <motion.div
               animate={{ y: [0, -10, 0] }}
               transition={{ duration: 5, repeat: Infinity, ease: "easeInOut", delay: 0.5 }}
-              className="absolute z-10 right-48 top-16"
+              className="absolute z-10 left-36 top-8"
             >
               <img 
                 src={phoneMockup2} 
                 alt="Courial order list app" 
-                className="w-48 md:w-56 drop-shadow-xl opacity-90"
+                className="w-64 md:w-72 drop-shadow-xl opacity-90 mix-blend-multiply"
               />
             </motion.div>
           </motion.div>
