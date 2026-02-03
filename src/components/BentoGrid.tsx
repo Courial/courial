@@ -10,6 +10,7 @@ import {
   Zap,
   Users,
 } from "lucide-react";
+import chauffeurImage from "@/assets/chauffeur-service.jpg";
 
 const bentoItems = [
   {
@@ -60,7 +61,7 @@ const bentoItems = [
     description: "Professional drivers for any occasion",
     icon: Car,
     className: "md:col-span-2",
-    image: "https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?w=800&q=80",
+    image: chauffeurImage,
   },
   {
     title: "Furniture Delivery",
