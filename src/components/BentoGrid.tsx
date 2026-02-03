@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import {
   Package,
+  Armchair,
   Pill,
   Shirt,
   ShoppingBag,
@@ -20,11 +21,11 @@ const bentoItems = [
     image: "https://images.unsplash.com/photo-1521791136064-7986c2920216?w=800&q=80",
   },
   {
-    title: "Catering Orders",
-    description: "Hot meals delivered for any event",
-    icon: ShoppingBag,
+    title: "Furniture Delivery",
+    description: "From small items to full room setups",
+    icon: Armchair,
     className: "md:col-span-1",
-    image: "https://images.unsplash.com/photo-1555244162-803834f70033?w=600&q=80",
+    image: "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=600&q=80",
   },
   {
     title: "Pharmacy",
