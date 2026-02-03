@@ -69,6 +69,13 @@ const bentoItems = [
     className: "md:col-span-1",
     image: "https://images.unsplash.com/photo-1521791136064-7986c2920216?w=600&q=80",
   },
+  {
+    title: "Catering Orders",
+    description: "Corporate meals and event catering delivered",
+    icon: Package,
+    className: "md:col-span-2",
+    image: "https://images.unsplash.com/photo-1555244162-803834f70033?w=800&q=80",
+  },
 ];
 
 const containerVariants = {
