@@ -36,7 +36,7 @@ export const Footer = () => {
           {/* Brand */}
           <div className="col-span-2 md:col-span-1">
             <Link to="/" className="flex items-center mb-4">
-              <img src={courialLogo} alt="Courial" className="h-5" />
+              <img src={courialLogo} alt="Courial" className="h-[1.5625rem]" />
             </Link>
             <p className="text-sm text-muted-foreground leading-relaxed">
               Trusted on-demand services across mobility, concierge, and task execution.
