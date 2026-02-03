@@ -13,7 +13,7 @@ import {
 
 const bentoItems = [
   {
-    title: "Corporate Deliveries",
+    title: "Office Supplies",
     description: "Documents, packages, and business essentials delivered same-day",
     icon: FileText,
     className: "md:col-span-2 md:row-span-2",
@@ -131,7 +131,7 @@ export const BentoGrid = () => {
               >
                 {/* Background image with 50% opacity and gradient fade */}
                 <div 
-                  className="absolute inset-0 opacity-25 transition-opacity duration-300 group-hover:opacity-35"
+                  className="absolute inset-0 opacity-50 transition-opacity duration-300 group-hover:opacity-60"
                   style={{
                     backgroundImage: `url(${item.image})`,
                     backgroundSize: 'cover',
