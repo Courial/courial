@@ -49,6 +49,13 @@ const bentoItems = [
     image: "https://images.unsplash.com/photo-1558171813-4c088753af8f?w=600&q=80",
   },
   {
+    title: "Concierge Tasks",
+    description: "Personal assistant at your fingertips",
+    icon: Users,
+    className: "md:col-span-1",
+    image: "https://images.unsplash.com/photo-1521791136064-7986c2920216?w=600&q=80",
+  },
+  {
     title: "Groceries",
     description: "Fresh from any store you choose",
     icon: ShoppingBag,
@@ -68,13 +75,6 @@ const bentoItems = [
     icon: Zap,
     className: "md:col-span-1",
     image: "https://images.unsplash.com/photo-1593941707882-a5bba14938c7?w=600&q=80",
-  },
-  {
-    title: "Concierge Tasks",
-    description: "Personal assistant at your fingertips",
-    icon: Users,
-    className: "md:col-span-1",
-    image: "https://images.unsplash.com/photo-1521791136064-7986c2920216?w=600&q=80",
   },
 ];
 
