@@ -16,7 +16,7 @@ const bentoItems = [
     title: "Office Supplies",
     description: "Documents, packages, and business essentials delivered same-day",
     icon: FileText,
-    className: "md:col-span-2 md:row-span-2",
+    className: "md:col-span-2",
     featured: true,
     image: "https://images.unsplash.com/photo-1497366216548-37526070297c?w=800&q=80",
   },
@@ -49,11 +49,18 @@ const bentoItems = [
     image: "https://images.unsplash.com/photo-1542838132-92c53300491e?w=600&q=80",
   },
   {
+    title: "Catering Orders",
+    description: "Corporate meals and event catering delivered",
+    icon: Package,
+    className: "md:col-span-1",
+    image: "https://images.unsplash.com/photo-1555244162-803834f70033?w=600&q=80",
+  },
+  {
     title: "Chauffeur Services",
     description: "Professional drivers for any occasion",
     icon: Car,
-    className: "md:col-span-2",
-    image: "https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?w=800&q=80",
+    className: "md:col-span-1",
+    image: "https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?w=600&q=80",
   },
   {
     title: "EV Valet Charging",
@@ -68,13 +75,6 @@ const bentoItems = [
     icon: Users,
     className: "md:col-span-1",
     image: "https://images.unsplash.com/photo-1521791136064-7986c2920216?w=600&q=80",
-  },
-  {
-    title: "Catering Orders",
-    description: "Corporate meals and event catering delivered",
-    icon: Package,
-    className: "md:col-span-2",
-    image: "https://images.unsplash.com/photo-1555244162-803834f70033?w=800&q=80",
   },
 ];
 
