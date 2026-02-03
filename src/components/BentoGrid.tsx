@@ -131,7 +131,7 @@ export const BentoGrid = () => {
               >
                 {/* Background image with 50% opacity and gradient fade */}
                 <div 
-                  className="absolute inset-0 opacity-20 transition-opacity duration-300 group-hover:opacity-30"
+                  className="absolute inset-0 opacity-80 transition-opacity duration-300 group-hover:opacity-90"
                   style={{
                     backgroundImage: `url(${item.image})`,
                     backgroundSize: 'cover',
