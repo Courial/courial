@@ -70,7 +70,7 @@ export const Hero = () => {
               <img 
                 src={phoneMockup1} 
                 alt="Courial delivery tracking app" 
-                className="w-72 md:w-80 drop-shadow-2xl mix-blend-multiply"
+                className="w-72 md:w-80 drop-shadow-2xl"
               />
             </motion.div>
 
@@ -83,7 +83,7 @@ export const Hero = () => {
               <img 
                 src={phoneMockup2} 
                 alt="Courial order list app" 
-                className="w-64 md:w-72 drop-shadow-xl opacity-90 mix-blend-multiply"
+                className="w-64 md:w-72 drop-shadow-xl opacity-90"
               />
             </motion.div>
           </motion.div>
