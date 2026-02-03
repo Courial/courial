@@ -27,9 +27,7 @@ const images = [
 
 const title = (
   <>
-    Deliver anything,
-    <br />
-    anywhere.
+    Anything? Possible.
   </>
 );
 
