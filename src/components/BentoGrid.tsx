@@ -35,6 +35,13 @@ const bentoItems = [
     image: "https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=600&q=80",
   },
   {
+    title: "Large Catering Orders",
+    description: "Event catering delivered fresh and on time",
+    icon: Package,
+    className: "md:col-span-1",
+    image: "https://images.unsplash.com/photo-1555244162-803834f70033?w=600&q=80",
+  },
+  {
     title: "Dry Cleaning",
     description: "Pick up and delivery to your door",
     icon: Shirt,
