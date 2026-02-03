@@ -52,15 +52,15 @@ const bentoItems = [
     title: "Catering Orders",
     description: "Corporate meals and event catering delivered",
     icon: Package,
-    className: "md:col-span-1",
-    image: "https://images.unsplash.com/photo-1555244162-803834f70033?w=600&q=80",
+    className: "md:col-span-2",
+    image: "https://images.unsplash.com/photo-1555244162-803834f70033?w=800&q=80",
   },
   {
     title: "Chauffeur Services",
     description: "Professional drivers for any occasion",
     icon: Car,
-    className: "md:col-span-1",
-    image: "https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?w=600&q=80",
+    className: "md:col-span-2",
+    image: "https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?w=800&q=80",
   },
   {
     title: "EV Valet Charging",
@@ -124,7 +124,7 @@ export const BentoGrid = () => {
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, margin: "-100px" }}
-          className="grid grid-cols-1 md:grid-cols-4 gap-4 max-w-6xl mx-auto"
+          className="grid grid-cols-1 md:grid-cols-4 md:auto-rows-[220px] md:grid-flow-row-dense gap-4 max-w-6xl mx-auto"
         >
           {bentoItems.map((item) => {
             const Icon = item.icon;
@@ -132,7 +132,7 @@ export const BentoGrid = () => {
               <motion.div
                 key={item.title}
                 variants={itemVariants}
-                className={`group relative overflow-hidden rounded-xl bg-background border border-border p-6 md:p-8 
+                className={`group relative h-full overflow-hidden rounded-xl bg-background border border-border p-6 md:p-8 
                   transition-all duration-300 hover:border-foreground/20 hover:shadow-lg
                   ${item.className}`}
               >
