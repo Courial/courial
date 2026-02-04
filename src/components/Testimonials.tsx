@@ -43,7 +43,7 @@ export const Testimonials = () => {
             Loved by thousands
           </h2>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            Join a community of 100,000+ people who trust Courial for their delivery needs.
+            Join a community of people who trust Courial for their delivery needs.
           </p>
         </motion.div>
 
