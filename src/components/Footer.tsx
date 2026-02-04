@@ -16,7 +16,6 @@ const socialLinks = [
 
 const footerLinks = {
   company: [
-    { name: "About", href: "/about" },
     { name: "Blog", href: "/blog" },
     { name: "Swag", href: "/swag" },
   ],
