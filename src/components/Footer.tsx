@@ -40,18 +40,18 @@ const footerLinks = {
 
 export const Footer = () => {
   return (
-    <footer className="border-t border-border bg-muted/30">
+    <footer className="bg-foreground">
       <div className="container mx-auto px-6 py-16">
         <div className="grid grid-cols-2 md:grid-cols-5 gap-8 mb-12">
           {/* Current Markets */}
           <div className="col-span-2 md:col-span-1">
-            <h4 className="font-semibold text-foreground mb-4 text-sm">Current Markets</h4>
+            <h4 className="font-semibold text-background mb-4 text-sm">Current Markets</h4>
             <ul className="space-y-1.5">
-              <li className="text-sm text-muted-foreground leading-normal">San Francisco Bay Area</li>
-              <li className="text-sm text-muted-foreground leading-normal">Los Angeles Area</li>
-              <li className="text-sm text-muted-foreground leading-normal">Boston</li>
-              <li className="text-sm text-muted-foreground leading-normal">New York City</li>
-              <li className="text-sm text-muted-foreground leading-normal">San Diego</li>
+              <li className="text-sm text-background/60 leading-normal">San Francisco Bay Area</li>
+              <li className="text-sm text-background/60 leading-normal">Los Angeles Area</li>
+              <li className="text-sm text-background/60 leading-normal">Boston</li>
+              <li className="text-sm text-background/60 leading-normal">New York City</li>
+              <li className="text-sm text-background/60 leading-normal">San Diego</li>
             </ul>
             <Link 
               to="/markets" 
@@ -64,7 +64,7 @@ export const Footer = () => {
           {/* Links */}
           {Object.entries(footerLinks).map(([category, links]) => (
             <div key={category}>
-              <h4 className="font-semibold text-foreground mb-4 capitalize text-sm">
+              <h4 className="font-semibold text-background mb-4 capitalize text-sm">
                 {category}
               </h4>
               <ul className="space-y-1.5">
@@ -72,7 +72,7 @@ export const Footer = () => {
                   <li key={link.name}>
                     <Link
                       to={link.href}
-                      className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+                      className="text-sm text-background/60 hover:text-background transition-colors"
                     >
                       {link.name}
                     </Link>
@@ -84,8 +84,8 @@ export const Footer = () => {
         </div>
 
         {/* Bottom */}
-        <div className="flex flex-col md:flex-row items-center justify-between pt-8 border-t border-border gap-4">
-          <p className="text-sm text-muted-foreground">
+        <div className="flex flex-col md:flex-row items-center justify-between pt-8 border-t border-background/20 gap-4">
+          <p className="text-sm text-background/60">
             © {new Date().getFullYear()} Courial. All rights reserved.
           </p>
 
@@ -95,7 +95,7 @@ export const Footer = () => {
               <a
                 key={social.name}
                 href={social.href}
-                className="text-muted-foreground hover:text-foreground transition-colors"
+                className="text-background/60 hover:text-background transition-colors"
                 aria-label={social.name}
               >
                 <social.icon className="w-5 h-5" />

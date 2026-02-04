@@ -4,7 +4,6 @@ import { LogoTicker } from "@/components/LogoTicker";
 import { BentoGrid } from "@/components/BentoGrid";
 import { TechShowcase } from "@/components/TechShowcase";
 import { Testimonials } from "@/components/Testimonials";
-import { CTA } from "@/components/CTA";
 import { Footer } from "@/components/Footer";
 
 const Index = () => {
@@ -16,7 +15,6 @@ const Index = () => {
       <BentoGrid />
       <TechShowcase />
       <Testimonials />
-      <CTA />
       <Footer />
     </div>
   );
