@@ -130,18 +130,9 @@ const Courials = () => {
               <p className="text-lg text-muted-foreground mb-6">
                 As partners, our Courials keep up to 80% of delivery fees, determine their earnings, choose their work locations, and get paid for waiting.
               </p>
-              <p className="text-lg text-muted-foreground mb-8">
+              <p className="text-lg text-muted-foreground">
                 By delivering anything, they stay busy and experience shorter wait times, enabling them to earn <span className="font-bold text-foreground">$30 or more per hour</span>.
               </p>
-              <div className="flex flex-col sm:flex-row items-start gap-4">
-                <Button variant="hero" size="xl" className="group">
-                  Get iOS App
-                  <ArrowRight className="w-5 h-5 transition-transform group-hover:translate-x-1" />
-                </Button>
-                <Button variant="hero-outline" size="xl">
-                  Get Android App
-                </Button>
-              </div>
             </motion.div>
           </div>
         </div>
