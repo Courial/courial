@@ -155,34 +155,25 @@ const Chauffeur = () => {
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6 }}
-              className="order-2 lg:order-1 bg-gradient-to-br from-primary/10 to-primary/5 rounded-3xl p-12"
+              className="order-2 lg:order-1 grid gap-4"
             >
-              <div className="space-y-6">
-                <div className="flex items-start gap-4">
-                  <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center flex-shrink-0">
-                    <Car className="w-5 h-5 text-primary" />
+              {[
+                { icon: Car, text: "Premium fleet with clean interiors and comfort-first amenities" },
+                { icon: Shield, text: "Professional chauffeurs trained in etiquette, safety, and communication" },
+                { icon: Globe, text: "Multilingual support and hospitality-driven experience designed for Thailand" },
+              ].map((item, index) => (
+                <div
+                  key={index}
+                  className="group rounded-2xl glass-card p-6 transition-all duration-300 hover:border-primary/50"
+                >
+                  <div className="flex items-start gap-4">
+                    <div className="w-10 h-10 rounded-xl bg-muted flex items-center justify-center flex-shrink-0 group-hover:bg-muted/80 transition-colors">
+                      <item.icon className="w-5 h-5 text-foreground" />
+                    </div>
+                    <p className="text-lg text-foreground">{item.text}</p>
                   </div>
-                  <p className="text-lg text-foreground">
-                    Premium fleet with clean interiors and comfort-first amenities
-                  </p>
                 </div>
-                <div className="flex items-start gap-4">
-                  <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center flex-shrink-0">
-                    <Shield className="w-5 h-5 text-primary" />
-                  </div>
-                  <p className="text-lg text-foreground">
-                    Professional chauffeurs trained in etiquette, safety, and communication
-                  </p>
-                </div>
-                <div className="flex items-start gap-4">
-                  <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center flex-shrink-0">
-                    <Globe className="w-5 h-5 text-primary" />
-                  </div>
-                  <p className="text-lg text-foreground">
-                    Multilingual support and hospitality-driven experience designed for Thailand
-                  </p>
-                </div>
-              </div>
+              ))}
             </motion.div>
 
             <motion.div
