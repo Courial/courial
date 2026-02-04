@@ -35,7 +35,7 @@ const socialLinks = [
 const footerLinks = {
   support: [
     { name: "Help Center", href: "/help" },
-    { name: "Contact Us", href: "/contact" },
+    { name: "Contact Us", href: "/help" },
     { name: "API Docs", href: "/api" },
   ],
   services: [
