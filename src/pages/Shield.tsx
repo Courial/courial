@@ -1,9 +1,21 @@
 import { motion } from "framer-motion";
-import { Shield as ShieldIcon, Zap, Users, DollarSign, CheckCircle, ArrowRight, Car, FileCheck, Clock } from "lucide-react";
+import { Shield as ShieldIcon, Zap, Users, DollarSign, CheckCircle, Car, FileCheck, Clock } from "lucide-react";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import shieldPhoneMockup from "@/assets/shield-phone-mockup.png";
+
+const AppleIcon = () => (
+  <svg viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5">
+    <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/>
+  </svg>
+);
+
+const AndroidIcon = () => (
+  <svg viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5">
+    <path d="M17.6 11.48V8.93a.48.48 0 0 0-.48-.48h-.93a.48.48 0 0 0-.48.48v2.55h-7.42V8.93a.48.48 0 0 0-.48-.48h-.93a.48.48 0 0 0-.48.48v2.55A2.89 2.89 0 0 0 4.5 14.3v5.2a.5.5 0 0 0 .5.5h14a.5.5 0 0 0 .5-.5v-5.2a2.89 2.89 0 0 0-1.9-2.82zM16.85 4.27l1.06-1.77a.24.24 0 0 0-.08-.32.24.24 0 0 0-.32.08L16.4 4.12a6.2 6.2 0 0 0-4.4-1.62 6.2 6.2 0 0 0-4.4 1.62L6.49 2.26a.24.24 0 0 0-.32-.08.24.24 0 0 0-.08.32l1.06 1.77A5.77 5.77 0 0 0 4.5 8.45h15a5.77 5.77 0 0 0-2.65-4.18zM9.5 6.5a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5zm5 0a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5z"/>
+  </svg>
+);
 
 const whyShieldFeatures = [
   {
@@ -119,11 +131,12 @@ const Shield = () => {
               </div>
               <div className="flex flex-col sm:flex-row items-start gap-4">
                 <Button variant="hero" size="xl" className="group">
-                  Get Shield
-                  <ArrowRight className="w-5 h-5 transition-transform group-hover:translate-x-1" />
+                  <AppleIcon />
+                  Get iOS App
                 </Button>
-                <Button variant="hero-outline" size="xl">
-                  See Coverage
+                <Button variant="hero-outline" size="xl" className="group">
+                  <AndroidIcon />
+                  Get Android App
                 </Button>
               </div>
             </motion.div>
@@ -291,21 +304,25 @@ const Shield = () => {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5 }}
-            className="max-w-3xl mx-auto text-center glass-card rounded-3xl p-12"
+            className="max-w-3xl mx-auto rounded-2xl glass-card p-12 transition-all duration-300 hover:border-primary/50"
           >
-            <h2 className="text-3xl md:text-4xl font-bold mb-4 gradient-text-black-orange">
+            <div className="w-14 h-14 rounded-xl bg-muted flex items-center justify-center mb-6 mx-auto">
+              <ShieldIcon className="w-7 h-7 text-foreground" />
+            </div>
+            <h2 className="text-3xl md:text-4xl font-bold mb-4 text-center gradient-text-black-orange">
               Stop paying the "parking tax."
             </h2>
-            <p className="text-muted-foreground mb-8">
+            <p className="text-muted-foreground mb-8 text-center">
               Get Courial Shield and drive with peace of mind.
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
               <Button variant="hero" size="xl" className="group">
-                Get Shield
-                <ArrowRight className="w-5 h-5 transition-transform group-hover:translate-x-1" />
+                <AppleIcon />
+                Get iOS App
               </Button>
-              <Button variant="hero-outline" size="xl">
-                See Coverage
+              <Button variant="hero-outline" size="xl" className="group">
+                <AndroidIcon />
+                Get Android App
               </Button>
             </div>
           </motion.div>
