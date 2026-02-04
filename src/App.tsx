@@ -13,6 +13,7 @@ import Chauffeur from "./pages/Chauffeur";
 import Shield from "./pages/Shield";
 import Terms from "./pages/Terms";
 import Privacy from "./pages/Privacy";
+import ICA from "./pages/ICA";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -34,6 +35,7 @@ const App = () => (
           <Route path="/shield" element={<Shield />} />
           <Route path="/terms" element={<Terms />} />
           <Route path="/privacy" element={<Privacy />} />
+          <Route path="/ica" element={<ICA />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
