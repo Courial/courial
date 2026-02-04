@@ -53,9 +53,8 @@ const features = [
 
 const stats = [
   { value: "2M+", label: "Deliveries Completed" },
-  { value: "99.2%", label: "Accuracy Rate" },
+  { value: "93.6%", label: "Accuracy Rate" },
   { value: "40%", label: "Faster Than Average" },
-  { value: "4.9★", label: "Customer Rating" },
 ];
 
 export const TechShowcase = () => {
@@ -124,8 +123,8 @@ export const TechShowcase = () => {
                 <AreaChart data={efficiencyData}>
                   <defs>
                     <linearGradient id="efficiencyGradient" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="hsl(var(--foreground))" stopOpacity={0.15} />
-                      <stop offset="95%" stopColor="hsl(var(--foreground))" stopOpacity={0} />
+                      <stop offset="5%" stopColor="hsl(30, 100%, 70%)" stopOpacity={0.3} />
+                      <stop offset="95%" stopColor="hsl(30, 100%, 70%)" stopOpacity={0} />
                     </linearGradient>
                   </defs>
                   <XAxis 
@@ -143,7 +142,7 @@ export const TechShowcase = () => {
                   <Area
                     type="monotone"
                     dataKey="efficiency"
-                    stroke="hsl(var(--foreground))"
+                    stroke="hsl(30, 100%, 70%)"
                     strokeWidth={2}
                     fill="url(#efficiencyGradient)"
                   />
