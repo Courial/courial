@@ -58,9 +58,11 @@ export const Testimonials = () => {
               transition={{ duration: 0.5, delay: index * 0.1 }}
               className="group"
             >
-              <div className="h-full rounded-xl bg-muted/50 border border-border p-8 transition-all duration-300 hover:border-foreground/20 hover:shadow-lg">
+              <div className="h-full rounded-2xl glass-card p-8 transition-all duration-300 hover:border-primary/50">
                 {/* Quote Icon */}
-                <Quote className="w-8 h-8 text-muted-foreground/30 mb-4" />
+                <div className="w-12 h-12 rounded-xl bg-muted flex items-center justify-center mb-4">
+                  <Quote className="w-6 h-6 text-foreground" />
+                </div>
 
                 {/* Content */}
                 <p className="text-foreground/80 mb-6 leading-relaxed text-sm">
