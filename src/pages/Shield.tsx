@@ -310,7 +310,8 @@ const Shield = () => {
             <img 
               src={shieldLogo} 
               alt="Courial Shield" 
-              className="w-16 h-16 mx-auto mb-6"
+              className="mx-auto mb-6"
+              style={{ width: '50%', maxWidth: '80px', height: 'auto' }}
             />
             <h2 className="text-3xl md:text-4xl font-bold mb-4 gradient-text-black-orange">
               Stop paying the "parking tax."
