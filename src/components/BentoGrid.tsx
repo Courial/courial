@@ -100,7 +100,7 @@ const itemVariants = {
 
 export const BentoGrid = () => {
   return (
-    <section className="py-24 md:py-32 bg-muted/30">
+    <section className="py-24 md:py-32">
       <div className="container mx-auto px-6">
         {/* Section Header */}
         <motion.div
@@ -110,7 +110,7 @@ export const BentoGrid = () => {
           transition={{ duration: 0.5 }}
           className="text-center mb-16"
         >
-          <h2 className="text-4xl md:text-5xl font-bold mb-4 text-foreground">
+          <h2 className="text-4xl md:text-5xl font-bold mb-4 gradient-text-black-orange">
             One platform for all your needs.
           </h2>
           <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
@@ -135,13 +135,13 @@ export const BentoGrid = () => {
               <motion.div
                 key={item.title}
                 variants={itemVariants}
-                className={`group relative h-full overflow-hidden rounded-xl bg-background border border-border p-6 md:p-8 
-                  transition-all duration-300 hover:border-foreground/20 hover:shadow-lg
+                className={`group relative h-full overflow-hidden rounded-2xl glass-card p-6 md:p-8 
+                  transition-all duration-300 hover:border-primary/50
                   ${item.className}`}
               >
                 {/* Background image with 50% opacity and gradient fade */}
                 <div 
-                  className="absolute inset-0 opacity-50 transition-opacity duration-300 group-hover:opacity-60"
+                  className="absolute inset-0 opacity-40 transition-opacity duration-300 group-hover:opacity-50"
                   style={{
                     backgroundImage: `url(${item.image})`,
                     backgroundSize: 'cover',
@@ -149,26 +149,26 @@ export const BentoGrid = () => {
                   }}
                 />
                 {/* Gradient overlay for fade effect */}
-                <div className="absolute inset-0 bg-gradient-to-t from-background via-background/80 to-background/40" />
+                <div className="absolute inset-0 bg-gradient-to-t from-background via-background/70 to-background/30" />
                 
                 <div className="relative z-10 h-full flex flex-col">
-                  <div className={`w-12 h-12 rounded-lg bg-muted/80 backdrop-blur-sm flex items-center justify-center mb-4 
-                    group-hover:bg-foreground group-hover:text-background transition-colors ${item.featured ? 'w-14 h-14' : ''}`}>
-                    <Icon className={`${item.featured ? 'w-7 h-7' : 'w-5 h-5'}`} />
+                  <div className={`w-12 h-12 rounded-xl bg-muted flex items-center justify-center mb-4 
+                    group-hover:bg-muted/80 transition-colors ${item.featured ? 'w-14 h-14' : ''}`}>
+                    <Icon className={`text-foreground ${item.featured ? 'w-7 h-7' : 'w-6 h-6'}`} />
                   </div>
                   
-                  <h3 className={`font-semibold mb-2 text-foreground
+                  <h3 className={`font-bold mb-3 group-hover:text-primary transition-colors
                     ${item.featured ? 'text-3xl' : 'text-xl'}`}>
                     {item.title}
                   </h3>
                   
-                  <p className={`text-foreground ${item.featured ? 'text-base' : 'text-sm'}`}>
+                  <p className={`text-muted-foreground ${item.featured ? 'text-base' : 'text-sm'}`}>
                     {item.description}
                   </p>
                   
                   {item.featured && (
                     <div className="mt-auto pt-6">
-                      <span className="text-foreground font-medium text-sm group-hover:underline cursor-pointer">
+                      <span className="text-primary font-medium text-sm group-hover:underline cursor-pointer">
                         Learn more →
                       </span>
                     </div>
