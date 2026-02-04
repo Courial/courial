@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { Package, Clock, MapPin, Smartphone, ShieldCheck, Sparkles, ArrowRight } from "lucide-react";
+import { Package, Clock, MapPin, Smartphone, ShieldCheck, Hand, ArrowRight } from "lucide-react";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { Button } from "@/components/ui/button";
@@ -37,7 +37,7 @@ const features = [
       "Your items are handled with care by vetted Courials with real-time tracking.",
   },
   {
-    icon: Sparkles,
+    icon: Hand,
     title: "White-Glove Service",
     description:
       "Premium handling for your most important deliveries with photo confirmation.",
