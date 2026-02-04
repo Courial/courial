@@ -67,7 +67,7 @@ export const Footer = () => {
               <h4 className="font-semibold text-foreground mb-4 capitalize text-sm">
                 {category}
               </h4>
-              <ul className="space-y-3">
+              <ul className="space-y-1.5">
                 {links.map((link) => (
                   <li key={link.name}>
                     <Link
