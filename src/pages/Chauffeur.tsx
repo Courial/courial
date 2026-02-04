@@ -269,7 +269,7 @@ const Chauffeur = () => {
             </p>
           </motion.div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-3xl mx-auto mb-16">
+          <div className="grid grid-cols-2 gap-4 max-w-md mx-auto mb-16">
             {regions.map((region, index) => (
               <motion.div
                 key={region.name}
@@ -277,15 +277,15 @@ const Chauffeur = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.4, delay: index * 0.1 }}
-                className="group rounded-2xl glass-card p-8 transition-all duration-300 hover:border-primary/50"
+                className="group rounded-2xl glass-card p-6 text-center transition-all duration-300 hover:border-primary/50"
               >
-                <div className="w-12 h-12 rounded-xl bg-muted flex items-center justify-center mb-6 group-hover:bg-muted/80 transition-colors">
-                  <MapPin className="w-6 h-6 text-foreground" />
+                <div className="w-10 h-10 rounded-xl bg-muted flex items-center justify-center mb-4 mx-auto group-hover:bg-muted/80 transition-colors">
+                  <MapPin className="w-5 h-5 text-foreground" />
                 </div>
-                <h3 className="text-xl font-bold mb-3 group-hover:text-primary transition-colors">
+                <h3 className="text-lg font-bold mb-2 group-hover:text-primary transition-colors">
                   {region.name}
                 </h3>
-                <p className="text-muted-foreground">{region.description}</p>
+                <p className="text-sm text-muted-foreground">{region.description}</p>
               </motion.div>
             ))}
           </div>
