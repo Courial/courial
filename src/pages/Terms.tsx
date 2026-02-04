@@ -240,7 +240,7 @@ const Terms = () => {
                     <div className="space-y-4">
                       <h3 className="text-xl font-semibold text-foreground">16. Reporting Violations</h3>
                       <p className="text-muted-foreground leading-relaxed">
-                        Contact: <a href="mailto:support@courial.com" className="text-primary hover:underline">support@courial.com</a> (U.S.) or <a href="mailto:support.th@courial.com" className="text-primary hover:underline">support.th@courial.com</a> (Thailand).
+                        Contact: <a href="mailto:support@courial.com" className="text-primary hover:underline">support@courial.com</a>
                       </p>
                     </div>
                   </section>
