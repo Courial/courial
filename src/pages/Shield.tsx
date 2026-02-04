@@ -95,15 +95,28 @@ const Shield = () => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6 }}
             >
-              <span className="text-primary font-semibold text-sm uppercase tracking-wider mb-4 block">
-                Courial Shield
-              </span>
+              <div className="flex flex-wrap items-center gap-3 mb-4">
+                <span className="text-primary font-semibold text-sm uppercase tracking-wider">
+                  Courial Shield
+                </span>
+                <span className="inline-flex items-center rounded-full bg-primary/10 border border-primary/20 px-3 py-1 text-xs font-semibold text-primary">
+                  Available to all gig workers
+                </span>
+              </div>
               <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 gradient-text-black-orange">
                 Parking protection that's actually simple.
               </h1>
-              <p className="text-xl text-muted-foreground mb-10">
+              <p className="text-xl text-muted-foreground mb-6">
                 Courial Shield helps take the sting out of parking mistakes. When you get hit with a qualifying parking violation, Shield helps cover the cost—so one ticket doesn't wreck your day (or your budget).
               </p>
+              <div className="rounded-xl bg-muted/50 border border-border p-4 mb-10">
+                <p className="text-foreground font-medium">
+                  🎉 Open to <span className="text-primary">all gig workers</span>—no matter what platform you drive for.
+                </p>
+                <p className="text-muted-foreground text-sm mt-1">
+                  Active Courial Partners enjoy <span className="font-semibold text-foreground">20% off</span> all Shield plans.
+                </p>
+              </div>
               <div className="flex flex-col sm:flex-row items-start gap-4">
                 <Button variant="hero" size="xl" className="group">
                   Get Shield
