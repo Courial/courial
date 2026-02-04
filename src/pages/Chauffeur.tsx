@@ -1,8 +1,11 @@
+import { useState } from "react";
 import { motion } from "framer-motion";
-import { Car, Shield, Clock, Globe, Star, MapPin, ArrowRight, Calendar } from "lucide-react";
+import { Car, Shield, Clock, Globe, Star, MapPin, ArrowRight, Calendar, Bell } from "lucide-react";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { useToast } from "@/hooks/use-toast";
 import chauffeurServiceImage from "@/assets/chauffeur-service.jpg";
 
 const features = [
@@ -44,14 +47,53 @@ const features = [
   },
 ];
 
-const markets = [
-  { city: "Bangkok", status: "active" },
-  { city: "Chiang Mai", status: "coming" },
-  { city: "Phuket", status: "coming" },
-  { city: "Pattaya", status: "coming" },
+const regions = [
+  { name: "Thailand", status: "active", description: "Now Available" },
+  { name: "Southeast Asia", status: "coming", description: "Coming 2026" },
+  { name: "United States", status: "coming", description: "Coming 2026" },
 ];
 
 const Chauffeur = () => {
+  const [email, setEmail] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const { toast } = useToast();
+
+  const handleWaitlistSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (!email.trim()) {
+      toast({
+        title: "Email required",
+        description: "Please enter your email address.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email.trim())) {
+      toast({
+        title: "Invalid email",
+        description: "Please enter a valid email address.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setIsSubmitting(true);
+    
+    // Simulate API call - replace with actual backend integration
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    
+    toast({
+      title: "You're on the list!",
+      description: "We'll notify you when Chauffeur arrives in your city.",
+    });
+    
+    setEmail("");
+    setIsSubmitting(false);
+  };
+
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
@@ -224,38 +266,77 @@ const Chauffeur = () => {
               Availability
             </h2>
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-              Currently serving Bangkok with expansion plans across Thailand's top destinations.
+              Currently serving Thailand, with expansion across Southeast Asia and the United States in 2026.
             </p>
           </motion.div>
 
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-3xl mx-auto">
-            {markets.map((market, index) => (
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto mb-16">
+            {regions.map((region, index) => (
               <motion.div
-                key={market.city}
+                key={region.name}
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.4, delay: index * 0.1 }}
-                className={`rounded-xl glass-card p-6 text-center ${
-                  market.status === "coming" ? "opacity-60" : ""
+                className={`rounded-xl glass-card p-8 text-center ${
+                  region.status === "coming" ? "opacity-70" : ""
                 }`}
               >
-                <div className={`w-10 h-10 rounded-lg mx-auto mb-3 flex items-center justify-center ${
-                  market.status === "active" ? "bg-primary/10" : "bg-muted"
+                <div className={`w-12 h-12 rounded-xl mx-auto mb-4 flex items-center justify-center ${
+                  region.status === "active" ? "bg-primary/10" : "bg-muted"
                 }`}>
-                  <MapPin className={`w-5 h-5 ${
-                    market.status === "active" ? "text-primary" : "text-muted-foreground"
+                  <MapPin className={`w-6 h-6 ${
+                    region.status === "active" ? "text-primary" : "text-muted-foreground"
                   }`} />
                 </div>
-                <h3 className="font-semibold text-foreground">{market.city}</h3>
-                {market.status === "coming" && (
-                  <span className="inline-block mt-2 text-xs text-muted-foreground bg-muted px-2 py-1 rounded">
-                    Coming Soon
-                  </span>
-                )}
+                <h3 className="text-xl font-bold text-foreground mb-2">{region.name}</h3>
+                <span className={`inline-block text-sm px-3 py-1 rounded-full ${
+                  region.status === "active" 
+                    ? "bg-primary/10 text-primary" 
+                    : "bg-muted text-muted-foreground"
+                }`}>
+                  {region.description}
+                </span>
               </motion.div>
             ))}
           </div>
+
+          {/* Waitlist Form */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5, delay: 0.3 }}
+            className="max-w-xl mx-auto"
+          >
+            <div className="glass-card rounded-2xl p-8 text-center">
+              <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mx-auto mb-4">
+                <Bell className="w-6 h-6 text-primary" />
+              </div>
+              <h3 className="text-xl font-bold mb-2">Get Notified</h3>
+              <p className="text-muted-foreground mb-6">
+                Be the first to know when Chauffeur arrives in your city.
+              </p>
+              <form onSubmit={handleWaitlistSubmit} className="flex flex-col sm:flex-row gap-3">
+                <Input
+                  type="email"
+                  placeholder="Enter your email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="flex-1"
+                  maxLength={255}
+                />
+                <Button 
+                  type="submit" 
+                  variant="hero" 
+                  disabled={isSubmitting}
+                  className="whitespace-nowrap"
+                >
+                  {isSubmitting ? "Joining..." : "Join Waitlist"}
+                </Button>
+              </form>
+            </div>
+          </motion.div>
         </div>
       </section>
 
