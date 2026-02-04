@@ -4,6 +4,7 @@ import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import shieldPhoneMockup from "@/assets/shield-phone-mockup.png";
+import shieldLogo from "@/assets/shield-logo.png";
 
 const AppleIcon = () => (
   <svg viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5">
@@ -304,15 +305,17 @@ const Shield = () => {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5 }}
-            className="max-w-3xl mx-auto rounded-2xl glass-card p-12 transition-all duration-300 hover:border-primary/50"
+            className="max-w-3xl mx-auto rounded-2xl glass-card p-12 transition-all duration-300 hover:border-primary/50 text-center"
           >
-            <div className="w-14 h-14 rounded-xl bg-muted flex items-center justify-center mb-6 mx-auto">
-              <ShieldIcon className="w-7 h-7 text-foreground" />
-            </div>
-            <h2 className="text-3xl md:text-4xl font-bold mb-4 text-center gradient-text-black-orange">
+            <img 
+              src={shieldLogo} 
+              alt="Courial Shield" 
+              className="w-16 h-16 mx-auto mb-6"
+            />
+            <h2 className="text-3xl md:text-4xl font-bold mb-4 gradient-text-black-orange">
               Stop paying the "parking tax."
             </h2>
-            <p className="text-muted-foreground mb-8 text-center">
+            <p className="text-muted-foreground mb-8">
               Get Courial Shield and drive with peace of mind.
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
