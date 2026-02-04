@@ -158,11 +158,11 @@ export const BentoGrid = () => {
                   </div>
                   
                   <h3 className={`font-semibold mb-2 text-foreground
-                    ${item.featured ? 'text-2xl' : 'text-lg'}`}>
+                    ${item.featured ? 'text-3xl' : 'text-xl'}`}>
                     {item.title}
                   </h3>
                   
-                  <p className={`text-muted-foreground ${item.featured ? 'text-base' : 'text-sm'}`}>
+                  <p className={`text-foreground ${item.featured ? 'text-base' : 'text-sm'}`}>
                     {item.description}
                   </p>
                   
