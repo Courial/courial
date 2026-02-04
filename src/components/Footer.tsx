@@ -43,12 +43,9 @@ export const Footer = () => {
     <footer className="border-t border-border bg-muted/30">
       <div className="container mx-auto px-6 py-16">
         <div className="grid grid-cols-2 md:grid-cols-5 gap-8 mb-12">
-          {/* Brand */}
+          {/* Current Markets */}
           <div className="col-span-2 md:col-span-1">
-            <Link to="/" className="flex items-center mb-4">
-              <img src={courialLogo} alt="Courial" className="h-[1.5625rem]" />
-            </Link>
-            <h4 className="font-semibold text-foreground mb-3 text-sm">Current Markets</h4>
+            <h4 className="font-semibold text-foreground mb-4 text-sm">Current Markets</h4>
             <ul className="space-y-1.5 text-sm text-muted-foreground">
               <li>San Francisco Bay Area</li>
               <li>Los Angeles Area</li>
