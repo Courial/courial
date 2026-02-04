@@ -15,9 +15,10 @@ const socialLinks = [
 ];
 
 const footerLinks = {
-  company: [
-    { name: "Blog", href: "/blog" },
-    { name: "Swag", href: "/swag" },
+  legal: [
+    { name: "Privacy Policy", href: "/privacy" },
+    { name: "Terms of Service", href: "/terms" },
+    { name: "ICA", href: "/ica" },
   ],
   services: [
     { name: "Customers", href: "/" },
@@ -29,10 +30,9 @@ const footerLinks = {
     { name: "Contact Us", href: "/contact" },
     { name: "API Docs", href: "/api" },
   ],
-  legal: [
-    { name: "Privacy Policy", href: "/privacy" },
-    { name: "Terms of Service", href: "/terms" },
-    { name: "ICA", href: "/ica" },
+  company: [
+    { name: "Blog", href: "/blog" },
+    { name: "Swag", href: "/swag" },
   ],
 };
 
