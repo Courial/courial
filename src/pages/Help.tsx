@@ -12,14 +12,17 @@ import {
   CreditCard,
   User,
   Shield,
-  Clock
+  Clock,
+  Code
 } from "lucide-react";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { supabase } from "@/integrations/supabase/client";
 import { ContactForm } from "@/components/ContactForm";
+import { ApiDocsDialog } from "@/components/ApiDocsDialog";
 
 // Line icon component
 const LineIcon = ({ className }: { className?: string }) => (
@@ -390,6 +393,38 @@ const Help = () => {
           <div className="max-w-3xl mx-auto">
             <ContactForm />
           </div>
+        </div>
+      </section>
+
+      {/* API Docs Section */}
+      <section className="py-16">
+        <div className="container mx-auto px-6">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5 }}
+            className="max-w-3xl mx-auto"
+          >
+            <div className="glass-card rounded-3xl p-8 md:p-12 text-center">
+              <Code className="w-12 h-12 mx-auto mb-4 text-primary" />
+              <h2 className="text-3xl font-bold mb-4 gradient-text-black-orange">
+                Developer API
+              </h2>
+              <p className="text-muted-foreground mb-6">
+                Looking to integrate Courial into your business? Access our API to seamlessly 
+                connect your systems with our delivery and logistics platform.
+              </p>
+              <ApiDocsDialog
+                trigger={
+                  <Button variant="hero" size="lg">
+                    <Code className="w-5 h-5 mr-2" />
+                    Access Our API
+                  </Button>
+                }
+              />
+            </div>
+          </motion.div>
         </div>
       </section>
 
