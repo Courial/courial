@@ -30,7 +30,6 @@ const footerLinks = {
     { name: "Help Center", href: "/help" },
     { name: "Contact Us", href: "/contact" },
     { name: "API Docs", href: "/api" },
-    { name: "Status", href: "/status" },
   ],
   legal: [
     { name: "Privacy Policy", href: "/privacy" },
