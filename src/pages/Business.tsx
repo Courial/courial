@@ -63,9 +63,8 @@ const Business = () => {
             <span className="text-primary font-semibold text-sm uppercase tracking-wider mb-4 block">
               For Businesses
             </span>
-            <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold mb-6">
-              Power Your{" "}
-              <span className="gradient-text-orange">Delivery</span>
+            <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold mb-6 gradient-text-black-orange">
+              Power Your Delivery
               <br />
               Operations
             </h1>
@@ -96,8 +95,8 @@ const Business = () => {
             transition={{ duration: 0.5 }}
             className="text-center mb-16"
           >
-            <h2 className="text-4xl md:text-5xl font-bold mb-6">
-              Enterprise-Grade <span className="gradient-text-orange">Features</span>
+            <h2 className="text-4xl md:text-5xl font-bold mb-6 gradient-text-black-orange">
+              Enterprise-Grade Features
             </h2>
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
               Everything you need to build a world-class delivery experience.
@@ -141,7 +140,7 @@ const Business = () => {
             transition={{ duration: 0.5 }}
             className="max-w-3xl mx-auto text-center glass-card rounded-3xl p-12"
           >
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">
+            <h2 className="text-3xl md:text-4xl font-bold mb-4 gradient-text-black-orange">
               Ready to Transform Your Logistics?
             </h2>
             <p className="text-muted-foreground mb-8">
