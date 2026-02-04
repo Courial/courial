@@ -21,9 +21,9 @@ const footerLinks = {
     { name: "Swag", href: "/swag" },
   ],
   services: [
-    { name: "For Customers", href: "/" },
-    { name: "For Businesses", href: "/business" },
-    { name: "For Partners", href: "/partners" },
+    { name: "Customers", href: "/" },
+    { name: "Businesses", href: "/business" },
+    { name: "Courials", href: "/courials" },
   ],
   support: [
     { name: "Help Center", href: "/help" },
