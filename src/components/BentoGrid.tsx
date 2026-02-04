@@ -113,10 +113,11 @@ export const BentoGrid = () => {
           <h2 className="text-4xl md:text-5xl font-bold mb-4 text-foreground">
             One platform for all your needs.
           </h2>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            From essential deliveries to white-glove concierge and chauffeur services, 
-            we're the one platform that does it all—powered by our highly vetted Courials 
-            and an uncompromising standard of service.
+          <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
+            From essential logistics to white-glove concierge and chauffeur services, 
+            we cater to those who value precision over price. Powered by highly vetted 
+            Courials, we deliver an uncompromising standard of service for your most 
+            high-value needs.
           </p>
         </motion.div>
 
