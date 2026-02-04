@@ -19,6 +19,7 @@ import { Footer } from "@/components/Footer";
 import { Input } from "@/components/ui/input";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { supabase } from "@/integrations/supabase/client";
+import { ContactForm } from "@/components/ContactForm";
 
 // Line icon component
 const LineIcon = ({ className }: { className?: string }) => (
@@ -380,6 +381,15 @@ const Help = () => {
               )}
             </div>
           </motion.div>
+        </div>
+      </section>
+
+      {/* Contact Form */}
+      <section className="py-16">
+        <div className="container mx-auto px-6">
+          <div className="max-w-3xl mx-auto">
+            <ContactForm />
+          </div>
         </div>
       </section>
 
