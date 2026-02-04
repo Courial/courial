@@ -48,9 +48,8 @@ const features = [
 ];
 
 const regions = [
-  { name: "Thailand", status: "active", description: "Now Available" },
-  { name: "Southeast Asia", status: "coming", description: "Coming 2026" },
-  { name: "United States", status: "coming", description: "Coming 2026" },
+  { name: "Southeast Asia", description: "Coming 2026" },
+  { name: "United States", description: "Coming 2026" },
 ];
 
 const Chauffeur = () => {
@@ -270,7 +269,7 @@ const Chauffeur = () => {
             </p>
           </motion.div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto mb-16">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-3xl mx-auto mb-16">
             {regions.map((region, index) => (
               <motion.div
                 key={region.name}
@@ -278,25 +277,15 @@ const Chauffeur = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.4, delay: index * 0.1 }}
-                className={`rounded-xl glass-card p-8 text-center ${
-                  region.status === "coming" ? "opacity-70" : ""
-                }`}
+                className="group rounded-2xl glass-card p-8 transition-all duration-300 hover:border-primary/50"
               >
-                <div className={`w-12 h-12 rounded-xl mx-auto mb-4 flex items-center justify-center ${
-                  region.status === "active" ? "bg-primary/10" : "bg-muted"
-                }`}>
-                  <MapPin className={`w-6 h-6 ${
-                    region.status === "active" ? "text-primary" : "text-muted-foreground"
-                  }`} />
+                <div className="w-12 h-12 rounded-xl bg-muted flex items-center justify-center mb-6 group-hover:bg-muted/80 transition-colors">
+                  <MapPin className="w-6 h-6 text-foreground" />
                 </div>
-                <h3 className="text-xl font-bold text-foreground mb-2">{region.name}</h3>
-                <span className={`inline-block text-sm px-3 py-1 rounded-full ${
-                  region.status === "active" 
-                    ? "bg-primary/10 text-primary" 
-                    : "bg-muted text-muted-foreground"
-                }`}>
-                  {region.description}
-                </span>
+                <h3 className="text-xl font-bold mb-3 group-hover:text-primary transition-colors">
+                  {region.name}
+                </h3>
+                <p className="text-muted-foreground">{region.description}</p>
               </motion.div>
             ))}
           </div>
@@ -310,8 +299,8 @@ const Chauffeur = () => {
             className="max-w-xl mx-auto"
           >
             <div className="glass-card rounded-2xl p-8 text-center">
-              <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mx-auto mb-4">
-                <Bell className="w-6 h-6 text-primary" />
+              <div className="w-12 h-12 rounded-xl bg-muted flex items-center justify-center mx-auto mb-4">
+                <Bell className="w-6 h-6 text-foreground" />
               </div>
               <h3 className="text-xl font-bold mb-2">Get Notified</h3>
               <p className="text-muted-foreground mb-6">
