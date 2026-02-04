@@ -77,7 +77,7 @@ export const Footer = () => {
                   </li>
                 ))}
               </ul>
-              {category === "legal" && (
+              {category === "company" && (
                 <div className="flex flex-row gap-2 mt-4">
                   <a
                     href="#"
