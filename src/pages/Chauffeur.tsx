@@ -6,7 +6,7 @@ import { Footer } from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
-import chauffeurServiceImage from "@/assets/chauffeur-service.jpg";
+import chauffeurIllustration from "@/assets/chauffeur-illustration.png";
 
 const features = [
   {
@@ -137,9 +137,9 @@ const Chauffeur = () => {
               className="hidden lg:block"
             >
               <img 
-                src={chauffeurServiceImage} 
-                alt="Luxury chauffeur service" 
-                className="w-full max-w-md mx-auto rounded-2xl shadow-2xl"
+                src={chauffeurIllustration} 
+                alt="Luxury chauffeur service illustration" 
+                className="w-full max-w-md mx-auto"
               />
             </motion.div>
           </div>
