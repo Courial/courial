@@ -46,12 +46,12 @@ export const Footer = () => {
           {/* Current Markets */}
           <div className="col-span-2 md:col-span-1">
             <h4 className="font-semibold text-foreground mb-4 text-sm">Current Markets</h4>
-            <ul className="space-y-1.5 text-sm text-muted-foreground">
-              <li>San Francisco Bay Area</li>
-              <li>Los Angeles Area</li>
-              <li>Boston</li>
-              <li>New York City</li>
-              <li>San Diego</li>
+            <ul className="space-y-1.5">
+              <li className="text-sm text-muted-foreground leading-normal">San Francisco Bay Area</li>
+              <li className="text-sm text-muted-foreground leading-normal">Los Angeles Area</li>
+              <li className="text-sm text-muted-foreground leading-normal">Boston</li>
+              <li className="text-sm text-muted-foreground leading-normal">New York City</li>
+              <li className="text-sm text-muted-foreground leading-normal">San Diego</li>
             </ul>
             <Link 
               to="/markets" 
