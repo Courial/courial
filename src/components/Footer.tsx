@@ -9,7 +9,7 @@ const XIcon = ({ className }: { className?: string }) => (
 
 const LinkedInIcon = ({ className }: { className?: string }) => (
   <svg viewBox="0 0 24 24" className={className} fill="currentColor">
-    <path d="M6.5 8C7.33 8 8 7.33 8 6.5S7.33 5 6.5 5 5 5.67 5 6.5 5.67 8 6.5 8zM5 10h3v9H5v-9zm7 0h3v1.2c.5-.8 1.6-1.4 3-1.4 3.1 0 4 2 4 4.5V19h-3v-4.5c0-1.1-.4-2-1.5-2-1.2 0-1.8.8-1.8 2V19h-3.7V10z" />
+    <path d="M6.94 5a2 2 0 1 1-4-.002 2 2 0 0 1 4 .002zM3 8.5h4v13H3v-13zm7 0h3.5v1.8h.05c.5-.9 1.7-1.8 3.5-1.8 3.7 0 4.45 2.4 4.45 5.6v7.4H18v-6.6c0-1.6 0-3.6-2.2-3.6-2.2 0-2.5 1.7-2.5 3.5v6.7H10v-13z" />
   </svg>
 );
 
