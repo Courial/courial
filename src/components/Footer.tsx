@@ -50,9 +50,20 @@ export const Footer = () => {
             <Link to="/" className="flex items-center mb-4">
               <img src={courialLogo} alt="Courial" className="h-[1.5625rem]" />
             </Link>
-            <p className="text-sm text-muted-foreground leading-relaxed">
-              Trusted on-demand services across mobility, concierge, and task execution.
-            </p>
+            <h4 className="font-semibold text-foreground mb-3 text-sm">Current Markets</h4>
+            <ul className="space-y-1.5 text-sm text-muted-foreground">
+              <li>San Francisco Bay Area</li>
+              <li>Los Angeles Area</li>
+              <li>Boston</li>
+              <li>New York City</li>
+              <li>San Diego</li>
+            </ul>
+            <Link 
+              to="/markets" 
+              className="text-sm text-primary hover:underline mt-3 inline-block"
+            >
+              Get the full list
+            </Link>
           </div>
 
           {/* Links */}
