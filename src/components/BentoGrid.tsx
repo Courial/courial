@@ -6,7 +6,7 @@ import {
   Shirt,
   ShoppingBag,
   FileText,
-  Car,
+  CarFront,
   Zap,
   Users,
 } from "lucide-react";
@@ -59,7 +59,7 @@ const bentoItems = [
   {
     title: "Chauffeur Services",
     description: "Professional drivers for any occasion",
-    icon: Car,
+    icon: CarFront,
     className: "md:col-span-2",
     image: chauffeurImage,
   },
