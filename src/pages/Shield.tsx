@@ -3,7 +3,7 @@ import { Shield as ShieldIcon, Zap, Users, DollarSign, CheckCircle, ArrowRight, 
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { Button } from "@/components/ui/button";
-import shieldIllustration from "@/assets/shield-illustration.png";
+import shieldIcon from "@/assets/shield-icon.png";
 
 const whyShieldFeatures = [
   {
@@ -122,9 +122,9 @@ const Shield = () => {
               className="hidden lg:block"
             >
               <img 
-                src={shieldIllustration} 
-                alt="Shield protection illustration" 
-                className="w-full max-w-[120px] mx-auto"
+                src={shieldIcon} 
+                alt="Courial Shield icon" 
+                className="w-full max-w-[200px] mx-auto"
               />
             </motion.div>
           </div>
