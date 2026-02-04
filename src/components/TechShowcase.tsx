@@ -74,8 +74,8 @@ export const TechShowcase = () => {
             The technology behind<br />industry-leading service
           </h2>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            Our proprietary AI and people-first approach combine to create 
-            a logistics platform that's setting new standards in the industry.
+            Bridging the gap between intelligent AI and the human touch. 
+            We're not just moving goods; we're redefining the logistics standard.
           </p>
         </motion.div>
 
