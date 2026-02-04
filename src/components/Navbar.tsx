@@ -2,7 +2,7 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import courialLogo from "@/assets/courial-logo.png";
 
 const navLinks = [
@@ -16,6 +16,12 @@ const navLinks = [
 
 export const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const location = useLocation();
+
+  const isActive = (href: string) => {
+    if (href === "/") return location.pathname === "/";
+    return location.pathname.startsWith(href);
+  };
 
   return (
     <motion.nav
@@ -35,7 +41,11 @@ export const Navbar = () => {
           <div className="hidden lg:flex items-center gap-1">
             {navLinks.map((link) => (
               <Link key={link.name} to={link.href}>
-                <Button variant="nav" size="sm" className="px-4">
+                <Button 
+                  variant={isActive(link.href) ? "nav-active" : "nav"} 
+                  size="sm" 
+                  className="px-4"
+                >
                   {link.name}
                 </Button>
               </Link>
@@ -77,7 +87,11 @@ export const Navbar = () => {
                   key={link.name}
                   to={link.href}
                   onClick={() => setIsOpen(false)}
-                  className="text-foreground hover:text-muted-foreground transition-colors py-2 text-lg font-medium"
+                  className={`py-2 text-lg font-medium transition-colors ${
+                    isActive(link.href) 
+                      ? "text-primary" 
+                      : "text-muted-foreground hover:text-foreground active:text-foreground"
+                  }`}
                 >
                   {link.name}
                 </Link>

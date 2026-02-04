@@ -24,7 +24,8 @@ const buttonVariants = cva(
         "hero-outline": "border border-foreground text-foreground bg-transparent hover:bg-foreground hover:text-background",
         "hero-orange": "bg-primary text-primary-foreground font-semibold hover:bg-primary/90",
         glass: "bg-background/80 backdrop-blur-sm text-foreground hover:bg-muted border border-border",
-        nav: "text-muted-foreground hover:text-foreground bg-transparent font-medium",
+        nav: "text-muted-foreground hover:text-foreground active:text-foreground bg-transparent font-medium",
+        "nav-active": "text-primary bg-transparent font-medium",
       },
       size: {
         default: "h-10 px-5 py-2",
