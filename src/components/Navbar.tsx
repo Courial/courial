@@ -42,11 +42,11 @@ export const Navbar = () => {
 
           {/* Desktop CTA */}
           <div className="hidden lg:flex items-center gap-3">
-            <Button variant="ghost" size="sm">
+            <Button variant="ghost" size="sm" className="border border-foreground/25">
               Sign In
             </Button>
             <Button variant="hero" size="sm">
-              Get Started
+              Book Now
             </Button>
           </div>
 
@@ -81,10 +81,10 @@ export const Navbar = () => {
                 </Link>
               ))}
               <div className="flex flex-col gap-3 pt-4 border-t border-border">
-                <Button variant="ghost" className="justify-start">
+                <Button variant="ghost" className="justify-start border border-foreground/25">
                   Sign In
                 </Button>
-                <Button variant="hero">Get Started</Button>
+                <Button variant="hero">Book Now</Button>
               </div>
             </div>
           </motion.div>
