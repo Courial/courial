@@ -47,7 +47,7 @@ export const HeroSection = React.forwardRef<HTMLDivElement, HeroProps>(
         <div className="relative z-10 flex h-full min-h-screen flex-col items-center justify-center px-4 py-20">
           {/* Header Section */}
           <div className="mb-12 text-center">
-            <h1 className="mb-4 text-5xl font-bold tracking-tight text-foreground md:text-7xl lg:text-8xl">
+            <h1 className="mb-4 text-5xl font-bold tracking-tight gradient-text-black-orange md:text-7xl lg:text-8xl">
               {title}
             </h1>
             <p className="mx-auto max-w-2xl text-lg text-muted-foreground md:text-xl">

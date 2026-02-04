@@ -39,7 +39,7 @@ export const Testimonials = () => {
           transition={{ duration: 0.5 }}
           className="text-center mb-16"
         >
-          <h2 className="text-4xl md:text-5xl font-bold mb-4 text-foreground">
+          <h2 className="text-4xl md:text-5xl font-bold mb-4 gradient-text-black-orange">
             Loved by thousands
           </h2>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
