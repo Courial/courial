@@ -146,17 +146,20 @@ const Shield = () => {
               initial={{ opacity: 0, x: 30 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.6, delay: 0.2 }}
-              className="hidden lg:block relative"
+              className="hidden lg:flex flex-col items-center"
             >
               <img 
                 src={shieldPhoneMockup} 
                 alt="Courial Shield app interface" 
-                className="w-full max-w-[400px] mx-auto relative z-10"
+                className="w-full max-w-[400px]"
               />
-              {/* Shadow effect */}
+              {/* Ground shadow effect */}
               <div 
-                className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[70%] h-8 bg-black/30 blur-2xl rounded-full"
-                style={{ transform: 'translateX(-50%) translateY(50%)' }}
+                className="w-[280px] h-[40px] -mt-4"
+                style={{
+                  background: 'radial-gradient(ellipse at center, rgba(0,0,0,0.25) 0%, rgba(0,0,0,0.1) 40%, transparent 70%)',
+                  filter: 'blur(8px)',
+                }}
               />
             </motion.div>
           </div>
