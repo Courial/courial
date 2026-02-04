@@ -124,7 +124,7 @@ const Shield = () => {
               <img 
                 src={shieldIllustration} 
                 alt="Shield protection illustration" 
-                className="w-full max-w-md mx-auto"
+                className="w-full max-w-[120px] mx-auto"
               />
             </motion.div>
           </div>
