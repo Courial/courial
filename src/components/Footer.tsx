@@ -15,20 +15,20 @@ const socialLinks = [
 ];
 
 const footerLinks = {
-  legal: [
-    { name: "Privacy Policy", href: "/privacy" },
-    { name: "Terms of Service", href: "/terms" },
-    { name: "ICA", href: "/ica" },
+  support: [
+    { name: "Help Center", href: "/help" },
+    { name: "Contact Us", href: "/contact" },
+    { name: "API Docs", href: "/api" },
   ],
   services: [
     { name: "Customers", href: "/" },
     { name: "Businesses", href: "/business" },
     { name: "Courials", href: "/courials" },
   ],
-  support: [
-    { name: "Help Center", href: "/help" },
-    { name: "Contact Us", href: "/contact" },
-    { name: "API Docs", href: "/api" },
+  legal: [
+    { name: "Privacy Policy", href: "/privacy" },
+    { name: "Terms of Service", href: "/terms" },
+    { name: "ICA", href: "/ica" },
   ],
   company: [
     { name: "Blog", href: "/blog" },
