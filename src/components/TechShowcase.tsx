@@ -89,7 +89,7 @@ export const TechShowcase = () => {
           {stats.map((stat, index) => (
             <div
               key={stat.label}
-              className="text-center p-6 rounded-2xl bg-muted/50 border border-border"
+              className="text-center p-6 rounded-2xl glass-card transition-all duration-300 hover:border-primary/50"
             >
               <div className="text-3xl md:text-4xl font-bold text-foreground mb-1">
                 {stat.value}
@@ -107,7 +107,7 @@ export const TechShowcase = () => {
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5, delay: 0.2 }}
-            className="p-8 rounded-2xl bg-muted/30 border border-border"
+            className="p-8 rounded-2xl glass-card transition-all duration-300 hover:border-primary/50"
           >
             <div className="flex items-center gap-3 mb-6">
               <div className="w-10 h-10 rounded-lg bg-muted flex items-center justify-center">
@@ -157,7 +157,7 @@ export const TechShowcase = () => {
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5, delay: 0.3 }}
-            className="p-8 rounded-2xl bg-muted/30 border border-border"
+            className="p-8 rounded-2xl glass-card transition-all duration-300 hover:border-primary/50"
           >
             <div className="flex items-center gap-3 mb-6">
               <div className="w-10 h-10 rounded-lg bg-muted flex items-center justify-center">
@@ -217,7 +217,7 @@ export const TechShowcase = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.4, delay: 0.5 + index * 0.1 }}
-                className="p-6 rounded-xl bg-background border border-border hover:border-foreground/20 transition-colors group"
+                className="p-6 rounded-2xl glass-card transition-all duration-300 hover:border-primary/50 group"
               >
                 <div className="w-12 h-12 rounded-lg bg-muted flex items-center justify-center mb-4 group-hover:bg-foreground/10 transition-colors">
                   <Icon className="w-6 h-6 text-muted-foreground group-hover:text-foreground transition-colors" />
