@@ -93,7 +93,7 @@ export const Footer = () => {
           <div className="flex items-center gap-3">
             <a
               href="#"
-              className="inline-flex items-center gap-2 bg-background text-foreground px-4 py-2 rounded-lg hover:bg-background/90 transition-colors"
+              className="inline-flex items-center gap-2 bg-black text-white px-4 py-2 rounded-lg border border-white/30 hover:border-white/50 transition-colors"
               aria-label="Download on the App Store"
             >
               <svg viewBox="0 0 24 24" className="w-5 h-5" fill="currentColor">
@@ -106,11 +106,14 @@ export const Footer = () => {
             </a>
             <a
               href="#"
-              className="inline-flex items-center gap-2 bg-background text-foreground px-4 py-2 rounded-lg hover:bg-background/90 transition-colors"
+              className="inline-flex items-center gap-2 bg-black text-white px-4 py-2 rounded-lg border border-white/30 hover:border-white/50 transition-colors"
               aria-label="Get it on Google Play"
             >
-              <svg viewBox="0 0 24 24" className="w-5 h-5" fill="currentColor">
-                <path d="M3.609 1.814L13.792 12 3.609 22.186a.996.996 0 0 1-.609-.92V2.734a1 1 0 0 1 .609-.92zm10.89 10.893l2.302 2.302-10.937 6.333 8.635-8.635zm3.199-3.198l2.807 1.626a1 1 0 0 1 0 1.73l-2.807 1.626L15.206 12l2.492-2.491zM5.864 2.658L16.8 8.99l-2.302 2.302-8.634-8.634z"/>
+              <svg viewBox="0 0 24 24" className="w-5 h-5">
+                <path fill="#EA4335" d="M3.609 1.814L13.792 12 3.609 22.186a.996.996 0 0 1-.609-.92V2.734a1 1 0 0 1 .609-.92z"/>
+                <path fill="#FBBC04" d="M14.499 12.707l2.302 2.302-10.937 6.333 8.635-8.635z"/>
+                <path fill="#4285F4" d="M16.801 9.491l2.807 1.626a1 1 0 0 1 0 1.73l-2.807 1.626L14.309 12l2.492-2.509z"/>
+                <path fill="#34A853" d="M5.864 2.658L16.8 8.99l-2.302 2.302-8.634-8.634z"/>
               </svg>
               <div className="flex flex-col items-start">
                 <span className="text-[10px] leading-none">GET IT ON</span>
