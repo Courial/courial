@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import courialLogo from "@/assets/courial-logo.png";
+import { ApiDocsDialog } from "@/components/ApiDocsDialog";
 
 const XIcon = ({ className }: { className?: string }) => (
   <svg viewBox="0 0 24 24" className={className} fill="currentColor">
@@ -36,7 +37,6 @@ const footerLinks = {
   support: [
     { name: "Help Center", href: "/help" },
     { name: "Contact Us", href: "/help" },
-    { name: "API Docs", href: "/api" },
   ],
   services: [
     { name: "Customers", href: "/" },
@@ -94,6 +94,17 @@ export const Footer = () => {
                     </Link>
                   </li>
                 ))}
+                {category === "support" && (
+                  <li>
+                    <ApiDocsDialog
+                      trigger={
+                        <button className="text-sm text-background/60 hover:text-background transition-colors text-left">
+                          API Docs
+                        </button>
+                      }
+                    />
+                  </li>
+                )}
               </ul>
               {category === "company" && (
                 <div className="flex flex-row gap-2 mt-4">
