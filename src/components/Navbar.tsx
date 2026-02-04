@@ -7,9 +7,11 @@ import courialLogo from "@/assets/courial-logo.png";
 
 const navLinks = [
   { name: "Home", href: "/" },
-  { name: "Markets", href: "/markets" },
-  { name: "For Business", href: "/business" },
-  { name: "Become a Partner", href: "/partners" },
+  { name: "Businesses", href: "/business" },
+  { name: "Users", href: "/users" },
+  { name: "Courials", href: "/courials" },
+  { name: "Chauffeur", href: "/chauffeur" },
+  { name: "Shield", href: "/shield" },
 ];
 
 export const Navbar = () => {
