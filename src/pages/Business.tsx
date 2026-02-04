@@ -115,8 +115,8 @@ const Business = () => {
                   transition={{ duration: 0.4, delay: index * 0.1 }}
                   className="group rounded-2xl glass-card p-8 transition-all duration-300 hover:border-primary/50"
                 >
-                  <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mb-6 group-hover:bg-primary/20 transition-colors">
-                    <Icon className="w-6 h-6 text-primary" />
+                  <div className="w-12 h-12 rounded-xl bg-muted flex items-center justify-center mb-6 group-hover:bg-muted/80 transition-colors">
+                    <Icon className="w-6 h-6 text-foreground" />
                   </div>
                   <h3 className="text-xl font-bold mb-3 group-hover:text-primary transition-colors">
                     {feature.title}
