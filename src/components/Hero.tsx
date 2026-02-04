@@ -35,7 +35,7 @@ export const Hero: React.FC = () => {
   return (
     <HeroSection
       title={title}
-      subtitle="From documents and dry cleaning to furniture and groceries. The trusted on-demand platform that makes complex logistics needs simple."
+      subtitle="The world's first high-touch logistics platform. From white-glove concierge to chauffeur services, we provide the highly vetted 'helping hand' your lifestyle or business demands. We handle the complex so you can focus on the exceptional."
       images={images}
       className="pt-16"
     />
