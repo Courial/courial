@@ -370,7 +370,7 @@ const Help = () => {
       <Navbar />
 
       {/* Hero */}
-      <section className="pt-32 pb-20 relative overflow-hidden">
+      <section className="pt-32 pb-10 relative overflow-hidden">
         <div className="absolute inset-0 grid-pattern opacity-50" />
         <div className="absolute inset-0 radial-gradient" />
 
@@ -395,7 +395,7 @@ const Help = () => {
       </section>
 
       {/* FAQ Section */}
-      <section className="py-16 relative">
+      <section className="pt-8 pb-16 relative">
         <div className="absolute inset-0 bg-gradient-to-b from-transparent via-primary/5 to-transparent" />
         <div className="container mx-auto px-6 relative z-10">
           <motion.div
