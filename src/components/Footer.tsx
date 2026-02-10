@@ -93,7 +93,7 @@ export const Footer = () => {
             <a 
               href="/markets"
               onClick={(e) => handleLinkClick(e, "/markets")}
-              className="text-sm text-primary hover:underline mt-3 inline-block cursor-pointer"
+              className="text-sm text-primary mt-3 inline-block cursor-pointer"
             >
               Get the full list
             </a>
