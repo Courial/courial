@@ -370,7 +370,7 @@ const Help = () => {
       <Navbar />
 
       {/* Hero */}
-      <section className="pt-32 pb-20 relative overflow-hidden">
+      <section className="pt-32 pb-10 relative overflow-hidden">
         <div className="absolute inset-0 grid-pattern opacity-50" />
         <div className="absolute inset-0 radial-gradient" />
 
