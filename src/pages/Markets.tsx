@@ -286,7 +286,7 @@ const Markets = () => {
               </div>
 
               {/* Legend */}
-              <div className="flex flex-wrap items-center justify-center gap-6 mt-8">
+              <div className="flex flex-wrap items-center justify-center gap-6 mt-2">
                 <div className="flex items-center gap-2">
                   <div
                     className="w-4 h-4 rounded-sm"
