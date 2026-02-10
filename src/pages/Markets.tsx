@@ -412,8 +412,8 @@ const Markets = () => {
                   ))}
                 </ComposableMap>
 
-                <div className="absolute top-[-15%] md:top-[5%] left-1/2 -translate-x-1/2 z-10 pointer-events-none">
-                  <p className="text-sm text-muted-foreground italic">
+                <div className="absolute top-[-5%] md:top-[5%] left-1/2 -translate-x-1/2 z-10 pointer-events-none">
+                  <p className="text-xs md:text-sm text-muted-foreground italic">
                     Hover over a market to see details
                   </p>
                 </div>
