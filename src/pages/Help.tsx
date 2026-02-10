@@ -301,7 +301,7 @@ const Help = () => {
 
   // Use Help Scout FAQs for browsing, fall back to static
   const displayedFaqs = (() => {
-    const source = faqs;
+    const source = staticFaqs;
     if (searchQuery) {
       const queryLower = searchQuery.toLowerCase();
       return source
