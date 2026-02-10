@@ -14,50 +14,82 @@ const US_TOPO_URL = "https://cdn.jsdelivr.net/npm/us-atlas@3/states-10m.json";
 const WORLD_TOPO_URL =
   "https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json";
 
-// State volume data — San Diego excluded per memory
+// State volume data from actual market partner counts
 const stateData: Record<
   string,
   { volume: "high" | "medium" | "growing"; cities: string[] }
 > = {
   California: {
     volume: "high",
-    cities: ["Los Angeles", "San Francisco"],
+    cities: [
+      "Los Angeles", "Beverly Hills", "Agoura Hills", "Burbank", "Glendale",
+      "Inglewood", "Long Beach", "Manhattan Beach", "Pasadena", "Santa Fe Springs",
+      "Santa Monica", "Torrance", "Ontario", "Orange County", "Santa Ana",
+      "Sacramento", "San Diego", "San Francisco", "San Jose", "Oakland",
+      "Berkeley", "Burlingame", "East Bay", "Marin County", "Menlo Park",
+      "Mountain View", "Palo Alto", "Redwood City", "Richmond", "San Carlos",
+      "San Mateo", "Scotts Valley", "Silicon Valley", "South San Francisco",
+    ],
   },
   "New York": {
     volume: "high",
-    cities: ["New York City"],
+    cities: ["New York City", "Brooklyn", "Bronx", "Queens", "White Plains", "Yonkers"],
   },
   Texas: {
-    volume: "medium",
-    cities: ["Houston", "Dallas", "Austin"],
+    volume: "high",
+    cities: ["Dallas-Fort Worth", "Houston", "Austin", "Arlington", "Del Valle", "Westlake"],
   },
   Florida: {
-    volume: "medium",
-    cities: ["Miami"],
+    volume: "high",
+    cities: ["Miami", "Tampa", "Clearwater"],
   },
   Illinois: {
-    volume: "medium",
-    cities: ["Chicago"],
-  },
-  Georgia: {
-    volume: "medium",
-    cities: ["Atlanta"],
-  },
-  Arizona: {
-    volume: "growing",
-    cities: ["Phoenix"],
+    volume: "high",
+    cities: ["Chicago", "Deerfield", "Hoffman Estates"],
   },
   Pennsylvania: {
-    volume: "medium",
+    volume: "high",
     cities: ["Philadelphia"],
   },
-  Washington: {
-    volume: "growing",
-    cities: ["Seattle"],
+  Georgia: {
+    volume: "high",
+    cities: ["Atlanta", "Forest Park", "Kennesaw"],
   },
   Massachusetts: {
+    volume: "high",
+    cities: ["Boston", "Bedford", "Framingham", "Maynard", "Burlington", "Wilmington", "Woburn"],
+  },
+  "North Carolina": {
+    volume: "medium",
+    cities: ["Raleigh-Durham"],
+  },
+  Nevada: {
+    volume: "medium",
+    cities: ["Las Vegas"],
+  },
+  Arizona: {
+    volume: "medium",
+    cities: ["Phoenix", "Mesa", "Tucson"],
+  },
+  Maryland: {
+    volume: "medium",
+    cities: ["Baltimore", "Frederick", "Montgomery County"],
+  },
+  Virginia: {
+    volume: "medium",
+    cities: ["Fairfax County"],
+  },
+  Washington: {
+    volume: "medium",
+    cities: ["Seattle"],
+  },
+  "New Jersey": {
     volume: "growing",
-    cities: ["Boston"],
+    cities: ["Essex County", "Hoboken"],
+  },
+  Michigan: {
+    volume: "growing",
+    cities: ["Detroit", "Novi"],
   },
   Colorado: {
     volume: "growing",
@@ -67,45 +99,13 @@ const stateData: Record<
     volume: "growing",
     cities: ["Portland"],
   },
-  Michigan: {
+  Ohio: {
     volume: "growing",
-    cities: [],
+    cities: ["Columbus"],
   },
-  "North Carolina": {
+  "District of Columbia": {
     volume: "medium",
-    cities: [],
-  },
-  Virginia: {
-    volume: "medium",
-    cities: [],
-  },
-  "New Jersey": {
-    volume: "medium",
-    cities: [],
-  },
-  Connecticut: {
-    volume: "growing",
-    cities: [],
-  },
-  Maryland: {
-    volume: "growing",
-    cities: [],
-  },
-  "New Hampshire": {
-    volume: "growing",
-    cities: [],
-  },
-  Vermont: {
-    volume: "growing",
-    cities: [],
-  },
-  Maine: {
-    volume: "growing",
-    cities: [],
-  },
-  Nevada: {
-    volume: "growing",
-    cities: [],
+    cities: ["Washington, D.C."],
   },
 };
 
