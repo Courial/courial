@@ -58,7 +58,7 @@ export const HeroSection = React.forwardRef<HTMLDivElement, HeroProps>(
           {/* Main Showcase Section */}
           <div className="relative flex w-full max-w-5xl items-center justify-center">
             {/* Carousel Wrapper */}
-            <div className="relative flex h-[500px] w-full items-center justify-center md:h-[600px]">
+            <div className="relative flex h-[420px] w-full items-center justify-center md:h-[600px]">
               {images.map((image, index) => {
                 const offset = index - currentIndex;
                 const total = images.length;
@@ -83,11 +83,11 @@ export const HeroSection = React.forwardRef<HTMLDivElement, HeroProps>(
                     }}
                   >
                     {/* Phone Frame - Realistic iPhone Style */}
-                    <div className="relative h-[450px] w-[220px] overflow-hidden rounded-[45px] bg-gradient-to-b from-[#2a2a2a] via-[#1a1a1a] to-[#0a0a0a] p-[3px] shadow-[0_25px_50px_-12px_rgba(0,0,0,0.5),0_0_0_1px_rgba(255,255,255,0.1)] md:h-[550px] md:w-[270px]">
+                    <div className="relative h-[360px] w-[176px] overflow-hidden rounded-[36px] bg-gradient-to-b from-[#2a2a2a] via-[#1a1a1a] to-[#0a0a0a] p-[3px] shadow-[0_25px_50px_-12px_rgba(0,0,0,0.5),0_0_0_1px_rgba(255,255,255,0.1)] md:h-[550px] md:w-[270px] md:rounded-[45px]">
                       {/* Inner bezel */}
-                      <div className="relative h-full w-full overflow-hidden rounded-[42px] bg-gradient-to-b from-[#3a3a3a] to-[#1a1a1a] p-[2px]">
+                      <div className="relative h-full w-full overflow-hidden rounded-[33px] bg-gradient-to-b from-[#3a3a3a] to-[#1a1a1a] p-[2px] md:rounded-[42px]">
                         {/* Screen container */}
-                        <div className="relative h-full w-full overflow-hidden rounded-[40px] bg-background">
+                        <div className="relative h-full w-full overflow-hidden rounded-[31px] bg-background md:rounded-[40px]">
                           {/* Dynamic Island */}
                           <div className="absolute left-1/2 top-3 z-20 h-[28px] w-[90px] -translate-x-1/2 rounded-full bg-black md:h-[32px] md:w-[100px]" />
                           {/* Screen Content */}

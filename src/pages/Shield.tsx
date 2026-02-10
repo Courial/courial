@@ -97,7 +97,7 @@ const Shield = () => {
       <Navbar />
 
       {/* Hero */}
-      <section className="pt-32 pb-20 relative overflow-hidden">
+      <section className="pt-24 md:pt-32 pb-12 md:pb-20 relative overflow-hidden">
         <div className="absolute inset-0 grid-pattern opacity-50" />
         <div className="absolute inset-0 radial-gradient" />
 
@@ -130,7 +130,7 @@ const Shield = () => {
                   Active Courial Partners enjoy <span className="font-semibold text-foreground">20% off</span> all Shield plans.
                 </p>
               </div>
-              <div className="flex flex-col sm:flex-row items-start gap-4">
+              <div className="flex flex-col sm:flex-row items-center sm:items-start gap-4">
                 <Button variant="hero" size="xl" className="group">
                   <AppleIcon />
                   Get iOS App
@@ -146,12 +146,12 @@ const Shield = () => {
               initial={{ opacity: 0, x: 30 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.6, delay: 0.2 }}
-              className="hidden lg:flex flex-col items-center"
+              className="flex flex-col items-center"
             >
               <img 
                 src={shieldPhoneMockup} 
                 alt="Courial Shield app interface" 
-                className="w-full max-w-[400px]"
+                className="w-[60%] max-w-[400px] md:w-full"
               />
               {/* Ground shadow effect */}
               <div 
@@ -167,7 +167,7 @@ const Shield = () => {
       </section>
 
       {/* Why Shield Section */}
-      <section className="py-24 relative">
+      <section className="py-12 md:py-24 relative">
         <div className="container mx-auto px-6">
           <div className="grid lg:grid-cols-2 gap-16 items-center max-w-6xl mx-auto">
             <motion.div
@@ -214,7 +214,7 @@ const Shield = () => {
       </section>
 
       {/* How It Works Section */}
-      <section className="py-24 relative">
+      <section className="py-12 md:py-24 relative">
         <div className="absolute inset-0 bg-gradient-to-b from-transparent via-primary/5 to-transparent" />
         <div className="container mx-auto px-6 relative z-10">
           <motion.div
@@ -262,7 +262,7 @@ const Shield = () => {
       </section>
 
       {/* Benefits Grid */}
-      <section className="py-24">
+      <section className="py-12 md:py-24">
         <div className="container mx-auto px-6">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -306,7 +306,7 @@ const Shield = () => {
       </section>
 
       {/* CTA */}
-      <section className="py-24 relative">
+      <section className="py-12 md:py-24 relative">
         <div className="container mx-auto px-6 relative z-10">
           <motion.div
             initial={{ opacity: 0, y: 30 }}

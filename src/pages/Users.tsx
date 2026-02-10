@@ -50,7 +50,7 @@ const Users = () => {
       <Navbar />
 
       {/* Hero */}
-      <section className="pt-32 pb-20 relative overflow-hidden">
+      <section className="pt-24 md:pt-32 pb-12 md:pb-20 relative overflow-hidden">
         <div className="absolute inset-0 grid-pattern opacity-50" />
         <div className="absolute inset-0 radial-gradient" />
 
@@ -88,12 +88,12 @@ const Users = () => {
               initial={{ opacity: 0, x: 30 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.6, delay: 0.2 }}
-              className="hidden lg:block"
+              className="block"
             >
               <img 
                 src={usersIllustration} 
                 alt="Busy user illustration" 
-                className="w-full max-w-md mx-auto"
+                className="w-[65%] max-w-md mx-auto md:w-full"
               />
             </motion.div>
           </div>
@@ -101,7 +101,7 @@ const Users = () => {
       </section>
 
       {/* Features Grid */}
-      <section className="py-24">
+      <section className="py-12 md:py-24">
         <div className="container mx-auto px-6">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -145,7 +145,7 @@ const Users = () => {
       </section>
 
       {/* CTA */}
-      <section className="py-24 relative">
+      <section className="py-12 md:py-24 relative">
         <div className="absolute inset-0 bg-gradient-to-b from-transparent via-primary/5 to-transparent" />
         <div className="container mx-auto px-6 relative z-10">
           <motion.div
