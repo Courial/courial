@@ -199,14 +199,32 @@ const Help = () => {
     }
   };
 
-  const filteredFaqs = faqs.filter((faq) => {
-    const matchesSearch =
-      searchQuery === "" ||
-      faq.question.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      faq.answer.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesCategory = selectedCategory === null || faq.category === selectedCategory;
-    return matchesSearch && matchesCategory;
-  });
+  // Compute displayed FAQs based on mode
+  const displayedFaqs = (() => {
+    if (searchQuery) {
+      // Search mode: show top 5 closest matched by title
+      const queryLower = searchQuery.toLowerCase();
+      return faqs
+        .filter(
+          (faq) =>
+            faq.question.toLowerCase().includes(queryLower) ||
+            faq.answer.toLowerCase().includes(queryLower)
+        )
+        .sort((a, b) => {
+          // Prioritize title matches over answer-only matches
+          const aTitle = a.question.toLowerCase().includes(queryLower) ? 0 : 1;
+          const bTitle = b.question.toLowerCase().includes(queryLower) ? 0 : 1;
+          return aTitle - bTitle;
+        })
+        .slice(0, 5);
+    }
+    if (selectedCategory) {
+      // Category mode: show top 5 in that category
+      return faqs.filter((faq) => faq.category === selectedCategory).slice(0, 5);
+    }
+    // Default: no buttons selected, no search = show nothing
+    return [];
+  })();
 
   return (
     <div className="min-h-screen bg-background">
