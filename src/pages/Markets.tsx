@@ -336,7 +336,7 @@ const Markets = () => {
             </p>
           </div>
 
-          <div className="max-w-6xl mx-auto mt-12 md:mt-0">
+          <div className="max-w-6xl mx-auto mt-10 md:mt-0">
             <div className="relative w-full">
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
@@ -412,7 +412,7 @@ const Markets = () => {
                   ))}
                 </ComposableMap>
 
-                <div className="absolute top-[5%] left-1/2 -translate-x-1/2 z-10 pointer-events-none">
+                <div className="absolute top-[-15%] md:top-[5%] left-1/2 -translate-x-1/2 z-10 pointer-events-none">
                   <p className="text-sm text-muted-foreground italic">
                     Hover over a market to see details
                   </p>
