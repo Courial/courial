@@ -90,12 +90,13 @@ export const Footer = () => {
               <li className="text-sm text-background/60 leading-normal">New York City</li>
               <li className="text-sm text-background/60 leading-normal">San Diego</li>
             </ul>
-            <Link 
-              to="/markets" 
-              className="text-sm text-primary hover:underline mt-3 inline-block"
+            <a 
+              href="/markets"
+              onClick={(e) => handleLinkClick(e, "/markets")}
+              className="text-sm text-primary hover:underline mt-3 inline-block cursor-pointer"
             >
               Get the full list
-            </Link>
+            </a>
           </div>
 
           {/* Links */}
