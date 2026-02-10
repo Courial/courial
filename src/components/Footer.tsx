@@ -72,7 +72,9 @@ export const Footer = () => {
       }, 300);
     } else {
       navigate(targetPath);
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+      setTimeout(() => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }, 100);
     }
   };
 
