@@ -98,7 +98,7 @@ const Chauffeur = () => {
       <Navbar />
 
       {/* Hero */}
-      <section className="pt-32 pb-20 relative overflow-hidden">
+      <section className="pt-24 md:pt-32 pb-12 md:pb-20 relative overflow-hidden">
         <div className="absolute inset-0 grid-pattern opacity-50" />
         <div className="absolute inset-0 radial-gradient" />
 
@@ -134,12 +134,12 @@ const Chauffeur = () => {
               initial={{ opacity: 0, x: 30 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.6, delay: 0.2 }}
-              className="hidden lg:block"
+              className="block"
             >
               <img 
                 src={chauffeurIllustration} 
                 alt="Luxury chauffeur service illustration" 
-                className="w-full max-w-md mx-auto"
+                className="w-[65%] max-w-md mx-auto md:w-full"
               />
             </motion.div>
           </div>
@@ -147,7 +147,7 @@ const Chauffeur = () => {
       </section>
 
       {/* What to Expect Section */}
-      <section className="py-24 relative">
+      <section className="py-12 md:py-24 relative">
         <div className="container mx-auto px-6">
           <div className="grid lg:grid-cols-2 gap-16 items-center max-w-6xl mx-auto">
             <motion.div
@@ -198,7 +198,7 @@ const Chauffeur = () => {
       </section>
 
       {/* Features Grid */}
-      <section className="py-24">
+      <section className="py-12 md:py-24">
         <div className="container mx-auto px-6">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -242,7 +242,7 @@ const Chauffeur = () => {
       </section>
 
       {/* Availability Section */}
-      <section className="py-24 relative">
+      <section className="py-12 md:py-24 relative">
         <div className="absolute inset-0 bg-gradient-to-b from-transparent via-primary/5 to-transparent" />
         <div className="container mx-auto px-6 relative z-10">
           <motion.div
@@ -321,7 +321,7 @@ const Chauffeur = () => {
       </section>
 
       {/* CTA */}
-      <section className="py-24 relative">
+      <section className="py-12 md:py-24 relative">
         <div className="container mx-auto px-6 relative z-10">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
