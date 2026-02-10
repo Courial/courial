@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useCallback, useMemo, memo } from "react";
 import { motion } from "framer-motion";
 import {
   ComposableMap,
