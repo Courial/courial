@@ -247,7 +247,7 @@ const Markets = () => {
       </section>
 
       {/* USA Map */}
-      <section className="py-2 relative">
+      <section className="relative">
         <div className="container mx-auto px-6">
           <div className="max-w-6xl mx-auto">
             <div className="relative w-full">
