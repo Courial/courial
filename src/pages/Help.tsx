@@ -308,7 +308,28 @@ const Help = () => {
     fetchFaqs();
   }, []);
 
-  // Displayed FAQs logic:
+  // Fetch full article content when accordion item is opened
+  const fetchArticleContent = async (articleId: string) => {
+    if (articleCache[articleId]) return;
+    setLoadingArticle(articleId);
+    try {
+      const { data, error } = await supabase.functions.invoke("helpscout", {
+        body: { action: "getArticle", articleId },
+      });
+      if (!error && data?.article) {
+        setArticleCache((prev) => ({
+          ...prev,
+          [articleId]: data.article.text || data.article.preview || "",
+        }));
+      }
+    } catch (err) {
+      console.error("Error fetching article:", err);
+    } finally {
+      setLoadingArticle(null);
+    }
+  };
+
+
   // - Category selected → static FAQs filtered by category (top 5)
   // - Search active → search across all (Help Scout + static), top 5
   // - Nothing selected → show all Help Scout articles (top 5)
