@@ -107,6 +107,14 @@ const stateData: Record<
     volume: "medium",
     cities: ["Washington, D.C."],
   },
+  Alaska: {
+    volume: "growing",
+    cities: ["Coming Soon"],
+  },
+  Hawaii: {
+    volume: "growing",
+    cities: ["Coming Soon"],
+  },
 };
 
 const volumeColors = {
@@ -252,13 +260,14 @@ const Markets = () => {
                     style={{
                       left: tooltipPos.x + 12,
                       top: tooltipPos.y - 40,
+                      width: 180,
                     }}
                   >
                     <p className="font-semibold text-foreground text-sm">
                       {hoveredState}
                     </p>
                     {stateData[hoveredState].cities.length > 0 && (
-                      <p className="text-xs text-muted-foreground">
+                      <p className="text-xs text-muted-foreground leading-relaxed">
                         {stateData[hoveredState].cities.join(", ")}
                       </p>
                     )}
