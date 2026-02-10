@@ -3,6 +3,7 @@ import { Building2, Code, Truck, Clock, Shield, BarChart3, ArrowRight } from "lu
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { Button } from "@/components/ui/button";
+import { Link } from "react-router-dom";
 
 const features = [
   {
@@ -44,6 +45,12 @@ const features = [
 ];
 
 const Business = () => {
+  const handleScheduleDemo = () => {
+    const subject = encodeURIComponent("We're Ready to Transform Our Logistics with Courial");
+    const body = encodeURIComponent("Hello Courial Support,\n\nWe would love to discuss our company, [Company Name], with Courial regarding onboarding as a B2B client for your logistics and delivery services.\n\nHere are our contact details:\n\nContact Name:\n\nPhone Number:\n\nPrimary Industry:\n\nLooking forward to hearing from you!");
+    window.open(`mailto:support@courial.com?subject=${subject}&body=${body}`, "_self");
+  };
+
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
@@ -73,13 +80,15 @@ const Business = () => {
               delivery infrastructure that scales with your business.
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-              <Button variant="hero" size="xl" className="group">
-                Contact Sales
+              <Button variant="hero" size="xl" className="group" onClick={handleScheduleDemo}>
+                Schedule a Demo
                 <ArrowRight className="w-5 h-5 transition-transform group-hover:translate-x-1" />
               </Button>
-              <Button variant="hero-outline" size="xl">
-                View API Docs
-              </Button>
+              <Link to="/help#api-docs">
+                <Button variant="hero-outline" size="xl">
+                  View API Docs
+                </Button>
+              </Link>
             </div>
           </motion.div>
         </div>

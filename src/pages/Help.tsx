@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useLocation } from "react-router-dom";
 import { motion } from "framer-motion";
 import { 
   HelpCircle, 
@@ -170,6 +171,16 @@ const Help = () => {
   useEffect(() => {
     fetchFaqs();
   }, []);
+
+  const location = useLocation();
+  useEffect(() => {
+    if (location.hash) {
+      setTimeout(() => {
+        const el = document.querySelector(location.hash);
+        if (el) el.scrollIntoView({ behavior: "smooth" });
+      }, 300);
+    }
+  }, [location.hash]);
 
   const fetchFaqs = async () => {
     setLoading(true);
@@ -397,7 +408,7 @@ const Help = () => {
       </section>
 
       {/* API Docs Section */}
-      <section className="py-16">
+      <section id="api-docs" className="py-16">
         <div className="container mx-auto px-6">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
