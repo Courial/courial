@@ -55,6 +55,27 @@ const footerLinks = {
 };
 
 export const Footer = () => {
+  const navigate = useNavigate();
+
+  const handleLinkClick = (e: React.MouseEvent, href: string) => {
+    e.preventDefault();
+    const [path, hash] = href.split('#');
+    const targetPath = path || '/';
+    
+    if (hash) {
+      navigate(targetPath);
+      setTimeout(() => {
+        const el = document.getElementById(hash);
+        if (el) {
+          el.scrollIntoView({ behavior: 'smooth' });
+        }
+      }, 300);
+    } else {
+      navigate(targetPath);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  };
+
   return (
     <footer className="bg-foreground">
       <div className="container mx-auto px-6 py-16">
