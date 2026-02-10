@@ -274,9 +274,39 @@ const staticFaqs: FAQ[] = [
 const Help = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
-  const [loading] = useState(false);
+  const [helpScoutFaqs, setHelpScoutFaqs] = useState<FAQ[]>([]);
+  const [loading, setLoading] = useState(true);
   const [articleCache, setArticleCache] = useState<Record<string, string>>({});
   const [loadingArticle, setLoadingArticle] = useState<string | null>(null);
+
+  const location = useLocation();
+  useEffect(() => {
+    if (location.hash) {
+      setTimeout(() => {
+        const el = document.querySelector(location.hash);
+        if (el) el.scrollIntoView({ behavior: "smooth" });
+      }, 300);
+    }
+  }, [location.hash]);
+
+  // Fetch Help Scout articles on mount
+  useEffect(() => {
+    const fetchFaqs = async () => {
+      try {
+        const { data, error } = await supabase.functions.invoke("helpscout", {
+          body: { action: "getFaqs" },
+        });
+        if (!error && data?.faqs && data.faqs.length > 0) {
+          setHelpScoutFaqs(data.faqs);
+        }
+      } catch (err) {
+        console.error("Error fetching FAQs:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchFaqs();
+  }, []);
 
   // Fetch full article content when accordion item is opened
   const fetchArticleContent = async (articleId: string) => {
@@ -299,12 +329,23 @@ const Help = () => {
     }
   };
 
-  // Use Help Scout FAQs for browsing, fall back to static
+
+  // - Category selected → static FAQs filtered by category (top 5)
+  // - Search active → search across all (Help Scout + static), top 5
+  // - Nothing selected → show all Help Scout articles (top 5)
   const displayedFaqs = (() => {
-    const source = staticFaqs;
     if (searchQuery) {
       const queryLower = searchQuery.toLowerCase();
-      return source
+      const allFaqs = [...helpScoutFaqs, ...staticFaqs];
+      // Deduplicate by question
+      const seen = new Set<string>();
+      const unique = allFaqs.filter((faq) => {
+        const key = faq.question.toLowerCase();
+        if (seen.has(key)) return false;
+        seen.add(key);
+        return true;
+      });
+      return unique
         .filter(
           (faq) =>
             faq.question.toLowerCase().includes(queryLower) ||
@@ -318,9 +359,10 @@ const Help = () => {
         .slice(0, 5);
     }
     if (selectedCategory) {
-      return source.filter((faq) => faq.category === selectedCategory).slice(0, 5);
+      return staticFaqs.filter((faq) => faq.category === selectedCategory).slice(0, 5);
     }
-    return [];
+    // Default: show Help Scout articles
+    return helpScoutFaqs.slice(0, 5);
   })();
 
   return (
@@ -422,8 +464,8 @@ const Help = () => {
             )}
           </div>
 
-          {/* FAQ Accordion - only show when searching or category selected */}
-          {(searchQuery || selectedCategory) && (
+          {/* FAQ Accordion - always visible */}
+          {displayedFaqs.length > 0 && (
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}

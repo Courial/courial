@@ -90,6 +90,8 @@ serve(async (req) => {
                 answer: article.text || article.preview || "",
                 category: faqCategory,
               });
+              console.log(`Collection: "${collection.name}" -> category: "${faqCategory}", article: "${article.name}"`);
+
             }
           }
         }
