@@ -265,64 +265,7 @@ const Markets = () => {
           <div className="max-w-6xl mx-auto">
             <div className="relative w-full">
               <div className="relative">
-                <ComposableMap
-                  projection="geoAlbersUsa"
-                  projectionConfig={{ scale: 1000 }}
-                  style={{ width: "100%", height: "auto" }}
-                >
-                  <Geographies geography={US_TOPO_URL}>
-                    {({ geographies }) =>
-                      geographies.map((geo) => {
-                        const stateName = geo.properties.name;
-                        const data = stateData[stateName];
-                        return (
-                          <Geography
-                            key={geo.rsmKey}
-                            geography={geo}
-                            fill={getStateColor(stateName)}
-                            stroke="hsl(0, 0%, 100%)"
-                            strokeWidth={0.75}
-                            style={{
-                              default: { outline: "none" },
-                              hover: {
-                                outline: "none",
-                                fill: data
-                                  ? "hsl(24, 100%, 40%)"
-                                  : "hsl(0, 0%, 88%)",
-                              },
-                              pressed: { outline: "none" },
-                            }}
-                            onMouseEnter={(e) => {
-                              if (data) {
-                                setHoveredState(stateName);
-                                setTooltipPos({
-                                  x: e.clientX,
-                                  y: e.clientY,
-                                });
-                              }
-                            }}
-                            onMouseLeave={() => setHoveredState(null)}
-                          />
-                        );
-                      })
-                    }
-                  </Geographies>
-                  {/* DC marker since it doesn't render as a geography */}
-                  <Marker coordinates={[-77.0369, 38.9072]}>
-                    <circle
-                      r={5}
-                      fill={volumeColors.medium}
-                      stroke="hsl(0, 0%, 100%)"
-                      strokeWidth={0.75}
-                      className="cursor-pointer"
-                      onMouseEnter={(e) => {
-                        setHoveredState("District of Columbia");
-                        setTooltipPos({ x: e.clientX, y: e.clientY });
-                      }}
-                      onMouseLeave={() => setHoveredState(null)}
-                    />
-                  </Marker>
-                </ComposableMap>
+                <USAMap onHover={handleStateHover} onLeave={handleStateLeave} />
 
                 <div className="absolute top-[5%] left-1/2 -translate-x-1/2 z-10 pointer-events-none">
                   <p className="text-sm text-muted-foreground italic">
