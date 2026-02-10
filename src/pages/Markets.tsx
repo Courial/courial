@@ -245,6 +245,21 @@ const Markets = () => {
                       })
                     }
                   </Geographies>
+                  {/* DC marker since it doesn't render as a geography */}
+                  <Marker coordinates={[-77.0369, 38.9072]}>
+                    <circle
+                      r={5}
+                      fill={volumeColors.medium}
+                      stroke="hsl(0, 0%, 100%)"
+                      strokeWidth={0.75}
+                      className="cursor-pointer"
+                      onMouseEnter={(e) => {
+                        setHoveredState("District of Columbia");
+                        setTooltipPos({ x: e.clientX, y: e.clientY });
+                      }}
+                      onMouseLeave={() => setHoveredState(null)}
+                    />
+                  </Marker>
                 </ComposableMap>
 
                 <div className="absolute top-[5%] left-1/2 -translate-x-1/2 z-10 pointer-events-none">
