@@ -285,11 +285,12 @@ const Help = () => {
                   whileInView={{ opacity: 1, scale: 1 }}
                   viewport={{ once: true }}
                   transition={{ delay: index * 0.05 }}
-                  onClick={() =>
+                  onClick={() => {
+                    setSearchQuery("");
                     setSelectedCategory(
                       selectedCategory === category.id ? null : category.id
-                    )
-                  }
+                    );
+                  }}
                   className={`px-4 py-2 rounded-lg text-sm font-medium transition-all flex items-center gap-2 border ${
                     selectedCategory === category.id
                       ? "bg-primary text-primary-foreground border-primary"
