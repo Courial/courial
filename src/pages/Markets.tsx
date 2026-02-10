@@ -250,15 +250,14 @@ const Markets = () => {
       <section className="relative">
         <div className="container mx-auto px-6">
           <div className="max-w-6xl mx-auto">
+            <div className="text-center mb-1">
+              <p className="text-base text-muted-foreground italic">
+                Hover over a state to see details
+              </p>
+            </div>
             <div className="relative w-full">
               <div className="relative">
                 <USAMap onHover={handleStateHover} onLeave={handleStateLeave} />
-
-                <div className="absolute top-[1%] left-1/2 -translate-x-1/2 z-10 pointer-events-none">
-                  <p className="text-base text-muted-foreground italic">
-                    Hover over a state to see details
-                  </p>
-                </div>
 
                 {/* State tooltip */}
                 {hoveredState && stateData[hoveredState] && (
