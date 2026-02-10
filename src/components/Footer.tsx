@@ -1,6 +1,5 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import courialLogo from "@/assets/courial-logo.png";
-import { ApiDocsDialog } from "@/components/ApiDocsDialog";
 
 const XIcon = ({ className }: { className?: string }) => (
   <svg viewBox="0 0 24 24" className={className} fill="currentColor">
@@ -36,7 +35,8 @@ const socialLinks = [
 const footerLinks = {
   support: [
     { name: "Help Center", href: "/help" },
-    { name: "Contact Us", href: "/help" },
+    { name: "Contact Us", href: "/help#contact" },
+    { name: "API Docs", href: "/help#api-docs" },
   ],
   services: [
     { name: "Customers", href: "/" },
@@ -55,6 +55,27 @@ const footerLinks = {
 };
 
 export const Footer = () => {
+  const navigate = useNavigate();
+
+  const handleLinkClick = (e: React.MouseEvent, href: string) => {
+    e.preventDefault();
+    const [path, hash] = href.split('#');
+    const targetPath = path || '/';
+    
+    if (hash) {
+      navigate(targetPath);
+      setTimeout(() => {
+        const el = document.getElementById(hash);
+        if (el) {
+          el.scrollIntoView({ behavior: 'smooth' });
+        }
+      }, 300);
+    } else {
+      navigate(targetPath);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  };
+
   return (
     <footer className="bg-foreground">
       <div className="container mx-auto px-6 py-16">
@@ -69,12 +90,13 @@ export const Footer = () => {
               <li className="text-sm text-background/60 leading-normal">New York City</li>
               <li className="text-sm text-background/60 leading-normal">San Diego</li>
             </ul>
-            <Link 
-              to="/markets" 
-              className="text-sm text-primary hover:underline mt-3 inline-block"
+            <a 
+              href="/markets"
+              onClick={(e) => handleLinkClick(e, "/markets")}
+              className="text-sm text-primary hover:underline mt-3 inline-block cursor-pointer"
             >
               Get the full list
-            </Link>
+            </a>
           </div>
 
           {/* Links */}
@@ -86,25 +108,15 @@ export const Footer = () => {
               <ul className="space-y-1.5">
                 {links.map((link) => (
                   <li key={link.name}>
-                    <Link
-                      to={link.href}
-                      className="text-sm text-background/60 hover:text-background transition-colors"
+                    <a
+                      href={link.href}
+                      onClick={(e) => handleLinkClick(e, link.href)}
+                      className="text-sm text-background/60 hover:text-background transition-colors cursor-pointer"
                     >
                       {link.name}
-                    </Link>
+                    </a>
                   </li>
                 ))}
-                {category === "support" && (
-                  <li>
-                    <ApiDocsDialog
-                      trigger={
-                        <button className="text-sm text-background/60 hover:text-background transition-colors text-left">
-                          API Docs
-                        </button>
-                      }
-                    />
-                  </li>
-                )}
               </ul>
               {category === "company" && (
                 <div className="flex flex-row gap-2 mt-4">

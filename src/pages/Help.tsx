@@ -555,7 +555,7 @@ const Help = () => {
       </section>
 
       {/* Contact Us */}
-      <section className="py-16">
+      <section id="contact" className="py-16">
         <div className="container mx-auto px-6">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
