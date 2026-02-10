@@ -250,7 +250,7 @@ const Markets = () => {
       <section className="relative">
         <div className="container mx-auto px-6">
           <div className="max-w-6xl mx-auto">
-            <div className="text-center mb-1">
+            <div className="text-center mt-2 mb-0">
               <p className="text-base text-muted-foreground italic">
                 Hover over a state to see details
               </p>
