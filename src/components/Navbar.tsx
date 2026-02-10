@@ -12,6 +12,7 @@ const navLinks = [
   { name: "Courials", href: "/courials" },
   { name: "Chauffeur", href: "/chauffeur" },
   { name: "Shield", href: "/shield" },
+  { name: "Markets", href: "/markets" },
 ];
 
 export const Navbar = () => {
