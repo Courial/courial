@@ -64,7 +64,7 @@ const contactMethods = [
   {
     icon: Mail,
     title: "Email Us",
-    href: "mailto:support@courial.com",
+    href: "mailto:support@courial.com?subject=I%20have%20a%20support%20request&body=Hi%20Courial%20Support%2C%0A%0AI%20need%20help%20with%20the%20following%20issue(s)%3A%0A%0A%7BPlease%20list%20your%20concerns%20here%7D",
     color: "bg-blue-500",
   },
   {
