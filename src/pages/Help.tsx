@@ -7,7 +7,7 @@ import {
   Phone, 
   Mail, 
   MessageCircle,
-  ChevronDown,
+  X,
   Package,
   Car,
   CreditCard,
@@ -22,7 +22,6 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { supabase } from "@/integrations/supabase/client";
-import { ContactForm } from "@/components/ContactForm";
 import { ApiDocsDialog } from "@/components/ApiDocsDialog";
 
 // Line icon component
@@ -235,75 +234,14 @@ const Help = () => {
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 gradient-text-black-orange">
               Help Center
             </h1>
-            <p className="text-xl text-muted-foreground mb-8">
+            <p className="text-xl text-muted-foreground">
               Find answers to your questions or get in touch with our team.
             </p>
-
-            {/* Search */}
-            <div className="max-w-2xl mx-auto relative">
-              <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
-              <Input
-                type="text"
-                placeholder="Search for help..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-12 h-14 text-lg rounded-xl border-border bg-background/80 backdrop-blur-sm"
-              />
-            </div>
           </motion.div>
         </div>
       </section>
 
-      {/* Contact Methods */}
-      <section className="py-16">
-        <div className="container mx-auto px-6">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5 }}
-            className="text-center mb-12"
-          >
-            <h2 className="text-3xl md:text-4xl font-bold mb-4 gradient-text-black-orange">
-              Contact Us
-            </h2>
-            <p className="text-lg text-muted-foreground">
-              Reach out through your preferred channel
-            </p>
-          </motion.div>
-
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl mx-auto">
-            {contactMethods.map((method, index) => {
-              const Icon = method.icon;
-              return (
-                <motion.a
-                  key={method.title}
-                  href={method.href}
-                  target={method.href.startsWith("http") ? "_blank" : undefined}
-                  rel={method.href.startsWith("http") ? "noopener noreferrer" : undefined}
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.4, delay: index * 0.1 }}
-                  className="group glass-card rounded-2xl p-6 text-center hover:border-primary/50 transition-all duration-300"
-                >
-                  <div
-                    className={`w-12 h-12 rounded-xl ${method.color} flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform`}
-                  >
-                    <Icon className="w-6 h-6 text-white" />
-                  </div>
-                  <h3 className="font-semibold mb-1 group-hover:text-primary transition-colors">
-                    {method.title}
-                  </h3>
-                  <p className="text-sm text-muted-foreground">{method.description}</p>
-                </motion.a>
-              );
-            })}
-          </div>
-        </div>
-      </section>
-
-      {/* FAQ Categories */}
+      {/* FAQ Section */}
       <section className="py-16 relative">
         <div className="absolute inset-0 bg-gradient-to-b from-transparent via-primary/5 to-transparent" />
         <div className="container mx-auto px-6 relative z-10">
@@ -314,29 +252,16 @@ const Help = () => {
             transition={{ duration: 0.5 }}
             className="text-center mb-12"
           >
-            <h2 className="text-3xl md:text-4xl font-bold mb-4 gradient-text-black-orange">
+            <h2 className="text-3xl md:text-4xl font-bold mb-4 text-foreground">
               Frequently Asked Questions
             </h2>
             <p className="text-lg text-muted-foreground">
-              Browse by category or search above
+              Browse by category or search below
             </p>
           </motion.div>
 
           {/* Category Filters */}
-          <div className="flex flex-wrap justify-center gap-3 mb-12">
-            <motion.button
-              initial={{ opacity: 0, scale: 0.9 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              viewport={{ once: true }}
-              onClick={() => setSelectedCategory(null)}
-              className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
-                selectedCategory === null
-                  ? "bg-primary text-primary-foreground"
-                  : "bg-muted text-muted-foreground hover:bg-muted/80"
-              }`}
-            >
-              All
-            </motion.button>
+          <div className="flex flex-wrap justify-center gap-3 mb-8">
             {faqCategories.map((category, index) => {
               const Icon = category.icon;
               return (
@@ -346,11 +271,15 @@ const Help = () => {
                   whileInView={{ opacity: 1, scale: 1 }}
                   viewport={{ once: true }}
                   transition={{ delay: index * 0.05 }}
-                  onClick={() => setSelectedCategory(category.id)}
-                  className={`px-4 py-2 rounded-full text-sm font-medium transition-all flex items-center gap-2 ${
+                  onClick={() =>
+                    setSelectedCategory(
+                      selectedCategory === category.id ? null : category.id
+                    )
+                  }
+                  className={`px-4 py-2 rounded-lg text-sm font-medium transition-all flex items-center gap-2 border ${
                     selectedCategory === category.id
-                      ? "bg-primary text-primary-foreground"
-                      : "bg-muted text-muted-foreground hover:bg-muted/80"
+                      ? "bg-primary text-primary-foreground border-primary"
+                      : "bg-transparent text-muted-foreground border-border hover:text-primary hover:border-primary/50"
                   }`}
                 >
                   <Icon className="w-4 h-4" />
@@ -358,6 +287,26 @@ const Help = () => {
                 </motion.button>
               );
             })}
+          </div>
+
+          {/* Search Bar */}
+          <div className="max-w-lg mx-auto relative mb-12">
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-primary z-10" />
+            <Input
+              type="text"
+              placeholder="Start typing a question..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="pl-12 pr-10 h-12 rounded-xl border-primary/50 bg-background focus:border-primary"
+            />
+            {searchQuery && (
+              <button
+                onClick={() => setSearchQuery("")}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            )}
           </div>
 
           {/* FAQ Accordion */}
@@ -398,15 +347,6 @@ const Help = () => {
         </div>
       </section>
 
-      {/* Contact Form */}
-      <section className="py-16">
-        <div className="container mx-auto px-6">
-          <div className="max-w-3xl mx-auto">
-            <ContactForm />
-          </div>
-        </div>
-      </section>
-
       {/* API Docs Section */}
       <section id="api-docs" className="py-16">
         <div className="container mx-auto px-6">
@@ -419,18 +359,17 @@ const Help = () => {
           >
             <div className="glass-card rounded-3xl p-8 md:p-12 text-center">
               <Code className="w-12 h-12 mx-auto mb-4 text-primary" />
-              <h2 className="text-3xl font-bold mb-4 gradient-text-black-orange">
+              <h2 className="text-3xl font-bold mb-4 text-foreground">
                 Developer API
               </h2>
               <p className="text-muted-foreground mb-6">
-                Looking to integrate Courial into your business? Access our API to seamlessly 
-                connect your systems with our delivery and logistics platform.
+                Looking to integrate Courial into your business?{" "}
+                Access our API to seamlessly connect your systems with our delivery and logistics platform.
               </p>
               <ApiDocsDialog
                 trigger={
                   <Button variant="hero" size="lg">
-                    <Code className="w-5 h-5 mr-2" />
-                    Access Our API
+                    Request Access
                   </Button>
                 }
               />
@@ -439,29 +378,52 @@ const Help = () => {
         </div>
       </section>
 
-      {/* Still Need Help */}
-      <section className="py-24">
+      {/* Contact Us */}
+      <section className="py-16">
         <div className="container mx-auto px-6">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5 }}
-            className="max-w-2xl mx-auto text-center"
+            className="text-center mb-12"
           >
-            <div className="glass-card rounded-3xl p-12">
-              <MessageCircle className="w-16 h-16 mx-auto mb-6 text-primary" />
-              <h2 className="text-3xl font-bold mb-4 gradient-text-black-orange">
-                Still Need Help?
-              </h2>
-              <p className="text-lg text-muted-foreground mb-6">
-                Our support team is available 24/7 to assist you with any questions or concerns.
-              </p>
-              <p className="text-muted-foreground">
-                Click the chat bubble in the bottom right corner to start a conversation.
-              </p>
-            </div>
+            <h2 className="text-3xl md:text-4xl font-bold mb-4 text-foreground">
+              Contact Us
+            </h2>
+            <p className="text-lg text-muted-foreground">
+              Reach out through your preferred channel
+            </p>
           </motion.div>
+
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl mx-auto">
+            {contactMethods.map((method, index) => {
+              const Icon = method.icon;
+              return (
+                <motion.a
+                  key={method.title}
+                  href={method.href}
+                  target={method.href.startsWith("http") ? "_blank" : undefined}
+                  rel={method.href.startsWith("http") ? "noopener noreferrer" : undefined}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.4, delay: index * 0.1 }}
+                  className="group glass-card rounded-2xl p-6 text-center hover:border-primary/50 transition-all duration-300"
+                >
+                  <div
+                    className={`w-12 h-12 rounded-xl ${method.color} flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform`}
+                  >
+                    <Icon className="w-6 h-6 text-white" />
+                  </div>
+                  <h3 className="font-semibold mb-1 group-hover:text-primary transition-colors">
+                    {method.title}
+                  </h3>
+                  <p className="text-sm text-muted-foreground">{method.description}</p>
+                </motion.a>
+              );
+            })}
+          </div>
         </div>
       </section>
 
