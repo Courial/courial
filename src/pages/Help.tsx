@@ -310,6 +310,7 @@ const Help = () => {
               type="text"
               placeholder="Start typing a question..."
               value={searchQuery}
+              onFocus={() => setSelectedCategory(null)}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="pl-12 pr-10 h-12 rounded-xl border-primary/50 bg-background focus:border-primary"
             />
