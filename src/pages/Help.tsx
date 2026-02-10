@@ -473,14 +473,33 @@ const Help = () => {
                     <p className="text-muted-foreground">No FAQs found matching your search.</p>
                   </div>
                 ) : (
-                  <Accordion type="single" collapsible className="p-6">
+                  <Accordion
+                    type="single"
+                    collapsible
+                    className="p-6"
+                    onValueChange={(value) => {
+                      if (value) fetchArticleContent(value);
+                    }}
+                  >
                     {displayedFaqs.map((faq) => (
                       <AccordionItem key={faq.id} value={faq.id} className="border-border">
                         <AccordionTrigger className="text-left hover:text-primary transition-colors py-4">
                           {faq.question}
                         </AccordionTrigger>
                         <AccordionContent className="text-muted-foreground pb-4">
-                          {faq.answer}
+                          {loadingArticle === faq.id ? (
+                            <div className="flex items-center gap-2">
+                              <Clock className="w-4 h-4 animate-spin text-primary" />
+                              <span>Loading...</span>
+                            </div>
+                          ) : articleCache[faq.id] ? (
+                            <div
+                              className="prose prose-sm max-w-none text-muted-foreground"
+                              dangerouslySetInnerHTML={{ __html: articleCache[faq.id] }}
+                            />
+                          ) : (
+                            faq.answer
+                          )}
                         </AccordionContent>
                       </AccordionItem>
                     ))}
