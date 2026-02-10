@@ -3,6 +3,7 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { HelmetProvider } from "react-helmet-async";
 import { ChatBubble } from "@/components/ChatBubble";
 import Index from "./pages/Index";
 import Markets from "./pages/Markets";
@@ -17,36 +18,42 @@ import Privacy from "./pages/Privacy";
 import ICA from "./pages/ICA";
 import Help from "./pages/Help";
 import Api from "./pages/Api";
+import Blog from "./pages/Blog";
+import BlogPost from "./pages/BlogPost";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <Toaster />
-      <Sonner />
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Index />} />
-          <Route path="/markets" element={<Markets />} />
-          <Route path="/business" element={<Business />} />
-          <Route path="/partners" element={<Partners />} />
-          <Route path="/users" element={<Users />} />
-          <Route path="/courials" element={<Courials />} />
-          <Route path="/chauffeur" element={<Chauffeur />} />
-          <Route path="/shield" element={<Shield />} />
-          <Route path="/terms" element={<Terms />} />
-          <Route path="/privacy" element={<Privacy />} />
-          <Route path="/ica" element={<ICA />} />
-          <Route path="/help" element={<Help />} />
-          <Route path="/api" element={<Api />} />
-          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-        <ChatBubble />
-      </BrowserRouter>
-    </TooltipProvider>
+    <HelmetProvider>
+      <TooltipProvider>
+        <Toaster />
+        <Sonner />
+        <BrowserRouter>
+          <Routes>
+            <Route path="/" element={<Index />} />
+            <Route path="/markets" element={<Markets />} />
+            <Route path="/business" element={<Business />} />
+            <Route path="/partners" element={<Partners />} />
+            <Route path="/users" element={<Users />} />
+            <Route path="/courials" element={<Courials />} />
+            <Route path="/chauffeur" element={<Chauffeur />} />
+            <Route path="/shield" element={<Shield />} />
+            <Route path="/terms" element={<Terms />} />
+            <Route path="/privacy" element={<Privacy />} />
+            <Route path="/ica" element={<ICA />} />
+            <Route path="/help" element={<Help />} />
+            <Route path="/api" element={<Api />} />
+            <Route path="/blog" element={<Blog />} />
+            <Route path="/blog/:slug" element={<BlogPost />} />
+            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+          <ChatBubble />
+        </BrowserRouter>
+      </TooltipProvider>
+    </HelmetProvider>
   </QueryClientProvider>
 );
 
