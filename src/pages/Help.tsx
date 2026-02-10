@@ -83,6 +83,7 @@ const contactMethods = [
 
 // Static FAQs as fallback
 const staticFaqs: FAQ[] = [
+  // Delivery (5)
   {
     id: "1",
     question: "How do I track my delivery?",
@@ -96,6 +97,25 @@ const staticFaqs: FAQ[] = [
     category: "delivery",
   },
   {
+    id: "13",
+    question: "How long does a delivery take?",
+    answer: "Delivery times vary based on distance and traffic. Most same-city deliveries are completed within 30-60 minutes. You'll see an estimated delivery time before confirming your order.",
+    category: "delivery",
+  },
+  {
+    id: "14",
+    question: "Can I schedule a delivery for later?",
+    answer: "Yes, you can schedule deliveries up to 7 days in advance. Select 'Schedule' when creating your order, pick your preferred date and time window, and we'll match you with a Courial.",
+    category: "delivery",
+  },
+  {
+    id: "15",
+    question: "What happens if my delivery is damaged?",
+    answer: "If your item arrives damaged, report it in the app within 24 hours with photos. Our support team will review your claim and process a refund or replacement as needed.",
+    category: "delivery",
+  },
+  // Chauffeur (5)
+  {
     id: "3",
     question: "How do I book a Chauffeur?",
     answer: "Open the Courial app, select 'Chauffeur' service, enter your pickup and destination, choose your vehicle class, and confirm your booking. Your Chauffeur will arrive at the scheduled time.",
@@ -107,6 +127,25 @@ const staticFaqs: FAQ[] = [
     answer: "We offer Standard, Premium, and Luxury vehicle classes. Standard includes sedans, Premium offers executive vehicles, and Luxury provides high-end cars like Mercedes S-Class or BMW 7 Series.",
     category: "chauffeur",
   },
+  {
+    id: "16",
+    question: "Can I book a Chauffeur for multiple stops?",
+    answer: "Yes, you can add multiple stops when booking. Simply tap 'Add Stop' to include additional destinations. Pricing adjusts based on the total route distance and time.",
+    category: "chauffeur",
+  },
+  {
+    id: "17",
+    question: "How far in advance can I book a Chauffeur?",
+    answer: "You can book a Chauffeur up to 30 days in advance or request one on-demand. For airport transfers and events, we recommend booking at least 24 hours ahead.",
+    category: "chauffeur",
+  },
+  {
+    id: "18",
+    question: "What is the cancellation policy for Chauffeur?",
+    answer: "Free cancellation up to 1 hour before your scheduled pickup. Late cancellations may incur a fee equal to the base fare. On-demand rides can be cancelled within 2 minutes at no charge.",
+    category: "chauffeur",
+  },
+  // Payments (5)
   {
     id: "5",
     question: "What payment methods do you accept?",
@@ -120,6 +159,25 @@ const staticFaqs: FAQ[] = [
     category: "payments",
   },
   {
+    id: "19",
+    question: "Can I get a receipt for my order?",
+    answer: "Yes, receipts are automatically emailed after each completed order. You can also view and download receipts from your order history in the app.",
+    category: "payments",
+  },
+  {
+    id: "20",
+    question: "How is the delivery fee calculated?",
+    answer: "Delivery fees are based on distance, package size, and current demand. You'll always see the total price before confirming your order — no hidden fees.",
+    category: "payments",
+  },
+  {
+    id: "21",
+    question: "Do you offer business invoicing?",
+    answer: "Yes, business accounts can receive monthly invoices. Contact our business team or visit the Business section in the app to set up consolidated billing.",
+    category: "payments",
+  },
+  // Account (5)
+  {
     id: "7",
     question: "How do I reset my password?",
     answer: "Go to the login screen, tap 'Forgot Password', enter your email, and follow the reset link sent to your inbox. If you don't receive it, check your spam folder.",
@@ -131,6 +189,25 @@ const staticFaqs: FAQ[] = [
     answer: "Open the app, go to Settings > Profile, and you can update your name, phone number, email, and profile photo. Some changes may require verification.",
     category: "account",
   },
+  {
+    id: "22",
+    question: "How do I delete my account?",
+    answer: "Go to Settings > Account > Delete Account. Please note this action is permanent and all your data, order history, and saved addresses will be removed.",
+    category: "account",
+  },
+  {
+    id: "23",
+    question: "Can I have multiple addresses saved?",
+    answer: "Yes, you can save unlimited addresses in the app. Go to Settings > Saved Addresses to add, edit, or remove locations for faster ordering.",
+    category: "account",
+  },
+  {
+    id: "24",
+    question: "How do I change my phone number?",
+    answer: "Go to Settings > Profile > Phone Number. You'll need to verify the new number via SMS code before the change takes effect.",
+    category: "account",
+  },
+  // Safety (5)
   {
     id: "9",
     question: "Are Courials background checked?",
@@ -144,6 +221,25 @@ const staticFaqs: FAQ[] = [
     category: "safety",
   },
   {
+    id: "25",
+    question: "How do I report a safety concern?",
+    answer: "Tap the emergency button in the app during an active order, or go to Help > Report Safety Issue. Our safety team responds to all reports within 1 hour.",
+    category: "safety",
+  },
+  {
+    id: "26",
+    question: "Is my personal information secure?",
+    answer: "Yes, we use bank-level encryption for all personal data. Your information is never shared with third parties without your consent. See our Privacy Policy for details.",
+    category: "safety",
+  },
+  {
+    id: "27",
+    question: "What COVID-19 safety measures are in place?",
+    answer: "Courials follow contactless delivery protocols. All drivers complete health screenings and wear masks when required by local guidelines.",
+    category: "safety",
+  },
+  // General (5)
+  {
     id: "11",
     question: "What cities do you operate in?",
     answer: "We currently operate in San Francisco Bay Area, Los Angeles, Boston, New York City, San Diego, and Bangkok (Thailand). Check the app for the full list of service areas.",
@@ -153,6 +249,24 @@ const staticFaqs: FAQ[] = [
     id: "12",
     question: "How do I become a Courial?",
     answer: "Visit courial.com/courials to apply. You'll need a valid driver's license, vehicle (bike, scooter, or car), smartphone, and pass our background check.",
+    category: "general",
+  },
+  {
+    id: "28",
+    question: "What are Courial's operating hours?",
+    answer: "Courial operates 24/7 in most markets. Some services may have limited availability during late night hours depending on your city.",
+    category: "general",
+  },
+  {
+    id: "29",
+    question: "How do I contact customer support?",
+    answer: "You can reach us via in-app chat, email at support@courial.com, phone at +1 415-275-4707, or through WhatsApp and Line messaging.",
+    category: "general",
+  },
+  {
+    id: "30",
+    question: "Does Courial have a referral program?",
+    answer: "Yes! Share your referral code from the app and both you and your friend receive credit toward future orders when they complete their first delivery.",
     category: "general",
   },
 ];
