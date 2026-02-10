@@ -309,41 +309,42 @@ const Help = () => {
             )}
           </div>
 
-          {/* FAQ Accordion */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5 }}
-            className="max-w-3xl mx-auto"
-          >
-            <div className="glass-card rounded-3xl overflow-hidden">
-              {loading ? (
-                <div className="p-8 text-center">
-                  <Clock className="w-8 h-8 animate-spin mx-auto mb-4 text-primary" />
-                  <p className="text-muted-foreground">Loading FAQs...</p>
-                </div>
-              ) : filteredFaqs.length === 0 ? (
-                <div className="p-8 text-center">
-                  <HelpCircle className="w-12 h-12 mx-auto mb-4 text-muted-foreground" />
-                  <p className="text-muted-foreground">No FAQs found matching your search.</p>
-                </div>
-              ) : (
-                <Accordion type="single" collapsible className="p-6">
-                  {filteredFaqs.map((faq) => (
-                    <AccordionItem key={faq.id} value={faq.id} className="border-border">
-                      <AccordionTrigger className="text-left hover:text-primary transition-colors py-4">
-                        {faq.question}
-                      </AccordionTrigger>
-                      <AccordionContent className="text-muted-foreground pb-4">
-                        {faq.answer}
-                      </AccordionContent>
-                    </AccordionItem>
-                  ))}
-                </Accordion>
-              )}
-            </div>
-          </motion.div>
+          {/* FAQ Accordion - only show when searching or category selected */}
+          {(searchQuery || selectedCategory) && (
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5 }}
+              className="max-w-3xl mx-auto"
+            >
+              <div className="glass-card rounded-3xl overflow-hidden">
+                {loading ? (
+                  <div className="p-8 text-center">
+                    <Clock className="w-8 h-8 animate-spin mx-auto mb-4 text-primary" />
+                    <p className="text-muted-foreground">Loading FAQs...</p>
+                  </div>
+                ) : filteredFaqs.length === 0 ? (
+                  <div className="p-8 text-center">
+                    <HelpCircle className="w-12 h-12 mx-auto mb-4 text-muted-foreground" />
+                    <p className="text-muted-foreground">No FAQs found matching your search.</p>
+                  </div>
+                ) : (
+                  <Accordion type="single" collapsible className="p-6">
+                    {filteredFaqs.map((faq) => (
+                      <AccordionItem key={faq.id} value={faq.id} className="border-border">
+                        <AccordionTrigger className="text-left hover:text-primary transition-colors py-4">
+                          {faq.question}
+                        </AccordionTrigger>
+                        <AccordionContent className="text-muted-foreground pb-4">
+                          {faq.answer}
+                        </AccordionContent>
+                      </AccordionItem>
+                    ))}
+                  </Accordion>
+                )}
+              </div>
+            </motion.div>
+          )}
         </div>
       </section>
 
