@@ -393,7 +393,7 @@ const Help = () => {
             </p>
           </motion.div>
 
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl mx-auto">
+          <div className="flex items-center justify-center gap-4 max-w-md mx-auto">
             {contactMethods.map((method, index) => {
               const Icon = method.icon;
               return (
@@ -406,17 +406,14 @@ const Help = () => {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ duration: 0.4, delay: index * 0.1 }}
-                  className="group glass-card rounded-2xl p-6 text-center hover:border-primary/50 transition-all duration-300"
+                  className="group"
+                  title={method.title}
                 >
                   <div
-                    className={`w-12 h-12 rounded-xl ${method.color} flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform`}
+                    className={`w-12 h-12 rounded-full ${method.color} flex items-center justify-center group-hover:scale-110 transition-transform`}
                   >
                     <Icon className="w-6 h-6 text-white" />
                   </div>
-                  <h3 className="font-semibold mb-1 group-hover:text-primary transition-colors">
-                    {method.title}
-                  </h3>
-                  <p className="text-sm text-muted-foreground">{method.description}</p>
                 </motion.a>
               );
             })}
