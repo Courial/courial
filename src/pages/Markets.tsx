@@ -1,125 +1,450 @@
+import { useState } from "react";
 import { motion } from "framer-motion";
-import { MapPin, CheckCircle } from "lucide-react";
+import {
+  ComposableMap,
+  Geographies,
+  Geography,
+  Marker,
+} from "react-simple-maps";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 
-const markets = [
-  { city: "New York", state: "NY", status: "active" },
-  { city: "Los Angeles", state: "CA", status: "active" },
-  { city: "Chicago", state: "IL", status: "active" },
-  { city: "Houston", state: "TX", status: "active" },
-  { city: "Miami", state: "FL", status: "active" },
-  { city: "Atlanta", state: "GA", status: "active" },
-  { city: "Dallas", state: "TX", status: "active" },
-  { city: "Phoenix", state: "AZ", status: "active" },
-  { city: "Philadelphia", state: "PA", status: "active" },
-  { city: "San Francisco", state: "CA", status: "active" },
-  { city: "Seattle", state: "WA", status: "active" },
-  { city: "Boston", state: "MA", status: "coming" },
-  { city: "Denver", state: "CO", status: "coming" },
-  { city: "San Diego", state: "CA", status: "coming" },
-  { city: "Portland", state: "OR", status: "coming" },
-  { city: "Austin", state: "TX", status: "coming" },
+const US_TOPO_URL = "https://cdn.jsdelivr.net/npm/us-atlas@3/states-10m.json";
+const WORLD_TOPO_URL =
+  "https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json";
+
+// State volume data — San Diego excluded per memory
+const stateData: Record<
+  string,
+  { volume: "high" | "medium" | "growing"; cities: string[] }
+> = {
+  California: {
+    volume: "high",
+    cities: ["Los Angeles", "San Francisco"],
+  },
+  "New York": {
+    volume: "high",
+    cities: ["New York City"],
+  },
+  Texas: {
+    volume: "medium",
+    cities: ["Houston", "Dallas", "Austin"],
+  },
+  Florida: {
+    volume: "medium",
+    cities: ["Miami"],
+  },
+  Illinois: {
+    volume: "medium",
+    cities: ["Chicago"],
+  },
+  Georgia: {
+    volume: "medium",
+    cities: ["Atlanta"],
+  },
+  Arizona: {
+    volume: "growing",
+    cities: ["Phoenix"],
+  },
+  Pennsylvania: {
+    volume: "medium",
+    cities: ["Philadelphia"],
+  },
+  Washington: {
+    volume: "growing",
+    cities: ["Seattle"],
+  },
+  Massachusetts: {
+    volume: "growing",
+    cities: ["Boston"],
+  },
+  Colorado: {
+    volume: "growing",
+    cities: ["Denver"],
+  },
+  Oregon: {
+    volume: "growing",
+    cities: ["Portland"],
+  },
+  Michigan: {
+    volume: "growing",
+    cities: [],
+  },
+  "North Carolina": {
+    volume: "medium",
+    cities: [],
+  },
+  Virginia: {
+    volume: "medium",
+    cities: [],
+  },
+  "New Jersey": {
+    volume: "medium",
+    cities: [],
+  },
+  Connecticut: {
+    volume: "growing",
+    cities: [],
+  },
+  Maryland: {
+    volume: "growing",
+    cities: [],
+  },
+  "New Hampshire": {
+    volume: "growing",
+    cities: [],
+  },
+  Vermont: {
+    volume: "growing",
+    cities: [],
+  },
+  Maine: {
+    volume: "growing",
+    cities: [],
+  },
+  Nevada: {
+    volume: "growing",
+    cities: [],
+  },
+};
+
+const volumeColors = {
+  high: "hsl(24, 100%, 30%)",
+  medium: "hsl(24, 100%, 50%)",
+  growing: "hsl(24, 50%, 72%)",
+};
+
+const internationalMarkets: {
+  name: string;
+  coordinates: [number, number];
+  status: "active" | "coming";
+}[] = [
+  { name: "Tokyo, Japan", coordinates: [139.6917, 35.6895], status: "active" },
+  {
+    name: "Singapore",
+    coordinates: [103.8198, 1.3521],
+    status: "coming",
+  },
+  {
+    name: "Seoul, South Korea",
+    coordinates: [126.978, 37.5665],
+    status: "coming",
+  },
+  {
+    name: "Dubai, UAE",
+    coordinates: [55.2708, 25.2048],
+    status: "coming",
+  },
+  {
+    name: "Toronto, Canada",
+    coordinates: [-79.3832, 43.6532],
+    status: "coming",
+  },
 ];
 
 const Markets = () => {
+  const [hoveredState, setHoveredState] = useState<string | null>(null);
+  const [hoveredMarket, setHoveredMarket] = useState<string | null>(null);
+  const [tooltipPos, setTooltipPos] = useState({ x: 0, y: 0 });
+
+  const getStateColor = (stateName: string) => {
+    const data = stateData[stateName];
+    if (!data) return "hsl(0, 0%, 92%)";
+    return volumeColors[data.volume];
+  };
+
+  const handleMailto = () => {
+    const subject = encodeURIComponent("We Need Courial in {city}");
+    const body = encodeURIComponent("You should come to {city} because...");
+    window.location.href = `mailto:support@courial.com?subject=${subject}&body=${body}`;
+  };
+
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
 
       {/* Hero */}
-      <section className="pt-32 pb-20 relative">
+      <section className="pt-32 pb-8 relative overflow-hidden">
         <div className="absolute inset-0 grid-pattern opacity-50" />
         <div className="absolute inset-0 radial-gradient" />
-
         <div className="container mx-auto px-6 relative z-10">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
-            className="max-w-3xl mx-auto text-center"
+            className="max-w-4xl mx-auto text-center"
           >
             <span className="text-primary font-semibold text-sm uppercase tracking-wider mb-4 block">
               Coverage
             </span>
-            <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold mb-6">
-              Our <span className="gradient-text-orange">Markets</span>
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 gradient-text-black-orange">
+              Delivering Across America
             </h1>
-            <p className="text-xl text-muted-foreground">
-              We're rapidly expanding across the nation. Check if Courial is
-              available in your city.
+            <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+              We're rapidly expanding across the nation, bringing premium
+              delivery and concierge services to major metropolitan areas.
             </p>
           </motion.div>
         </div>
       </section>
 
-      {/* Markets Grid */}
-      <section className="py-20">
+      {/* USA Map */}
+      <section className="py-8 relative">
         <div className="container mx-auto px-6">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 max-w-6xl mx-auto">
-            {markets.map((market, index) => (
+          <div className="max-w-6xl mx-auto">
+            <div className="relative w-full">
+              <div className="relative">
+                <ComposableMap
+                  projection="geoAlbersUsa"
+                  projectionConfig={{ scale: 1000 }}
+                  style={{ width: "100%", height: "auto" }}
+                >
+                  <Geographies geography={US_TOPO_URL}>
+                    {({ geographies }) =>
+                      geographies.map((geo) => {
+                        const stateName = geo.properties.name;
+                        const data = stateData[stateName];
+                        return (
+                          <Geography
+                            key={geo.rsmKey}
+                            geography={geo}
+                            fill={getStateColor(stateName)}
+                            stroke="hsl(0, 0%, 100%)"
+                            strokeWidth={0.75}
+                            style={{
+                              default: { outline: "none" },
+                              hover: {
+                                outline: "none",
+                                fill: data
+                                  ? "hsl(24, 100%, 40%)"
+                                  : "hsl(0, 0%, 88%)",
+                              },
+                              pressed: { outline: "none" },
+                            }}
+                            onMouseEnter={(e) => {
+                              if (data) {
+                                setHoveredState(stateName);
+                                setTooltipPos({
+                                  x: e.clientX,
+                                  y: e.clientY,
+                                });
+                              }
+                            }}
+                            onMouseLeave={() => setHoveredState(null)}
+                          />
+                        );
+                      })
+                    }
+                  </Geographies>
+                </ComposableMap>
+
+                <div className="absolute top-[5%] left-1/2 -translate-x-1/2 z-10 pointer-events-none">
+                  <p className="text-sm text-muted-foreground italic">
+                    Hover over a state to see details
+                  </p>
+                </div>
+
+                {/* State tooltip */}
+                {hoveredState && stateData[hoveredState] && (
+                  <div
+                    className="fixed z-50 glass-card rounded-xl px-4 py-3 shadow-lg pointer-events-none"
+                    style={{
+                      left: tooltipPos.x + 12,
+                      top: tooltipPos.y - 40,
+                    }}
+                  >
+                    <p className="font-semibold text-foreground text-sm">
+                      {hoveredState}
+                    </p>
+                    {stateData[hoveredState].cities.length > 0 && (
+                      <p className="text-xs text-muted-foreground">
+                        {stateData[hoveredState].cities.join(", ")}
+                      </p>
+                    )}
+                    <p className="text-xs text-primary capitalize mt-1">
+                      {stateData[hoveredState].volume} volume
+                    </p>
+                  </div>
+                )}
+              </div>
+
+              {/* Legend */}
+              <div className="flex flex-wrap items-center justify-center gap-6 mt-8">
+                <div className="flex items-center gap-2">
+                  <div
+                    className="w-4 h-4 rounded-sm"
+                    style={{ background: volumeColors.high }}
+                  />
+                  <span className="text-sm text-muted-foreground">
+                    High Volume
+                  </span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <div
+                    className="w-4 h-4 rounded-sm"
+                    style={{ background: volumeColors.medium }}
+                  />
+                  <span className="text-sm text-muted-foreground">
+                    Medium Volume
+                  </span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <div
+                    className="w-4 h-4 rounded-sm"
+                    style={{ background: volumeColors.growing }}
+                  />
+                  <span className="text-sm text-muted-foreground">
+                    Growing
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* International Map */}
+      <section className="py-12 relative">
+        <div className="container mx-auto px-6">
+          <div className="max-w-4xl mx-auto text-center mb-16">
+            <span className="text-primary font-semibold text-sm uppercase tracking-wider mb-4 block">
+              Global Reach
+            </span>
+            <h2 className="text-3xl md:text-4xl font-bold mb-4 gradient-text-black-orange">
+              Outside the USA
+            </h2>
+            <p className="text-muted-foreground max-w-2xl mx-auto">
+              Courial is expanding internationally, bringing our premium
+              services to key global markets.
+            </p>
+          </div>
+
+          <div className="max-w-6xl mx-auto">
+            <div className="relative w-full">
               <motion.div
-                key={market.city}
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                transition={{ duration: 0.4, delay: index * 0.05 }}
-                className={`group rounded-xl glass-card p-6 transition-all duration-300 hover:border-primary/50 ${
-                  market.status === "coming" ? "opacity-60" : ""
-                }`}
+                transition={{ duration: 0.6 }}
               >
-                <div className="flex items-start justify-between">
-                  <div className="flex items-center gap-3">
-                    <div
-                      className={`w-10 h-10 rounded-lg flex items-center justify-center ${
-                        market.status === "active"
-                          ? "bg-primary/10"
-                          : "bg-muted"
-                      }`}
-                    >
-                      <MapPin
-                        className={`w-5 h-5 ${
+                <ComposableMap
+                  projectionConfig={{ scale: 140, center: [30, 20] }}
+                  style={{ width: "100%", height: "auto" }}
+                  viewBox="0 0 800 450"
+                >
+                  <Geographies geography={WORLD_TOPO_URL}>
+                    {({ geographies }) =>
+                      geographies.map((geo) => (
+                        <Geography
+                          key={geo.rsmKey}
+                          geography={geo}
+                          fill={
+                            [
+                              "Japan",
+                              "Singapore",
+                              "South Korea",
+                              "United Arab Emirates",
+                              "Canada",
+                              "China",
+                            ].includes(geo.properties.name)
+                              ? "hsl(24, 50%, 72%)"
+                              : "hsl(0, 0%, 92%)"
+                          }
+                          stroke="hsl(0, 0%, 100%)"
+                          strokeWidth={0.5}
+                          style={{
+                            default: { outline: "none" },
+                            hover: { outline: "none" },
+                            pressed: { outline: "none" },
+                          }}
+                        />
+                      ))
+                    }
+                  </Geographies>
+
+                  {internationalMarkets.map((market) => (
+                    <Marker key={market.name} coordinates={market.coordinates}>
+                      <circle
+                        r={6}
+                        fill={
                           market.status === "active"
-                            ? "text-primary"
-                            : "text-muted-foreground"
-                        }`}
+                            ? "hsl(24, 100%, 30%)"
+                            : "hsl(24, 50%, 50%)"
+                        }
+                        opacity={0.2}
                       />
-                    </div>
-                    <div>
-                      <h3 className="font-semibold text-foreground">
-                        {market.city}
-                      </h3>
-                      <p className="text-sm text-muted-foreground">
-                        {market.state}
-                      </p>
-                    </div>
-                  </div>
-                  {market.status === "active" && (
-                    <CheckCircle className="w-5 h-5 text-primary" />
-                  )}
+                      <circle
+                        r={3}
+                        fill={
+                          market.status === "active"
+                            ? "hsl(24, 100%, 30%)"
+                            : "hsl(24, 50%, 50%)"
+                        }
+                        stroke="hsl(0, 0%, 100%)"
+                        strokeWidth={1.5}
+                        className="cursor-pointer"
+                        onMouseEnter={() => setHoveredMarket(market.name)}
+                        onMouseLeave={() => setHoveredMarket(null)}
+                      />
+                    </Marker>
+                  ))}
+                </ComposableMap>
+
+                <div className="absolute top-[5%] left-1/2 -translate-x-1/2 z-10 pointer-events-none">
+                  <p className="text-sm text-muted-foreground italic">
+                    Hover over a market to see details
+                  </p>
                 </div>
-                {market.status === "coming" && (
-                  <span className="inline-block mt-3 text-xs text-muted-foreground bg-muted px-2 py-1 rounded">
+              </motion.div>
+
+              {/* International Legend */}
+              <div className="flex items-center justify-center gap-8 mt-8">
+                <div className="flex items-center gap-2">
+                  <div
+                    className="w-4 h-4 rounded-sm"
+                    style={{ background: "hsl(24, 100%, 50%)" }}
+                  />
+                  <span className="text-sm text-muted-foreground">
+                    Active Markets
+                  </span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <div
+                    className="w-4 h-4 rounded-sm"
+                    style={{ background: "hsl(24, 50%, 72%)" }}
+                  />
+                  <span className="text-sm text-muted-foreground">
                     Coming Soon
                   </span>
-                )}
-              </motion.div>
-            ))}
+                </div>
+              </div>
+            </div>
           </div>
+        </div>
+      </section>
 
-          {/* CTA */}
+      {/* CTA */}
+      <section className="py-12 relative">
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-primary/5 to-transparent" />
+        <div className="container mx-auto px-6 relative z-10">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.5, delay: 0.3 }}
-            className="text-center mt-16"
+            transition={{ duration: 0.5 }}
+            className="max-w-xl mx-auto text-center glass-card rounded-3xl p-12"
           >
-            <p className="text-muted-foreground mb-4">
-              Don't see your city? We're expanding fast.
+            <h2 className="text-3xl md:text-4xl font-bold mb-4 gradient-text-black-orange">
+              Don't See Your City?
+            </h2>
+            <p className="text-muted-foreground mb-8">
+              We're expanding fast. Let us know where you'd like to see Courial
+              next and be the first to know when we launch.
             </p>
-            <Button variant="hero-outline">Request Your City</Button>
+            <Button variant="hero" size="lg" onClick={handleMailto}>
+              Request Your City
+            </Button>
           </motion.div>
         </div>
       </section>
