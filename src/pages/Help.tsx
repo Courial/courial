@@ -199,14 +199,32 @@ const Help = () => {
     }
   };
 
-  const filteredFaqs = faqs.filter((faq) => {
-    const matchesSearch =
-      searchQuery === "" ||
-      faq.question.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      faq.answer.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesCategory = selectedCategory === null || faq.category === selectedCategory;
-    return matchesSearch && matchesCategory;
-  });
+  // Compute displayed FAQs based on mode
+  const displayedFaqs = (() => {
+    if (searchQuery) {
+      // Search mode: show top 5 closest matched by title
+      const queryLower = searchQuery.toLowerCase();
+      return faqs
+        .filter(
+          (faq) =>
+            faq.question.toLowerCase().includes(queryLower) ||
+            faq.answer.toLowerCase().includes(queryLower)
+        )
+        .sort((a, b) => {
+          // Prioritize title matches over answer-only matches
+          const aTitle = a.question.toLowerCase().includes(queryLower) ? 0 : 1;
+          const bTitle = b.question.toLowerCase().includes(queryLower) ? 0 : 1;
+          return aTitle - bTitle;
+        })
+        .slice(0, 5);
+    }
+    if (selectedCategory) {
+      // Category mode: show top 5 in that category
+      return faqs.filter((faq) => faq.category === selectedCategory).slice(0, 5);
+    }
+    // Default: no buttons selected, no search = show nothing
+    return [];
+  })();
 
   return (
     <div className="min-h-screen bg-background">
@@ -267,11 +285,12 @@ const Help = () => {
                   whileInView={{ opacity: 1, scale: 1 }}
                   viewport={{ once: true }}
                   transition={{ delay: index * 0.05 }}
-                  onClick={() =>
+                  onClick={() => {
+                    setSearchQuery("");
                     setSelectedCategory(
                       selectedCategory === category.id ? null : category.id
-                    )
-                  }
+                    );
+                  }}
                   className={`px-4 py-2 rounded-lg text-sm font-medium transition-all flex items-center gap-2 border ${
                     selectedCategory === category.id
                       ? "bg-primary text-primary-foreground border-primary"
@@ -292,6 +311,7 @@ const Help = () => {
               type="text"
               placeholder="Start typing a question..."
               value={searchQuery}
+              onFocus={() => setSelectedCategory(null)}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="pl-12 pr-10 h-12 rounded-xl border-primary/50 bg-background focus:border-primary"
             />
@@ -319,14 +339,14 @@ const Help = () => {
                     <Clock className="w-8 h-8 animate-spin mx-auto mb-4 text-primary" />
                     <p className="text-muted-foreground">Loading FAQs...</p>
                   </div>
-                ) : filteredFaqs.length === 0 ? (
+                ) : displayedFaqs.length === 0 ? (
                   <div className="p-8 text-center">
                     <HelpCircle className="w-12 h-12 mx-auto mb-4 text-muted-foreground" />
                     <p className="text-muted-foreground">No FAQs found matching your search.</p>
                   </div>
                 ) : (
                   <Accordion type="single" collapsible className="p-6">
-                    {filteredFaqs.map((faq) => (
+                    {displayedFaqs.map((faq) => (
                       <AccordionItem key={faq.id} value={faq.id} className="border-border">
                         <AccordionTrigger className="text-left hover:text-primary transition-colors py-4">
                           {faq.question}
