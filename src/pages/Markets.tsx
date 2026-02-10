@@ -131,6 +131,7 @@ const internationalMarkets: {
   status: "active" | "coming";
 }[] = [
   { name: "Tokyo, Japan", city: "Tokyo", flag: "🇯🇵", coordinates: [139.6917, 35.6895], status: "active" },
+  { name: "Bangkok, Thailand", city: "Bangkok", flag: "🇹🇭", coordinates: [100.5018, 13.7563], status: "active" },
   { name: "Singapore", city: "Singapore", flag: "🇸🇬", coordinates: [103.8198, 1.3521], status: "coming" },
   { name: "Seoul, South Korea", city: "Seoul", flag: "🇰🇷", coordinates: [126.978, 37.5665], status: "coming" },
   { name: "Dubai, UAE", city: "Dubai", flag: "🇦🇪", coordinates: [55.2708, 25.2048], status: "coming" },
@@ -357,6 +358,7 @@ const Markets = () => {
                           fill={
                             [
                               "Japan",
+                              "Thailand",
                               "Singapore",
                               "South Korea",
                               "United Arab Emirates",
