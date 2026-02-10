@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useCallback, useMemo, memo } from "react";
 import { motion } from "framer-motion";
 import {
   ComposableMap,
@@ -151,16 +151,78 @@ const internationalMarkets: {
   },
 ];
 
+const getStateColor = (stateName: string) => {
+  const data = stateData[stateName];
+  if (!data) return "hsl(0, 0%, 92%)";
+  return volumeColors[data.volume];
+};
+
+const USAMap = memo(({ onHover, onLeave }: { onHover: (name: string, e: React.MouseEvent) => void; onLeave: () => void }) => (
+  <ComposableMap
+    projection="geoAlbersUsa"
+    projectionConfig={{ scale: 1000 }}
+    style={{ width: "100%", height: "auto" }}
+  >
+    <Geographies geography={US_TOPO_URL}>
+      {({ geographies }) =>
+        geographies.map((geo) => {
+          const stateName = geo.properties.name;
+          const data = stateData[stateName];
+          return (
+            <Geography
+              key={geo.rsmKey}
+              geography={geo}
+              fill={getStateColor(stateName)}
+              stroke="hsl(0, 0%, 100%)"
+              strokeWidth={0.75}
+              style={{
+                default: { outline: "none" },
+                hover: {
+                  outline: "none",
+                  fill: data
+                    ? "hsl(24, 100%, 40%)"
+                    : "hsl(0, 0%, 88%)",
+                },
+                pressed: { outline: "none" },
+              }}
+              onMouseEnter={(e) => {
+                if (data) onHover(stateName, e);
+              }}
+              onMouseLeave={onLeave}
+            />
+          );
+        })
+      }
+    </Geographies>
+    <Marker coordinates={[-77.0369, 38.9072]}>
+      <circle
+        r={5}
+        fill={volumeColors.medium}
+        stroke="hsl(0, 0%, 100%)"
+        strokeWidth={0.75}
+        className="cursor-pointer"
+        onMouseEnter={(e) => onHover("District of Columbia", e)}
+        onMouseLeave={onLeave}
+      />
+    </Marker>
+  </ComposableMap>
+));
+
+USAMap.displayName = "USAMap";
+
 const Markets = () => {
   const [hoveredState, setHoveredState] = useState<string | null>(null);
   const [hoveredMarket, setHoveredMarket] = useState<string | null>(null);
   const [tooltipPos, setTooltipPos] = useState({ x: 0, y: 0 });
 
-  const getStateColor = (stateName: string) => {
-    const data = stateData[stateName];
-    if (!data) return "hsl(0, 0%, 92%)";
-    return volumeColors[data.volume];
-  };
+  const handleStateHover = useCallback((name: string, e: React.MouseEvent) => {
+    setHoveredState(name);
+    setTooltipPos({ x: e.clientX, y: e.clientY });
+  }, []);
+
+  const handleStateLeave = useCallback(() => {
+    setHoveredState(null);
+  }, []);
 
   const handleMailto = () => {
     const subject = encodeURIComponent("We Need Courial in {city}");
@@ -203,64 +265,7 @@ const Markets = () => {
           <div className="max-w-6xl mx-auto">
             <div className="relative w-full">
               <div className="relative">
-                <ComposableMap
-                  projection="geoAlbersUsa"
-                  projectionConfig={{ scale: 1000 }}
-                  style={{ width: "100%", height: "auto" }}
-                >
-                  <Geographies geography={US_TOPO_URL}>
-                    {({ geographies }) =>
-                      geographies.map((geo) => {
-                        const stateName = geo.properties.name;
-                        const data = stateData[stateName];
-                        return (
-                          <Geography
-                            key={geo.rsmKey}
-                            geography={geo}
-                            fill={getStateColor(stateName)}
-                            stroke="hsl(0, 0%, 100%)"
-                            strokeWidth={0.75}
-                            style={{
-                              default: { outline: "none" },
-                              hover: {
-                                outline: "none",
-                                fill: data
-                                  ? "hsl(24, 100%, 40%)"
-                                  : "hsl(0, 0%, 88%)",
-                              },
-                              pressed: { outline: "none" },
-                            }}
-                            onMouseEnter={(e) => {
-                              if (data) {
-                                setHoveredState(stateName);
-                                setTooltipPos({
-                                  x: e.clientX,
-                                  y: e.clientY,
-                                });
-                              }
-                            }}
-                            onMouseLeave={() => setHoveredState(null)}
-                          />
-                        );
-                      })
-                    }
-                  </Geographies>
-                  {/* DC marker since it doesn't render as a geography */}
-                  <Marker coordinates={[-77.0369, 38.9072]}>
-                    <circle
-                      r={5}
-                      fill={volumeColors.medium}
-                      stroke="hsl(0, 0%, 100%)"
-                      strokeWidth={0.75}
-                      className="cursor-pointer"
-                      onMouseEnter={(e) => {
-                        setHoveredState("District of Columbia");
-                        setTooltipPos({ x: e.clientX, y: e.clientY });
-                      }}
-                      onMouseLeave={() => setHoveredState(null)}
-                    />
-                  </Marker>
-                </ComposableMap>
+                <USAMap onHover={handleStateHover} onLeave={handleStateLeave} />
 
                 <div className="absolute top-[5%] left-1/2 -translate-x-1/2 z-10 pointer-events-none">
                   <p className="text-sm text-muted-foreground italic">
