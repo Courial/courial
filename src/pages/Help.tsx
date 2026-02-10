@@ -160,12 +160,7 @@ const staticFaqs: FAQ[] = [
 const Help = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
-  const [faqs, setFaqs] = useState<FAQ[]>(staticFaqs);
-  const [loading, setLoading] = useState(false);
-
-  useEffect(() => {
-    fetchFaqs();
-  }, []);
+  const [loading] = useState(false);
 
   const location = useLocation();
   useEffect(() => {
@@ -177,41 +172,17 @@ const Help = () => {
     }
   }, [location.hash]);
 
-  const fetchFaqs = async () => {
-    setLoading(true);
-    try {
-      const { data, error } = await supabase.functions.invoke("helpscout", {
-        body: { action: "getFaqs" },
-      });
-
-      if (error) {
-        console.error("Error fetching FAQs:", error);
-        return;
-      }
-
-      if (data?.faqs && data.faqs.length > 0) {
-        setFaqs(data.faqs);
-      }
-    } catch (error) {
-      console.error("Error fetching FAQs:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  // Compute displayed FAQs based on mode
+  // Use static FAQs for browsing (Help Scout data lacks categories/answers)
   const displayedFaqs = (() => {
     if (searchQuery) {
-      // Search mode: show top 5 closest matched by title
       const queryLower = searchQuery.toLowerCase();
-      return faqs
+      return staticFaqs
         .filter(
           (faq) =>
             faq.question.toLowerCase().includes(queryLower) ||
             faq.answer.toLowerCase().includes(queryLower)
         )
         .sort((a, b) => {
-          // Prioritize title matches over answer-only matches
           const aTitle = a.question.toLowerCase().includes(queryLower) ? 0 : 1;
           const bTitle = b.question.toLowerCase().includes(queryLower) ? 0 : 1;
           return aTitle - bTitle;
@@ -219,10 +190,8 @@ const Help = () => {
         .slice(0, 5);
     }
     if (selectedCategory) {
-      // Category mode: show top 5 in that category
-      return faqs.filter((faq) => faq.category === selectedCategory).slice(0, 5);
+      return staticFaqs.filter((faq) => faq.category === selectedCategory).slice(0, 5);
     }
-    // Default: no buttons selected, no search = show nothing
     return [];
   })();
 
