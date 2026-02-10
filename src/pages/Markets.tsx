@@ -125,30 +125,16 @@ const volumeColors = {
 
 const internationalMarkets: {
   name: string;
+  city: string;
+  flag: string;
   coordinates: [number, number];
   status: "active" | "coming";
 }[] = [
-  { name: "Tokyo, Japan", coordinates: [139.6917, 35.6895], status: "active" },
-  {
-    name: "Singapore",
-    coordinates: [103.8198, 1.3521],
-    status: "coming",
-  },
-  {
-    name: "Seoul, South Korea",
-    coordinates: [126.978, 37.5665],
-    status: "coming",
-  },
-  {
-    name: "Dubai, UAE",
-    coordinates: [55.2708, 25.2048],
-    status: "coming",
-  },
-  {
-    name: "Toronto, Canada",
-    coordinates: [-79.3832, 43.6532],
-    status: "coming",
-  },
+  { name: "Tokyo, Japan", city: "Tokyo", flag: "🇯🇵", coordinates: [139.6917, 35.6895], status: "active" },
+  { name: "Singapore", city: "Singapore", flag: "🇸🇬", coordinates: [103.8198, 1.3521], status: "coming" },
+  { name: "Seoul, South Korea", city: "Seoul", flag: "🇰🇷", coordinates: [126.978, 37.5665], status: "coming" },
+  { name: "Dubai, UAE", city: "Dubai", flag: "🇦🇪", coordinates: [55.2708, 25.2048], status: "coming" },
+  { name: "Toronto, Canada", city: "Toronto", flag: "🇨🇦", coordinates: [-79.3832, 43.6532], status: "coming" },
 ];
 
 const getStateColor = (stateName: string) => {
@@ -413,7 +399,10 @@ const Markets = () => {
                         stroke="hsl(0, 0%, 100%)"
                         strokeWidth={1.5}
                         className="cursor-pointer"
-                        onMouseEnter={() => setHoveredMarket(market.name)}
+                        onMouseEnter={(e) => {
+                          setHoveredMarket(market.name);
+                          setTooltipPos({ x: e.clientX, y: e.clientY });
+                        }}
                         onMouseLeave={() => setHoveredMarket(null)}
                       />
                     </Marker>
@@ -425,6 +414,30 @@ const Markets = () => {
                     Hover over a market to see details
                   </p>
                 </div>
+
+                {/* International market tooltip */}
+                {hoveredMarket && (() => {
+                  const market = internationalMarkets.find(m => m.name === hoveredMarket);
+                  if (!market) return null;
+                  return (
+                    <div
+                      className="fixed z-50 glass-card rounded-xl px-4 py-3 shadow-lg pointer-events-none"
+                      style={{
+                        left: tooltipPos.x + 12,
+                        top: tooltipPos.y - 40,
+                        width: 180,
+                      }}
+                    >
+                      <p className="font-semibold text-foreground text-sm flex items-center gap-2">
+                        <span className="text-lg">{market.flag}</span>
+                        {market.city}
+                      </p>
+                      <p className="text-xs text-primary capitalize mt-1">
+                        {market.status === "active" ? "Active" : "Coming Soon"}
+                      </p>
+                    </div>
+                  );
+                })()}
               </motion.div>
 
               {/* International Legend */}
