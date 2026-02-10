@@ -81,7 +81,7 @@ const Business = () => {
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
               <Button variant="hero" size="xl" className="group" onClick={handleScheduleDemo}>
-                Schedule a Demo
+                Contact Sales
                 <ArrowRight className="w-5 h-5 transition-transform group-hover:translate-x-1" />
               </Button>
               <Link to="/help#api-docs">
