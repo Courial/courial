@@ -399,7 +399,10 @@ const Markets = () => {
                         stroke="hsl(0, 0%, 100%)"
                         strokeWidth={1.5}
                         className="cursor-pointer"
-                        onMouseEnter={() => setHoveredMarket(market.name)}
+                        onMouseEnter={(e) => {
+                          setHoveredMarket(market.name);
+                          setTooltipPos({ x: e.clientX, y: e.clientY });
+                        }}
                         onMouseLeave={() => setHoveredMarket(null)}
                       />
                     </Marker>
@@ -411,7 +414,30 @@ const Markets = () => {
                     Hover over a market to see details
                   </p>
                 </div>
-              </motion.div>
+
+                {/* International market tooltip */}
+                {hoveredMarket && (() => {
+                  const market = internationalMarkets.find(m => m.name === hoveredMarket);
+                  if (!market) return null;
+                  return (
+                    <div
+                      className="fixed z-50 glass-card rounded-xl px-4 py-3 shadow-lg pointer-events-none"
+                      style={{
+                        left: tooltipPos.x + 12,
+                        top: tooltipPos.y - 40,
+                        width: 180,
+                      }}
+                    >
+                      <p className="font-semibold text-foreground text-sm flex items-center gap-2">
+                        <span className="text-lg">{market.flag}</span>
+                        {market.city}
+                      </p>
+                      <p className="text-xs text-primary capitalize mt-1">
+                        {market.status === "active" ? "Active" : "Coming Soon"}
+                      </p>
+                    </div>
+                  );
+                })()}
 
               {/* International Legend */}
               <div className="flex items-center justify-center gap-8 mt-8">
