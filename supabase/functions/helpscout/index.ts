@@ -33,7 +33,7 @@ serve(async (req) => {
       );
     }
 
-    const { action, query, category } = await req.json();
+    const { action, query, category, articleId } = await req.json();
 
     switch (action) {
       case "getFaqs": {
