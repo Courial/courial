@@ -236,11 +236,11 @@ const Markets = () => {
               Coverage
             </span>
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 gradient-text-black-orange">
-              Delivering Across America
+              Across America
             </h1>
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
               We're rapidly expanding across the nation, bringing premium
-              delivery and concierge services to major metropolitan areas.
+              services to major metropolitan areas.
             </p>
           </motion.div>
         </div>
