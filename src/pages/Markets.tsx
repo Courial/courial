@@ -254,8 +254,8 @@ const Markets = () => {
               <div className="relative">
                 <USAMap onHover={handleStateHover} onLeave={handleStateLeave} />
 
-                <div className="absolute top-[-1%] left-1/2 -translate-x-1/2 z-10 pointer-events-none">
-                  <p className="text-sm md:text-base text-muted-foreground italic">
+                <div className="absolute top-[5%] left-1/2 -translate-x-1/2 z-10 pointer-events-none">
+                  <p className="text-sm text-muted-foreground italic">
                     Hover over a state to see details
                   </p>
                 </div>
