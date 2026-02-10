@@ -323,7 +323,7 @@ const Markets = () => {
       {/* International Map */}
       <section className="py-12 relative">
         <div className="container mx-auto px-6">
-          <div className="max-w-4xl mx-auto text-center mb-[20px]">
+          <div className="max-w-4xl mx-auto text-center mb-[1px]">
             <span className="text-primary font-semibold text-sm uppercase tracking-wider mb-4 block">
               Global Reach
             </span>
