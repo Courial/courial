@@ -107,6 +107,14 @@ const stateData: Record<
     volume: "medium",
     cities: ["Washington, D.C."],
   },
+  Alaska: {
+    volume: "growing",
+    cities: ["Coming Soon"],
+  },
+  Hawaii: {
+    volume: "growing",
+    cities: ["Coming Soon"],
+  },
 };
 
 const volumeColors = {
