@@ -290,7 +290,7 @@ const Help = () => {
           </div>
 
           {/* Search Bar */}
-          <div className="max-w-lg mx-auto relative mb-12">
+          <div className="max-w-sm mx-auto relative mb-12">
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-primary z-10" />
             <Input
               type="text"
