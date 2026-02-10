@@ -116,16 +116,6 @@ export const Footer = () => {
                     </a>
                   </li>
                 ))}
-                  <li>
-                    <ApiDocsDialog
-                      trigger={
-                        <button className="text-sm text-background/60 hover:text-background transition-colors text-left">
-                          API Docs
-                        </button>
-                      }
-                    />
-                  </li>
-                )}
               </ul>
               {category === "company" && (
                 <div className="flex flex-row gap-2 mt-4">
