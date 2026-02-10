@@ -20,7 +20,7 @@ export const ApiDocsDialog = ({ trigger }: ApiDocsDialogProps) => {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>{trigger}</DialogTrigger>
-      <DialogContent className="sm:max-w-md bg-[hsl(0,0%,32%)] text-white border border-primary/30 rounded-[50px] max-h-[90vh] overflow-y-auto">
+      <DialogContent className="sm:max-w-md bg-[hsl(0,0%,12%)] text-white border border-primary/30 rounded-[50px] max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="text-3xl font-bold text-white text-center">
             Build with Courial
