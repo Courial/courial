@@ -58,29 +58,25 @@ const contactMethods = [
   {
     icon: Phone,
     title: "Call Us",
-    description: "+1 (415) 555-0123",
-    href: "tel:+14155550123",
+    href: "tel:+14152754707",
     color: "bg-emerald-500",
   },
   {
     icon: Mail,
     title: "Email Us",
-    description: "support@courial.com",
     href: "mailto:support@courial.com",
-    color: "bg-primary",
+    color: "bg-blue-500",
   },
   {
     icon: WhatsAppIcon,
     title: "WhatsApp",
-    description: "+1 (415) 555-0123",
-    href: "https://wa.me/14155550123",
+    href: "https://api.whatsapp.com/message/PHOLSBHGQKTEO1",
     color: "bg-green-500",
   },
   {
     icon: LineIcon,
     title: "Line",
-    description: "@courial",
-    href: "https://line.me/ti/p/@courial",
+    href: "https://lin.ee/DJiZWFw",
     color: "bg-green-400",
   },
 ];
