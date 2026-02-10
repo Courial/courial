@@ -247,7 +247,7 @@ const Markets = () => {
       </section>
 
       {/* USA Map */}
-      <section className="relative -mt-8">
+      <section className="relative -mt-16">
         <div className="container mx-auto px-6">
           <div className="max-w-6xl mx-auto">
             <div className="relative w-full">
