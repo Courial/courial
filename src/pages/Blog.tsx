@@ -2,22 +2,20 @@ import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { ArrowRight, Calendar, Clock } from "lucide-react";
-import { blogPosts } from "@/data/blog-posts";
+import { ArrowRight, Calendar, Clock, Loader2 } from "lucide-react";
+import { usePublishedPosts } from "@/hooks/useBlogPosts";
 import { Helmet } from "react-helmet-async";
 
 const Blog = () => {
-  const publishedPosts = blogPosts
-    .filter((p) => p.published)
-    .sort((a, b) => new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime());
+  const { data: publishedPosts, isLoading } = usePublishedPosts();
 
   const formatDate = (dateStr: string) => {
     const d = new Date(dateStr + "T00:00:00");
     return d.toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" });
   };
 
-  const featured = publishedPosts[0];
-  const rest = publishedPosts.slice(1);
+  const featured = publishedPosts?.[0];
+  const rest = publishedPosts?.slice(1) || [];
 
   return (
     <div className="min-h-screen bg-background">
@@ -46,106 +44,126 @@ const Blog = () => {
           </motion.div>
         </section>
 
-        {/* Featured Post */}
-        {featured && (
-          <section className="container mx-auto px-6 pb-16">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.1 }}
-            >
-              <Link
-                to={`/blog/${featured.slug}`}
-                className="group block rounded-2xl border border-border bg-card overflow-hidden hover-lift"
-              >
-                <div className="grid md:grid-cols-2 gap-0">
-                  {/* Image placeholder */}
-                  <div className="aspect-[16/10] md:aspect-auto bg-muted flex items-center justify-center min-h-[280px]">
-                    {featured.featuredImage ? (
-                      <img
-                        src={featured.featuredImage}
-                        alt={featured.title}
-                        className="w-full h-full object-cover"
-                      />
-                    ) : (
-                      <div className="text-muted-foreground/40 text-sm">Featured Image</div>
-                    )}
-                  </div>
-
-                  <div className="p-8 md:p-10 flex flex-col justify-center">
-                    <span className="text-xs font-semibold text-primary uppercase tracking-wide mb-3">
-                      {featured.category}
-                    </span>
-                    <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-4 group-hover:text-primary transition-colors">
-                      {featured.title}
-                    </h2>
-                    <p className="text-muted-foreground mb-6 leading-relaxed">
-                      {featured.excerpt}
-                    </p>
-                    <div className="flex items-center gap-4 text-sm text-muted-foreground">
-                      <span className="flex items-center gap-1.5">
-                        <Calendar className="w-3.5 h-3.5" />
-                        {formatDate(featured.publishedAt)}
-                      </span>
-                      <span className="flex items-center gap-1.5">
-                        <Clock className="w-3.5 h-3.5" />
-                        {featured.readTime}
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              </Link>
-            </motion.div>
-          </section>
-        )}
-
-        {/* Post Grid */}
-        {rest.length > 0 && (
-          <section className="container mx-auto px-6 pb-24">
-            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              {rest.map((post, i) => (
+        {isLoading ? (
+          <div className="container mx-auto px-6 py-20 text-center">
+            <Loader2 className="w-6 h-6 animate-spin mx-auto text-muted-foreground" />
+          </div>
+        ) : (
+          <>
+            {/* Featured Post */}
+            {featured && (
+              <section className="container mx-auto px-6 pb-16">
                 <motion.div
-                  key={post.slug}
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.4, delay: 0.1 + i * 0.05 }}
+                  transition={{ duration: 0.5, delay: 0.1 }}
                 >
                   <Link
-                    to={`/blog/${post.slug}`}
-                    className="group block rounded-xl border border-border bg-card overflow-hidden hover-lift h-full"
+                    to={`/blog/${featured.slug}`}
+                    className="group block rounded-2xl border border-border bg-card overflow-hidden hover-lift"
                   >
-                    <div className="aspect-[16/10] bg-muted flex items-center justify-center">
-                      {post.featuredImage ? (
-                        <img
-                          src={post.featuredImage}
-                          alt={post.title}
-                          className="w-full h-full object-cover"
-                        />
-                      ) : (
-                        <div className="text-muted-foreground/40 text-sm">Image</div>
-                      )}
-                    </div>
-                    <div className="p-6">
-                      <span className="text-xs font-semibold text-primary uppercase tracking-wide">
-                        {post.category}
-                      </span>
-                      <h3 className="text-lg font-bold text-foreground mt-2 mb-2 group-hover:text-primary transition-colors">
-                        {post.title}
-                      </h3>
-                      <p className="text-sm text-muted-foreground mb-4 line-clamp-2">
-                        {post.excerpt}
-                      </p>
-                      <div className="flex items-center gap-3 text-xs text-muted-foreground">
-                        <span>{formatDate(post.publishedAt)}</span>
-                        <span>·</span>
-                        <span>{post.readTime}</span>
+                    <div className="grid md:grid-cols-2 gap-0">
+                      <div className="aspect-[16/10] md:aspect-auto bg-muted flex items-center justify-center min-h-[280px]">
+                        {featured.featured_image_url ? (
+                          <img
+                            src={featured.featured_image_url}
+                            alt={featured.title}
+                            className="w-full h-full object-cover"
+                          />
+                        ) : (
+                          <div className="text-muted-foreground/40 text-sm">Featured Image</div>
+                        )}
+                      </div>
+                      <div className="p-8 md:p-10 flex flex-col justify-center">
+                        <span className="text-xs font-semibold text-primary uppercase tracking-wide mb-3">
+                          {featured.category}
+                        </span>
+                        <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-4 group-hover:text-primary transition-colors">
+                          {featured.title}
+                        </h2>
+                        <p className="text-muted-foreground mb-6 leading-relaxed">
+                          {featured.excerpt}
+                        </p>
+                        <div className="flex items-center gap-4 text-sm text-muted-foreground">
+                          {featured.published_at && (
+                            <span className="flex items-center gap-1.5">
+                              <Calendar className="w-3.5 h-3.5" />
+                              {formatDate(featured.published_at)}
+                            </span>
+                          )}
+                          {featured.read_time && (
+                            <span className="flex items-center gap-1.5">
+                              <Clock className="w-3.5 h-3.5" />
+                              {featured.read_time}
+                            </span>
+                          )}
+                        </div>
                       </div>
                     </div>
                   </Link>
                 </motion.div>
-              ))}
-            </div>
-          </section>
+              </section>
+            )}
+
+            {/* Post Grid */}
+            {rest.length > 0 && (
+              <section className="container mx-auto px-6 pb-24">
+                <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {rest.map((post, i) => (
+                    <motion.div
+                      key={post.id}
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.4, delay: 0.1 + i * 0.05 }}
+                    >
+                      <Link
+                        to={`/blog/${post.slug}`}
+                        className="group block rounded-xl border border-border bg-card overflow-hidden hover-lift h-full"
+                      >
+                        <div className="aspect-[16/10] bg-muted flex items-center justify-center">
+                          {post.featured_image_url ? (
+                            <img
+                              src={post.featured_image_url}
+                              alt={post.title}
+                              className="w-full h-full object-cover"
+                            />
+                          ) : (
+                            <div className="text-muted-foreground/40 text-sm">Image</div>
+                          )}
+                        </div>
+                        <div className="p-6">
+                          <span className="text-xs font-semibold text-primary uppercase tracking-wide">
+                            {post.category}
+                          </span>
+                          <h3 className="text-lg font-bold text-foreground mt-2 mb-2 group-hover:text-primary transition-colors">
+                            {post.title}
+                          </h3>
+                          <p className="text-sm text-muted-foreground mb-4 line-clamp-2">
+                            {post.excerpt}
+                          </p>
+                          <div className="flex items-center gap-3 text-xs text-muted-foreground">
+                            {post.published_at && <span>{formatDate(post.published_at)}</span>}
+                            {post.read_time && (
+                              <>
+                                <span>·</span>
+                                <span>{post.read_time}</span>
+                              </>
+                            )}
+                          </div>
+                        </div>
+                      </Link>
+                    </motion.div>
+                  ))}
+                </div>
+              </section>
+            )}
+
+            {!publishedPosts?.length && (
+              <div className="container mx-auto px-6 py-20 text-center text-muted-foreground">
+                No posts yet. Check back soon!
+              </div>
+            )}
+          </>
         )}
 
         {/* CTA */}

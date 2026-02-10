@@ -1,1 +1,13 @@
 project_id = "hwdfhdegvfmhueheagyq"
+
+[functions.helpscout]
+verify_jwt = false
+
+[functions.generate-blog-image]
+verify_jwt = false
+
+[functions.suggest-blog-topics]
+verify_jwt = false
+
+[functions.generate-blog-content]
+verify_jwt = false
