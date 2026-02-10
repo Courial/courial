@@ -107,15 +107,15 @@ export const Footer = () => {
               <ul className="space-y-1.5">
                 {links.map((link) => (
                   <li key={link.name}>
-                    <Link
-                      to={link.href}
-                      className="text-sm text-background/60 hover:text-background transition-colors"
+                    <a
+                      href={link.href}
+                      onClick={(e) => handleLinkClick(e, link.href)}
+                      className="text-sm text-background/60 hover:text-background transition-colors cursor-pointer"
                     >
                       {link.name}
-                    </Link>
+                    </a>
                   </li>
                 ))}
-                {category === "support" && (
                   <li>
                     <ApiDocsDialog
                       trigger={
