@@ -1,6 +1,5 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import courialLogo from "@/assets/courial-logo.png";
-import { ApiDocsDialog } from "@/components/ApiDocsDialog";
 
 const XIcon = ({ className }: { className?: string }) => (
   <svg viewBox="0 0 24 24" className={className} fill="currentColor">
