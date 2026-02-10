@@ -358,6 +358,7 @@ const Markets = () => {
                           fill={
                             [
                               "Japan",
+                              "Thailand",
                               "Singapore",
                               "South Korea",
                               "United Arab Emirates",
