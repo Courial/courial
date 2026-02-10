@@ -338,14 +338,14 @@ const Help = () => {
                     <Clock className="w-8 h-8 animate-spin mx-auto mb-4 text-primary" />
                     <p className="text-muted-foreground">Loading FAQs...</p>
                   </div>
-                ) : filteredFaqs.length === 0 ? (
+                ) : displayedFaqs.length === 0 ? (
                   <div className="p-8 text-center">
                     <HelpCircle className="w-12 h-12 mx-auto mb-4 text-muted-foreground" />
                     <p className="text-muted-foreground">No FAQs found matching your search.</p>
                   </div>
                 ) : (
                   <Accordion type="single" collapsible className="p-6">
-                    {filteredFaqs.map((faq) => (
+                    {displayedFaqs.map((faq) => (
                       <AccordionItem key={faq.id} value={faq.id} className="border-border">
                         <AccordionTrigger className="text-left hover:text-primary transition-colors py-4">
                           {faq.question}
