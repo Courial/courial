@@ -356,17 +356,18 @@ const Markets = () => {
                           key={geo.rsmKey}
                           geography={geo}
                           fill={
-                            [
-                              "Japan",
-                              "Thailand",
-                              "Singapore",
-                              "South Korea",
-                              "United Arab Emirates",
-                              "Canada",
-                              "China",
-                            ].includes(geo.properties.name)
-                              ? "hsl(24, 50%, 72%)"
-                              : "hsl(0, 0%, 92%)"
+                            geo.properties.name === "Thailand"
+                              ? "hsl(24, 100%, 50%)"
+                              : [
+                                  "Japan",
+                                  "Singapore",
+                                  "South Korea",
+                                  "United Arab Emirates",
+                                  "Canada",
+                                  "China",
+                                ].includes(geo.properties.name)
+                                ? "hsl(24, 50%, 72%)"
+                                : "hsl(0, 0%, 92%)"
                           }
                           stroke="hsl(0, 0%, 100%)"
                           strokeWidth={0.5}
