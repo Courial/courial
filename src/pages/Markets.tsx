@@ -321,7 +321,7 @@ const Markets = () => {
       </section>
 
       {/* International Map */}
-      <section className="py-12 relative -mt-[100px]">
+      <section className="py-12 relative">
         <div className="container mx-auto px-6">
           <div className="max-w-4xl mx-auto text-center mb-16">
             <span className="text-primary font-semibold text-sm uppercase tracking-wider mb-4 block">
