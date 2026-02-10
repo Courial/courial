@@ -222,7 +222,7 @@ const Markets = () => {
       <Navbar />
 
       {/* Hero */}
-      <section className="pt-11 relative overflow-hidden">
+      <section className="pt-1 relative overflow-hidden">
         <div className="absolute inset-0 grid-pattern opacity-50" />
         <div className="absolute inset-0 radial-gradient" />
         <div className="container mx-auto px-6 relative z-10">
