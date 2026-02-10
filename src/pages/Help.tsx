@@ -523,7 +523,7 @@ const Help = () => {
       </section>
 
       {/* API Docs Section */}
-      <section id="api-docs" className="py-16">
+      <section id="api-docs" className="pt-4 pb-16">
         <div className="container mx-auto px-6">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
