@@ -395,7 +395,7 @@ const Help = () => {
       </section>
 
       {/* FAQ Section */}
-      <section className="py-16 relative">
+      <section className="pt-8 pb-16 relative">
         <div className="absolute inset-0 bg-gradient-to-b from-transparent via-primary/5 to-transparent" />
         <div className="container mx-auto px-6 relative z-10">
           <motion.div
