@@ -10,7 +10,7 @@ export const ChatBubble = () => {
   useEffect(() => {
     const timer = setTimeout(() => {
       setIsVisible(false);
-    }, 5 * 60 * 1000); // 5 minutes
+    }, 2 * 60 * 1000); // 2 minutes
 
     return () => clearTimeout(timer);
   }, []);
