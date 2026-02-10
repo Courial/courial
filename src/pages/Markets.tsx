@@ -239,8 +239,8 @@ const Markets = () => {
               Across America
             </h1>
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-              We're rapidly expanding across the nation, bringing premium
-              services to major metropolitan areas.
+              We're rapidly expanding across the nation,<br />
+              bringing premium services to major metropolitan areas.
             </p>
           </motion.div>
         </div>
