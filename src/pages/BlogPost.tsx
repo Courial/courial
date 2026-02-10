@@ -2,11 +2,20 @@ import { useParams, Link, Navigate } from "react-router-dom";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { motion } from "framer-motion";
-import { ArrowLeft, Calendar, Clock, User } from "lucide-react";
-import { blogPosts, BlogContentBlock } from "@/data/blog-posts";
+import { ArrowLeft, Calendar, Clock, User, Loader2 } from "lucide-react";
+import { usePublishedPost } from "@/hooks/useBlogPosts";
 import { Helmet } from "react-helmet-async";
 
-const renderBlock = (block: BlogContentBlock, index: number) => {
+interface ContentBlock {
+  type: string;
+  text?: string;
+  items?: string[];
+  src?: string;
+  alt?: string;
+  caption?: string;
+}
+
+const renderBlock = (block: ContentBlock, index: number) => {
   switch (block.type) {
     case "heading2":
       return (
@@ -43,10 +52,7 @@ const renderBlock = (block: BlogContentBlock, index: number) => {
       );
     case "protip":
       return (
-        <div
-          key={index}
-          className="my-10 p-6 rounded-xl bg-primary/5 border border-primary/15"
-        >
+        <div key={index} className="my-10 p-6 rounded-xl bg-primary/5 border border-primary/15">
           <p className="text-xs font-bold text-primary uppercase tracking-wide mb-2">Pro Tip</p>
           <p
             className="text-foreground/80 leading-relaxed"
@@ -62,10 +68,7 @@ const renderBlock = (block: BlogContentBlock, index: number) => {
       return (
         <ul key={index} className="my-6 space-y-3">
           {block.items?.map((item, i) => (
-            <li
-              key={i}
-              className="flex items-start gap-3 text-foreground/80 leading-relaxed"
-            >
+            <li key={i} className="flex items-start gap-3 text-foreground/80 leading-relaxed">
               <span className="mt-2 w-1.5 h-1.5 rounded-full bg-primary shrink-0" />
               <span
                 dangerouslySetInnerHTML={{
@@ -81,12 +84,7 @@ const renderBlock = (block: BlogContentBlock, index: number) => {
     case "image":
       return (
         <figure key={index} className="my-8">
-          <img
-            src={block.src}
-            alt={block.alt || ""}
-            className="w-full rounded-lg"
-            loading="lazy"
-          />
+          <img src={block.src} alt={block.alt || ""} className="w-full rounded-lg" loading="lazy" />
           {block.caption && (
             <figcaption className="text-sm text-muted-foreground mt-2 text-center">
               {block.caption}
@@ -101,7 +99,15 @@ const renderBlock = (block: BlogContentBlock, index: number) => {
 
 const BlogPost = () => {
   const { slug } = useParams<{ slug: string }>();
-  const post = blogPosts.find((p) => p.slug === slug && p.published);
+  const { data: post, isLoading } = usePublishedPost(slug || "");
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <Loader2 className="w-6 h-6 animate-spin text-muted-foreground" />
+      </div>
+    );
+  }
 
   if (!post) return <Navigate to="/blog" replace />;
 
@@ -110,34 +116,23 @@ const BlogPost = () => {
     return d.toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" });
   };
 
-  // Find next/prev posts
-  const publishedPosts = blogPosts
-    .filter((p) => p.published)
-    .sort((a, b) => new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime());
-  const currentIndex = publishedPosts.findIndex((p) => p.slug === slug);
-  const nextPost = publishedPosts[currentIndex + 1];
-  const prevPost = publishedPosts[currentIndex - 1];
+  const content = (Array.isArray(post.content) ? post.content : []) as ContentBlock[];
 
   return (
     <div className="min-h-screen bg-background">
       <Helmet>
         <title>{post.title} — Courial Blog</title>
-        <meta name="description" content={post.metaDescription} />
+        <meta name="description" content={post.meta_description || ""} />
         <meta property="og:title" content={post.title} />
-        <meta property="og:description" content={post.metaDescription} />
+        <meta property="og:description" content={post.meta_description || ""} />
         <meta property="og:type" content="article" />
-        <meta name="article:published_time" content={post.publishedAt} />
+        {post.published_at && <meta name="article:published_time" content={post.published_at} />}
       </Helmet>
       <Navbar />
 
       <main className="pt-20 lg:pt-24">
         <article className="container mx-auto px-6 pt-12 pb-20">
-          {/* Back link */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.3 }}
-          >
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.3 }}>
             <Link
               to="/blog"
               className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors mb-10"
@@ -152,7 +147,6 @@ const BlogPost = () => {
             transition={{ duration: 0.5 }}
             className="max-w-2xl mx-auto"
           >
-            {/* Meta */}
             <span className="text-xs font-semibold text-primary uppercase tracking-wide">
               {post.category}
             </span>
@@ -166,30 +160,28 @@ const BlogPost = () => {
                 <User className="w-3.5 h-3.5" />
                 {post.author}
               </span>
-              <span className="flex items-center gap-1.5">
-                <Calendar className="w-3.5 h-3.5" />
-                {formatDate(post.publishedAt)}
-              </span>
-              <span className="flex items-center gap-1.5">
-                <Clock className="w-3.5 h-3.5" />
-                {post.readTime}
-              </span>
+              {post.published_at && (
+                <span className="flex items-center gap-1.5">
+                  <Calendar className="w-3.5 h-3.5" />
+                  {formatDate(post.published_at)}
+                </span>
+              )}
+              {post.read_time && (
+                <span className="flex items-center gap-1.5">
+                  <Clock className="w-3.5 h-3.5" />
+                  {post.read_time}
+                </span>
+              )}
             </div>
 
-            {/* Featured Image */}
-            {post.featuredImage && (
+            {post.featured_image_url && (
               <div className="mb-10 rounded-xl overflow-hidden">
-                <img
-                  src={post.featuredImage}
-                  alt={post.title}
-                  className="w-full"
-                />
+                <img src={post.featured_image_url} alt={post.title} className="w-full" />
               </div>
             )}
 
-            {/* Content */}
             <div className="prose-courial">
-              {post.content.map((block, i) => renderBlock(block, i))}
+              {content.map((block, i) => renderBlock(block, i))}
             </div>
 
             {/* Soft CTA */}
@@ -215,32 +207,6 @@ const BlogPost = () => {
                 </Link>
               </div>
             </div>
-
-            {/* Navigation */}
-            {(prevPost || nextPost) && (
-              <div className="mt-12 pt-10 border-t border-border grid grid-cols-2 gap-6">
-                <div>
-                  {nextPost && (
-                    <Link to={`/blog/${nextPost.slug}`} className="group">
-                      <p className="text-xs text-muted-foreground mb-1">← Older</p>
-                      <p className="text-sm font-semibold text-foreground group-hover:text-primary transition-colors">
-                        {nextPost.title}
-                      </p>
-                    </Link>
-                  )}
-                </div>
-                <div className="text-right">
-                  {prevPost && (
-                    <Link to={`/blog/${prevPost.slug}`} className="group">
-                      <p className="text-xs text-muted-foreground mb-1">Newer →</p>
-                      <p className="text-sm font-semibold text-foreground group-hover:text-primary transition-colors">
-                        {prevPost.title}
-                      </p>
-                    </Link>
-                  )}
-                </div>
-              </div>
-            )}
           </motion.div>
         </article>
       </main>
