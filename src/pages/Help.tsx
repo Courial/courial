@@ -58,29 +58,25 @@ const contactMethods = [
   {
     icon: Phone,
     title: "Call Us",
-    description: "+1 (415) 555-0123",
-    href: "tel:+14155550123",
+    href: "tel:+14152754707",
     color: "bg-emerald-500",
   },
   {
     icon: Mail,
     title: "Email Us",
-    description: "support@courial.com",
     href: "mailto:support@courial.com",
-    color: "bg-primary",
+    color: "bg-blue-500",
   },
   {
     icon: WhatsAppIcon,
     title: "WhatsApp",
-    description: "+1 (415) 555-0123",
-    href: "https://wa.me/14155550123",
+    href: "https://api.whatsapp.com/message/PHOLSBHGQKTEO1",
     color: "bg-green-500",
   },
   {
     icon: LineIcon,
     title: "Line",
-    description: "@courial",
-    href: "https://line.me/ti/p/@courial",
+    href: "https://lin.ee/DJiZWFw",
     color: "bg-green-400",
   },
 ];
@@ -290,7 +286,7 @@ const Help = () => {
           </div>
 
           {/* Search Bar */}
-          <div className="max-w-lg mx-auto relative mb-12">
+          <div className="max-w-sm mx-auto relative mb-12">
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-primary z-10" />
             <Input
               type="text"
@@ -309,41 +305,42 @@ const Help = () => {
             )}
           </div>
 
-          {/* FAQ Accordion */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5 }}
-            className="max-w-3xl mx-auto"
-          >
-            <div className="glass-card rounded-3xl overflow-hidden">
-              {loading ? (
-                <div className="p-8 text-center">
-                  <Clock className="w-8 h-8 animate-spin mx-auto mb-4 text-primary" />
-                  <p className="text-muted-foreground">Loading FAQs...</p>
-                </div>
-              ) : filteredFaqs.length === 0 ? (
-                <div className="p-8 text-center">
-                  <HelpCircle className="w-12 h-12 mx-auto mb-4 text-muted-foreground" />
-                  <p className="text-muted-foreground">No FAQs found matching your search.</p>
-                </div>
-              ) : (
-                <Accordion type="single" collapsible className="p-6">
-                  {filteredFaqs.map((faq) => (
-                    <AccordionItem key={faq.id} value={faq.id} className="border-border">
-                      <AccordionTrigger className="text-left hover:text-primary transition-colors py-4">
-                        {faq.question}
-                      </AccordionTrigger>
-                      <AccordionContent className="text-muted-foreground pb-4">
-                        {faq.answer}
-                      </AccordionContent>
-                    </AccordionItem>
-                  ))}
-                </Accordion>
-              )}
-            </div>
-          </motion.div>
+          {/* FAQ Accordion - only show when searching or category selected */}
+          {(searchQuery || selectedCategory) && (
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5 }}
+              className="max-w-3xl mx-auto"
+            >
+              <div className="glass-card rounded-3xl overflow-hidden">
+                {loading ? (
+                  <div className="p-8 text-center">
+                    <Clock className="w-8 h-8 animate-spin mx-auto mb-4 text-primary" />
+                    <p className="text-muted-foreground">Loading FAQs...</p>
+                  </div>
+                ) : filteredFaqs.length === 0 ? (
+                  <div className="p-8 text-center">
+                    <HelpCircle className="w-12 h-12 mx-auto mb-4 text-muted-foreground" />
+                    <p className="text-muted-foreground">No FAQs found matching your search.</p>
+                  </div>
+                ) : (
+                  <Accordion type="single" collapsible className="p-6">
+                    {filteredFaqs.map((faq) => (
+                      <AccordionItem key={faq.id} value={faq.id} className="border-border">
+                        <AccordionTrigger className="text-left hover:text-primary transition-colors py-4">
+                          {faq.question}
+                        </AccordionTrigger>
+                        <AccordionContent className="text-muted-foreground pb-4">
+                          {faq.answer}
+                        </AccordionContent>
+                      </AccordionItem>
+                    ))}
+                  </Accordion>
+                )}
+              </div>
+            </motion.div>
+          )}
         </div>
       </section>
 
@@ -396,7 +393,7 @@ const Help = () => {
             </p>
           </motion.div>
 
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl mx-auto">
+          <div className="flex items-center justify-center gap-4 max-w-md mx-auto">
             {contactMethods.map((method, index) => {
               const Icon = method.icon;
               return (
@@ -409,17 +406,14 @@ const Help = () => {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ duration: 0.4, delay: index * 0.1 }}
-                  className="group glass-card rounded-2xl p-6 text-center hover:border-primary/50 transition-all duration-300"
+                  className="group"
+                  title={method.title}
                 >
                   <div
-                    className={`w-12 h-12 rounded-xl ${method.color} flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform`}
+                    className={`w-12 h-12 rounded-full ${method.color} flex items-center justify-center group-hover:scale-110 transition-transform`}
                   >
                     <Icon className="w-6 h-6 text-white" />
                   </div>
-                  <h3 className="font-semibold mb-1 group-hover:text-primary transition-colors">
-                    {method.title}
-                  </h3>
-                  <p className="text-sm text-muted-foreground">{method.description}</p>
                 </motion.a>
               );
             })}
