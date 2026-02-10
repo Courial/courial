@@ -464,8 +464,8 @@ const Help = () => {
             )}
           </div>
 
-          {/* FAQ Accordion - only show when searching or category selected */}
-          {(searchQuery || selectedCategory) && (
+          {/* FAQ Accordion - always visible */}
+          {displayedFaqs.length > 0 && (
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
