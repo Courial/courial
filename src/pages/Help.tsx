@@ -274,40 +274,9 @@ const staticFaqs: FAQ[] = [
 const Help = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
-  const [faqs, setFaqs] = useState<FAQ[]>(staticFaqs);
-  const [loading, setLoading] = useState(true);
+  const [loading] = useState(false);
   const [articleCache, setArticleCache] = useState<Record<string, string>>({});
   const [loadingArticle, setLoadingArticle] = useState<string | null>(null);
-
-  const location = useLocation();
-  useEffect(() => {
-    if (location.hash) {
-      setTimeout(() => {
-        const el = document.querySelector(location.hash);
-        if (el) el.scrollIntoView({ behavior: "smooth" });
-      }, 300);
-    }
-  }, [location.hash]);
-
-  // Fetch FAQs from Help Scout on mount
-  useEffect(() => {
-    const fetchFaqs = async () => {
-      try {
-        const { data, error } = await supabase.functions.invoke("helpscout", {
-          body: { action: "getFaqs" },
-        });
-        if (!error && data?.faqs && data.faqs.length > 0) {
-          // Merge Help Scout FAQs: use them but keep categories from static mapping
-          setFaqs(data.faqs);
-        }
-      } catch (err) {
-        console.error("Error fetching FAQs:", err);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchFaqs();
-  }, []);
 
   // Fetch full article content when accordion item is opened
   const fetchArticleContent = async (articleId: string) => {
@@ -332,7 +301,7 @@ const Help = () => {
 
   // Use Help Scout FAQs for browsing, fall back to static
   const displayedFaqs = (() => {
-    const source = faqs;
+    const source = staticFaqs;
     if (searchQuery) {
       const queryLower = searchQuery.toLowerCase();
       return source
