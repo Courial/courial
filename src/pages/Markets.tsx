@@ -125,30 +125,16 @@ const volumeColors = {
 
 const internationalMarkets: {
   name: string;
+  city: string;
+  flag: string;
   coordinates: [number, number];
   status: "active" | "coming";
 }[] = [
-  { name: "Tokyo, Japan", coordinates: [139.6917, 35.6895], status: "active" },
-  {
-    name: "Singapore",
-    coordinates: [103.8198, 1.3521],
-    status: "coming",
-  },
-  {
-    name: "Seoul, South Korea",
-    coordinates: [126.978, 37.5665],
-    status: "coming",
-  },
-  {
-    name: "Dubai, UAE",
-    coordinates: [55.2708, 25.2048],
-    status: "coming",
-  },
-  {
-    name: "Toronto, Canada",
-    coordinates: [-79.3832, 43.6532],
-    status: "coming",
-  },
+  { name: "Tokyo, Japan", city: "Tokyo", flag: "🇯🇵", coordinates: [139.6917, 35.6895], status: "active" },
+  { name: "Singapore", city: "Singapore", flag: "🇸🇬", coordinates: [103.8198, 1.3521], status: "coming" },
+  { name: "Seoul, South Korea", city: "Seoul", flag: "🇰🇷", coordinates: [126.978, 37.5665], status: "coming" },
+  { name: "Dubai, UAE", city: "Dubai", flag: "🇦🇪", coordinates: [55.2708, 25.2048], status: "coming" },
+  { name: "Toronto, Canada", city: "Toronto", flag: "🇨🇦", coordinates: [-79.3832, 43.6532], status: "coming" },
 ];
 
 const getStateColor = (stateName: string) => {
