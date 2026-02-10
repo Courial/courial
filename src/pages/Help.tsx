@@ -530,15 +530,16 @@ const Help = () => {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5 }}
-            className="max-w-3xl mx-auto"
+            className="max-w-xl mx-auto"
           >
             <div className="glass-card rounded-3xl p-8 md:p-12 text-center">
-              <Code className="w-12 h-12 mx-auto mb-4 text-primary" />
-              <h2 className="text-3xl font-bold mb-4 text-foreground">
+              <h2 className="text-3xl font-bold mb-4 text-foreground inline-flex items-center gap-3 justify-center">
+                <Code className="w-8 h-8 text-primary" />
                 Developer API
               </h2>
               <p className="text-muted-foreground mb-6">
-                Looking to integrate Courial into your business?{" "}
+                Looking to integrate Courial into your business?
+                <br />
                 Access our API to seamlessly connect your systems with our delivery and logistics platform.
               </p>
               <ApiDocsDialog
