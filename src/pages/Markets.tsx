@@ -222,7 +222,7 @@ const Markets = () => {
       <Navbar />
 
       {/* Hero */}
-      <section className="pt-28 pb-1 relative overflow-hidden">
+      <section className="pt-28 pb-0 relative overflow-hidden">
         <div className="absolute inset-0 grid-pattern opacity-50" />
         <div className="absolute inset-0 radial-gradient" />
         <div className="container mx-auto px-6 relative z-10">
@@ -247,7 +247,7 @@ const Markets = () => {
       </section>
 
       {/* USA Map */}
-      <section className="relative">
+      <section className="relative -mt-8">
         <div className="container mx-auto px-6">
           <div className="max-w-6xl mx-auto">
             <div className="relative w-full">
