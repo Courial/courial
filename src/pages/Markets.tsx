@@ -438,6 +438,7 @@ const Markets = () => {
                     </div>
                   );
                 })()}
+              </motion.div>
 
               {/* International Legend */}
               <div className="flex items-center justify-center gap-8 mt-8">
