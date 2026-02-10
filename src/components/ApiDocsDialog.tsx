@@ -15,7 +15,7 @@ export const ApiDocsDialog = ({ trigger }: ApiDocsDialogProps) => {
   const [open, setOpen] = useState(false);
 
   const mailtoHref =
-    "mailto:support@courial.com?subject=API%20Access%20Request&body=Team%2FCompany%3A%20%0AUse%20Case%3A%20%0AEstimated%20Volume%3A%20";
+    "mailto:support@courial.com?subject=API%20Access%20Request%20-%20%5BYour%20Company%20Name%5D&body=Hi%20Courial%20Team%2C%0A%0AI%27d%20like%20to%20request%20access%20to%20the%20Courial%20API.%0A%0AOur%20Team%2FCompany%3A%20%5BBriefly%20describe%20who%20you%20are%5D%0A%0AUse%20Case%3A%20%5BHow%20do%20you%20plan%20to%20use%20the%20API%3F%5D%0A%0AEstimated%20Volume%3A%20%5BHow%20many%20deliveries%2Frequests%20per%20month%3F%5D%0A%0ALooking%20forward%20to%20the%20sandbox%20credentials.%0A%0ABest%2C%0A%5BYour%20Name%5D";
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
