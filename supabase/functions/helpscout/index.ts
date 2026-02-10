@@ -33,7 +33,7 @@ serve(async (req) => {
       );
     }
 
-    const { action, query, category } = await req.json();
+    const { action, query, category, articleId } = await req.json();
 
     switch (action) {
       case "getFaqs": {
@@ -142,8 +142,6 @@ serve(async (req) => {
       }
 
       case "getArticle": {
-        const { articleId } = await req.json();
-        
         if (!articleId) {
           return new Response(
             JSON.stringify({ error: "Article ID is required" }),

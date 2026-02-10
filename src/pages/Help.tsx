@@ -274,7 +274,10 @@ const staticFaqs: FAQ[] = [
 const Help = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
-  const [loading] = useState(false);
+  const [faqs, setFaqs] = useState<FAQ[]>(staticFaqs);
+  const [loading, setLoading] = useState(true);
+  const [articleCache, setArticleCache] = useState<Record<string, string>>({});
+  const [loadingArticle, setLoadingArticle] = useState<string | null>(null);
 
   const location = useLocation();
   useEffect(() => {
@@ -286,11 +289,53 @@ const Help = () => {
     }
   }, [location.hash]);
 
-  // Use static FAQs for browsing (Help Scout data lacks categories/answers)
+  // Fetch FAQs from Help Scout on mount
+  useEffect(() => {
+    const fetchFaqs = async () => {
+      try {
+        const { data, error } = await supabase.functions.invoke("helpscout", {
+          body: { action: "getFaqs" },
+        });
+        if (!error && data?.faqs && data.faqs.length > 0) {
+          // Merge Help Scout FAQs: use them but keep categories from static mapping
+          setFaqs(data.faqs);
+        }
+      } catch (err) {
+        console.error("Error fetching FAQs:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchFaqs();
+  }, []);
+
+  // Fetch full article content when accordion item is opened
+  const fetchArticleContent = async (articleId: string) => {
+    if (articleCache[articleId]) return;
+    setLoadingArticle(articleId);
+    try {
+      const { data, error } = await supabase.functions.invoke("helpscout", {
+        body: { action: "getArticle", articleId },
+      });
+      if (!error && data?.article) {
+        setArticleCache((prev) => ({
+          ...prev,
+          [articleId]: data.article.text || data.article.preview || "",
+        }));
+      }
+    } catch (err) {
+      console.error("Error fetching article:", err);
+    } finally {
+      setLoadingArticle(null);
+    }
+  };
+
+  // Use Help Scout FAQs for browsing, fall back to static
   const displayedFaqs = (() => {
+    const source = faqs;
     if (searchQuery) {
       const queryLower = searchQuery.toLowerCase();
-      return staticFaqs
+      return source
         .filter(
           (faq) =>
             faq.question.toLowerCase().includes(queryLower) ||
@@ -304,7 +349,7 @@ const Help = () => {
         .slice(0, 5);
     }
     if (selectedCategory) {
-      return staticFaqs.filter((faq) => faq.category === selectedCategory).slice(0, 5);
+      return source.filter((faq) => faq.category === selectedCategory).slice(0, 5);
     }
     return [];
   })();
@@ -428,14 +473,33 @@ const Help = () => {
                     <p className="text-muted-foreground">No FAQs found matching your search.</p>
                   </div>
                 ) : (
-                  <Accordion type="single" collapsible className="p-6">
+                  <Accordion
+                    type="single"
+                    collapsible
+                    className="p-6"
+                    onValueChange={(value) => {
+                      if (value) fetchArticleContent(value);
+                    }}
+                  >
                     {displayedFaqs.map((faq) => (
                       <AccordionItem key={faq.id} value={faq.id} className="border-border">
                         <AccordionTrigger className="text-left hover:text-primary transition-colors py-4">
                           {faq.question}
                         </AccordionTrigger>
                         <AccordionContent className="text-muted-foreground pb-4">
-                          {faq.answer}
+                          {loadingArticle === faq.id ? (
+                            <div className="flex items-center gap-2">
+                              <Clock className="w-4 h-4 animate-spin text-primary" />
+                              <span>Loading...</span>
+                            </div>
+                          ) : articleCache[faq.id] ? (
+                            <div
+                              className="prose prose-sm max-w-none text-muted-foreground"
+                              dangerouslySetInnerHTML={{ __html: articleCache[faq.id] }}
+                            />
+                          ) : (
+                            faq.answer
+                          )}
                         </AccordionContent>
                       </AccordionItem>
                     ))}
