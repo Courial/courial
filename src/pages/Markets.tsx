@@ -347,7 +347,7 @@ const Markets = () => {
                 <ComposableMap
                   projectionConfig={{ scale: 140, center: [30, 20] }}
                   style={{ width: "100%", height: "auto" }}
-                  viewBox="0 60 800 390"
+                  viewBox="0 80 800 370"
                 >
                   <Geographies geography={WORLD_TOPO_URL}>
                     {({ geographies }) =>
