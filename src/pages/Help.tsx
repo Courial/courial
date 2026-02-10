@@ -532,7 +532,7 @@ const Help = () => {
             transition={{ duration: 0.5 }}
             className="max-w-xl mx-auto"
           >
-            <div className="glass-card rounded-3xl p-8 md:p-12 text-center">
+            <div className="glass-card rounded-3xl p-8 md:p-12 text-center border border-primary/30">
               <h2 className="text-3xl font-bold mb-4 text-foreground inline-flex items-center gap-3 justify-center">
                 <Code className="w-8 h-8 text-primary" />
                 Developer API
