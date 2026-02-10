@@ -86,7 +86,7 @@ const Business = () => {
       </section>
 
       {/* Features Grid */}
-      <section className="py-24">
+      <section className="py-12">
         <div className="container mx-auto px-6">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -130,7 +130,7 @@ const Business = () => {
       </section>
 
       {/* CTA */}
-      <section className="py-24 relative">
+      <section className="py-12 relative">
         <div className="absolute inset-0 bg-gradient-to-b from-transparent via-primary/5 to-transparent" />
         <div className="container mx-auto px-6 relative z-10">
           <motion.div
