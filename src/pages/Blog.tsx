@@ -58,7 +58,7 @@ const Blog = () => {
           <>
             {publishedPosts && publishedPosts.length > 0 ? (
               <section className="container mx-auto px-6 pb-24">
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                <div className="max-w-6xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                   {publishedPosts.map((post, i) => (
                     <motion.div
                       key={post.id}
