@@ -14,8 +14,6 @@ const Blog = () => {
     return d.toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" });
   };
 
-  const featured = publishedPosts?.[0];
-  const rest = publishedPosts?.slice(1) || [];
 
   return (
     <div className="min-h-screen bg-background">
@@ -50,66 +48,10 @@ const Blog = () => {
           </div>
         ) : (
           <>
-            {/* Featured Post */}
-            {featured && (
-              <section className="container mx-auto px-6 pb-16">
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.5, delay: 0.1 }}
-                >
-                  <Link
-                    to={`/blog/${featured.slug}`}
-                    className="group block rounded-2xl border border-border bg-card overflow-hidden hover-lift"
-                  >
-                    <div className="grid md:grid-cols-2 gap-0">
-                      <div className="aspect-[16/10] md:aspect-auto bg-muted flex items-center justify-center min-h-[280px]">
-                        {featured.featured_image_url ? (
-                          <img
-                            src={featured.featured_image_url}
-                            alt={featured.title}
-                            className="w-full h-full object-cover"
-                          />
-                        ) : (
-                          <div className="text-muted-foreground/40 text-sm">Featured Image</div>
-                        )}
-                      </div>
-                      <div className="p-8 md:p-10 flex flex-col justify-center">
-                        <span className="text-xs font-semibold text-primary uppercase tracking-wide mb-3">
-                          {featured.category}
-                        </span>
-                        <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-4 group-hover:text-primary transition-colors">
-                          {featured.title}
-                        </h2>
-                        <p className="text-muted-foreground mb-6 leading-relaxed">
-                          {featured.excerpt}
-                        </p>
-                        <div className="flex items-center gap-4 text-sm text-muted-foreground">
-                          {featured.published_at && (
-                            <span className="flex items-center gap-1.5">
-                              <Calendar className="w-3.5 h-3.5" />
-                              {formatDate(featured.published_at)}
-                            </span>
-                          )}
-                          {featured.read_time && (
-                            <span className="flex items-center gap-1.5">
-                              <Clock className="w-3.5 h-3.5" />
-                              {featured.read_time}
-                            </span>
-                          )}
-                        </div>
-                      </div>
-                    </div>
-                  </Link>
-                </motion.div>
-              </section>
-            )}
-
-            {/* Post Grid */}
-            {rest.length > 0 && (
+            {publishedPosts && publishedPosts.length > 0 ? (
               <section className="container mx-auto px-6 pb-24">
-                <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {rest.map((post, i) => (
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                  {publishedPosts.map((post, i) => (
                     <motion.div
                       key={post.id}
                       initial={{ opacity: 0, y: 20 }}
@@ -156,9 +98,7 @@ const Blog = () => {
                   ))}
                 </div>
               </section>
-            )}
-
-            {!publishedPosts?.length && (
+            ) : (
               <div className="container mx-auto px-6 py-20 text-center text-muted-foreground">
                 No posts yet. Check back soon!
               </div>
