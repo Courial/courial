@@ -262,9 +262,14 @@
     align-items: center;
     gap: 0.5rem;
     background: hsl(var(--background));
-    border-radius: 20px;
+    border-radius: 0.5rem;
     padding: 0 0.75rem;
     height: 2.75rem;
+  }
+
+  .auth-phone-input--dark {
+    background: hsl(var(--foreground));
+    border: 1px solid hsl(var(--muted-foreground) / 0.3);
   }
 
   .auth-phone-input .PhoneInputCountry {
@@ -292,6 +297,10 @@
     height: 0.3rem;
   }
 
+  .auth-phone-input--dark .PhoneInputCountrySelectArrow {
+    border-color: hsl(var(--background) / 0.5);
+  }
+
   .auth-phone-input .PhoneInputInput {
     background: transparent;
     border: none;
@@ -302,7 +311,15 @@
     height: 100%;
   }
 
+  .auth-phone-input--dark .PhoneInputInput {
+    color: hsl(var(--background));
+  }
+
   .auth-phone-input .PhoneInputInput::placeholder {
     color: hsl(var(--foreground) / 0.4);
+  }
+
+  .auth-phone-input--dark .PhoneInputInput::placeholder {
+    color: hsl(var(--background) / 0.4);
   }
 }
