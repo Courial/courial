@@ -57,15 +57,17 @@ const AdminBlog = () => {
     }
   };
 
-  const handleGenerateImage = async (post: DbBlogPost) => {
-    setGeneratingImage(post.id);
+  const handleGenerateImage = async (post: DbBlogPost, target: "featured" | "secondary" = "featured") => {
+    setGeneratingImage(post.id + "-" + target);
     try {
-      const prompt = post.featured_image_prompt || `Professional hero image for a blog post titled "${post.title}". Premium logistics theme, cinematic lighting, warm tones.`;
+      const prompt = target === "featured"
+        ? (post.featured_image_prompt || `Professional hero image for a blog post titled "${post.title}". Premium logistics theme, cinematic lighting, warm tones.`)
+        : ((post as any).secondary_image_prompt || `Professional secondary image for a blog post titled "${post.title}". Premium logistics theme, cinematic lighting.`);
       const { data, error } = await supabase.functions.invoke("generate-blog-image", {
-        body: { prompt, postId: post.id },
+        body: { prompt, postId: post.id, target },
       });
       if (error) throw error;
-      toast.success("Image generated!");
+      toast.success(`${target === "featured" ? "Featured" : "Secondary"} image generated!`);
     } catch (e: any) {
       toast.error(e.message || "Failed to generate image");
     } finally {
@@ -275,7 +277,16 @@ const AdminBlog = () => {
                 <Textarea
                   value={editingPost.featured_image_prompt || ""}
                   onChange={(e) => setEditingPost({ ...editingPost, featured_image_prompt: e.target.value })}
-                  placeholder="AI image generation prompt"
+                  placeholder="AI image generation prompt for hero image"
+                  rows={2}
+                />
+              </div>
+              <div>
+                <label className="text-sm font-medium mb-1 block">Secondary Image Prompt (for AI generation)</label>
+                <Textarea
+                  value={(editingPost as any).secondary_image_prompt || ""}
+                  onChange={(e) => setEditingPost({ ...editingPost, secondary_image_prompt: e.target.value } as any)}
+                  placeholder="AI image generation prompt for mid-content image"
                   rows={2}
                 />
               </div>
@@ -418,14 +429,28 @@ const AdminBlog = () => {
                             variant="ghost"
                             size="icon"
                             className="h-8 w-8"
-                            onClick={() => handleGenerateImage(post)}
-                            disabled={generatingImage === post.id}
+                            onClick={() => handleGenerateImage(post, "featured")}
+                            disabled={generatingImage === post.id + "-featured"}
                             title="Generate featured image"
                           >
-                            {generatingImage === post.id ? (
+                            {generatingImage === post.id + "-featured" ? (
                               <Loader2 className="w-4 h-4 animate-spin" />
                             ) : (
                               <Image className="w-4 h-4" />
+                            )}
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-8 w-8"
+                            onClick={() => handleGenerateImage(post, "secondary")}
+                            disabled={generatingImage === post.id + "-secondary"}
+                            title="Generate secondary image"
+                          >
+                            {generatingImage === post.id + "-secondary" ? (
+                              <Loader2 className="w-4 h-4 animate-spin" />
+                            ) : (
+                              <Sparkles className="w-4 h-4" />
                             )}
                           </Button>
                           <Button

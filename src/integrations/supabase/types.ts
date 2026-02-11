@@ -28,6 +28,7 @@ export type Database = {
           published: boolean
           published_at: string | null
           read_time: string | null
+          secondary_image_prompt: string | null
           secondary_image_url: string | null
           seo_keyword: string | null
           slug: string
@@ -47,6 +48,7 @@ export type Database = {
           published?: boolean
           published_at?: string | null
           read_time?: string | null
+          secondary_image_prompt?: string | null
           secondary_image_url?: string | null
           seo_keyword?: string | null
           slug: string
@@ -66,6 +68,7 @@ export type Database = {
           published?: boolean
           published_at?: string | null
           read_time?: string | null
+          secondary_image_prompt?: string | null
           secondary_image_url?: string | null
           seo_keyword?: string | null
           slug?: string
