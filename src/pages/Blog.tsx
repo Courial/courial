@@ -62,12 +62,12 @@ const Blog = () => {
                         to={`/blog/${post.slug}`}
                         className="group block rounded-xl border border-border bg-card overflow-hidden hover-lift h-full"
                       >
-                        <div className="aspect-[16/10] bg-muted flex items-center justify-center">
+                        <div className="aspect-[16/10] bg-muted flex items-center justify-center overflow-hidden">
                           {post.featured_image_url ? (
                             <img
                               src={post.featured_image_url}
                               alt={post.title}
-                              className="w-full h-full object-cover"
+                              className="w-full h-full object-cover transition-opacity group-hover:opacity-75"
                             />
                           ) : (
                             <div className="text-muted-foreground/40 text-sm">Image</div>
@@ -77,7 +77,7 @@ const Blog = () => {
                           <span className="text-xs font-semibold text-primary uppercase tracking-wide">
                             {post.category}
                           </span>
-                          <h3 className="text-lg font-bold text-foreground mt-2 mb-2 group-hover:text-primary transition-colors">
+                          <h3 className="text-lg font-bold text-foreground mt-2 mb-2 group-hover:text-muted-foreground transition-colors">
                             {post.title}
                           </h3>
                           <p className="text-sm text-muted-foreground mb-4 line-clamp-2">

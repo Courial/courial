@@ -478,7 +478,7 @@ const AdminBlog = () => {
                             {generatingImage === post.id + "-featured" ? (
                               <Loader2 className="w-4 h-4 animate-spin" />
                             ) : (
-                              <Image className="w-4 h-4" />
+                              <Image className={`w-4 h-4 ${post.featured_image_url ? "text-blue-500" : ""}`} />
                             )}
                           </Button>
                           <Button
@@ -492,7 +492,7 @@ const AdminBlog = () => {
                             {generatingImage === post.id + "-secondary" ? (
                               <Loader2 className="w-4 h-4 animate-spin" />
                             ) : (
-                              <Sparkles className="w-4 h-4" />
+                              <Sparkles className={`w-4 h-4 ${post.secondary_image_url ? "text-yellow-500" : ""}`} />
                             )}
                           </Button>
                           <Button
