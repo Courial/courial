@@ -23,23 +23,30 @@ const Blog = () => {
       </Helmet>
       <Navbar />
 
-      <main className="pt-20 lg:pt-24">
-        {/* Header */}
-        <section className="container mx-auto px-6 pt-16 pb-12">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-            className="max-w-3xl"
-          >
-            <p className="text-sm font-semibold text-primary tracking-wide uppercase mb-3">Blog</p>
-            <h1 className="text-4xl md:text-5xl font-bold tracking-tight text-foreground mb-4">
-              Insights & Ideas
-            </h1>
-            <p className="text-lg text-muted-foreground max-w-xl">
-              Biweekly perspectives on premium logistics, white-glove delivery, and the future of how things move.
-            </p>
-          </motion.div>
+      <main className="pt-24 md:pt-32">
+        {/* Hero */}
+        <section className="pb-12 md:pb-20 relative overflow-hidden">
+          <div className="absolute inset-0 grid-pattern opacity-50" />
+          <div className="absolute inset-0 radial-gradient" />
+
+          <div className="container mx-auto px-6 relative z-10">
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6 }}
+              className="max-w-3xl"
+            >
+              <span className="text-primary font-semibold text-sm uppercase tracking-wider">
+                Blog
+              </span>
+              <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mt-4 mb-6 gradient-text-black-orange">
+                Insights & Ideas
+              </h1>
+              <p className="text-xl text-muted-foreground max-w-xl">
+                Biweekly perspectives on premium logistics, white-glove delivery, and the future of how things move.
+              </p>
+            </motion.div>
+          </div>
         </section>
 
         {isLoading ? (
