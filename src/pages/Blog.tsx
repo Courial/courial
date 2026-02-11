@@ -30,22 +30,23 @@ const Blog = () => {
           <div className="absolute inset-0 radial-gradient" />
 
           <div className="container mx-auto px-6 relative z-10">
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6 }}
-              className="max-w-3xl"
-            >
-              <span className="text-primary font-semibold text-sm uppercase tracking-wider">
-                Blog
-              </span>
-              <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mt-4 mb-6 gradient-text-black-orange">
-                Insights & Ideas
-              </h1>
-              <p className="text-xl text-muted-foreground max-w-xl">
-                Biweekly perspectives on premium logistics, white-glove delivery, and the future of how things move.
-              </p>
-            </motion.div>
+            <div className="max-w-6xl mx-auto">
+              <motion.div
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6 }}
+              >
+                <span className="text-primary font-semibold text-sm uppercase tracking-wider block mb-4">
+                  Blog
+                </span>
+                <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 gradient-text-black-orange">
+                  Insights & Ideas
+                </h1>
+                <p className="text-xl text-muted-foreground max-w-xl">
+                  Biweekly perspectives on premium logistics, white-glove delivery, and the future of how things move.
+                </p>
+              </motion.div>
+            </div>
           </div>
         </section>
 
