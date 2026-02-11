@@ -260,18 +260,60 @@ const AdminBlog = () => {
                   />
                 </div>
               </div>
-              <BlogImageUpload
-                label="Featured Image (shown below title)"
-                value={editingPost.featured_image_url || null}
-                onChange={(url) => setEditingPost({ ...editingPost, featured_image_url: url })}
-                postId={editingPost.id}
-              />
-              <BlogImageUpload
-                label="Secondary Image (shown mid-content)"
-                value={(editingPost as any).secondary_image_url || null}
-                onChange={(url) => setEditingPost({ ...editingPost, secondary_image_url: url } as any)}
-                postId={editingPost.id}
-              />
+              <div>
+                <div className="flex items-center justify-between mb-1">
+                  <label className="text-sm font-medium">Featured Image (shown below title)</label>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => {
+                      if (!editingPost.id) { toast.error("Save the post first to generate images"); return; }
+                      handleGenerateImage(editingPost as DbBlogPost, "featured");
+                    }}
+                    disabled={generatingImage === (editingPost.id || "") + "-featured"}
+                  >
+                    {generatingImage === (editingPost.id || "") + "-featured" ? (
+                      <Loader2 className="w-3 h-3 animate-spin mr-1" />
+                    ) : (
+                      <Wand2 className="w-3 h-3 mr-1" />
+                    )}
+                    AI Generate
+                  </Button>
+                </div>
+                <BlogImageUpload
+                  label=""
+                  value={editingPost.featured_image_url || null}
+                  onChange={(url) => setEditingPost({ ...editingPost, featured_image_url: url })}
+                  postId={editingPost.id}
+                />
+              </div>
+              <div>
+                <div className="flex items-center justify-between mb-1">
+                  <label className="text-sm font-medium">Secondary Image (shown mid-content)</label>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => {
+                      if (!editingPost.id) { toast.error("Save the post first to generate images"); return; }
+                      handleGenerateImage(editingPost as DbBlogPost, "secondary");
+                    }}
+                    disabled={generatingImage === (editingPost.id || "") + "-secondary"}
+                  >
+                    {generatingImage === (editingPost.id || "") + "-secondary" ? (
+                      <Loader2 className="w-3 h-3 animate-spin mr-1" />
+                    ) : (
+                      <Wand2 className="w-3 h-3 mr-1" />
+                    )}
+                    AI Generate
+                  </Button>
+                </div>
+                <BlogImageUpload
+                  label=""
+                  value={(editingPost as any).secondary_image_url || null}
+                  onChange={(url) => setEditingPost({ ...editingPost, secondary_image_url: url } as any)}
+                  postId={editingPost.id}
+                />
+              </div>
               <div>
                 <label className="text-sm font-medium mb-1 block">Featured Image Prompt (for AI generation)</label>
                 <Textarea
