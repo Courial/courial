@@ -245,4 +245,14 @@
   .animate-scroll:hover {
     animation-play-state: paused;
   }
+
+  @keyframes glow-text {
+    0%, 100% { color: hsl(0, 0%, 45%); }
+    33% { color: hsl(0, 0%, 7%); }
+    66% { color: hsl(24, 100%, 50%); }
+  }
+
+  .animate-glow-text {
+    animation: glow-text 3s ease-in-out infinite;
+  }
 }

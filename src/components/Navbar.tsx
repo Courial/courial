@@ -13,7 +13,7 @@ const navLinks = [
   { name: "Courials", href: "/courials" },
   { name: "Chauffeur", href: "/chauffeur" },
   { name: "Shield", href: "/shield" },
-  { name: "Markets", href: "/markets" },
+  { name: "Blog", href: "/blog" },
 ];
 
 export const Navbar = () => {
@@ -47,7 +47,7 @@ export const Navbar = () => {
                 <Button 
                   variant={isActive(link.href) ? "nav-active" : "nav"} 
                   size="sm" 
-                  className="px-4"
+                  className={`px-4 ${link.name === "Blog" ? "animate-glow-text" : ""}`}
                 >
                   {link.name}
                 </Button>
@@ -100,9 +100,11 @@ export const Navbar = () => {
                   to={link.href}
                   onClick={() => setIsOpen(false)}
                   className={`py-2 text-lg font-medium transition-colors ${
-                    isActive(link.href) 
-                      ? "text-primary" 
-                      : "text-muted-foreground hover:text-foreground active:text-foreground"
+                    link.name === "Blog"
+                      ? "animate-glow-text"
+                      : isActive(link.href) 
+                        ? "text-primary" 
+                        : "text-muted-foreground hover:text-foreground active:text-foreground"
                   }`}
                 >
                   {link.name}
