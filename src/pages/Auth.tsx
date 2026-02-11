@@ -211,18 +211,18 @@ const Auth = () => {
                     <div className="relative">
                       <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-background/50" />
                       <Input type="text" placeholder="Full name" value={name} onChange={(e) => setName(e.target.value)}
-                        className="h-11 rounded-lg pl-10 bg-foreground text-background border border-muted-foreground/30 text-sm placeholder:text-background/40" maxLength={100} autoFocus />
+                        className="h-11 rounded-lg pl-10 bg-foreground text-background border border-muted-foreground/30 text-sm placeholder:text-background/40 focus-visible:ring-primary focus-visible:ring-1 focus-visible:ring-offset-0" maxLength={100} autoFocus />
                     </div>
                     <div className="relative">
                       <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-background/50" />
                       <Input type="email" placeholder="Email address" value={email} onChange={(e) => setEmail(e.target.value)}
-                        className="h-11 rounded-lg pl-10 bg-foreground text-background border border-muted-foreground/30 text-sm placeholder:text-background/40" maxLength={255} />
+                        className="h-11 rounded-lg pl-10 bg-foreground text-background border border-muted-foreground/30 text-sm placeholder:text-background/40 focus-visible:ring-primary focus-visible:ring-1 focus-visible:ring-offset-0" maxLength={255} />
                     </div>
                     <PhoneInput international defaultCountry={defaultCountry as any} value={phone} onChange={setPhone} className="auth-phone-input auth-phone-input--dark" />
                     <div className="relative">
                       <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-background/50" />
                       <Input type="password" placeholder="Password (min 6)" value={password} onChange={(e) => setPassword(e.target.value)}
-                        className="h-11 rounded-lg pl-10 bg-foreground text-background border border-muted-foreground/30 text-sm placeholder:text-background/40" maxLength={128} />
+                        className="h-11 rounded-lg pl-10 bg-foreground text-background border border-muted-foreground/30 text-sm placeholder:text-background/40 focus-visible:ring-primary focus-visible:ring-1 focus-visible:ring-offset-0" maxLength={128} />
                     </div>
                     {error && <p className="text-xs text-red-400 text-center">{error}</p>}
                     {successMessage && <p className="text-xs text-primary text-center">{successMessage}</p>}
