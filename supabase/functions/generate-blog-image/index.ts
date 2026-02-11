@@ -9,7 +9,8 @@ serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
   try {
-    const { prompt, postId } = await req.json();
+    const { prompt, postId, target } = await req.json();
+    const imageTarget = target === "secondary" ? "secondary" : "featured";
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY not configured");
 
@@ -81,6 +82,7 @@ serve(async (req) => {
 
     // Update blog post with the image URL if postId provided
     if (postId) {
+      const updateField = imageTarget === "secondary" ? "secondary_image_url" : "featured_image_url";
       await fetch(`${SUPABASE_URL}/rest/v1/blog_posts?id=eq.${postId}`, {
         method: "PATCH",
         headers: {
@@ -89,7 +91,7 @@ serve(async (req) => {
           "Content-Type": "application/json",
           Prefer: "return=minimal",
         },
-        body: JSON.stringify({ featured_image_url: publicUrl }),
+        body: JSON.stringify({ [updateField]: publicUrl }),
       });
     }
 
