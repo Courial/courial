@@ -97,7 +97,7 @@ export const Footer = () => {
               onClick={(e) => handleLinkClick(e, "/markets")}
               className="text-sm text-primary mt-3 inline-block cursor-pointer"
             >
-              Get the full list
+              See the full list
             </a>
           </div>
 
