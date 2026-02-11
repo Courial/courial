@@ -36,7 +36,6 @@ const footerLinks = {
   support: [
     { name: "Help Center", href: "/help" },
     { name: "Contact Us", href: "/help#contact" },
-    { name: "API Docs", href: "/help#api-docs" },
   ],
   services: [
     { name: "Customers", href: "/" },
