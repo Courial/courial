@@ -181,7 +181,24 @@ const BlogPost = () => {
             )}
 
             <div className="prose-courial">
-              {content.map((block, i) => renderBlock(block, i))}
+              {content.map((block, i) => {
+                const midpoint = Math.floor(content.length / 2);
+                return (
+                  <div key={i}>
+                    {renderBlock(block, i)}
+                    {i === midpoint && (post as any).secondary_image_url && (
+                      <figure className="my-10 rounded-xl overflow-hidden">
+                        <img
+                          src={(post as any).secondary_image_url}
+                          alt={`${post.title} - continued`}
+                          className="w-full rounded-xl"
+                          loading="lazy"
+                        />
+                      </figure>
+                    )}
+                  </div>
+                );
+              })}
             </div>
 
             {/* Soft CTA */}

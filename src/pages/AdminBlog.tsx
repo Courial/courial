@@ -14,6 +14,7 @@ import { toast } from "sonner";
 import {
   Sparkles, Trash2, Edit, Eye, EyeOff, Plus, Image, LogIn, Loader2, ArrowLeft, Wand2,
 } from "lucide-react";
+import { BlogImageUpload } from "@/components/BlogImageUpload";
 import {
   Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription,
 } from "@/components/ui/dialog";
@@ -257,8 +258,20 @@ const AdminBlog = () => {
                   />
                 </div>
               </div>
+              <BlogImageUpload
+                label="Featured Image (shown below title)"
+                value={editingPost.featured_image_url || null}
+                onChange={(url) => setEditingPost({ ...editingPost, featured_image_url: url })}
+                postId={editingPost.id}
+              />
+              <BlogImageUpload
+                label="Secondary Image (shown mid-content)"
+                value={(editingPost as any).secondary_image_url || null}
+                onChange={(url) => setEditingPost({ ...editingPost, secondary_image_url: url } as any)}
+                postId={editingPost.id}
+              />
               <div>
-                <label className="text-sm font-medium mb-1 block">Featured Image Prompt</label>
+                <label className="text-sm font-medium mb-1 block">Featured Image Prompt (for AI generation)</label>
                 <Textarea
                   value={editingPost.featured_image_prompt || ""}
                   onChange={(e) => setEditingPost({ ...editingPost, featured_image_prompt: e.target.value })}
