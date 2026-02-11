@@ -262,7 +262,7 @@
     align-items: center;
     gap: 0.5rem;
     background: hsl(var(--background));
-    border-radius: 9999px;
+    border-radius: 20px;
     padding: 0 0.75rem;
     height: 2.75rem;
   }
