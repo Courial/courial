@@ -64,9 +64,11 @@ export const Navbar = () => {
                 </Button>
               </Link>
             )}
-            <Button variant="ghost" size="sm" className="border border-foreground/25">
-              Sign In
-            </Button>
+            <Link to="/auth">
+              <Button variant="ghost" size="sm" className="border border-foreground/25">
+                Sign In
+              </Button>
+            </Link>
             <Button variant="hero" size="sm">
               Book Now
             </Button>
@@ -114,9 +116,11 @@ export const Navbar = () => {
                     </Button>
                   </Link>
                 )}
-                <Button variant="ghost" className="justify-start border border-foreground/25">
-                  Sign In
-                </Button>
+                <Link to="/auth" onClick={() => setIsOpen(false)}>
+                  <Button variant="ghost" className="w-full justify-start border border-foreground/25">
+                    Sign In
+                  </Button>
+                </Link>
                 <Button variant="hero">Book Now</Button>
               </div>
             </div>
