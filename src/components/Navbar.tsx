@@ -47,7 +47,7 @@ export const Navbar = () => {
                 <Button 
                   variant={isActive(link.href) ? "nav-active" : "nav"} 
                   size="sm" 
-                  className={`px-4 ${link.name === "Blog" ? "animate-glow-text" : ""}`}
+                  className={`px-4 ${link.name === "Blog" ? "animate-glow-text font-bold" : ""}`}
                 >
                   {link.name}
                 </Button>
@@ -101,7 +101,7 @@ export const Navbar = () => {
                   onClick={() => setIsOpen(false)}
                   className={`py-2 text-lg font-medium transition-colors ${
                     link.name === "Blog"
-                      ? "animate-glow-text"
+                      ? "animate-glow-text font-bold"
                       : isActive(link.href) 
                         ? "text-primary" 
                         : "text-muted-foreground hover:text-foreground active:text-foreground"
