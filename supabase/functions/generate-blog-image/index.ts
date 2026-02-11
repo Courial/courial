@@ -20,7 +20,13 @@ serve(async (req) => {
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!
     );
 
-    // Generate image using Lovable AI
+    // Build distinct prompts for featured vs secondary to avoid duplicate images
+    const styleGuide = "No text, no captions, no words, no letters, no watermarks on the image. Professional photography style, 1200x675 resolution.";
+    const enhancedPrompt = imageTarget === "secondary"
+      ? `${prompt} Different angle and composition from the main hero image. Abstract, artistic interpretation. ${styleGuide}`
+      : `${prompt} Hero banner image, bold and eye-catching. ${styleGuide}`;
+
+    // Generate image using Lovable AI (Nano banana)
     const aiResponse = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
       method: "POST",
       headers: {
@@ -32,7 +38,7 @@ serve(async (req) => {
         messages: [
           {
             role: "user",
-            content: prompt + " Ultra high resolution, 16:9 aspect ratio hero image. Professional photography style.",
+            content: enhancedPrompt,
           },
         ],
         modalities: ["image", "text"],
