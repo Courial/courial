@@ -1,37 +1,44 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowLeft, Phone, Lock, Mail, User, ChevronLeft } from "lucide-react";
+import { Phone, Lock, Mail, User, ChevronLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { supabase } from "@/integrations/supabase/client";
 import { lovable } from "@/integrations/lovable";
 import { useToast } from "@/hooks/use-toast";
-import courialLogo from "@/assets/courial-logo.png";
+import PhoneInput from "react-phone-number-input";
+import "react-phone-number-input/style.css";
 
-type View = "main" | "phone-signin" | "phone-signup" | "otp" | "signup";
+type View = "main" | "phone-signin" | "otp" | "signup";
 
 const Auth = () => {
   const [view, setView] = useState<View>("main");
   const [mode, setMode] = useState<"signin" | "signup">("signin");
 
-  // Sign-up fields
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
-  const [phone, setPhone] = useState("");
+  const [phone, setPhone] = useState<string | undefined>("");
   const [password, setPassword] = useState("");
-
-  // Sign-in field
-  const [signinPhone, setSigninPhone] = useState("");
-
-  // OTP
+  const [signinPhone, setSigninPhone] = useState<string | undefined>("");
   const [otp, setOtp] = useState("");
+  const [defaultCountry, setDefaultCountry] = useState<string>("US");
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
   const navigate = useNavigate();
   const { toast } = useToast();
+
+  // Auto-detect country from device location
+  useEffect(() => {
+    fetch("https://ipapi.co/json/")
+      .then((r) => r.json())
+      .then((data) => {
+        if (data?.country_code) setDefaultCountry(data.country_code);
+      })
+      .catch(() => {});
+  }, []);
 
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
@@ -57,10 +64,10 @@ const Auth = () => {
   const handleSignInSendOtp = async (e: React.FormEvent) => {
     e.preventDefault();
     clearMessages();
-    if (!validatePhone(signinPhone)) return setError("Phone must be in international format, e.g. +1234567890");
+    if (!signinPhone || !validatePhone(signinPhone)) return setError("Please enter a valid phone number.");
     setLoading(true);
     const { error: otpError } = await supabase.auth.signInWithOtp({ phone: signinPhone.trim() });
-    if (otpError) { setError(otpError.message); }
+    if (otpError) setError(otpError.message);
     else { setView("otp"); setSuccessMessage("We sent a code to " + signinPhone); }
     setLoading(false);
   };
@@ -70,7 +77,7 @@ const Auth = () => {
     clearMessages();
     if (!name.trim()) return setError("Please enter your name.");
     if (!validateEmail(email)) return setError("Please enter a valid email.");
-    if (!validatePhone(phone)) return setError("Phone must be in international format, e.g. +1234567890");
+    if (!phone || !validatePhone(phone)) return setError("Please enter a valid phone number.");
     if (password.length < 6) return setError("Password must be at least 6 characters.");
     setLoading(true);
     const { error: signUpError } = await supabase.auth.signUp({
@@ -79,9 +86,8 @@ const Auth = () => {
     });
     if (signUpError) { setError(signUpError.message); setLoading(false); return; }
     const { error: otpError } = await supabase.auth.signInWithOtp({ phone: phone.trim() });
-    if (otpError) {
-      setSuccessMessage("Account created! Check your email to confirm. Phone verification is currently unavailable.");
-    } else { setView("otp"); setSuccessMessage("We sent a code to " + phone); }
+    if (otpError) setSuccessMessage("Account created! Check your email to confirm.");
+    else { setView("otp"); setSuccessMessage("We sent a code to " + phone); }
     setLoading(false);
   };
 
@@ -90,9 +96,9 @@ const Auth = () => {
     clearMessages();
     if (otp.length < 6) return setError("Please enter the 6-digit code.");
     setLoading(true);
-    const phoneNumber = mode === "signin" ? signinPhone.trim() : phone.trim();
+    const phoneNumber = (mode === "signin" ? signinPhone : phone)?.trim() || "";
     const { error: verifyError } = await supabase.auth.verifyOtp({ phone: phoneNumber, token: otp, type: "sms" });
-    if (verifyError) { setError(verifyError.message); }
+    if (verifyError) setError(verifyError.message);
     else { toast({ title: mode === "signin" ? "Signed in successfully" : "Phone verified!" }); navigate("/"); }
     setLoading(false);
   };
@@ -101,62 +107,45 @@ const Auth = () => {
     clearMessages();
     setOtp("");
     if (view === "otp") setView(mode === "signin" ? "phone-signin" : "signup");
-    else if (view === "phone-signin" || view === "signup") { setView("main"); }
+    else if (view === "phone-signin" || view === "signup") setView("main");
     else navigate("/");
   };
 
   const toggleMode = () => {
     clearMessages();
     setOtp("");
-    if (mode === "signin") {
-      setMode("signup");
-      setView("signup");
-    } else {
-      setMode("signin");
-      setView("main");
-    }
+    if (mode === "signin") { setMode("signup"); setView("signup"); }
+    else { setMode("signin"); setView("main"); }
   };
 
-  const pillButton = "w-full h-14 rounded-full text-base font-medium gap-3 transition-all";
-
   return (
-    <div className="min-h-screen bg-black/90 flex items-center justify-center px-4">
+    <div className="min-h-screen bg-background flex items-center justify-center px-4">
       <motion.div
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 0.3 }}
-        className="w-full max-w-md"
+        className="w-full max-w-xs"
       >
-        <div className="rounded-3xl bg-foreground text-background p-8 relative shadow-2xl">
+        <div className="rounded-3xl bg-foreground text-background p-6 relative shadow-2xl">
           {/* Back arrow */}
-          <button
-            onClick={goBack}
-            className="absolute top-6 left-6 text-background/70 hover:text-background transition-colors"
-          >
-            <ChevronLeft className="w-6 h-6" />
+          <button onClick={goBack} className="absolute top-5 left-5 text-background/70 hover:text-background transition-colors">
+            <ChevronLeft className="w-5 h-5" />
           </button>
 
           {/* Title */}
-          <h1 className="text-3xl font-bold text-center mt-4 mb-10">
+          <h1 className="text-2xl font-bold text-center mt-2 mb-8">
             {view === "otp" ? "Verify" : view === "signup" ? "Sign Up" : "Login"}
           </h1>
 
           <AnimatePresence mode="wait">
             {/* ── Main Login View ── */}
             {view === "main" && (
-              <motion.div
-                key="main"
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -20 }}
-                className="space-y-4"
+              <motion.div key="main" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}
+                className="flex flex-col items-center gap-3"
               >
-                <Button
-                  onClick={() => handleSocialLogin("google")}
-                  disabled={loading}
-                  className={`${pillButton} bg-background text-foreground hover:bg-background/90`}
-                >
-                  <svg className="w-5 h-5" viewBox="0 0 24 24">
+                <Button onClick={() => handleSocialLogin("google")} disabled={loading}
+                  className="rounded-full h-11 px-6 text-sm font-medium gap-2 bg-background text-foreground hover:bg-background/90 w-auto">
+                  <svg className="w-4 h-4 shrink-0" viewBox="0 0 24 24">
                     <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" />
                     <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
                     <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" />
@@ -165,145 +154,109 @@ const Auth = () => {
                   with Google
                 </Button>
 
-                <Button
-                  onClick={() => handleSocialLogin("apple")}
-                  disabled={loading}
-                  className={`${pillButton} bg-transparent border border-background/30 text-background hover:bg-background/10`}
-                >
-                  <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
+                <Button onClick={() => handleSocialLogin("apple")} disabled={loading}
+                  className="rounded-full h-11 px-6 text-sm font-medium gap-2 bg-transparent border border-background/30 text-background hover:bg-background/10 w-auto">
+                  <svg className="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="currentColor">
                     <path d="M17.05 20.28c-.98.95-2.05.88-3.08.4-1.09-.5-2.08-.48-3.24 0-1.44.62-2.2.44-3.06-.4C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.5-1.31 2.99-2.54 4.09zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z" />
                   </svg>
                   with Apple
                 </Button>
 
-                <Button
-                  onClick={() => { setMode("signin"); setView("phone-signin"); clearMessages(); }}
-                  disabled={loading}
-                  className={`${pillButton} bg-background text-foreground hover:bg-background/90`}
-                >
-                  <Phone className="w-5 h-5" />
+                <Button onClick={() => { setMode("signin"); setView("phone-signin"); clearMessages(); }} disabled={loading}
+                  className="rounded-full h-11 px-6 text-sm font-medium gap-2 bg-background text-foreground hover:bg-background/90 w-auto">
+                  <Phone className="w-4 h-4 shrink-0" />
                   with Phone
                 </Button>
 
-                <div className="pt-4">
-                  <Button
-                    disabled
-                    className={`${pillButton} bg-background/20 text-background/40 border border-background/10 cursor-not-allowed`}
-                  >
-                    Continue
-                  </Button>
-                </div>
-
-                <p className="text-center text-sm text-background/60 pt-2">
+                <p className="text-center text-xs text-background/60 pt-3">
                   Not a member?{" "}
-                  <button onClick={toggleMode} className="text-background font-bold hover:underline">
-                    Sign up.
-                  </button>
+                  <button onClick={toggleMode} className="text-background font-bold hover:underline">Sign up.</button>
                 </p>
               </motion.div>
             )}
 
             {/* ── Phone Sign In ── */}
             {view === "phone-signin" && (
-              <motion.div
-                key="phone-signin"
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -20 }}
-              >
-                <form onSubmit={handleSignInSendOtp} className="space-y-4">
-                  <div className="relative">
-                    <Phone className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-foreground/50" />
-                    <Input
-                      type="tel"
-                      placeholder="+1234567890"
-                      value={signinPhone}
-                      onChange={(e) => setSigninPhone(e.target.value)}
-                      className="h-14 rounded-full pl-12 bg-background text-foreground border-0 text-base"
-                      maxLength={16}
-                      autoFocus
-                    />
+              <motion.div key="phone-signin" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
+                <form onSubmit={handleSignInSendOtp} className="space-y-3">
+                  <PhoneInput
+                    international
+                    defaultCountry={defaultCountry as any}
+                    value={signinPhone}
+                    onChange={setSigninPhone}
+                    className="auth-phone-input"
+                  />
+                  {error && <p className="text-xs text-red-400 text-center">{error}</p>}
+                  {successMessage && <p className="text-xs text-primary text-center">{successMessage}</p>}
+                  <div className="flex justify-center">
+                    <Button type="submit" disabled={loading}
+                      className="rounded-full h-11 px-6 text-sm font-medium bg-primary text-primary-foreground hover:bg-primary/90">
+                      {loading ? "Sending…" : "Send Code"}
+                    </Button>
                   </div>
-                  {error && <p className="text-sm text-red-400 text-center">{error}</p>}
-                  {successMessage && <p className="text-sm text-primary text-center">{successMessage}</p>}
-                  <Button type="submit" disabled={loading} className={`${pillButton} bg-primary text-primary-foreground hover:bg-primary/90`}>
-                    {loading ? "Sending code..." : "Send Code"}
-                  </Button>
                 </form>
               </motion.div>
             )}
 
             {/* ── Sign Up Form ── */}
             {view === "signup" && (
-              <motion.div
-                key="signup"
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -20 }}
-              >
-                <form onSubmit={handleSignUp} className="space-y-3">
+              <motion.div key="signup" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
+                <form onSubmit={handleSignUp} className="space-y-2.5">
                   <div className="relative">
-                    <User className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-foreground/50" />
+                    <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-foreground/40" />
                     <Input type="text" placeholder="Full name" value={name} onChange={(e) => setName(e.target.value)}
-                      className="h-14 rounded-full pl-12 bg-background text-foreground border-0 text-base" maxLength={100} autoFocus />
+                      className="h-11 rounded-full pl-10 bg-background text-foreground border-0 text-sm" maxLength={100} autoFocus />
                   </div>
                   <div className="relative">
-                    <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-foreground/50" />
+                    <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-foreground/40" />
                     <Input type="email" placeholder="Email address" value={email} onChange={(e) => setEmail(e.target.value)}
-                      className="h-14 rounded-full pl-12 bg-background text-foreground border-0 text-base" maxLength={255} />
+                      className="h-11 rounded-full pl-10 bg-background text-foreground border-0 text-sm" maxLength={255} />
                   </div>
+                  <PhoneInput
+                    international
+                    defaultCountry={defaultCountry as any}
+                    value={phone}
+                    onChange={setPhone}
+                    className="auth-phone-input"
+                  />
                   <div className="relative">
-                    <Phone className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-foreground/50" />
-                    <Input type="tel" placeholder="+1234567890" value={phone} onChange={(e) => setPhone(e.target.value)}
-                      className="h-14 rounded-full pl-12 bg-background text-foreground border-0 text-base" maxLength={16} />
+                    <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-foreground/40" />
+                    <Input type="password" placeholder="Password (min 6)" value={password} onChange={(e) => setPassword(e.target.value)}
+                      className="h-11 rounded-full pl-10 bg-background text-foreground border-0 text-sm" maxLength={128} />
                   </div>
-                  <div className="relative">
-                    <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-foreground/50" />
-                    <Input type="password" placeholder="Password (min 6 characters)" value={password} onChange={(e) => setPassword(e.target.value)}
-                      className="h-14 rounded-full pl-12 bg-background text-foreground border-0 text-base" maxLength={128} />
+                  {error && <p className="text-xs text-red-400 text-center">{error}</p>}
+                  {successMessage && <p className="text-xs text-primary text-center">{successMessage}</p>}
+                  <div className="flex justify-center pt-1">
+                    <Button type="submit" disabled={loading}
+                      className="rounded-full h-11 px-6 text-sm font-medium bg-primary text-primary-foreground hover:bg-primary/90">
+                      {loading ? "Creating…" : "Create Account"}
+                    </Button>
                   </div>
-                  {error && <p className="text-sm text-red-400 text-center">{error}</p>}
-                  {successMessage && <p className="text-sm text-primary text-center">{successMessage}</p>}
-                  <Button type="submit" disabled={loading} className={`${pillButton} bg-primary text-primary-foreground hover:bg-primary/90`}>
-                    {loading ? "Creating account..." : "Create Account"}
-                  </Button>
-                  <p className="text-center text-sm text-background/60 pt-2">
+                  <p className="text-center text-xs text-background/60 pt-1">
                     Already a member?{" "}
-                    <button type="button" onClick={toggleMode} className="text-background font-bold hover:underline">
-                      Sign in.
-                    </button>
+                    <button type="button" onClick={toggleMode} className="text-background font-bold hover:underline">Sign in.</button>
                   </p>
                 </form>
               </motion.div>
             )}
 
-            {/* ── OTP Verification ── */}
+            {/* ── OTP ── */}
             {view === "otp" && (
-              <motion.div
-                key="otp"
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -20 }}
-              >
-                <p className="text-center text-sm text-background/60 mb-6">
-                  We sent a 6-digit code to your phone
-                </p>
-                <form onSubmit={handleVerifyOtp} className="space-y-4">
-                  <Input
-                    type="text"
-                    inputMode="numeric"
-                    placeholder="000000"
-                    value={otp}
+              <motion.div key="otp" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
+                <p className="text-center text-xs text-background/60 mb-4">We sent a 6-digit code to your phone</p>
+                <form onSubmit={handleVerifyOtp} className="space-y-3">
+                  <Input type="text" inputMode="numeric" placeholder="000000" value={otp}
                     onChange={(e) => setOtp(e.target.value.replace(/\D/g, "").slice(0, 6))}
-                    className="h-14 rounded-full text-center text-2xl tracking-[0.3em] bg-background text-foreground border-0 font-mono"
-                    maxLength={6}
-                    autoFocus
-                  />
-                  {error && <p className="text-sm text-red-400 text-center">{error}</p>}
-                  {successMessage && <p className="text-sm text-primary text-center">{successMessage}</p>}
-                  <Button type="submit" disabled={loading} className={`${pillButton} bg-primary text-primary-foreground hover:bg-primary/90`}>
-                    {loading ? "Verifying..." : "Verify Code"}
-                  </Button>
+                    className="h-11 rounded-full text-center text-lg tracking-[0.3em] bg-background text-foreground border-0 font-mono"
+                    maxLength={6} autoFocus />
+                  {error && <p className="text-xs text-red-400 text-center">{error}</p>}
+                  {successMessage && <p className="text-xs text-primary text-center">{successMessage}</p>}
+                  <div className="flex justify-center">
+                    <Button type="submit" disabled={loading}
+                      className="rounded-full h-11 px-6 text-sm font-medium bg-primary text-primary-foreground hover:bg-primary/90">
+                      {loading ? "Verifying…" : "Verify Code"}
+                    </Button>
+                  </div>
                 </form>
               </motion.div>
             )}
