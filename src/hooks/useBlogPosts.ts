@@ -16,6 +16,7 @@ export interface DbBlogPost {
   excerpt: string | null;
   featured_image_prompt: string | null;
   featured_image_url: string | null;
+  secondary_image_url: string | null;
   content: any[];
   created_at: string;
   updated_at: string;
