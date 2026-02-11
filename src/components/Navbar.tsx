@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link, useLocation } from "react-router-dom";
+import { useAuth } from "@/hooks/useAuth";
 import courialLogo from "@/assets/courial-logo.png";
 
 const navLinks = [
@@ -18,6 +19,7 @@ const navLinks = [
 export const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const location = useLocation();
+  const { isAdmin, loading: authLoading } = useAuth();
 
   const isActive = (href: string) => {
     if (href === "/") return location.pathname === "/";
@@ -55,6 +57,13 @@ export const Navbar = () => {
 
           {/* Desktop CTA */}
           <div className="hidden lg:flex items-center gap-3">
+            {!authLoading && isAdmin && (
+              <Link to="/admin/blog">
+                <Button variant="ghost" size="sm" className="border border-foreground/25">
+                  Admin
+                </Button>
+              </Link>
+            )}
             <Button variant="ghost" size="sm" className="border border-foreground/25">
               Sign In
             </Button>
@@ -98,6 +107,13 @@ export const Navbar = () => {
                 </Link>
               ))}
               <div className="flex flex-col gap-3 pt-4 border-t border-border">
+                {!authLoading && isAdmin && (
+                  <Link to="/admin/blog" onClick={() => setIsOpen(false)}>
+                    <Button variant="ghost" className="w-full justify-start border border-foreground/25">
+                      Admin
+                    </Button>
+                  </Link>
+                )}
                 <Button variant="ghost" className="justify-start border border-foreground/25">
                   Sign In
                 </Button>

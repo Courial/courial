@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Navigate } from "react-router-dom";
+import { Navigate, Link } from "react-router-dom";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { useAuth } from "@/hooks/useAuth";
@@ -336,6 +336,9 @@ const AdminBlog = () => {
               <p className="text-sm text-muted-foreground mt-1">{user.email}</p>
             </div>
             <div className="flex items-center gap-3">
+              <Link to="/">
+                <Button variant="ghost" size="sm" className="border border-foreground/25">Live</Button>
+              </Link>
               <Button variant="outline" size="sm" onClick={signOut}>Sign Out</Button>
             </div>
           </div>
