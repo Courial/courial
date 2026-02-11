@@ -33,23 +33,23 @@ const socialLinks = [
 ];
 
 const footerLinks = {
-  support: [
-    { name: "Help Center", href: "/help" },
-    { name: "Contact Us", href: "/help#contact" },
+  legal: [
+    { name: "Privacy Policy", href: "/privacy" },
+    { name: "Terms of Service", href: "/terms" },
+    { name: "ICA", href: "/ica" },
   ],
   services: [
     { name: "Customers", href: "/" },
     { name: "Businesses", href: "/business" },
     { name: "Courials", href: "/courials" },
   ],
-  legal: [
-    { name: "Privacy Policy", href: "/privacy" },
-    { name: "Terms of Service", href: "/terms" },
-    { name: "ICA", href: "/ica" },
-  ],
   company: [
     { name: "Blog", href: "/blog" },
     { name: "Swag", href: "/swag" },
+  ],
+  support: [
+    { name: "Help Center", href: "/help" },
+    { name: "Contact Us", href: "/help#contact" },
   ],
 };
 
