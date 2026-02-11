@@ -42,14 +42,14 @@ const footerLinks = {
     { name: "Businesses", href: "/business" },
     { name: "Courials", href: "/courials" },
   ],
-  company: [
-    { name: "Blog", href: "/blog" },
-    { name: "Swag", href: "/swag" },
-  ],
   legal: [
     { name: "Privacy Policy", href: "/privacy" },
     { name: "Terms of Service", href: "/terms" },
     { name: "ICA", href: "/ica" },
+  ],
+  company: [
+    { name: "Blog", href: "/blog" },
+    { name: "Swag", href: "/swag" },
   ],
 };
 
