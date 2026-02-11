@@ -106,21 +106,6 @@ const Blog = () => {
           </>
         )}
 
-        {/* CTA */}
-        <section className="border-t border-border bg-muted/50">
-          <div className="container mx-auto px-6 py-16 text-center">
-            <h2 className="text-2xl font-bold text-foreground mb-3">Stay in the loop</h2>
-            <p className="text-muted-foreground mb-6 max-w-md mx-auto">
-              New insights every two weeks on premium logistics and the future of delivery.
-            </p>
-            <Link
-              to="/"
-              className="inline-flex items-center gap-2 text-primary font-semibold hover:underline"
-            >
-              Explore Courial <ArrowRight className="w-4 h-4" />
-            </Link>
-          </div>
-        </section>
       </main>
 
       <Footer />
