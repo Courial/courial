@@ -190,7 +190,7 @@ const Auth = () => {
                   className="w-full"
                 >
                   <form onSubmit={handleSignInSendOtp} className="space-y-3">
-                    <PhoneInput international defaultCountry={defaultCountry as any} value={signinPhone} onChange={setSigninPhone} className="auth-phone-input" />
+                    <PhoneInput international defaultCountry={defaultCountry as any} value={signinPhone} onChange={setSigninPhone} className="auth-phone-input auth-phone-input--dark" />
                     {error && <p className="text-xs text-red-400 text-center">{error}</p>}
                     {successMessage && <p className="text-xs text-primary text-center">{successMessage}</p>}
                     <div className="flex justify-center">
