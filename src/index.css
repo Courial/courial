@@ -268,7 +268,7 @@
   }
 
   .auth-phone-input--dark {
-    background: hsl(var(--foreground));
+    background: transparent;
     border: 1px solid hsl(var(--background) / 0.3);
     transition: border-color 0.2s;
   }
