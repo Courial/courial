@@ -1,4 +1,5 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -14,8 +15,10 @@ serve(async (req) => {
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY not configured");
 
-    const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
-    const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
+    const supabase = createClient(
+      Deno.env.get("SUPABASE_URL")!,
+      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!
+    );
 
     // Generate image using Lovable AI
     const aiResponse = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
@@ -58,41 +61,31 @@ serve(async (req) => {
     const imageBytes = Uint8Array.from(atob(base64Data), (c) => c.charCodeAt(0));
     const fileName = `${postId || crypto.randomUUID()}.${imageType}`;
 
-    // Upload to storage
-    const uploadResp = await fetch(
-      `${SUPABASE_URL}/storage/v1/object/blog-images/${fileName}`,
-      {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${SUPABASE_SERVICE_ROLE_KEY}`,
-          "Content-Type": `image/${imageType}`,
-          "x-upsert": "true",
-        },
-        body: imageBytes,
-      }
-    );
+    // Upload to storage using Supabase client
+    const { error: uploadError } = await supabase.storage
+      .from("blog-images")
+      .upload(fileName, imageBytes, {
+        contentType: `image/${imageType}`,
+        upsert: true,
+      });
 
-    if (!uploadResp.ok) {
-      const err = await uploadResp.text();
-      console.error("Storage upload error:", err);
+    if (uploadError) {
+      console.error("Storage upload error:", uploadError);
       throw new Error("Failed to upload image to storage");
     }
 
-    const publicUrl = `${SUPABASE_URL}/storage/v1/object/public/blog-images/${fileName}`;
+    const { data: { publicUrl } } = supabase.storage
+      .from("blog-images")
+      .getPublicUrl(fileName);
 
     // Update blog post with the image URL if postId provided
     if (postId) {
       const updateField = imageTarget === "secondary" ? "secondary_image_url" : "featured_image_url";
-      await fetch(`${SUPABASE_URL}/rest/v1/blog_posts?id=eq.${postId}`, {
-        method: "PATCH",
-        headers: {
-          Authorization: `Bearer ${SUPABASE_SERVICE_ROLE_KEY}`,
-          apikey: SUPABASE_SERVICE_ROLE_KEY,
-          "Content-Type": "application/json",
-          Prefer: "return=minimal",
-        },
-        body: JSON.stringify({ [updateField]: publicUrl }),
-      });
+      const { error: updateError } = await supabase
+        .from("blog_posts")
+        .update({ [updateField]: publicUrl })
+        .eq("id", postId);
+      if (updateError) console.error("DB update error:", updateError);
     }
 
     return new Response(JSON.stringify({ imageUrl: publicUrl }), {
