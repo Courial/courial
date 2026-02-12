@@ -342,20 +342,59 @@ const Auth = () => {
               <motion.div key="otp" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}
                   className="w-full"
                 >
-                   <p className="text-center text-xs text-background/60 mb-4">We sent a 4-digit code to your phone</p>
-                  <form onSubmit={handleVerifyOtp} className="space-y-3">
-                    <Input type="text" inputMode="numeric" placeholder="0000" value={otp}
-                      onChange={(e) => setOtp(e.target.value.replace(/\D/g, "").slice(0, 4))}
-                      className="h-11 rounded-lg text-center text-lg tracking-[0.3em] bg-background text-foreground border-0 font-mono"
-                      maxLength={4} autoFocus />
-                    {error && <p className="text-xs text-red-400 text-center">{error}</p>}
-                    {successMessage && <p className="text-xs text-primary text-center">{successMessage}</p>}
-                    <div className="flex justify-center">
-                      <Button type="submit" disabled={loading} className="rounded-lg h-11 w-full text-sm font-medium bg-primary text-primary-foreground hover:bg-primary/90">
-                        {loading ? "Verifying…" : "Verify Code"}
-                      </Button>
+                  {verifySuccess ? (
+                    <div className="flex flex-col items-center py-4">
+                      <p className="text-lg font-semibold text-background text-center">Successfully Signed In!</p>
                     </div>
-                  </form>
+                  ) : (
+                    <>
+                      <p className="text-center text-xs text-background/60 mb-4">We sent a 4-digit code to your phone</p>
+                      <form onSubmit={handleVerifyOtp} className="space-y-3">
+                        <div className="flex justify-center gap-3">
+                          {[0, 1, 2, 3].map((i) => (
+                            <input
+                              key={i}
+                              id={`otp-${i}`}
+                              type="text"
+                              inputMode="numeric"
+                              maxLength={1}
+                              autoFocus={i === 0}
+                              value={otp[i] || ""}
+                              onChange={(e) => {
+                                const val = e.target.value.replace(/\D/g, "");
+                                if (!val && !e.target.value) return;
+                                const newOtp = otp.split("");
+                                newOtp[i] = val.slice(-1);
+                                const joined = newOtp.join("").slice(0, 4);
+                                setOtp(joined);
+                                if (val && i < 3) document.getElementById(`otp-${i + 1}`)?.focus();
+                              }}
+                              onKeyDown={(e) => {
+                                if (e.key === "Backspace" && !otp[i] && i > 0) {
+                                  document.getElementById(`otp-${i - 1}`)?.focus();
+                                }
+                              }}
+                              onPaste={(e) => {
+                                e.preventDefault();
+                                const paste = e.clipboardData.getData("text").replace(/\D/g, "").slice(0, 4);
+                                setOtp(paste);
+                                const focusIdx = Math.min(paste.length, 3);
+                                document.getElementById(`otp-${focusIdx}`)?.focus();
+                              }}
+                              className="w-12 h-12 rounded-lg bg-background text-foreground text-center text-xl font-mono border-0 outline-none focus:ring-2 focus:ring-primary"
+                            />
+                          ))}
+                        </div>
+                        {error && <p className="text-xs text-red-400 text-center">{error}</p>}
+                        {successMessage && <p className="text-xs text-primary text-center">{successMessage}</p>}
+                        <div className="flex justify-center">
+                          <Button type="submit" disabled={loading} className="rounded-lg h-11 w-full text-sm font-medium bg-foreground text-background border border-background/30 hover:bg-foreground/90">
+                            {loading ? "Verifying…" : "Verify Code"}
+                          </Button>
+                        </div>
+                      </form>
+                    </>
+                  )}
                 </motion.div>
               )}
             </AnimatePresence>
