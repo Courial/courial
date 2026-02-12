@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X, User, LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -29,16 +29,6 @@ export const Navbar = () => {
   const { user, isAdmin, loading: authLoading, signOut } = useAuth();
   const navigate = useNavigate();
 
-  // DEBUG: Log auth state changes
-  useEffect(() => {
-    console.log("[Navbar] Auth state changed:", {
-      authLoading,
-      hasUser: !!user,
-      userId: user?.id,
-      email: user?.email,
-      metadata: user?.user_metadata,
-    });
-  }, [user, authLoading]);
 
   const displayName = user?.user_metadata?.full_name || user?.user_metadata?.courial_email || user?.email;
   const userInitials = displayName
