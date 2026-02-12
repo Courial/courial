@@ -56,6 +56,8 @@ const Auth = () => {
   const [error, setError] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
   const [verifySuccess, setVerifySuccess] = useState(false);
+  const [loginAttempts, setLoginAttempts] = useState(0);
+  const [forgotPasswordSent, setForgotPasswordSent] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
 
@@ -75,7 +77,7 @@ const Auth = () => {
 
   const validateEmail = (v: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
   const validatePhone = (v: string) => /^\+[1-9]\d{6,14}$/.test(v);
-  const clearMessages = () => { setError(""); setSuccessMessage(""); };
+  const clearMessages = () => { setError(""); setSuccessMessage(""); setForgotPasswordSent(false); };
 
   const handleSocialLogin = async (provider: "google" | "apple") => {
     clearMessages();
@@ -103,7 +105,12 @@ const Auth = () => {
       });
       const data = await res.json();
       if (!res.ok) {
-        setError(data.error || "Failed to send OTP");
+        const errMsg = (data.error || "Failed to send OTP").toLowerCase();
+        if (errMsg.includes("not found") || errMsg.includes("no user") || errMsg.includes("does not exist")) {
+          setError("No account found. Create one to get started.");
+        } else {
+          setError(data.error || "Failed to send OTP");
+        }
       } else {
         setDeviceID(data.deviceID || "");
         setView("otp");
@@ -136,7 +143,12 @@ const Auth = () => {
       });
       const data = await res.json();
       if (!res.ok) {
-        setError(data.error || "Failed to send OTP");
+        const errMsg = (data.error || "Failed to send OTP").toLowerCase();
+        if (errMsg.includes("already exists") || errMsg.includes("duplicate") || errMsg.includes("registered")) {
+          setError("An account with this info already exists. Please sign in.");
+        } else {
+          setError(data.error || "Failed to send OTP");
+        }
       } else {
         setDeviceID(data.deviceID || "");
         setView("otp");
@@ -167,6 +179,7 @@ const Auth = () => {
       });
       const data = await res.json();
       if (!res.ok) {
+        setLoginAttempts(prev => prev + 1);
         setError(data.error || "OTP verification failed");
         setLoading(false);
         return;
@@ -199,7 +212,31 @@ const Auth = () => {
     }
   };
 
-  const goBack = () => {
+  const handleForgotPassword = async () => {
+    clearMessages();
+    if (!email && mode === "signup") {
+      setError("Please enter your email address first.");
+      return;
+    }
+    const resetEmail = email || prompt("Enter your email address for password reset:");
+    if (!resetEmail || !validateEmail(resetEmail)) {
+      setError("Please provide a valid email address.");
+      return;
+    }
+    setLoading(true);
+    const { error: resetError } = await supabase.auth.resetPasswordForEmail(resetEmail, {
+      redirectTo: window.location.origin,
+    });
+    if (resetError) {
+      setError(resetError.message);
+    } else {
+      setForgotPasswordSent(true);
+      setSuccessMessage("Reset link sent! Check your email.");
+    }
+    setLoading(false);
+  };
+
+
     clearMessages();
     setOtp("");
     if (view === "otp") setView(mode === "signin" ? "phone-signin" : "signup");
@@ -289,8 +326,16 @@ const Auth = () => {
                 >
                   <form onSubmit={handleSignInSendOtp} className="space-y-3">
                     <PhoneInput international defaultCountry={defaultCountry as any} value={signinPhone} onChange={setSigninPhone} className="auth-phone-input auth-phone-input--dark" countrySelectComponent={CountrySelect} />
-                    {error && <p className="text-xs text-red-400 text-center">{error}</p>}
-                    {successMessage && <p className="text-xs text-primary text-center">{successMessage}</p>}
+                    {error && (
+                      <div className="text-center">
+                        <p className="text-xs text-red-400">{error}</p>
+                        {error.includes("No account found") && (
+                          <button type="button" onClick={toggleMode} className="text-xs text-background font-bold hover:underline mt-1">Create an account</button>
+                        )}
+                      </div>
+                    )}
+                    {forgotPasswordSent && successMessage && <p className="text-xs text-primary text-center">{successMessage}</p>}
+                    {!forgotPasswordSent && successMessage && <p className="text-xs text-primary text-center">{successMessage}</p>}
                     <div className="flex justify-center">
                       <Button type="submit" disabled={loading} className="rounded-lg h-11 w-full text-sm font-medium bg-foreground text-background border border-background/30 hover:bg-foreground/90">
                         {loading ? "Sending…" : "Send Code"}
@@ -322,7 +367,14 @@ const Auth = () => {
                       <Input type="password" placeholder="Password (min 6)" value={password} onChange={(e) => setPassword(e.target.value)}
                         className="h-11 rounded-lg pl-10 bg-transparent text-background border border-background/30 text-sm placeholder:text-background/40 focus-visible:ring-primary focus-visible:ring-1 focus-visible:ring-offset-0" maxLength={128} />
                     </div>
-                    {error && <p className="text-xs text-red-400 text-center">{error}</p>}
+                    {error && (
+                      <div className="text-center">
+                        <p className="text-xs text-red-400">{error}</p>
+                        {error.includes("already exists") && (
+                          <button type="button" onClick={toggleMode} className="text-xs text-background font-bold hover:underline mt-1">Sign in instead</button>
+                        )}
+                      </div>
+                    )}
                     {successMessage && <p className="text-xs text-primary text-center">{successMessage}</p>}
                     <div className="flex justify-center pt-1">
                       <Button type="submit" disabled={loading} className="rounded-lg h-11 w-full text-sm font-medium bg-foreground text-background border border-background/30 hover:bg-foreground/90">
@@ -387,6 +439,13 @@ const Auth = () => {
                         </div>
                         {error && <p className="text-xs text-red-400 text-center">{error}</p>}
                         {successMessage && <p className="text-xs text-primary text-center">{successMessage}</p>}
+                        {loginAttempts >= 2 && !forgotPasswordSent && (
+                          <p className="text-center">
+                            <button type="button" onClick={handleForgotPassword} disabled={loading} className="text-xs text-background/60 hover:text-background hover:underline transition-colors">
+                              Forgot Password?
+                            </button>
+                          </p>
+                        )}
                         <div className="flex justify-center">
                           <Button type="submit" disabled={loading} className="rounded-lg h-11 w-full text-sm font-medium bg-foreground text-background border border-background/30 hover:bg-foreground/90">
                             {loading ? "Verifying…" : "Verify Code"}
