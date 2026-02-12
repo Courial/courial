@@ -79,9 +79,8 @@ export const Navbar = () => {
                 <button className="rounded-full focus:outline-none focus:ring-2 focus:ring-primary group-hover:opacity-0 transition-opacity">
                   <Avatar className="h-10 w-10 border border-foreground">
                     <AvatarImage src={avatarUrl} alt="Profile" />
-                    <AvatarFallback className="bg-background p-0 relative">
+                    <AvatarFallback className="bg-background p-0">
                       <img src={profileIcon} alt="" className="h-full w-full object-cover" />
-                      <span className="absolute text-background text-[0.55rem] font-extrabold uppercase leading-none" style={{ top: '58%', left: '50%', transform: 'translate(-50%, -50%)' }}>{userInitial}</span>
                     </AvatarFallback>
                   </Avatar>
                 </button>
