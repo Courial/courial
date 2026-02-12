@@ -29,9 +29,9 @@ serve(async (req) => {
       how_heard,
     } = await req.json();
 
-    if (!country_code || !phone) {
+    if (!country_code || !phone || !first_name || !email) {
       return new Response(
-        JSON.stringify({ error: "Missing required fields: country_code, phone" }),
+        JSON.stringify({ error: "Missing required fields: country_code, phone, first_name, email" }),
         { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
@@ -50,12 +50,15 @@ serve(async (req) => {
       "Authorization": `Bearer ${apiKey}`,
     };
 
-    // Step 1: Check if phone already exists on Couriol
+    const checkParams: Record<string, string> = { country_code, phone };
+    if (device_token) checkParams.deviceID = device_token;
+    else checkParams.deviceID = crypto.randomUUID();
+
     console.log("[sync-user] Checking phone:", country_code, phone);
     const checkRes = await fetch(`${COURIAL_BASE}/check_phone`, {
       method: "POST",
       headers: courialHeaders,
-      body: new URLSearchParams({ country_code, phone }).toString(),
+      body: new URLSearchParams(checkParams).toString(),
     });
     const checkData = await checkRes.json();
     console.log("[sync-user] check_phone response:", JSON.stringify(checkData));
