@@ -8,12 +8,34 @@ import { supabase } from "@/integrations/supabase/client";
 import { lovable } from "@/integrations/lovable";
 import { useToast } from "@/hooks/use-toast";
 import PhoneInput from "react-phone-number-input";
+import { parsePhoneNumber } from "react-phone-number-input";
 import "react-phone-number-input/style.css";
 import CountrySelect from "@/components/CountrySelect";
 import Index from "./Index";
 import appleIcon from "@/assets/apple-icon.png";
 
 type View = "main" | "phone-signin" | "otp" | "signup";
+
+const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
+const SUPABASE_KEY = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY;
+
+/** Parse an E.164 phone into { countryCode, nationalNumber } */
+const splitPhone = (intlPhone: string) => {
+  try {
+    const parsed = parsePhoneNumber(intlPhone);
+    if (parsed) {
+      return {
+        countryCode: `+${parsed.countryCallingCode}`,
+        nationalNumber: parsed.nationalNumber,
+      };
+    }
+  } catch {}
+  // Fallback: assume first 1-3 digits after + are country code
+  const match = intlPhone.match(/^\+(\d{1,3})(\d+)$/);
+  return match
+    ? { countryCode: `+${match[1]}`, nationalNumber: match[2] }
+    : { countryCode: "", nationalNumber: intlPhone };
+};
 
 const Auth = () => {
   const [view, setView] = useState<View>("main");
@@ -26,6 +48,9 @@ const Auth = () => {
   const [signinPhone, setSigninPhone] = useState<string | undefined>("");
   const [otp, setOtp] = useState("");
   const [defaultCountry, setDefaultCountry] = useState<string>("US");
+  const [deviceID, setDeviceID] = useState<string>("");
+  const [otpCountryCode, setOtpCountryCode] = useState<string>("");
+  const [otpNationalNumber, setOtpNationalNumber] = useState<string>("");
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -64,9 +89,28 @@ const Auth = () => {
     clearMessages();
     if (!signinPhone || !validatePhone(signinPhone)) return setError("Please enter a valid phone number.");
     setLoading(true);
-    const { error: otpError } = await supabase.auth.signInWithOtp({ phone: signinPhone.trim() });
-    if (otpError) setError(otpError.message);
-    else { setView("otp"); setSuccessMessage("We sent a code to " + signinPhone); }
+
+    const { countryCode, nationalNumber } = splitPhone(signinPhone.trim());
+    setOtpCountryCode(countryCode);
+    setOtpNationalNumber(nationalNumber);
+
+    try {
+      const res = await fetch(`${SUPABASE_URL}/functions/v1/send-otp`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "apikey": SUPABASE_KEY },
+        body: JSON.stringify({ country_code: countryCode, phone: nationalNumber }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        setError(data.error || "Failed to send OTP");
+      } else {
+        setDeviceID(data.deviceID || "");
+        setView("otp");
+        setSuccessMessage("We sent a code to " + signinPhone);
+      }
+    } catch (err) {
+      setError("Network error. Please try again.");
+    }
     setLoading(false);
   };
 
@@ -78,14 +122,28 @@ const Auth = () => {
     if (!phone || !validatePhone(phone)) return setError("Please enter a valid phone number.");
     if (password.length < 6) return setError("Password must be at least 6 characters.");
     setLoading(true);
-    const { error: signUpError } = await supabase.auth.signUp({
-      email, password,
-      options: { emailRedirectTo: window.location.origin, data: { full_name: name.trim(), phone: phone.trim() } },
-    });
-    if (signUpError) { setError(signUpError.message); setLoading(false); return; }
-    const { error: otpError } = await supabase.auth.signInWithOtp({ phone: phone.trim() });
-    if (otpError) setSuccessMessage("Account created! Check your email to confirm.");
-    else { setView("otp"); setSuccessMessage("We sent a code to " + phone); }
+
+    const { countryCode, nationalNumber } = splitPhone(phone.trim());
+    setOtpCountryCode(countryCode);
+    setOtpNationalNumber(nationalNumber);
+
+    try {
+      const res = await fetch(`${SUPABASE_URL}/functions/v1/send-otp`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "apikey": SUPABASE_KEY },
+        body: JSON.stringify({ country_code: countryCode, phone: nationalNumber }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        setError(data.error || "Failed to send OTP");
+      } else {
+        setDeviceID(data.deviceID || "");
+        setView("otp");
+        setSuccessMessage("We sent a code to " + phone);
+      }
+    } catch (err) {
+      setError("Network error. Please try again.");
+    }
     setLoading(false);
   };
 
@@ -94,10 +152,37 @@ const Auth = () => {
     clearMessages();
     if (otp.length < 6) return setError("Please enter the 6-digit code.");
     setLoading(true);
-    const phoneNumber = (mode === "signin" ? signinPhone : phone)?.trim() || "";
-    const { error: verifyError } = await supabase.auth.verifyOtp({ phone: phoneNumber, token: otp, type: "sms" });
-    if (verifyError) setError(verifyError.message);
-    else { toast({ title: mode === "signin" ? "Signed in successfully" : "Phone verified!" }); navigate("/"); }
+
+    try {
+      const res = await fetch(`${SUPABASE_URL}/functions/v1/verify-otp`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "apikey": SUPABASE_KEY },
+        body: JSON.stringify({
+          country_code: otpCountryCode,
+          phone: otpNationalNumber,
+          otp,
+          deviceId: deviceID,
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        setError(data.error || "OTP verification failed");
+      } else {
+        // Exchange the token_hash for a Supabase session
+        const { error: verifyError } = await supabase.auth.verifyOtp({
+          token_hash: data.token_hash,
+          type: "email",
+        });
+        if (verifyError) {
+          setError(verifyError.message);
+        } else {
+          toast({ title: mode === "signin" ? "Signed in successfully" : "Phone verified!" });
+          navigate("/");
+        }
+      }
+    } catch (err) {
+      setError("Network error. Please try again.");
+    }
     setLoading(false);
   };
 
