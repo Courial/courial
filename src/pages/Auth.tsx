@@ -139,7 +139,7 @@ const Auth = () => {
 
     try {
       // Step 1: Sync to Couriol (check_phone + signup_v2)
-      setSuccessMessage("Checking account...");
+      setSuccessMessage("");
       const nameParts = name.trim().split(/\s+/);
       const firstName = nameParts[0] || "";
       const lastName = nameParts.slice(1).join(" ") || "";
@@ -446,9 +446,6 @@ const Auth = () => {
                     {error && (
                       <div className="text-center">
                         <p className="text-xs text-red-400">{error}</p>
-                        {error.includes("already exists") && (
-                          <button type="button" onClick={toggleMode} className="text-xs text-background font-bold hover:underline mt-1">Sign in instead</button>
-                        )}
                       </div>
                     )}
                     {successMessage && <p className="text-xs text-primary text-center">{successMessage}</p>}
