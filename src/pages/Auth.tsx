@@ -344,13 +344,13 @@ const Auth = () => {
                 >
                   {verifySuccess ? (
                     <div className="flex flex-col items-center py-4">
-                      <p className="text-lg font-semibold text-background text-center">Successfully Signed In!</p>
+                      <p className="text-sm text-background text-center">Log-in Successful!</p>
                     </div>
                   ) : (
                     <>
                       <p className="text-center text-xs text-background/60 mb-4">We sent a 4-digit code to your phone</p>
                       <form onSubmit={handleVerifyOtp} className="space-y-3">
-                        <div className="flex justify-center gap-3">
+                        <div className="flex justify-center gap-2">
                           {[0, 1, 2, 3].map((i) => (
                             <input
                               key={i}
@@ -381,7 +381,7 @@ const Auth = () => {
                                 const focusIdx = Math.min(paste.length, 3);
                                 document.getElementById(`otp-${focusIdx}`)?.focus();
                               }}
-                              className="w-12 h-12 rounded-lg bg-background text-foreground text-center text-xl font-mono border-0 outline-none focus:ring-2 focus:ring-primary"
+                              className="w-8 h-8 rounded-lg bg-transparent text-background text-center text-sm font-mono border border-background/30 outline-none focus:ring-1 focus:ring-primary"
                             />
                           ))}
                         </div>
