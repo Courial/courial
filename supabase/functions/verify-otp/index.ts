@@ -77,6 +77,22 @@ serve(async (req) => {
       (u) => u.email === pseudoEmail || u.phone === fullPhone
     );
 
+    // Extract profile data from Courial response
+    const courialProfile = courialData?.data || {};
+    const fullName = [courialProfile.firstName, courialProfile.lastName].filter(Boolean).join(" ") || undefined;
+    const avatarUrl = courialProfile.image || undefined;
+    const courialEmail = courialProfile.email || undefined;
+
+    const userMeta = {
+      phone: fullPhone,
+      country_code,
+      courial_user: true,
+      full_name: fullName,
+      avatar_url: avatarUrl,
+      courial_email: courialEmail,
+      courial_id: courialProfile.id,
+    };
+
     if (!existingUser) {
       // Create new user with password
       const { error: createError } = await supabaseAdmin.auth.admin.createUser({
@@ -85,11 +101,7 @@ serve(async (req) => {
         phone: fullPhone,
         email_confirm: true,
         phone_confirm: true,
-        user_metadata: {
-          phone: fullPhone,
-          country_code,
-          courial_user: true,
-        },
+        user_metadata: userMeta,
       });
       if (createError) {
         console.error("Create user error:", createError);
@@ -99,15 +111,10 @@ serve(async (req) => {
         );
       }
     } else {
-      // Ensure password is set for existing user via REST API
-      await fetch(`${supabaseUrl}/auth/v1/admin/users/${existingUser.id}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          "apikey": serviceRoleKey,
-          "Authorization": `Bearer ${serviceRoleKey}`,
-        },
-        body: JSON.stringify({ password: userPassword }),
+      // Update existing user: set password + update metadata with latest Courial profile
+      await supabaseAdmin.auth.admin.updateUser(existingUser.id, {
+        password: userPassword,
+        user_metadata: userMeta,
       });
     }
 
