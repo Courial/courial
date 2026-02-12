@@ -171,31 +171,46 @@ const Auth = () => {
         return;
       }
       
-      // Bypass Supabase SDK (hangs internally) — sign in via raw fetch + store session
-      const signInRes = await fetch(`${SUPABASE_URL}/auth/v1/token?grant_type=password`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "apikey": SUPABASE_KEY,
-        },
-        body: JSON.stringify({ email: data.email, password: data.password }),
-      });
-      const session = await signInRes.json();
-      if (!signInRes.ok) {
-        console.error("signIn error:", session);
-        setError(session.error_description || session.msg || "Sign in failed");
-        setLoading(false);
-        return;
+      // Try SDK first with a 5-second timeout; fall back to manual session injection
+      let signedIn = false;
+      try {
+        const result = await Promise.race([
+          supabase.auth.signInWithPassword({ email: data.email, password: data.password }),
+          new Promise<never>((_, reject) => setTimeout(() => reject(new Error("timeout")), 5000)),
+        ]);
+        if (!result.error) {
+          signedIn = true;
+        } else {
+          console.warn("signInWithPassword error:", result.error.message);
+        }
+      } catch (e) {
+        console.warn("signInWithPassword timed out, using fallback");
       }
-      // Store session in the format Supabase JS expects
-      const projectRef = SUPABASE_URL.match(/\/\/([^.]+)\./)?.[1] || "";
-      localStorage.setItem(
-        `sb-${projectRef}-auth-token`,
-        JSON.stringify(session)
-      );
+
+      if (!signedIn) {
+        // Fallback: raw fetch + manual localStorage injection
+        const signInRes = await fetch(`${SUPABASE_URL}/auth/v1/token?grant_type=password`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json", "apikey": SUPABASE_KEY },
+          body: JSON.stringify({ email: data.email, password: data.password }),
+        });
+        const session = await signInRes.json();
+        if (!signInRes.ok) {
+          setError(session.error_description || session.msg || "Sign in failed");
+          setLoading(false);
+          return;
+        }
+        const projectRef = SUPABASE_URL.match(/\/\/([^.]+)\./)?.[1] || "";
+        localStorage.setItem(`sb-${projectRef}-auth-token`, JSON.stringify(session));
+      }
+
       toast({ title: mode === "signin" ? "Signed in successfully" : "Phone verified!" });
       setLoading(false);
-      window.location.href = "/";
+      if (signedIn) {
+        navigate("/", { replace: true });
+      } else {
+        window.location.href = "/";
+      }
     } catch (err) {
       console.error("verify-otp fetch error:", err);
       setError("Network error. Please try again.");
