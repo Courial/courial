@@ -166,7 +166,7 @@ const Auth = () => {
 
                   <Button onClick={() => handleSocialLogin("apple")} disabled={loading}
                     className="rounded-lg h-11 w-full text-sm font-medium gap-2 bg-transparent border border-background/30 text-background hover:bg-background/10">
-                    <img src={appleIcon} alt="Apple" className="w-4 h-4 shrink-0" />
+                    <img src={appleIcon} alt="Apple" className="w-4 shrink-0" />
                     with Apple
                   </Button>
 
