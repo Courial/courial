@@ -100,9 +100,15 @@ serve(async (req) => {
         );
       }
     } else {
-      // Ensure password is set for existing user
-      await supabaseAdmin.auth.admin.updateUser(existingUser.id, {
-        password: userPassword,
+      // Ensure password is set for existing user via REST API
+      await fetch(`${supabaseUrl}/auth/v1/admin/users/${existingUser.id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          "apikey": serviceRoleKey,
+          "Authorization": `Bearer ${serviceRoleKey}`,
+        },
+        body: JSON.stringify({ password: userPassword }),
       });
     }
 
