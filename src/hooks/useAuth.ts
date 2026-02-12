@@ -13,6 +13,7 @@ export function useAuth() {
       console.log("[useAuth] onAuthStateChange fired:", event, "user:", session?.user?.id);
       const currentUser = session?.user ?? null;
       setUser(currentUser);
+      setLoading(false); // Unblock UI immediately
 
       if (currentUser) {
         const { data } = await supabase
@@ -25,13 +26,13 @@ export function useAuth() {
       } else {
         setIsAdmin(false);
       }
-      setLoading(false);
     });
 
     supabase.auth.getSession().then(async ({ data: { session } }) => {
       console.log("[useAuth] getSession result:", "user:", session?.user?.id, "has session:", !!session);
       const currentUser = session?.user ?? null;
       setUser(currentUser);
+      setLoading(false); // Unblock UI immediately
 
       if (currentUser) {
         const { data } = await supabase
@@ -42,7 +43,6 @@ export function useAuth() {
           .maybeSingle();
         setIsAdmin(!!data);
       }
-      setLoading(false);
     });
 
     return () => subscription.unsubscribe();
