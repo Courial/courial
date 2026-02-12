@@ -3,6 +3,9 @@ import { supabase } from "@/integrations/supabase/client";
 import type { User } from "@supabase/supabase-js";
 import React from "react";
 
+const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
+const SUPABASE_KEY = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY;
+
 interface AuthContextType {
   user: User | null;
   isAdmin: boolean;
@@ -49,6 +52,29 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           .eq("role", "admin")
           .maybeSingle();
         setIsAdmin(!!data);
+
+        // Sync social logins to Couriol on first sign-in
+        if (event === "SIGNED_IN") {
+          const provider = session.user.app_metadata?.provider;
+          if (provider === "google" || provider === "apple") {
+            const meta = session.user.user_metadata || {};
+            const synced = sessionStorage.getItem(`couriol_social_synced_${session.user.id}`);
+            if (!synced) {
+              sessionStorage.setItem(`couriol_social_synced_${session.user.id}`, "1");
+              fetch(`${SUPABASE_URL}/functions/v1/social-login`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json", "apikey": SUPABASE_KEY },
+                body: JSON.stringify({
+                  social_id: session.user.id,
+                  provider,
+                  email: session.user.email || meta.email,
+                  first_name: meta.full_name?.split(" ")[0] || meta.name?.split(" ")[0],
+                  last_name: meta.full_name?.split(" ").slice(1).join(" ") || meta.name?.split(" ").slice(1).join(" "),
+                }),
+              }).then(r => r.json()).then(d => console.log("[social-login] synced:", d)).catch(e => console.error("[social-login] error:", e));
+            }
+          }
+        }
       } else {
         setIsAdmin(false);
       }

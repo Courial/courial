@@ -26,3 +26,6 @@ verify_jwt = false
 
 [functions.sync-user]
 verify_jwt = false
+
+[functions.social-login]
+verify_jwt = false

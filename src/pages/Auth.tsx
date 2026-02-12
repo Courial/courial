@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { Phone, Lock, Mail, User, ChevronLeft } from "lucide-react";
+import { Phone, Lock, Mail, User, ChevronLeft, Gift, HelpCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { supabase } from "@/integrations/supabase/client";
@@ -51,6 +51,8 @@ const Auth = () => {
   const [deviceID, setDeviceID] = useState<string>("");
   const [otpCountryCode, setOtpCountryCode] = useState<string>("");
   const [otpNationalNumber, setOtpNationalNumber] = useState<string>("");
+  const [referralCode, setReferralCode] = useState("");
+  const [howHeard, setHowHeard] = useState("");
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -101,7 +103,7 @@ const Auth = () => {
       const res = await fetch(`${SUPABASE_URL}/functions/v1/send-otp`, {
         method: "POST",
         headers: { "Content-Type": "application/json", "apikey": SUPABASE_KEY },
-        body: JSON.stringify({ country_code: countryCode, phone: nationalNumber }),
+        body: JSON.stringify({ country_code: countryCode, phone: nationalNumber, type: "0" }),
       });
       const data = await res.json();
       if (!res.ok) {
@@ -136,19 +138,48 @@ const Auth = () => {
     setOtpNationalNumber(nationalNumber);
 
     try {
+      // Step 1: Sync to Couriol (check_phone + signup_v2)
+      setSuccessMessage("Checking account...");
+      const nameParts = name.trim().split(/\s+/);
+      const firstName = nameParts[0] || "";
+      const lastName = nameParts.slice(1).join(" ") || "";
+
+      const syncRes = await fetch(`${SUPABASE_URL}/functions/v1/sync-user`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "apikey": SUPABASE_KEY },
+        body: JSON.stringify({
+          first_name: firstName,
+          last_name: lastName,
+          email,
+          country_code: countryCode,
+          phone: nationalNumber,
+          referral_code: referralCode || undefined,
+          how_heard: howHeard || undefined,
+        }),
+      });
+      const syncData = await syncRes.json();
+
+      if (syncData.already_exists) {
+        setError("An account with this info already exists. Please sign in.");
+        setLoading(false);
+        return;
+      }
+
+      if (!syncRes.ok) {
+        console.error("[signup] Couriol sync failed:", syncData);
+        // Continue anyway — don't block the user
+      }
+
+      // Step 2: Send OTP with type "1" for new signups
+      setSuccessMessage("Sending verification code...");
       const res = await fetch(`${SUPABASE_URL}/functions/v1/send-otp`, {
         method: "POST",
         headers: { "Content-Type": "application/json", "apikey": SUPABASE_KEY },
-        body: JSON.stringify({ country_code: countryCode, phone: nationalNumber }),
+        body: JSON.stringify({ country_code: countryCode, phone: nationalNumber, type: "1" }),
       });
       const data = await res.json();
       if (!res.ok) {
-        const errMsg = (data.error || "Failed to send OTP").toLowerCase();
-        if (errMsg.includes("already exists") || errMsg.includes("duplicate") || errMsg.includes("registered")) {
-          setError("An account with this info already exists. Please sign in.");
-        } else {
-          setError(data.error || "Failed to send OTP");
-        }
+        setError(data.error || "Failed to send OTP");
       } else {
         setDeviceID(data.deviceID || "");
         setView("otp");
@@ -243,14 +274,19 @@ const Auth = () => {
 
   const syncUserToCourial = async (authId: string) => {
     try {
+      const nameParts = (name || "").trim().split(/\s+/);
       const res = await fetch(`${SUPABASE_URL}/functions/v1/sync-user`, {
         method: "POST",
         headers: { "Content-Type": "application/json", "apikey": SUPABASE_KEY },
         body: JSON.stringify({
-          name: name || undefined,
+          first_name: nameParts[0] || undefined,
+          last_name: nameParts.slice(1).join(" ") || undefined,
           email: email || undefined,
-          phone: (phone || signinPhone || `${otpCountryCode}${otpNationalNumber}`),
+          country_code: otpCountryCode,
+          phone: otpNationalNumber,
           auth_id: authId,
+          referral_code: referralCode || undefined,
+          how_heard: howHeard || undefined,
         }),
       });
       const data = await res.json();
@@ -394,6 +430,16 @@ const Auth = () => {
                       <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-background/50" />
                       <Input type="password" placeholder="Password (min 6)" value={password} onChange={(e) => setPassword(e.target.value)}
                         className="h-11 rounded-lg pl-10 bg-transparent text-background border border-background/30 text-sm placeholder:text-background/40 focus-visible:ring-primary focus-visible:ring-1 focus-visible:ring-offset-0" maxLength={128} />
+                    </div>
+                    <div className="relative">
+                      <Gift className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-background/50" />
+                      <Input type="text" placeholder="Referral code (optional)" value={referralCode} onChange={(e) => setReferralCode(e.target.value)}
+                        className="h-11 rounded-lg pl-10 bg-transparent text-background border border-background/30 text-sm placeholder:text-background/40 focus-visible:ring-primary focus-visible:ring-1 focus-visible:ring-offset-0" maxLength={50} />
+                    </div>
+                    <div className="relative">
+                      <HelpCircle className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-background/50" />
+                      <Input type="text" placeholder="How did you hear about us?" value={howHeard} onChange={(e) => setHowHeard(e.target.value)}
+                        className="h-11 rounded-lg pl-10 bg-transparent text-background border border-background/30 text-sm placeholder:text-background/40 focus-visible:ring-primary focus-visible:ring-1 focus-visible:ring-offset-0" maxLength={100} />
                     </div>
                     {error && (
                       <div className="text-center">
