@@ -233,10 +233,12 @@ const Auth = () => {
       const projectRef = SUPABASE_URL.match(/\/\/([^.]+)\./)?.[1] || "";
       localStorage.setItem(`sb-${projectRef}-auth-token`, JSON.stringify(session));
 
-      // Step 3: Sync new user to Couriol backend (non-blocking)
-      setSuccessMessage("Finalizing...");
-      const authId = session.user?.id || "";
-      await syncUserToCourial(authId);
+      // Step 3: Sync new user to Couriol backend (only for signups where we have user data)
+      if (mode === "signup" && name && email) {
+        setSuccessMessage("Finalizing...");
+        const authId = session.user?.id || "";
+        await syncUserToCourial(authId);
+      }
 
       setVerifySuccess(true);
       setLoading(false);
