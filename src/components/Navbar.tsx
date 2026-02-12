@@ -92,7 +92,14 @@ export const Navbar = () => {
                   </button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-40">
-                  <DropdownMenuItem onSelect={(e) => { e.preventDefault(); signOut().then(() => navigate("/")); }}>
+                  <DropdownMenuItem onSelect={async (e) => {
+                    e.preventDefault();
+                    console.log("[Navbar] Sign out initiated");
+                    await signOut();
+                    localStorage.clear();
+                    sessionStorage.clear();
+                    window.location.replace("/");
+                  }}>
                     <LogOut className="w-4 h-4 mr-2" />
                     Sign Out
                   </DropdownMenuItem>
@@ -157,7 +164,7 @@ export const Navbar = () => {
                 {authLoading ? (
                   <span className="text-xs text-muted-foreground animate-pulse py-2">Checking...</span>
                 ) : user ? (
-                  <Button variant="ghost" className="w-full justify-start border border-foreground/25" onClick={() => { setIsOpen(false); signOut(); navigate("/"); }}>
+                  <Button variant="ghost" className="w-full justify-start border border-foreground/25" onClick={async () => { console.log("[Navbar] Sign out initiated"); await signOut(); localStorage.clear(); sessionStorage.clear(); window.location.replace("/"); }}>
                     <LogOut className="w-4 h-4 mr-2" />
                     Sign Out
                   </Button>
