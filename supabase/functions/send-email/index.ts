@@ -38,7 +38,7 @@ serve(async (req) => {
       );
     }
 
-    const senderEmail = from || "noreply@courial.com";
+    const senderEmail = from || "support@courial.com";
     const senderName = fromName || "Courial";
 
     const response = await fetch("https://api.sendgrid.com/v3/mail/send", {
