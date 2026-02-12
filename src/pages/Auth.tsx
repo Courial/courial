@@ -167,24 +167,35 @@ const Auth = () => {
       const data = await res.json();
       if (!res.ok) {
         setError(data.error || "OTP verification failed");
-      } else {
-        // Set the session directly with returned tokens
+        setLoading(false);
+        return;
+      }
+      
+      console.log("verify-otp success, setting session...");
+      try {
         const { error: sessionError } = await supabase.auth.setSession({
           access_token: data.access_token,
           refresh_token: data.refresh_token,
         });
+        console.log("setSession result:", sessionError ? sessionError.message : "success");
         if (sessionError) {
           setError(sessionError.message);
-        } else {
-          toast({ title: mode === "signin" ? "Signed in successfully" : "Phone verified!" });
-          // Small delay to let auth state propagate before navigating
-          setTimeout(() => navigate("/"), 100);
+          setLoading(false);
+          return;
         }
+        toast({ title: mode === "signin" ? "Signed in successfully" : "Phone verified!" });
+        setLoading(false);
+        navigate("/", { replace: true });
+      } catch (sessionErr) {
+        console.error("setSession threw:", sessionErr);
+        setError("Failed to establish session. Please try again.");
+        setLoading(false);
       }
     } catch (err) {
+      console.error("verify-otp fetch error:", err);
       setError("Network error. Please try again.");
+      setLoading(false);
     }
-    setLoading(false);
   };
 
   const goBack = () => {
