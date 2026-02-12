@@ -74,7 +74,7 @@ export const Navbar = () => {
               </Link>
             )}
             {user ? (
-              <div className="relative group flex items-center justify-center w-9 h-9">
+              <div className="relative group flex items-center justify-center w-10 h-10">
                 <button className="rounded-full focus:outline-none focus:ring-2 focus:ring-primary group-hover:opacity-0 transition-opacity">
                   <Avatar className="h-10 w-10 border border-foreground">
                     <AvatarImage src={avatarUrl} alt="Profile" />
@@ -84,7 +84,7 @@ export const Navbar = () => {
                 <Button
                   variant="ghost"
                   size="sm"
-                  className="absolute opacity-0 group-hover:opacity-100 transition-opacity border border-foreground/25 whitespace-nowrap"
+                  className="absolute right-0 opacity-0 group-hover:opacity-100 transition-opacity border border-foreground/25 whitespace-nowrap"
                   onClick={() => {
                     console.log("[Navbar] Sign out - nuking session");
                     localStorage.clear();
