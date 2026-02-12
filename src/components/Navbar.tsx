@@ -81,7 +81,7 @@ export const Navbar = () => {
                     <AvatarImage src={avatarUrl} alt="Profile" />
                     <AvatarFallback className="bg-background p-0 relative">
                       <img src={profileIcon} alt="" className="h-full w-full object-cover" />
-                      <span className="absolute text-background text-[0.5rem] font-bold" style={{ top: '58%', left: '50%', transform: 'translate(-50%, -50%)' }}>{userInitial}</span>
+                      <span className="absolute text-background text-[0.55rem] font-extrabold uppercase leading-none" style={{ top: '58%', left: '50%', transform: 'translate(-50%, -50%)' }}>{userInitial}</span>
                     </AvatarFallback>
                   </Avatar>
                 </button>
