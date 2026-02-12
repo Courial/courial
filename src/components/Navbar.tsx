@@ -57,7 +57,7 @@ export const Navbar = () => {
                 <Button 
                   variant={isActive(link.href) ? "nav-active" : "nav"} 
                   size="sm" 
-                  className={`px-4 ${link.name === "Blog" ? "animate-glow-text font-bold" : ""}`}
+                  className={`px-4 text-[0.9375rem] ${link.name === "Blog" ? "animate-glow-text font-bold" : ""}`}
                 >
                   {link.name}
                 </Button>
