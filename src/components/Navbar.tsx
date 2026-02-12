@@ -73,12 +73,10 @@ export const Navbar = () => {
                 </Button>
               </Link>
             )}
-            {authLoading ? (
-              <span className="text-xs text-muted-foreground animate-pulse">Checking...</span>
-            ) : user ? (
-              <div className="relative group">
-                <button className="rounded-full focus:outline-none focus:ring-2 focus:ring-primary">
-                  <Avatar className="h-8 w-8 group-hover:hidden">
+            {user ? (
+              <div className="relative group flex items-center justify-center w-9 h-9">
+                <button className="rounded-full focus:outline-none focus:ring-2 focus:ring-primary group-hover:opacity-0 transition-opacity">
+                  <Avatar className="h-8 w-8">
                     <AvatarImage src={avatarUrl} alt="Profile" />
                     <AvatarFallback className="bg-primary text-primary-foreground text-xs">{userInitials}</AvatarFallback>
                   </Avatar>
@@ -86,7 +84,7 @@ export const Navbar = () => {
                 <Button
                   variant="ghost"
                   size="sm"
-                  className="hidden group-hover:inline-flex border border-foreground/25"
+                  className="absolute opacity-0 group-hover:opacity-100 transition-opacity border border-foreground/25 whitespace-nowrap"
                   onClick={() => {
                     console.log("[Navbar] Sign out - nuking session");
                     localStorage.clear();
@@ -97,12 +95,14 @@ export const Navbar = () => {
                   Sign Out
                 </Button>
               </div>
-            ) : (
+            ) : !authLoading ? (
               <Link to="/auth">
                 <Button variant="ghost" size="sm" className="border border-foreground/25">
                   Sign In
                 </Button>
               </Link>
+            ) : (
+              <div className="w-[70px]" />
             )}
             <Button variant="hero" size="sm">
               Book Now
