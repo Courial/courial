@@ -92,7 +92,7 @@ export const Navbar = () => {
                   </button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-40">
-                  <DropdownMenuItem onClick={() => { signOut(); navigate("/"); }}>
+                  <DropdownMenuItem onClick={async () => { await signOut(); navigate("/"); }}>
                     <LogOut className="w-4 h-4 mr-2" />
                     Sign Out
                   </DropdownMenuItem>
