@@ -439,9 +439,27 @@ const Auth = () => {
                         className="h-11 rounded-lg pl-10 bg-transparent text-background border border-background/30 text-sm placeholder:text-background/40 focus-visible:ring-primary focus-visible:ring-1 focus-visible:ring-offset-0" maxLength={50} />
                     </div>
                     <div className="relative">
-                      <HelpCircle className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-background/50" />
-                      <Input type="text" placeholder="How did you hear about us?" value={howHeard} onChange={(e) => setHowHeard(e.target.value)}
-                        className="h-11 rounded-lg pl-10 bg-transparent text-background border border-background/30 text-sm placeholder:text-background/40 focus-visible:ring-primary focus-visible:ring-1 focus-visible:ring-offset-0" maxLength={100} />
+                      <HelpCircle className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-background/50 z-10 pointer-events-none" />
+                      <select
+                        value={howHeard}
+                        onChange={(e) => setHowHeard(e.target.value)}
+                        className="h-11 w-full rounded-lg pl-10 pr-3 bg-transparent text-background border border-background/30 text-sm focus:ring-primary focus:ring-1 focus:ring-offset-0 appearance-none cursor-pointer [&>option]:bg-foreground [&>option]:text-background"
+                      >
+                        <option value="" disabled>How did you hear about us?</option>
+                        <option value="Corporate Partner">Corporate Partner</option>
+                        <option value="Courial Driver">Courial Driver</option>
+                        <option value="Courial Website">Courial Website</option>
+                        <option value="Event">Event</option>
+                        <option value="Facebook">Facebook</option>
+                        <option value="Flyer or Business Card">Flyer or Business Card</option>
+                        <option value="Friend">Friend</option>
+                        <option value="Google Search">Google Search</option>
+                        <option value="Instagram">Instagram</option>
+                        <option value="Online Advertising">Online Advertising</option>
+                        <option value="Outdoor Advertising">Outdoor Advertising</option>
+                        <option value="TikTok">TikTok</option>
+                        <option value="YouTube">YouTube</option>
+                      </select>
                     </div>
                     {error && (
                       <div className="text-center">
