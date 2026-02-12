@@ -86,7 +86,7 @@ export const Navbar = () => {
                 <Button
                   variant="ghost"
                   size="sm"
-                  className="hidden group-hover:inline-flex border border-foreground/25 gap-1.5"
+                  className="hidden group-hover:inline-flex border border-foreground/25"
                   onClick={() => {
                     console.log("[Navbar] Sign out - nuking session");
                     localStorage.clear();
@@ -94,7 +94,6 @@ export const Navbar = () => {
                     window.location.replace("/");
                   }}
                 >
-                  <LogOut className="w-3.5 h-3.5" />
                   Sign Out
                 </Button>
               </div>
