@@ -112,9 +112,14 @@ serve(async (req) => {
       }
     } else {
       // Update existing user: set password + update metadata with latest Courial profile
-      await supabaseAdmin.auth.admin.updateUser(existingUser.id, {
-        password: userPassword,
-        user_metadata: userMeta,
+      await fetch(`${supabaseUrl}/auth/v1/admin/users/${existingUser.id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          "apikey": serviceRoleKey,
+          "Authorization": `Bearer ${serviceRoleKey}`,
+        },
+        body: JSON.stringify({ password: userPassword, user_metadata: userMeta }),
       });
     }
 
