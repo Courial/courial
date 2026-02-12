@@ -198,10 +198,15 @@ const Auth = () => {
         return;
       }
 
-      // Step 2: Store session in localStorage and do a full page reload
-      // This guarantees the SDK picks up the session on next mount
+      // Step 2: Store session in localStorage
       const projectRef = SUPABASE_URL.match(/\/\/([^.]+)\./)?.[1] || "";
       localStorage.setItem(`sb-${projectRef}-auth-token`, JSON.stringify(session));
+
+      // Step 3: Sync new user to Couriol backend (non-blocking)
+      setSuccessMessage("Finalizing...");
+      const authId = session.user?.id || "";
+      await syncUserToCourial(authId);
+
       setVerifySuccess(true);
       setLoading(false);
       setTimeout(() => { window.location.href = "/"; }, 1500);
@@ -236,7 +241,30 @@ const Auth = () => {
     setLoading(false);
   };
 
+  const syncUserToCourial = async (authId: string) => {
+    try {
+      const res = await fetch(`${SUPABASE_URL}/functions/v1/sync-user`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "apikey": SUPABASE_KEY },
+        body: JSON.stringify({
+          name: name || undefined,
+          email: email || undefined,
+          phone: (phone || signinPhone || `${otpCountryCode}${otpNationalNumber}`),
+          auth_id: authId,
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        console.error("[sync-user] Failed:", data);
+      } else {
+        console.log("[sync-user] Success:", data);
+      }
+    } catch (err) {
+      console.error("[sync-user] Network error:", err);
+    }
+  };
 
+  const goBack = () => {
     clearMessages();
     setOtp("");
     if (view === "otp") setView(mode === "signin" ? "phone-signin" : "signup");
