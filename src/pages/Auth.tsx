@@ -171,20 +171,31 @@ const Auth = () => {
         return;
       }
       
-      // Sign in with the credentials returned by the edge function
-      const { error: signInError } = await supabase.auth.signInWithPassword({
-        email: data.email,
-        password: data.password,
+      // Bypass Supabase SDK (hangs internally) — sign in via raw fetch + store session
+      const signInRes = await fetch(`${SUPABASE_URL}/auth/v1/token?grant_type=password`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "apikey": SUPABASE_KEY,
+        },
+        body: JSON.stringify({ email: data.email, password: data.password }),
       });
-      if (signInError) {
-        console.error("signInWithPassword error:", signInError);
-        setError(signInError.message);
+      const session = await signInRes.json();
+      if (!signInRes.ok) {
+        console.error("signIn error:", session);
+        setError(session.error_description || session.msg || "Sign in failed");
         setLoading(false);
         return;
       }
+      // Store session in the format Supabase JS expects
+      const projectRef = SUPABASE_URL.match(/\/\/([^.]+)\./)?.[1] || "";
+      localStorage.setItem(
+        `sb-${projectRef}-auth-token`,
+        JSON.stringify(session)
+      );
       toast({ title: mode === "signin" ? "Signed in successfully" : "Phone verified!" });
       setLoading(false);
-      navigate("/", { replace: true });
+      window.location.href = "/";
     } catch (err) {
       console.error("verify-otp fetch error:", err);
       setError("Network error. Please try again.");
