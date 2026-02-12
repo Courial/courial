@@ -226,7 +226,7 @@ const Auth = () => {
                     {error && <p className="text-xs text-red-400 text-center">{error}</p>}
                     {successMessage && <p className="text-xs text-primary text-center">{successMessage}</p>}
                     <div className="flex justify-center pt-1">
-                      <Button type="submit" disabled={loading} className="rounded-lg h-11 w-full text-sm font-medium bg-primary text-primary-foreground hover:bg-primary/90">
+                      <Button type="submit" disabled={loading} className="rounded-lg h-11 w-full text-sm font-medium bg-foreground text-background border border-background/30 hover:bg-foreground/90">
                         {loading ? "Creating…" : "Create Account"}
                       </Button>
                     </div>
