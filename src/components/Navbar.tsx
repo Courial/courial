@@ -6,6 +6,7 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import courialLogo from "@/assets/courial-logo.png";
+import profileIcon from "@/assets/profile-icon.png";
 
 const navLinks = [
   { name: "Home", href: "/" },
@@ -25,8 +26,8 @@ export const Navbar = () => {
 
 
   const displayName = user?.user_metadata?.full_name || user?.user_metadata?.courial_email || user?.email;
-  const userInitials = displayName
-    ? displayName.split(" ").map((n: string) => n[0]).join("").toUpperCase().slice(0, 2)
+  const userInitial = displayName
+    ? displayName.charAt(0).toUpperCase()
     : "U";
   const avatarUrl = user?.user_metadata?.avatar_url;
 
@@ -78,7 +79,10 @@ export const Navbar = () => {
                 <button className="rounded-full focus:outline-none focus:ring-2 focus:ring-primary group-hover:opacity-0 transition-opacity">
                   <Avatar className="h-10 w-10 border border-foreground">
                     <AvatarImage src={avatarUrl} alt="Profile" />
-                    <AvatarFallback className="bg-primary text-primary-foreground text-xs">{userInitials}</AvatarFallback>
+                    <AvatarFallback className="bg-background p-0 relative">
+                      <img src={profileIcon} alt="" className="h-full w-full object-cover" />
+                      <span className="absolute text-background text-[0.5rem] font-bold" style={{ top: '58%', left: '50%', transform: 'translate(-50%, -50%)' }}>{userInitial}</span>
+                    </AvatarFallback>
                   </Avatar>
                 </button>
                 <Button
