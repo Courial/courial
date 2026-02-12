@@ -55,6 +55,7 @@ const Auth = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
+  const [verifySuccess, setVerifySuccess] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
 
@@ -188,9 +189,9 @@ const Auth = () => {
       // This guarantees the SDK picks up the session on next mount
       const projectRef = SUPABASE_URL.match(/\/\/([^.]+)\./)?.[1] || "";
       localStorage.setItem(`sb-${projectRef}-auth-token`, JSON.stringify(session));
-      toast({ title: mode === "signin" ? "Signed in successfully" : "Phone verified!" });
+      setVerifySuccess(true);
       setLoading(false);
-      window.location.href = "/";
+      setTimeout(() => { window.location.href = "/"; }, 1500);
     } catch (err) {
       console.error("verify-otp fetch error:", err);
       setError("Network error. Please try again.");
