@@ -168,13 +168,13 @@ const Auth = () => {
       if (!res.ok) {
         setError(data.error || "OTP verification failed");
       } else {
-        // Exchange the token_hash for a Supabase session
-        const { error: verifyError } = await supabase.auth.verifyOtp({
-          token_hash: data.token_hash,
-          type: "email",
+        // Set the session directly with returned tokens
+        const { error: sessionError } = await supabase.auth.setSession({
+          access_token: data.access_token,
+          refresh_token: data.refresh_token,
         });
-        if (verifyError) {
-          setError(verifyError.message);
+        if (sessionError) {
+          setError(sessionError.message);
         } else {
           toast({ title: mode === "signin" ? "Signed in successfully" : "Phone verified!" });
           navigate("/");

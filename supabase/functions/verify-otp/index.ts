@@ -69,6 +69,8 @@ serve(async (req) => {
     // Use a deterministic email based on phone for Supabase user identity
     const fullPhone = `${country_code}${phone}`;
     const pseudoEmail = `${fullPhone.replace(/\+/g, "")}@phone.courial.app`;
+    // Deterministic password derived from phone + secret
+    const userPassword = `courial_phone_${fullPhone}_${serviceRoleKey.slice(0, 8)}`;
 
     // Check if user exists
     const { data: existingUsers } = await supabaseAdmin.auth.admin.listUsers();
@@ -76,14 +78,11 @@ serve(async (req) => {
       (u) => u.email === pseudoEmail || u.phone === fullPhone
     );
 
-    let userId: string;
-
-    if (existingUser) {
-      userId = existingUser.id;
-    } else {
-      // Create new user
-      const { data: newUser, error: createError } = await supabaseAdmin.auth.admin.createUser({
+    if (!existingUser) {
+      // Create new user with password
+      const { error: createError } = await supabaseAdmin.auth.admin.createUser({
         email: pseudoEmail,
+        password: userPassword,
         phone: fullPhone,
         email_confirm: true,
         phone_confirm: true,
@@ -100,35 +99,39 @@ serve(async (req) => {
           { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
         );
       }
-      userId = newUser.user.id;
+    } else {
+      // Ensure password is set for existing user
+      await supabaseAdmin.auth.admin.updateUser(existingUser.id, {
+        password: userPassword,
+      });
     }
 
-    // Generate a magic link token to establish session
-    const { data: linkData, error: linkError } = await supabaseAdmin.auth.admin.generateLink({
-      type: "magiclink",
-      email: pseudoEmail,
+    // Sign in to get session tokens
+    const anonKey = Deno.env.get("SUPABASE_ANON_KEY")!;
+    const signInRes = await fetch(`${supabaseUrl}/auth/v1/token?grant_type=password`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "apikey": anonKey,
+      },
+      body: JSON.stringify({ email: pseudoEmail, password: userPassword }),
     });
 
-    if (linkError || !linkData) {
-      console.error("Generate link error:", linkError);
+    const signInData = await signInRes.json();
+
+    if (!signInRes.ok) {
+      console.error("Sign in error:", signInData);
       return new Response(
-        JSON.stringify({ error: "Failed to generate session" }),
+        JSON.stringify({ error: "Failed to establish session" }),
         { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
 
-    // Extract the token hash from the generated link
-    const url = new URL(linkData.properties.action_link);
-    const tokenHash = url.searchParams.get("token_hash") || url.hash?.replace("#", "");
-
-    // Also extract from the hashed_token property
-    const hashedToken = linkData.properties.hashed_token;
-
     return new Response(
       JSON.stringify({
         success: true,
-        token_hash: hashedToken,
-        email: pseudoEmail,
+        access_token: signInData.access_token,
+        refresh_token: signInData.refresh_token,
         courial_data: courialData,
       }),
       { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
