@@ -33,17 +33,19 @@ serve(async (req) => {
     // Step 1: Verify OTP with Courial API
     const courialUrl = "https://gocourial.com/userApis/verify_login_otp";
 
+    const courialBody = new URLSearchParams({
+      type: "0",
+      security_key: apiKey,
+      otp,
+      country_code,
+      phone,
+      ...(deviceId ? { deviceId } : {}),
+    });
+
     const courialRes = await fetch(courialUrl, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        type: 0,
-        security_key: apiKey,
-        otp,
-        country_code,
-        phone,
-        ...(deviceId ? { deviceId } : {}),
-      }),
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: courialBody.toString(),
     });
 
     const courialData = await courialRes.json();
