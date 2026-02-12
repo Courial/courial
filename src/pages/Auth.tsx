@@ -9,6 +9,7 @@ import { lovable } from "@/integrations/lovable";
 import { useToast } from "@/hooks/use-toast";
 import PhoneInput from "react-phone-number-input";
 import "react-phone-number-input/style.css";
+import CountrySelect from "@/components/CountrySelect";
 import Index from "./Index";
 import appleIcon from "@/assets/apple-icon.png";
 
@@ -189,7 +190,7 @@ const Auth = () => {
                   className="w-full"
                 >
                   <form onSubmit={handleSignInSendOtp} className="space-y-3">
-                    <PhoneInput international defaultCountry={defaultCountry as any} value={signinPhone} onChange={setSigninPhone} className="auth-phone-input auth-phone-input--dark" />
+                    <PhoneInput international defaultCountry={defaultCountry as any} value={signinPhone} onChange={setSigninPhone} className="auth-phone-input auth-phone-input--dark" countrySelectComponent={CountrySelect} />
                     {error && <p className="text-xs text-red-400 text-center">{error}</p>}
                     {successMessage && <p className="text-xs text-primary text-center">{successMessage}</p>}
                     <div className="flex justify-center">
@@ -217,7 +218,7 @@ const Auth = () => {
                       <Input type="email" placeholder="Email address" value={email} onChange={(e) => setEmail(e.target.value)}
                         className="h-11 rounded-lg pl-10 bg-transparent text-background border border-background/30 text-sm placeholder:text-background/40 focus-visible:ring-primary focus-visible:ring-1 focus-visible:ring-offset-0" maxLength={255} />
                     </div>
-                    <PhoneInput international defaultCountry={defaultCountry as any} value={phone} onChange={setPhone} className="auth-phone-input auth-phone-input--dark" />
+                    <PhoneInput international defaultCountry={defaultCountry as any} value={phone} onChange={setPhone} className="auth-phone-input auth-phone-input--dark" countrySelectComponent={CountrySelect} />
                     <div className="relative">
                       <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-background/50" />
                       <Input type="password" placeholder="Password (min 6)" value={password} onChange={(e) => setPassword(e.target.value)}
