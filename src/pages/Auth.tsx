@@ -184,29 +184,13 @@ const Auth = () => {
         return;
       }
 
-      // Step 2: Use setSession to properly register the session with the SDK
-      // This stores to localStorage AND fires onAuthStateChange events
-      try {
-        await Promise.race([
-          supabase.auth.setSession({
-            access_token: session.access_token,
-            refresh_token: session.refresh_token,
-          }),
-          new Promise<never>((_, reject) => setTimeout(() => reject(new Error("timeout")), 5000)),
-        ]);
-        // SDK handled it — use SPA navigation
-        toast({ title: mode === "signin" ? "Signed in successfully" : "Phone verified!" });
-        setLoading(false);
-        navigate("/", { replace: true });
-      } catch (e) {
-        // setSession timed out — store manually and reload
-        console.warn("setSession timed out, storing manually");
-        const projectRef = SUPABASE_URL.match(/\/\/([^.]+)\./)?.[1] || "";
-        localStorage.setItem(`sb-${projectRef}-auth-token`, JSON.stringify(session));
-        toast({ title: mode === "signin" ? "Signed in successfully" : "Phone verified!" });
-        setLoading(false);
-        window.location.href = "/";
-      }
+      // Step 2: Store session in localStorage and do a full page reload
+      // This guarantees the SDK picks up the session on next mount
+      const projectRef = SUPABASE_URL.match(/\/\/([^.]+)\./)?.[1] || "";
+      localStorage.setItem(`sb-${projectRef}-auth-token`, JSON.stringify(session));
+      toast({ title: mode === "signin" ? "Signed in successfully" : "Phone verified!" });
+      setLoading(false);
+      window.location.href = "/";
     } catch (err) {
       console.error("verify-otp fetch error:", err);
       setError("Network error. Please try again.");
