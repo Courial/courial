@@ -65,11 +65,11 @@ const Auth = () => {
       .catch(() => {});
   }, []);
 
+  // Check if already logged in on mount
   useEffect(() => {
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
       if (session?.user) navigate("/", { replace: true });
     });
-    return () => subscription.unsubscribe();
   }, [navigate]);
 
   const validateEmail = (v: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
@@ -177,7 +177,8 @@ const Auth = () => {
           setError(sessionError.message);
         } else {
           toast({ title: mode === "signin" ? "Signed in successfully" : "Phone verified!" });
-          navigate("/");
+          // Small delay to let auth state propagate before navigating
+          setTimeout(() => navigate("/"), 100);
         }
       }
     } catch (err) {
