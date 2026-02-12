@@ -92,27 +92,19 @@ export const Navbar = () => {
                   </button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-40">
-                  <div
-                    role="menuitem"
-                    className="relative flex cursor-pointer select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none transition-colors hover:bg-accent hover:text-accent-foreground"
+                  <button
+                    type="button"
+                    className="relative flex w-full cursor-pointer select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none transition-colors hover:bg-accent hover:text-accent-foreground"
                     onClick={() => {
-                      console.log("[Navbar] Sign out clicked");
-                      signOut().then(() => {
-                        console.log("[Navbar] signOut resolved, clearing storage");
-                        localStorage.clear();
-                        sessionStorage.clear();
-                        window.location.replace("/");
-                      }).catch((err) => {
-                        console.error("[Navbar] signOut error:", err);
-                        localStorage.clear();
-                        sessionStorage.clear();
-                        window.location.replace("/");
-                      });
+                      console.log("[Navbar] Sign out - nuking session");
+                      localStorage.clear();
+                      sessionStorage.clear();
+                      window.location.replace("/");
                     }}
                   >
                     <LogOut className="w-4 h-4 mr-2" />
                     Sign Out
-                  </div>
+                  </button>
                 </DropdownMenuContent>
               </DropdownMenu>
             ) : (
@@ -174,7 +166,7 @@ export const Navbar = () => {
                 {authLoading ? (
                   <span className="text-xs text-muted-foreground animate-pulse py-2">Checking...</span>
                 ) : user ? (
-                  <Button variant="ghost" className="w-full justify-start border border-foreground/25" onClick={async () => { console.log("[Navbar] Sign out initiated"); await signOut(); localStorage.clear(); sessionStorage.clear(); window.location.replace("/"); }}>
+                  <Button variant="ghost" className="w-full justify-start border border-foreground/25" onClick={() => { console.log("[Navbar] Sign out - nuking session"); localStorage.clear(); sessionStorage.clear(); window.location.replace("/"); }}>
                     <LogOut className="w-4 h-4 mr-2" />
                     Sign Out
                   </Button>
