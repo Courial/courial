@@ -444,7 +444,7 @@ const Auth = () => {
                       <select
                         value={howHeard}
                         onChange={(e) => setHowHeard(e.target.value)}
-                        className="h-11 w-full rounded-lg pl-10 pr-3 bg-transparent text-background border border-background/30 text-sm focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary appearance-none cursor-pointer [&>option]:bg-foreground [&>option]:text-background"
+                        className={`h-11 w-full rounded-lg pl-10 pr-3 bg-transparent border border-background/30 text-sm focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary appearance-none cursor-pointer [&>option]:bg-foreground [&>option]:text-background ${howHeard ? 'text-background' : 'text-background/40'}`}
                       >
                         <option value="" disabled>How did you hear about us?</option>
                         <option value="Corporate Partner">Corporate Partner</option>
