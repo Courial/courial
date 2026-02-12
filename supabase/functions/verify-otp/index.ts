@@ -69,8 +69,7 @@ serve(async (req) => {
     // Use a deterministic email based on phone for Supabase user identity
     const fullPhone = `${country_code}${phone}`;
     const pseudoEmail = `${fullPhone.replace(/\+/g, "")}@phone.courial.app`;
-    // Deterministic password derived from phone + secret
-    const userPassword = `courial_phone_${fullPhone}_${serviceRoleKey.slice(0, 8)}`;
+    const userPassword = `courial_phone_auth_${fullPhone}`;
 
     // Check if user exists
     const { data: existingUsers } = await supabaseAdmin.auth.admin.listUsers();
@@ -112,32 +111,11 @@ serve(async (req) => {
       });
     }
 
-    // Sign in to get session tokens
-    const anonKey = Deno.env.get("SUPABASE_ANON_KEY")!;
-    const signInRes = await fetch(`${supabaseUrl}/auth/v1/token?grant_type=password`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "apikey": anonKey,
-      },
-      body: JSON.stringify({ email: pseudoEmail, password: userPassword }),
-    });
-
-    const signInData = await signInRes.json();
-
-    if (!signInRes.ok) {
-      console.error("Sign in error:", signInData);
-      return new Response(
-        JSON.stringify({ error: "Failed to establish session" }),
-        { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-      );
-    }
-
     return new Response(
       JSON.stringify({
         success: true,
-        access_token: signInData.access_token,
-        refresh_token: signInData.refresh_token,
+        email: pseudoEmail,
+        password: userPassword,
         courial_data: courialData,
       }),
       { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }

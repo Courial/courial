@@ -171,34 +171,20 @@ const Auth = () => {
         return;
       }
       
-      // Manually store session in localStorage since setSession can hang
-      const projectRef = SUPABASE_URL.match(/\/\/([^.]+)\./)?.[1] || "";
-      const storageKey = `sb-${projectRef}-auth-token`;
-      const sessionPayload = {
-        access_token: data.access_token,
-        refresh_token: data.refresh_token,
-        token_type: "bearer",
-        expires_in: 3600,
-        expires_at: Math.floor(Date.now() / 1000) + 3600,
-        user: JSON.parse(atob(data.access_token.split(".")[1])),
-      };
-      // Build a user object from the JWT claims
-      const claims = sessionPayload.user;
-      sessionPayload.user = {
-        id: claims.sub,
-        aud: claims.aud,
-        role: claims.role,
-        email: claims.email,
-        phone: claims.phone,
-        app_metadata: claims.app_metadata,
-        user_metadata: claims.user_metadata,
-        created_at: new Date().toISOString(),
-      };
-      localStorage.setItem(storageKey, JSON.stringify(sessionPayload));
+      // Sign in with the credentials returned by the edge function
+      const { error: signInError } = await supabase.auth.signInWithPassword({
+        email: data.email,
+        password: data.password,
+      });
+      if (signInError) {
+        console.error("signInWithPassword error:", signInError);
+        setError(signInError.message);
+        setLoading(false);
+        return;
+      }
       toast({ title: mode === "signin" ? "Signed in successfully" : "Phone verified!" });
       setLoading(false);
-      // Full reload to pick up the stored session
-      window.location.href = "/";
+      navigate("/", { replace: true });
     } catch (err) {
       console.error("verify-otp fetch error:", err);
       setError("Network error. Please try again.");
