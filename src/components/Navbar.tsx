@@ -1,9 +1,16 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Menu, X } from "lucide-react";
+import { Menu, X, User, LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import courialLogo from "@/assets/courial-logo.png";
 
 const navLinks = [
@@ -19,7 +26,13 @@ const navLinks = [
 export const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const location = useLocation();
-  const { isAdmin, loading: authLoading } = useAuth();
+  const { user, isAdmin, loading: authLoading, signOut } = useAuth();
+  const navigate = useNavigate();
+
+  const userInitials = user?.user_metadata?.full_name
+    ? user.user_metadata.full_name.split(" ").map((n: string) => n[0]).join("").toUpperCase().slice(0, 2)
+    : user?.email?.[0]?.toUpperCase() || "U";
+  const avatarUrl = user?.user_metadata?.avatar_url;
 
   const isActive = (href: string) => {
     if (href === "/") return location.pathname === "/";
@@ -64,11 +77,30 @@ export const Navbar = () => {
                 </Button>
               </Link>
             )}
-            <Link to="/auth">
-              <Button variant="ghost" size="sm" className="border border-foreground/25">
-                Sign In
-              </Button>
-            </Link>
+            {!authLoading && user ? (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <button className="rounded-full focus:outline-none focus:ring-2 focus:ring-primary">
+                    <Avatar className="h-8 w-8">
+                      <AvatarImage src={avatarUrl} alt="Profile" />
+                      <AvatarFallback className="bg-primary text-primary-foreground text-xs">{userInitials}</AvatarFallback>
+                    </Avatar>
+                  </button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-40">
+                  <DropdownMenuItem onClick={() => { signOut(); navigate("/"); }}>
+                    <LogOut className="w-4 h-4 mr-2" />
+                    Sign Out
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            ) : (
+              <Link to="/auth">
+                <Button variant="ghost" size="sm" className="border border-foreground/25">
+                  Sign In
+                </Button>
+              </Link>
+            )}
             <Button variant="hero" size="sm">
               Book Now
             </Button>
@@ -118,11 +150,18 @@ export const Navbar = () => {
                     </Button>
                   </Link>
                 )}
-                <Link to="/auth" onClick={() => setIsOpen(false)}>
-                  <Button variant="ghost" className="w-full justify-start border border-foreground/25">
-                    Sign In
+                {!authLoading && user ? (
+                  <Button variant="ghost" className="w-full justify-start border border-foreground/25" onClick={() => { setIsOpen(false); signOut(); navigate("/"); }}>
+                    <LogOut className="w-4 h-4 mr-2" />
+                    Sign Out
                   </Button>
-                </Link>
+                ) : (
+                  <Link to="/auth" onClick={() => setIsOpen(false)}>
+                    <Button variant="ghost" className="w-full justify-start border border-foreground/25">
+                      Sign In
+                    </Button>
+                  </Link>
+                )}
                 <Button variant="hero">Book Now</Button>
               </div>
             </div>
