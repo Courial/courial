@@ -1,8 +1,23 @@
-import { useState, useEffect, useRef } from "react";
+import { createContext, useContext, useState, useEffect, useRef } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import type { User } from "@supabase/supabase-js";
+import React from "react";
 
-export function useAuth() {
+interface AuthContextType {
+  user: User | null;
+  isAdmin: boolean;
+  loading: boolean;
+  signOut: () => Promise<void>;
+}
+
+const AuthContext = createContext<AuthContextType>({
+  user: null,
+  isAdmin: false,
+  loading: true,
+  signOut: async () => {},
+});
+
+export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [isAdmin, setIsAdmin] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -16,7 +31,6 @@ export function useAuth() {
   };
 
   useEffect(() => {
-    // Safety timeout — never stay on "Checking..." for more than 3s
     const timeout = setTimeout(() => {
       console.log("[useAuth] Safety timeout — forcing loading=false");
       resolve();
@@ -66,5 +80,9 @@ export function useAuth() {
     await supabase.auth.signOut();
   };
 
-  return { user, isAdmin, loading, signOut };
+  return React.createElement(AuthContext.Provider, { value: { user, isAdmin, loading, signOut } }, children);
+}
+
+export function useAuth() {
+  return useContext(AuthContext);
 }
