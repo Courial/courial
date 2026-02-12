@@ -64,7 +64,11 @@ serve(async (req) => {
     console.log("[sync-user] check_phone response:", JSON.stringify(checkData));
 
     // If user already exists on Couriol, skip signup
-    if (checkRes.ok && checkData?.data?.exists) {
+    // Couriol may indicate existence via data.exists, success:1, or via check_phone returning user data
+    const phoneExists = checkData?.data?.exists || 
+      (checkData?.success === 1 && checkData?.data?.id) ||
+      (checkData?.success === 1);
+    if (phoneExists) {
       return new Response(
         JSON.stringify({ success: true, already_exists: true, data: checkData }),
         { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
@@ -96,10 +100,20 @@ serve(async (req) => {
     const signupData = await signupRes.json();
     console.log("[sync-user] signup_v2 response:", JSON.stringify(signupData));
 
+    // signup_v2 may also return "already exists" with success:0
+    const alreadyExists = signupData?.msg?.toLowerCase()?.includes("already exists") || 
+      signupData?.msg?.toLowerCase()?.includes("log in");
+    if (alreadyExists) {
+      return new Response(
+        JSON.stringify({ success: true, already_exists: true, data: signupData }),
+        { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
     return new Response(
-      JSON.stringify({ success: signupRes.ok, already_exists: false, data: signupData }),
+      JSON.stringify({ success: signupRes.ok && signupData.success !== 0, already_exists: false, data: signupData }),
       {
-        status: signupRes.ok ? 200 : signupRes.status,
+        status: (signupRes.ok && signupData.success !== 0) ? 200 : (signupData.code || 400),
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       }
     );
