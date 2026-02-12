@@ -5,12 +5,6 @@ import { Button } from "@/components/ui/button";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import courialLogo from "@/assets/courial-logo.png";
 
 const navLinks = [
@@ -82,31 +76,28 @@ export const Navbar = () => {
             {authLoading ? (
               <span className="text-xs text-muted-foreground animate-pulse">Checking...</span>
             ) : user ? (
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <button className="rounded-full focus:outline-none focus:ring-2 focus:ring-primary">
-                    <Avatar className="h-8 w-8">
-                      <AvatarImage src={avatarUrl} alt="Profile" />
-                      <AvatarFallback className="bg-primary text-primary-foreground text-xs">{userInitials}</AvatarFallback>
-                    </Avatar>
-                  </button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="w-40">
-                  <button
-                    type="button"
-                    className="relative flex w-full cursor-pointer select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none transition-colors hover:bg-accent hover:text-accent-foreground"
-                    onClick={() => {
-                      console.log("[Navbar] Sign out - nuking session");
-                      localStorage.clear();
-                      sessionStorage.clear();
-                      window.location.replace("/");
-                    }}
-                  >
-                    <LogOut className="w-4 h-4 mr-2" />
-                    Sign Out
-                  </button>
-                </DropdownMenuContent>
-              </DropdownMenu>
+              <div className="relative group">
+                <button className="rounded-full focus:outline-none focus:ring-2 focus:ring-primary">
+                  <Avatar className="h-8 w-8 group-hover:hidden">
+                    <AvatarImage src={avatarUrl} alt="Profile" />
+                    <AvatarFallback className="bg-primary text-primary-foreground text-xs">{userInitials}</AvatarFallback>
+                  </Avatar>
+                </button>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="hidden group-hover:inline-flex border border-foreground/25 gap-1.5"
+                  onClick={() => {
+                    console.log("[Navbar] Sign out - nuking session");
+                    localStorage.clear();
+                    sessionStorage.clear();
+                    window.location.replace("/");
+                  }}
+                >
+                  <LogOut className="w-3.5 h-3.5" />
+                  Sign Out
+                </Button>
+              </div>
             ) : (
               <Link to="/auth">
                 <Button variant="ghost" size="sm" className="border border-foreground/25">
