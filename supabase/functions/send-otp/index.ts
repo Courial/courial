@@ -32,13 +32,14 @@ serve(async (req) => {
     // Generate a simple device ID for web clients
     const deviceID = crypto.randomUUID();
 
-    const courialUrl = `https://gocourial.com/userApis/send_login_otp?api_key=${encodeURIComponent(apiKey)}`;
+    const courialUrl = "https://gocourial.com/userApis/send_login_otp";
 
     const courialRes = await fetch(courialUrl, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         type: 0,
+        security_key: apiKey,
         deviceID,
         country_code,
         phone,
