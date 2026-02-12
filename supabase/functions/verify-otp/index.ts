@@ -79,8 +79,10 @@ serve(async (req) => {
 
     // Extract profile data from Courial response
     const courialProfile = courialData?.data || {};
+    console.log("[verify-otp] Courial profile keys:", Object.keys(courialProfile));
+    console.log("[verify-otp] Courial profile data:", JSON.stringify(courialProfile));
     const fullName = [courialProfile.firstName, courialProfile.lastName].filter(Boolean).join(" ") || undefined;
-    const avatarUrl = courialProfile.image || undefined;
+    const avatarUrl = courialProfile.image || courialProfile.profileImage || courialProfile.avatar || courialProfile.photo || courialProfile.picture || undefined;
     const courialEmail = courialProfile.email || undefined;
 
     const userMeta = {
