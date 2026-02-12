@@ -92,17 +92,27 @@ export const Navbar = () => {
                   </button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-40">
-                  <DropdownMenuItem onSelect={async (e) => {
-                    e.preventDefault();
-                    console.log("[Navbar] Sign out initiated");
-                    await signOut();
-                    localStorage.clear();
-                    sessionStorage.clear();
-                    window.location.replace("/");
-                  }}>
+                  <div
+                    role="menuitem"
+                    className="relative flex cursor-pointer select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none transition-colors hover:bg-accent hover:text-accent-foreground"
+                    onClick={() => {
+                      console.log("[Navbar] Sign out clicked");
+                      signOut().then(() => {
+                        console.log("[Navbar] signOut resolved, clearing storage");
+                        localStorage.clear();
+                        sessionStorage.clear();
+                        window.location.replace("/");
+                      }).catch((err) => {
+                        console.error("[Navbar] signOut error:", err);
+                        localStorage.clear();
+                        sessionStorage.clear();
+                        window.location.replace("/");
+                      });
+                    }}
+                  >
                     <LogOut className="w-4 h-4 mr-2" />
                     Sign Out
-                  </DropdownMenuItem>
+                  </div>
                 </DropdownMenuContent>
               </DropdownMenu>
             ) : (
