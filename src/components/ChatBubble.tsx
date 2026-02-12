@@ -7,15 +7,8 @@ export const ChatBubble = () => {
   const [isVisible, setIsVisible] = useState(true);
   const navigate = useNavigate();
 
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setIsVisible(false);
-    }, 2 * 60 * 1000); // 2 minutes
-
-    return () => clearTimeout(timer);
-  }, []);
-
   const handleClick = () => {
+    setIsVisible(false);
     navigate("/help");
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
