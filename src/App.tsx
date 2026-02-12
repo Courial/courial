@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { HelmetProvider } from "react-helmet-async";
 import { ChatBubble } from "@/components/ChatBubble";
+import { AuthProvider } from "@/hooks/useAuth";
 import Index from "./pages/Index";
 import Markets from "./pages/Markets";
 import Business from "./pages/Business";
@@ -30,32 +31,34 @@ const App = () => (
   <QueryClientProvider client={queryClient}>
     <HelmetProvider>
       <TooltipProvider>
-        <Toaster />
-        <Sonner />
-        <BrowserRouter>
-          <Routes>
-            <Route path="/" element={<Index />} />
-            <Route path="/markets" element={<Markets />} />
-            <Route path="/business" element={<Business />} />
-            <Route path="/partners" element={<Partners />} />
-            <Route path="/users" element={<Users />} />
-            <Route path="/courials" element={<Courials />} />
-            <Route path="/chauffeur" element={<Chauffeur />} />
-            <Route path="/shield" element={<Shield />} />
-            <Route path="/terms" element={<Terms />} />
-            <Route path="/privacy" element={<Privacy />} />
-            <Route path="/ica" element={<ICA />} />
-            <Route path="/help" element={<Help />} />
-            <Route path="/api" element={<Api />} />
-            <Route path="/blog" element={<Blog />} />
-            <Route path="/blog/:slug" element={<BlogPost />} />
-            <Route path="/admin/blog" element={<AdminBlog />} />
-            <Route path="/auth" element={<Auth />} />
-            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-          <ChatBubble />
-        </BrowserRouter>
+        <AuthProvider>
+          <Toaster />
+          <Sonner />
+          <BrowserRouter>
+            <Routes>
+              <Route path="/" element={<Index />} />
+              <Route path="/markets" element={<Markets />} />
+              <Route path="/business" element={<Business />} />
+              <Route path="/partners" element={<Partners />} />
+              <Route path="/users" element={<Users />} />
+              <Route path="/courials" element={<Courials />} />
+              <Route path="/chauffeur" element={<Chauffeur />} />
+              <Route path="/shield" element={<Shield />} />
+              <Route path="/terms" element={<Terms />} />
+              <Route path="/privacy" element={<Privacy />} />
+              <Route path="/ica" element={<ICA />} />
+              <Route path="/help" element={<Help />} />
+              <Route path="/api" element={<Api />} />
+              <Route path="/blog" element={<Blog />} />
+              <Route path="/blog/:slug" element={<BlogPost />} />
+              <Route path="/admin/blog" element={<AdminBlog />} />
+              <Route path="/auth" element={<Auth />} />
+              {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+            <ChatBubble />
+          </BrowserRouter>
+        </AuthProvider>
       </TooltipProvider>
     </HelmetProvider>
   </QueryClientProvider>
