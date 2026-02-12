@@ -29,9 +29,10 @@ export const Navbar = () => {
   const { user, isAdmin, loading: authLoading, signOut } = useAuth();
   const navigate = useNavigate();
 
-  const userInitials = user?.user_metadata?.full_name
-    ? user.user_metadata.full_name.split(" ").map((n: string) => n[0]).join("").toUpperCase().slice(0, 2)
-    : user?.email?.[0]?.toUpperCase() || "U";
+  const displayName = user?.user_metadata?.full_name || user?.user_metadata?.courial_email || user?.email;
+  const userInitials = displayName
+    ? displayName.split(" ").map((n: string) => n[0]).join("").toUpperCase().slice(0, 2)
+    : "U";
   const avatarUrl = user?.user_metadata?.avatar_url;
 
   const isActive = (href: string) => {
