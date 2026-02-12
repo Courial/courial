@@ -76,7 +76,7 @@ export const Navbar = () => {
             {user ? (
               <div className="relative group flex items-center justify-center w-9 h-9">
                 <button className="rounded-full focus:outline-none focus:ring-2 focus:ring-primary group-hover:opacity-0 transition-opacity">
-                  <Avatar className="h-8 w-8">
+                  <Avatar className="h-10 w-10 border border-foreground">
                     <AvatarImage src={avatarUrl} alt="Profile" />
                     <AvatarFallback className="bg-primary text-primary-foreground text-xs">{userInitials}</AvatarFallback>
                   </Avatar>
