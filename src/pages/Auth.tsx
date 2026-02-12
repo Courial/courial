@@ -150,7 +150,7 @@ const Auth = () => {
   const handleVerifyOtp = async (e: React.FormEvent) => {
     e.preventDefault();
     clearMessages();
-    if (otp.length < 6) return setError("Please enter the 6-digit code.");
+    if (otp.length < 4) return setError("Please enter the 4-digit code.");
     setLoading(true);
 
     try {
@@ -329,12 +329,12 @@ const Auth = () => {
               <motion.div key="otp" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}
                   className="w-full"
                 >
-                  <p className="text-center text-xs text-background/60 mb-4">We sent a 6-digit code to your phone</p>
+                   <p className="text-center text-xs text-background/60 mb-4">We sent a 4-digit code to your phone</p>
                   <form onSubmit={handleVerifyOtp} className="space-y-3">
-                    <Input type="text" inputMode="numeric" placeholder="000000" value={otp}
-                      onChange={(e) => setOtp(e.target.value.replace(/\D/g, "").slice(0, 6))}
+                    <Input type="text" inputMode="numeric" placeholder="0000" value={otp}
+                      onChange={(e) => setOtp(e.target.value.replace(/\D/g, "").slice(0, 4))}
                       className="h-11 rounded-lg text-center text-lg tracking-[0.3em] bg-background text-foreground border-0 font-mono"
-                      maxLength={6} autoFocus />
+                      maxLength={4} autoFocus />
                     {error && <p className="text-xs text-red-400 text-center">{error}</p>}
                     {successMessage && <p className="text-xs text-primary text-center">{successMessage}</p>}
                     <div className="flex justify-center">
