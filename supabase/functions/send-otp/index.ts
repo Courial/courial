@@ -51,10 +51,13 @@ serve(async (req) => {
 
     const courialData = await courialRes.json();
 
+    // Couriol may return HTTP 200 but with success:0 for errors
+    const isSuccess = courialRes.ok && courialData.success !== 0 && courialData.success !== false;
+
     return new Response(
       JSON.stringify({ ...courialData, deviceID }),
       {
-        status: courialRes.ok ? 200 : courialRes.status,
+        status: isSuccess ? 200 : (courialData.code || 400),
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       }
     );
