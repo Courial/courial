@@ -31,13 +31,14 @@ serve(async (req) => {
     }
 
     // Step 1: Verify OTP with Courial API
-    const courialUrl = `https://gocourial.com/userApis/verify_login_otp?api_key=${encodeURIComponent(apiKey)}`;
+    const courialUrl = "https://gocourial.com/userApis/verify_login_otp";
 
     const courialRes = await fetch(courialUrl, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         type: 0,
+        security_key: apiKey,
         otp,
         country_code,
         phone,
