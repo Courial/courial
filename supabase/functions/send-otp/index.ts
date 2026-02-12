@@ -34,18 +34,19 @@ serve(async (req) => {
 
     const courialUrl = "https://gocourial.com/userApis/send_login_otp";
 
-    const courialBody = new URLSearchParams({
-      type: "0",
-      security_key: apiKey,
-      deviceID,
-      country_code,
-      phone,
-    });
-
     const courialRes = await fetch(courialUrl, {
       method: "POST",
-      headers: { "Content-Type": "application/x-www-form-urlencoded" },
-      body: courialBody.toString(),
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+        "security_key": apiKey,
+        "Authorization": `Bearer ${apiKey}`,
+      },
+      body: new URLSearchParams({
+        type: "0",
+        deviceID,
+        country_code,
+        phone,
+      }).toString(),
     });
 
     const courialData = await courialRes.json();
