@@ -131,6 +131,7 @@ const Auth = () => {
     if (!validateEmail(email)) return setError("Please enter a valid email.");
     if (!phone || !validatePhone(phone)) return setError("Please enter a valid phone number.");
     if (password.length < 6) return setError("Password must be at least 6 characters.");
+    if (!howHeard) return setError("Please select how you heard about us.");
     setLoading(true);
 
     const { countryCode, nationalNumber } = splitPhone(phone.trim());
@@ -443,7 +444,7 @@ const Auth = () => {
                       <select
                         value={howHeard}
                         onChange={(e) => setHowHeard(e.target.value)}
-                        className="h-11 w-full rounded-lg pl-10 pr-3 bg-transparent text-background border border-background/30 text-sm focus:ring-primary focus:ring-1 focus:ring-offset-0 appearance-none cursor-pointer [&>option]:bg-foreground [&>option]:text-background"
+                        className="h-11 w-full rounded-lg pl-10 pr-3 bg-transparent text-background border border-background/30 text-sm focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary appearance-none cursor-pointer [&>option]:bg-foreground [&>option]:text-background"
                       >
                         <option value="" disabled>How did you hear about us?</option>
                         <option value="Corporate Partner">Corporate Partner</option>
