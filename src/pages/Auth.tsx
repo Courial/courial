@@ -170,12 +170,12 @@ const Auth = () => {
         // Continue anyway — don't block the user
       }
 
-      // Step 2: Send OTP with type "1" for new signups
+      // Step 2: Send OTP — use type "0" since user now exists on Couriol after signup_v2
       setSuccessMessage("Sending verification code...");
       const res = await fetch(`${SUPABASE_URL}/functions/v1/send-otp`, {
         method: "POST",
         headers: { "Content-Type": "application/json", "apikey": SUPABASE_KEY },
-        body: JSON.stringify({ country_code: countryCode, phone: nationalNumber, type: "1" }),
+        body: JSON.stringify({ country_code: countryCode, phone: nationalNumber, type: "0" }),
       });
       const data = await res.json();
       if (!res.ok) {
