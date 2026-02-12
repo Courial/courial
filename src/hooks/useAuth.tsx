@@ -80,7 +80,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     await supabase.auth.signOut();
   };
 
-  return React.createElement(AuthContext.Provider, { value: { user, isAdmin, loading, signOut } }, children);
+  return <AuthContext.Provider value={{ user, isAdmin, loading, signOut }}>{children}</AuthContext.Provider>;
 }
 
 export function useAuth() {
