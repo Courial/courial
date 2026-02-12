@@ -8,7 +8,9 @@ export function useAuth() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_event, session) => {
+    // Set up listener FIRST
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+      console.log("[useAuth] onAuthStateChange fired:", event, "user:", session?.user?.id);
       const currentUser = session?.user ?? null;
       setUser(currentUser);
 
@@ -27,6 +29,7 @@ export function useAuth() {
     });
 
     supabase.auth.getSession().then(async ({ data: { session } }) => {
+      console.log("[useAuth] getSession result:", "user:", session?.user?.id, "has session:", !!session);
       const currentUser = session?.user ?? null;
       setUser(currentUser);
 

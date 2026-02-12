@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X, User, LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -28,6 +28,17 @@ export const Navbar = () => {
   const location = useLocation();
   const { user, isAdmin, loading: authLoading, signOut } = useAuth();
   const navigate = useNavigate();
+
+  // DEBUG: Log auth state changes
+  useEffect(() => {
+    console.log("[Navbar] Auth state changed:", {
+      authLoading,
+      hasUser: !!user,
+      userId: user?.id,
+      email: user?.email,
+      metadata: user?.user_metadata,
+    });
+  }, [user, authLoading]);
 
   const displayName = user?.user_metadata?.full_name || user?.user_metadata?.courial_email || user?.email;
   const userInitials = displayName
@@ -78,7 +89,9 @@ export const Navbar = () => {
                 </Button>
               </Link>
             )}
-            {!authLoading && user ? (
+            {authLoading ? (
+              <span className="text-xs text-muted-foreground animate-pulse">Checking...</span>
+            ) : user ? (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <button className="rounded-full focus:outline-none focus:ring-2 focus:ring-primary">
@@ -151,7 +164,9 @@ export const Navbar = () => {
                     </Button>
                   </Link>
                 )}
-                {!authLoading && user ? (
+                {authLoading ? (
+                  <span className="text-xs text-muted-foreground animate-pulse py-2">Checking...</span>
+                ) : user ? (
                   <Button variant="ghost" className="w-full justify-start border border-foreground/25" onClick={() => { setIsOpen(false); signOut(); navigate("/"); }}>
                     <LogOut className="w-4 h-4 mr-2" />
                     Sign Out
