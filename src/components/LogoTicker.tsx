@@ -16,7 +16,7 @@ const logos = [
 
 export const LogoTicker: React.FC = () => {
   return (
-    <section className="w-full overflow-hidden bg-background py-12">
+    <section className="w-full overflow-hidden bg-background pb-12">
       <div className="mb-8 text-center">
         <p className="text-sm font-medium uppercase tracking-wider text-muted-foreground">
           Trusted By
