@@ -16,14 +16,14 @@ const logos = [
 
 export const LogoTicker: React.FC = () => {
   return (
-    <section className="w-full overflow-hidden bg-background pb-12">
+    <section className="w-full bg-background pb-12">
       <div className="mb-8 text-center">
         <p className="text-sm font-medium uppercase tracking-wider text-muted-foreground">
           Trusted By
         </p>
       </div>
       
-      <div className="relative">
+      <div className="container mx-auto px-6 relative overflow-hidden">
         {/* Gradient overlays for fade effect */}
         <div className="pointer-events-none absolute left-0 top-0 z-10 h-full w-24 bg-gradient-to-r from-background to-transparent" />
         <div className="pointer-events-none absolute right-0 top-0 z-10 h-full w-24 bg-gradient-to-l from-background to-transparent" />
