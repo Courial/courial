@@ -9,9 +9,10 @@ import metaLogo from '@/assets/logos/meta.png';
 import modernaLogo from '@/assets/logos/moderna.png';
 import neuralinkLogo from '@/assets/logos/neuralink.png';
 import paloaltoLogo from '@/assets/logos/paloalto.png';
-import sequoiaLogo from '@/assets/logos/sequoia.webp';
+import sequoiaLogo from '@/assets/logos/sequoia.png';
 import thermofisherLogo from '@/assets/logos/thermofisher.png';
 import tmobileLogo from '@/assets/logos/tmobile.png';
+import ezcaterLogo from '@/assets/logos/ezcater.png';
 
 const logos = [
   { name: 'Amazon', src: amazonLogo },
@@ -27,6 +28,7 @@ const logos = [
   { name: 'Sequoia', src: sequoiaLogo },
   { name: 'Thermo Fisher', src: thermofisherLogo },
   { name: 'T-Mobile', src: tmobileLogo },
+  { name: 'ezCater', src: ezcaterLogo },
 ];
 
 const LogoSet = ({ keyPrefix }: { keyPrefix: string }) => (
