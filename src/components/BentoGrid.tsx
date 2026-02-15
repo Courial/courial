@@ -100,7 +100,7 @@ const itemVariants = {
 
 export const BentoGrid = () => {
   return (
-    <section className="pb-24 md:pb-32">
+    <section className="pt-12 pb-24 md:pt-16 md:pb-32">
       <div className="container mx-auto px-6">
         {/* Section Header */}
         <motion.div
