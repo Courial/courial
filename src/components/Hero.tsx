@@ -35,7 +35,7 @@ export const Hero: React.FC = () => {
   return (
     <HeroSection
       title={title}
-      subtitle="The world's first high-touch logistics platform. From white-glove concierge to chauffeur services, we handle the complex so you can focus on the exceptional."
+      subtitle={"The world's first high-touch logistics platform.\nFrom white-glove concierge to chauffeur services,\nwe handle the complex so you can focus on the exceptional."}
       images={images}
       className="pt-16"
     />
