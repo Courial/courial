@@ -50,7 +50,7 @@ export const HeroSection = React.forwardRef<HTMLDivElement, HeroProps>(
             <h1 className="mb-4 text-5xl font-bold tracking-tight gradient-text-black-orange md:text-7xl lg:text-8xl">
               {title}
             </h1>
-            <p className="mx-auto max-w-2xl text-lg text-muted-foreground md:text-xl">
+            <p className="mx-auto max-w-2xl text-lg text-muted-foreground md:text-xl whitespace-pre-line">
               {subtitle}
             </p>
           </div>
