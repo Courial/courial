@@ -59,7 +59,7 @@ const stats = [
 
 export const TechShowcase = () => {
   return (
-    <section className="py-24 md:py-32 bg-background overflow-hidden">
+    <section className="pb-24 md:pb-32 bg-background overflow-hidden">
       <div className="container mx-auto px-6">
         {/* Section Header */}
         <motion.div
