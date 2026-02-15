@@ -1,4 +1,7 @@
 import React from 'react';
+import amazonLogo from '@/assets/logos/amazon.png';
+import appleLogo from '@/assets/logos/apple.png';
+import chaseLogo from '@/assets/logos/chase.png';
 import cokeLogo from '@/assets/logos/coke.png';
 import ferrariLogo from '@/assets/logos/ferrari.png';
 import fordLogo from '@/assets/logos/ford.png';
@@ -11,6 +14,9 @@ import thermofisherLogo from '@/assets/logos/thermofisher.png';
 import tmobileLogo from '@/assets/logos/tmobile.png';
 
 const logos = [
+  { name: 'Amazon', src: amazonLogo },
+  { name: 'Apple', src: appleLogo },
+  { name: 'Chase', src: chaseLogo },
   { name: 'Coca-Cola', src: cokeLogo },
   { name: 'Ferrari', src: ferrariLogo },
   { name: 'Ford', src: fordLogo },
