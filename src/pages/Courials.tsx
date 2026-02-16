@@ -73,13 +73,17 @@ const Courials = () => {
                 Courials enjoy more than just the flexibility of being their own boss and setting their own schedules—they are true partners with the company.
               </p>
               <div className="flex flex-col sm:flex-row items-start gap-4">
-                <Button variant="hero" size="xl" className="group">
-                  Get iOS App
-                  <ArrowRight className="w-5 h-5 transition-transform group-hover:translate-x-1" />
-                </Button>
-                <Button variant="hero-outline" size="xl">
-                  Get Android App
-                </Button>
+                <a href="https://apps.apple.com/us/app/courial-partner/id1521638474" target="_blank" rel="noopener noreferrer">
+                  <Button variant="hero" size="xl" className="group">
+                    Get iOS App
+                    <ArrowRight className="w-5 h-5 transition-transform group-hover:translate-x-1" />
+                  </Button>
+                </a>
+                <a href="https://play.google.com/store/apps/details?id=live.courial.partner&hl=en_US" target="_blank" rel="noopener noreferrer">
+                  <Button variant="hero-outline" size="xl">
+                    Get Android App
+                  </Button>
+                </a>
               </div>
             </motion.div>
 
@@ -200,13 +204,17 @@ const Courials = () => {
               Download the Courial app and start earning on your own terms. Be your own boss while being part of something bigger.
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-              <Button variant="hero" size="xl" className="group">
-                Get iOS App
-                <ArrowRight className="w-5 h-5 transition-transform group-hover:translate-x-1" />
-              </Button>
-              <Button variant="hero-outline" size="xl">
-                Get Android App
-              </Button>
+              <a href="https://apps.apple.com/us/app/courial-partner/id1521638474" target="_blank" rel="noopener noreferrer">
+                <Button variant="hero" size="xl" className="group">
+                  Get iOS App
+                  <ArrowRight className="w-5 h-5 transition-transform group-hover:translate-x-1" />
+                </Button>
+              </a>
+              <a href="https://play.google.com/store/apps/details?id=live.courial.partner&hl=en_US" target="_blank" rel="noopener noreferrer">
+                <Button variant="hero-outline" size="xl">
+                  Get Android App
+                </Button>
+              </a>
             </div>
           </motion.div>
         </div>
