@@ -155,9 +155,9 @@ const Chauffeur = () => {
               <p className="text-lg text-muted-foreground mb-6">
                 Choose preferred chauffeurs and receive ride acceptances only from drivers you trust, creating a seamless, personalized experience. Unlike other platforms, you see the exact vehicle you're booking, including year, color, make/model.
               </p>
-              <h3 className="text-2xl font-bold mb-4 gradient-text-black-orange">
+              <h2 className="text-3xl md:text-4xl font-bold mb-4 gradient-text-black-orange">
                 Arrive in Style
-              </h3>
+              </h2>
               <p className="text-lg text-muted-foreground">
                 Chilled bottled water, phone chargers, impeccably maintained vehicles no more than five years old, chauffeurs who open and close doors for you, and a signature service experience crafted to feel effortless and unmistakably elevated.
               </p>
