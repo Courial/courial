@@ -147,7 +147,7 @@ const Business = () => {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5 }}
-            className="max-w-3xl mx-auto text-center glass-card rounded-3xl p-12"
+            className="group max-w-3xl mx-auto text-center glass-card rounded-3xl p-12 transition-all duration-300 hover:border-primary/50"
           >
             <h2 className="text-3xl md:text-4xl font-bold mb-4 gradient-text-black-orange">
               Ready to Transform Your Logistics?
