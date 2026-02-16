@@ -74,10 +74,12 @@ const Users = () => {
                 Courial is the only platform that seamlessly gets anything you need, whenever you need it.
               </p>
               <div className="flex flex-col sm:flex-row items-start gap-4">
-                <Button variant="hero" size="xl" className="group">
-                  Get iOS App
-                  <ArrowRight className="w-5 h-5 transition-transform group-hover:translate-x-1" />
-                </Button>
+                <a href="https://courial.onelink.me/lEPx/263244a0" target="_blank" rel="noopener noreferrer">
+                  <Button variant="hero" size="xl" className="group">
+                    Get iOS App
+                    <ArrowRight className="w-5 h-5 transition-transform group-hover:translate-x-1" />
+                  </Button>
+                </a>
                 <Button variant="hero-outline" size="xl">
                   Book Now
                 </Button>
@@ -161,10 +163,12 @@ const Users = () => {
             <p className="text-muted-foreground mb-8">
               Download the app and experience the easiest way to get anything delivered.
             </p>
-            <Button variant="hero" size="xl" className="group">
-              Get Started Today
-              <ArrowRight className="w-5 h-5 transition-transform group-hover:translate-x-1" />
-            </Button>
+            <a href="https://courial.onelink.me/lEPx/263244a0" target="_blank" rel="noopener noreferrer">
+              <Button variant="hero" size="xl" className="group">
+                Get Started Today
+                <ArrowRight className="w-5 h-5 transition-transform group-hover:translate-x-1" />
+              </Button>
+            </a>
           </motion.div>
         </div>
       </section>
