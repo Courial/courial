@@ -310,7 +310,7 @@ const Shield = () => {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5 }}
-            className="max-w-3xl mx-auto rounded-2xl glass-card p-12 transition-all duration-300 hover:border-primary/50 text-center"
+            className="max-w-2xl mx-auto rounded-2xl glass-card p-8 transition-all duration-300 hover:border-primary/50 text-center"
           >
             <img 
               src={shieldLogo} 
