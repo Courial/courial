@@ -219,7 +219,7 @@ const Chauffeur = () => {
             className="text-center mb-4"
           >
             <h2 className="text-4xl md:text-5xl font-bold mb-6 gradient-text-black-orange">
-              Don't Just Be a Driver, Become a Chauffeur
+              Don't Just Be a Driver,<br />Become a Chauffeur
             </h2>
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
               Currently available in Bangkok, with expansion to more SEA cities and the U.S. later this year.
