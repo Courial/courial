@@ -1,46 +1,49 @@
 import { motion } from "framer-motion";
-import { Car, Shield, Clock, Globe, Star, MapPin, ArrowRight, Calendar, Bell } from "lucide-react";
+import { Car, Shield, Clock, Globe, Star, MapPin, ArrowRight, Calendar, Bell, DollarSign, Crown, Headphones, Zap, Settings, Sparkles } from "lucide-react";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import chauffeurIllustration from "@/assets/chauffeur-illustration.png";
 
-const features = [
-  {
-    icon: Car,
-    title: "Premium Fleet",
-    description:
-      "Sedans, SUVs, and vans with clean interiors and comfort-first amenities for every occasion.",
-  },
+const whyUsFeatures = [
   {
     icon: Shield,
-    title: "Professional Chauffeurs",
+    title: "Relentlessly Safe",
     description:
-      "Trained in etiquette, safety, and clear communication—your comfort is their priority.",
-  },
-  {
-    icon: Globe,
-    title: "Multilingual Support",
-    description:
-      "Smooth, hospitality-driven experience with support in multiple languages.",
+      "Every chauffeur is trained and background-checked. Every vehicle is inspected—no exceptions.",
   },
   {
     icon: Clock,
-    title: "Flexible Booking",
+    title: "Precision, Every Time",
     description:
-      "Request in 10–25 minutes, book hourly, or schedule up to 30 days in advance.",
+      "Our chauffeurs know their cities block by block. Expect exact timing, smooth routes, and zero guesswork.",
   },
   {
-    icon: Star,
-    title: "Thai-Style Hospitality",
+    icon: Zap,
+    title: "Effortless by Design",
     description:
-      "Experience the warmth and grace of authentic Thai service culture in every ride.",
+      "AI-powered, real people behind the wheel—seamless trips from pickup to drop-off, every time.",
+  },
+];
+
+const chauffeurFeatures = [
+  {
+    icon: DollarSign,
+    title: "Better Pay",
+    description:
+      "Better pay than the competition—so you keep more of your earnings, every trip, without hidden fees.",
   },
   {
-    icon: Calendar,
-    title: "Get What You Book",
+    icon: Crown,
+    title: "Luxury Clients",
     description:
-      "No surprises—actually get the car you booked, every single time.",
+      "We serve luxury clientele, which means higher-quality trips, better treatment, and consistently bigger tips.",
+  },
+  {
+    icon: Headphones,
+    title: "Exceptional Support",
+    description:
+      "Our support team is always on, resolving issues fast so chauffeurs can stay focused on driving—not problems.",
   },
 ];
 
@@ -70,11 +73,13 @@ const Chauffeur = () => {
                 Chauffeur by Courial
               </span>
               <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 gradient-text-black-orange">
-                Premium Rides, Thai-Style Hospitality
+                From Bangkok to New York City
               </h1>
-              <p className="text-xl text-muted-foreground mb-10">
-                An all-luxury ride platform built for comfort, reliability, and service. 
-                Request a ride in as little as 10–25 minutes, book hourly, or schedule up to 30 days in advance—and actually get the car you booked.
+              <p className="text-xl text-muted-foreground mb-4">
+                The world's first all-luxury ride-hailing and advanced booking platform—where you actually get the car you booked.
+              </p>
+              <p className="text-lg text-muted-foreground mb-10">
+                On-demand rides in as little as 10–25 minutes, flexible hourly bookings, or scheduled service up to 30 days ahead. Fast Ride instantly matches you with the nearest available chauffeur when specific vehicle selection isn't required.
               </p>
               <div className="flex flex-col sm:flex-row items-start gap-4">
               <a href="https://chauffeured.ai/booking" target="_blank" rel="noopener noreferrer">
@@ -107,7 +112,7 @@ const Chauffeur = () => {
         </div>
       </section>
 
-      {/* What to Expect Section */}
+      {/* Set Your Preferences */}
       <section className="py-12 md:py-24 relative">
         <div className="container mx-auto px-6">
           <div className="grid lg:grid-cols-2 gap-16 items-center max-w-6xl mx-auto">
@@ -119,9 +124,9 @@ const Chauffeur = () => {
               className="order-2 lg:order-1 grid gap-4"
             >
               {[
-                { icon: Car, text: "Premium fleet with clean interiors and comfort-first amenities" },
-                { icon: Shield, text: "Professional chauffeurs trained in etiquette, safety, and communication" },
-                { icon: Globe, text: "Multilingual support and hospitality-driven experience designed for Thailand" },
+                { icon: Settings, text: "Choose preferred chauffeurs and receive ride acceptances only from drivers you trust" },
+                { icon: Car, text: "See the exact vehicle you're booking, including year, color, make/model" },
+                { icon: Sparkles, text: "Chilled bottled water, phone chargers, impeccably maintained vehicles no more than five years old" },
               ].map((item, index) => (
                 <div
                   key={index}
@@ -145,20 +150,23 @@ const Chauffeur = () => {
               className="order-1 lg:order-2"
             >
               <h2 className="text-3xl md:text-4xl font-bold mb-6 gradient-text-black-orange">
-                What to Expect
+                Set Your Preferences
               </h2>
               <p className="text-lg text-muted-foreground mb-6">
-                Every ride is designed around you. From the moment you book to the second you arrive, expect nothing less than exceptional service.
+                Choose preferred chauffeurs and receive ride acceptances only from drivers you trust, creating a seamless, personalized experience. Unlike other platforms, you see the exact vehicle you're booking, including year, color, make/model.
               </p>
+              <h3 className="text-2xl font-bold mb-4 gradient-text-black-orange">
+                Arrive in Style
+              </h3>
               <p className="text-lg text-muted-foreground">
-                Our chauffeurs don't just drive—they create an experience that reflects the best of <span className="font-bold text-foreground">Thai hospitality</span>.
+                Chilled bottled water, phone chargers, impeccably maintained vehicles no more than five years old, chauffeurs who open and close doors for you, and a signature service experience crafted to feel effortless and unmistakably elevated.
               </p>
             </motion.div>
           </div>
         </div>
       </section>
 
-      {/* Features Grid */}
+      {/* Why Us */}
       <section className="py-12 md:py-24">
         <div className="container mx-auto px-6">
           <motion.div
@@ -169,15 +177,57 @@ const Chauffeur = () => {
             className="text-center mb-16"
           >
             <h2 className="text-4xl md:text-5xl font-bold mb-6 gradient-text-black-orange">
-              The Chauffeur Experience
+              Why Us?
             </h2>
-            <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-              Luxury transportation reimagined with Thai-style service and modern convenience.
-            </p>
           </motion.div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
-            {features.map((feature, index) => {
+            {whyUsFeatures.map((feature, index) => {
+              const Icon = feature.icon;
+              return (
+                <motion.div
+                  key={feature.title}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.4, delay: index * 0.1 }}
+                  className="group rounded-2xl glass-card p-8 transition-all duration-300 hover:border-primary/50"
+                >
+                  <div className="w-12 h-12 rounded-xl bg-muted flex items-center justify-center mb-6 group-hover:bg-muted/80 transition-colors">
+                    <Icon className="w-6 h-6 text-foreground" />
+                  </div>
+                  <h3 className="text-xl font-bold mb-3 group-hover:text-primary transition-colors">
+                    {feature.title}
+                  </h3>
+                  <p className="text-muted-foreground">{feature.description}</p>
+                </motion.div>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
+      {/* Chauffeurs Section */}
+      <section className="py-12 md:py-24 relative">
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-primary/5 to-transparent" />
+        <div className="container mx-auto px-6 relative z-10">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5 }}
+            className="text-center mb-4"
+          >
+            <h2 className="text-4xl md:text-5xl font-bold mb-6 gradient-text-black-orange">
+              Don't Just Be a Driver, Become a Chauffeur
+            </h2>
+            <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+              Currently available in Bangkok, with expansion to more SEA cities and the U.S. later this year.
+            </p>
+          </motion.div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto mt-16">
+            {chauffeurFeatures.map((feature, index) => {
               const Icon = feature.icon;
               return (
                 <motion.div
@@ -204,7 +254,6 @@ const Chauffeur = () => {
 
       {/* Availability Section */}
       <section className="py-12 md:py-24 relative">
-        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-primary/5 to-transparent" />
         <div className="container mx-auto px-6 relative z-10">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
