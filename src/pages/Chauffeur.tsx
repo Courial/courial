@@ -251,12 +251,12 @@ const Chauffeur = () => {
             className="max-w-xs mx-auto"
           >
             <div className="group glass-card rounded-2xl p-6 text-center transition-all duration-300 hover:border-primary/50">
-              <div className="w-12 h-12 rounded-xl bg-muted flex items-center justify-center mx-auto mb-4">
+              <div className="w-12 h-12 rounded-xl bg-muted flex items-center justify-center mx-auto mb-2">
                 <Bell className="w-6 h-6 text-foreground" />
               </div>
               <h3 className="text-xl font-bold mb-2">Get Notified</h3>
               <p className="text-muted-foreground mb-6">
-                Be the first to know when Chauffeur arrives in your city.
+                Be the first to know when<br />Chauffeur arrives in your city.
               </p>
               <a href="https://chauffeured.ai/#footer" target="_blank" rel="noopener noreferrer">
                 <Button variant="hero" className="whitespace-nowrap">
