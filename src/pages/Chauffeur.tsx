@@ -253,23 +253,8 @@ const Chauffeur = () => {
       </section>
 
       {/* Availability Section */}
-      <section className="py-12 md:py-24 relative">
+      <section className="pt-0 pb-12 md:pt-0 md:pb-24 relative">
         <div className="container mx-auto px-6 relative z-10">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5 }}
-            className="text-center mb-12"
-          >
-            <h2 className="text-3xl md:text-4xl font-bold mb-4 gradient-text-black-orange">
-              Availability
-            </h2>
-            <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-              Currently serving Thailand, with expansion across Southeast Asia and the United States in 2026.
-            </p>
-          </motion.div>
-
           <div className="grid grid-cols-2 gap-4 max-w-md mx-auto mb-4">
             {regions.map((region, index) => (
               <motion.div
