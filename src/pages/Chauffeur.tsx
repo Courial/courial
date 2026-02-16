@@ -347,9 +347,11 @@ const Chauffeur = () => {
                   <ArrowRight className="w-5 h-5 transition-transform group-hover:translate-x-1" />
                 </Button>
               </a>
-              <Button variant="hero-outline" size="xl">
-                Contact Us
-              </Button>
+              <a href="/help#contact">
+                <Button variant="hero-outline" size="xl">
+                  Contact Us
+                </Button>
+              </a>
             </div>
           </motion.div>
         </div>
