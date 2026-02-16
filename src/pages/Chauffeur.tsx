@@ -126,9 +126,11 @@ const Chauffeur = () => {
                   <ArrowRight className="w-5 h-5 transition-transform group-hover:translate-x-1" />
                 </Button>
               </a>
-                <Button variant="hero-outline" size="xl">
-                  Learn More
-                </Button>
+                <a href="https://chauffeured.ai" target="_blank" rel="noopener noreferrer">
+                  <Button variant="hero-outline" size="xl">
+                    Learn More
+                  </Button>
+                </a>
               </div>
             </motion.div>
 
