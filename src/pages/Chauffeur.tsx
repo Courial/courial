@@ -222,7 +222,7 @@ const Chauffeur = () => {
               Don't Just Be a Driver,<br />Become a Chauffeur
             </h2>
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-              Currently available in Bangkok, with expansion to more SEA cities and the U.S. later this year.
+              Currently available in Bangkok, with expansion to<br />more SEA cities and the U.S. later this year.
             </p>
           </motion.div>
 
