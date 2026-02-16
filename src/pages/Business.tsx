@@ -155,7 +155,7 @@ const Business = () => {
             <p className="text-muted-foreground mb-8">
               Join hundreds of businesses that trust Courial for their delivery needs.
             </p>
-            <Button variant="hero" size="xl" className="group">
+            <Button variant="hero" size="xl" className="group" onClick={handleScheduleDemo}>
               Schedule a Demo
               <ArrowRight className="w-5 h-5 transition-transform group-hover:translate-x-1" />
             </Button>
