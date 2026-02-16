@@ -108,12 +108,9 @@ const Shield = () => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6 }}
             >
-              <div className="flex flex-wrap items-center gap-3 mb-4">
+              <div className="mb-4">
                 <span className="text-primary font-semibold text-sm uppercase tracking-wider">
                   Courial Shield
-                </span>
-                <span className="inline-flex items-center rounded-full bg-primary/10 border border-primary/20 px-3 py-1 text-xs font-semibold text-primary">
-                  Available to all gig workers
                 </span>
               </div>
               <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 gradient-text-black-orange">
