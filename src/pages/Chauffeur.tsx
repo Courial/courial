@@ -276,13 +276,13 @@ const Chauffeur = () => {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5 }}
-            className="max-w-3xl mx-auto text-center glass-card rounded-3xl p-12"
+            className="group max-w-xl mx-auto text-center glass-card rounded-3xl p-12 transition-all duration-300 hover:border-primary/50"
           >
             <h2 className="text-3xl md:text-4xl font-bold mb-4 gradient-text-black-orange">
               Ready for a Premium Ride?
             </h2>
             <p className="text-muted-foreground mb-8">
-              Experience luxury transportation with Thai-style hospitality. Book your chauffeur today.
+              Experience luxury transportation with Thai-style hospitality.<br />Book your chauffeur today.
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
               <a href="https://chauffeured.ai/booking" target="_blank" rel="noopener noreferrer">
