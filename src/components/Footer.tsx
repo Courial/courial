@@ -123,7 +123,9 @@ export const Footer = () => {
               {category === "company" && (
                 <div className="flex flex-row gap-2 mt-4">
                   <a
-                    href="#"
+                    href="https://courial.onelink.me/lEPx/263244a0"
+                    target="_blank"
+                    rel="noopener noreferrer"
                     className="inline-flex items-center justify-center bg-black text-white p-2 rounded-lg border border-white/30 hover:border-white/50 transition-colors"
                     aria-label="Download on the App Store"
                   >
