@@ -1,11 +1,8 @@
-import { useState } from "react";
 import { motion } from "framer-motion";
 import { Car, Shield, Clock, Globe, Star, MapPin, ArrowRight, Calendar, Bell } from "lucide-react";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { useToast } from "@/hooks/use-toast";
 import chauffeurIllustration from "@/assets/chauffeur-illustration.png";
 
 const features = [
@@ -53,46 +50,6 @@ const regions = [
 ];
 
 const Chauffeur = () => {
-  const [email, setEmail] = useState("");
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const { toast } = useToast();
-
-  const handleWaitlistSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    if (!email.trim()) {
-      toast({
-        title: "Email required",
-        description: "Please enter your email address.",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email.trim())) {
-      toast({
-        title: "Invalid email",
-        description: "Please enter a valid email address.",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    setIsSubmitting(true);
-    
-    // Simulate API call - replace with actual backend integration
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    
-    toast({
-      title: "You're on the list!",
-      description: "We'll notify you when Chauffeur arrives in your city.",
-    });
-    
-    setEmail("");
-    setIsSubmitting(false);
-  };
-
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
@@ -301,24 +258,11 @@ const Chauffeur = () => {
               <p className="text-muted-foreground mb-6">
                 Be the first to know when Chauffeur arrives in your city.
               </p>
-              <form onSubmit={handleWaitlistSubmit} className="flex flex-col sm:flex-row gap-3">
-                <Input
-                  type="email"
-                  placeholder="Enter your email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className="flex-1"
-                  maxLength={255}
-                />
-                <Button 
-                  type="submit" 
-                  variant="hero" 
-                  disabled={isSubmitting}
-                  className="whitespace-nowrap"
-                >
-                  {isSubmitting ? "Joining..." : "Join Waitlist"}
+              <a href="https://chauffeured.ai/#footer" target="_blank" rel="noopener noreferrer">
+                <Button variant="hero" className="whitespace-nowrap">
+                  Join Waitlist
                 </Button>
-              </form>
+              </a>
             </div>
           </motion.div>
         </div>
