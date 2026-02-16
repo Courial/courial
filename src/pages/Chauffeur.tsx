@@ -221,7 +221,7 @@ const Chauffeur = () => {
             </p>
           </motion.div>
 
-          <div className="grid grid-cols-2 gap-4 max-w-md mx-auto mb-16">
+          <div className="grid grid-cols-2 gap-4 max-w-md mx-auto mb-4">
             {regions.map((region, index) => (
               <motion.div
                 key={region.name}
