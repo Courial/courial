@@ -248,9 +248,9 @@ const Chauffeur = () => {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5, delay: 0.3 }}
-            className="max-w-xl mx-auto"
+            className="max-w-xs mx-auto"
           >
-            <div className="glass-card rounded-2xl p-8 text-center">
+            <div className="group glass-card rounded-2xl p-6 text-center transition-all duration-300 hover:border-primary/50">
               <div className="w-12 h-12 rounded-xl bg-muted flex items-center justify-center mx-auto mb-4">
                 <Bell className="w-6 h-6 text-foreground" />
               </div>
