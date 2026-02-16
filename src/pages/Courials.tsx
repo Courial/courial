@@ -79,7 +79,7 @@ const Courials = () => {
                     <ArrowRight className="w-5 h-5 transition-transform group-hover:translate-x-1" />
                   </Button>
                 </a>
-                <a href="https://play.google.com/store/apps/details?id=live.courial.partner&hl=en_US" target="_blank" rel="noopener noreferrer">
+                <a href="https://play.google.com/store/apps/details?id=live.courial.partner&hl=en_US&pli=1" target="_blank" rel="noopener noreferrer">
                   <Button variant="hero-outline" size="xl">
                     Get Android App
                   </Button>
@@ -210,7 +210,7 @@ const Courials = () => {
                   <ArrowRight className="w-5 h-5 transition-transform group-hover:translate-x-1" />
                 </Button>
               </a>
-              <a href="https://play.google.com/store/apps/details?id=live.courial.partner&hl=en_US" target="_blank" rel="noopener noreferrer">
+              <a href="https://play.google.com/store/apps/details?id=live.courial.partner&hl=en_US&pli=1" target="_blank" rel="noopener noreferrer">
                 <Button variant="hero-outline" size="xl">
                   Get Android App
                 </Button>
