@@ -120,10 +120,12 @@ const Chauffeur = () => {
                 Request a ride in as little as 10–25 minutes, book hourly, or schedule up to 30 days in advance—and actually get the car you booked.
               </p>
               <div className="flex flex-col sm:flex-row items-start gap-4">
+              <a href="https://chauffeured.ai/booking" target="_blank" rel="noopener noreferrer">
                 <Button variant="hero" size="xl" className="group">
                   Book a Ride
                   <ArrowRight className="w-5 h-5 transition-transform group-hover:translate-x-1" />
                 </Button>
+              </a>
                 <Button variant="hero-outline" size="xl">
                   Learn More
                 </Button>
@@ -337,10 +339,12 @@ const Chauffeur = () => {
               Experience luxury transportation with Thai-style hospitality. Book your chauffeur today.
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-              <Button variant="hero" size="xl" className="group">
-                Book Now
-                <ArrowRight className="w-5 h-5 transition-transform group-hover:translate-x-1" />
-              </Button>
+              <a href="https://chauffeured.ai/booking" target="_blank" rel="noopener noreferrer">
+                <Button variant="hero" size="xl" className="group">
+                  Book Now
+                  <ArrowRight className="w-5 h-5 transition-transform group-hover:translate-x-1" />
+                </Button>
+              </a>
               <Button variant="hero-outline" size="xl">
                 Contact Us
               </Button>
