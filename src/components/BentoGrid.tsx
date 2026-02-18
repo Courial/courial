@@ -154,10 +154,10 @@ export const BentoGrid = () => {
                 <div className={`absolute inset-0 ${item.title === 'Furniture Delivery' ? 'bg-gradient-to-t from-background via-background/50 to-transparent' : 'bg-gradient-to-t from-background via-background/70 to-background/30'}`} />
                 
                 <div className="relative z-10 h-full flex flex-col">
-                  <div className={`w-12 h-12 rounded-xl bg-muted flex items-center justify-center mb-4 
-                    group-hover:bg-muted/80 transition-colors ${item.featured ? 'w-14 h-14' : ''}`}>
+                  <div className={`rounded-xl bg-muted flex items-center justify-center mb-4 
+                    group-hover:bg-muted/80 transition-colors ${item.featured ? 'w-14 h-14' : 'w-12 h-12'}`}>
                     {item.customIcon ? (
-                      <img src={item.customIcon} alt={item.title} className={`${item.featured ? 'w-7 h-7' : 'w-6 h-6'}`} />
+                      <img src={item.customIcon} alt={item.title} className={`${item.featured ? 'w-7 h-7' : 'w-6 h-6'} object-contain`} />
                     ) : (
                       <Icon className={`text-foreground ${item.featured ? 'w-7 h-7' : 'w-6 h-6'}`} />
                     )}
