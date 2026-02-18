@@ -50,7 +50,7 @@ const footerLinks = {
   ],
   company: [
     { name: "Blog", href: "/blog" },
-    { name: "Swag", href: "/swag" },
+    { name: "Shield", href: "/shield" },
   ],
 };
 
