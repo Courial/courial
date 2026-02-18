@@ -40,7 +40,7 @@ export const Testimonials = () => {
           className="text-center mb-16"
         >
           <h2 className="text-4xl md:text-5xl font-bold mb-4 gradient-text-black-orange">
-            Loved by thousands
+            Loved by users
           </h2>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
             Join a community of people who trust Courial for their delivery needs.
