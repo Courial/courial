@@ -25,11 +25,18 @@ const FacebookIcon = ({ className }: { className?: string }) => (
   </svg>
 );
 
+const TikTokIcon = ({ className }: { className?: string }) => (
+  <svg viewBox="0 0 24 24" className={className} fill="currentColor">
+    <path d="M16.6 5.82s.51.5 0 0A4.278 4.278 0 0 1 15.54 3h-3.09v12.4a2.592 2.592 0 0 1-2.59 2.5c-1.42 0-2.6-1.16-2.6-2.6 0-1.72 1.66-3.01 3.37-2.48V9.66c-3.45-.46-6.47 2.22-6.47 5.64 0 3.33 2.76 5.7 5.69 5.7 3.14 0 5.69-2.55 5.69-5.7V9.01a7.35 7.35 0 0 0 4.3 1.38V7.3s-1.88.09-3.24-1.48z" />
+  </svg>
+);
+
 const socialLinks = [
-  { name: "X", icon: XIcon, href: "#" },
-  { name: "Facebook", icon: FacebookIcon, href: "#" },
-  { name: "LinkedIn", icon: LinkedInIcon, href: "#" },
-  { name: "Instagram", icon: InstagramIcon, href: "#" },
+  { name: "X", icon: XIcon, href: "https://x.com/gocourial" },
+  { name: "Facebook", icon: FacebookIcon, href: "https://www.facebook.com/login/?next=https%3A%2F%2Fwww.facebook.com%2Fcourial" },
+  { name: "LinkedIn", icon: LinkedInIcon, href: "https://www.linkedin.com/company/courial/?viewAsMember=true" },
+  { name: "Instagram", icon: InstagramIcon, href: "https://www.instagram.com/gocourial" },
+  { name: "TikTok", icon: TikTokIcon, href: "https://www.tiktok.com/@courial?_r=1&_t=ZT-9424vIWGWw1" },
 ];
 
 const footerLinks = {
@@ -163,6 +170,8 @@ export const Footer = () => {
               <a
                 key={social.name}
                 href={social.href}
+                target="_blank"
+                rel="noopener noreferrer"
                 className="text-background/60 hover:text-background transition-colors"
                 aria-label={social.name}
               >
