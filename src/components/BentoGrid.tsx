@@ -139,9 +139,9 @@ export const BentoGrid = () => {
                   transition-all duration-300 hover:border-primary/50
                   ${item.className}`}
               >
-                {/* Background image with 50% opacity and gradient fade */}
+                {/* Background image with opacity and gradient fade */}
                 <div 
-                  className="absolute inset-0 opacity-40 transition-opacity duration-300 group-hover:opacity-50"
+                  className={`absolute inset-0 transition-opacity duration-300 group-hover:opacity-50 ${item.title === 'Furniture Delivery' ? 'opacity-60' : 'opacity-40'}`}
                   style={{
                     backgroundImage: `url(${item.image})`,
                     backgroundSize: 'cover',
@@ -149,7 +149,7 @@ export const BentoGrid = () => {
                   }}
                 />
                 {/* Gradient overlay for fade effect */}
-                <div className="absolute inset-0 bg-gradient-to-t from-background via-background/70 to-background/30" />
+                <div className={`absolute inset-0 ${item.title === 'Furniture Delivery' ? 'bg-gradient-to-t from-background via-background/50 to-transparent' : 'bg-gradient-to-t from-background via-background/70 to-background/30'}`} />
                 
                 <div className="relative z-10 h-full flex flex-col">
                   <div className={`w-12 h-12 rounded-xl bg-muted flex items-center justify-center mb-4 
