@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { Brain, Route, Clock, TrendingUp, Zap, Shield } from "lucide-react";
+import { Brain, Route, Clock, TrendingUp, Zap, Shield, BarChart3 } from "lucide-react";
 import {
   AreaChart,
   Area,
@@ -161,7 +161,7 @@ export const TechShowcase = () => {
           >
             <div className="flex items-center gap-3 mb-6">
               <div className="w-10 h-10 rounded-lg bg-muted flex items-center justify-center">
-                <Zap className="w-5 h-5 text-foreground" />
+                <BarChart3 className="w-5 h-5 text-foreground" />
               </div>
               <div>
                 <h3 className="font-semibold text-foreground">Performance Metrics</h3>
