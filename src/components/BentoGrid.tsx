@@ -163,8 +163,7 @@ export const BentoGrid = () => {
                     )}
                   </div>
                   
-                  <h3 className={`font-bold mb-3 group-hover:text-primary transition-colors
-                    ${item.featured ? 'text-3xl' : 'text-xl'}`}>
+                  <h3 className="text-xl font-bold mb-3 group-hover:text-primary transition-colors">
                     {item.title}
                   </h3>
                   
