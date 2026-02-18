@@ -170,27 +170,34 @@ export const TechShowcase = () => {
             </div>
             <div className="h-48">
               <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={deliveryMetrics} layout="vertical">
+                <BarChart data={deliveryMetrics} barCategoryGap="20%">
+                  <defs>
+                    <linearGradient id="barOrange" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stopColor="hsl(25, 100%, 60%)" stopOpacity={1} />
+                      <stop offset="100%" stopColor="hsl(30, 100%, 70%)" stopOpacity={0.7} />
+                    </linearGradient>
+                    <linearGradient id="barGrey" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stopColor="hsl(var(--foreground) / 0.35)" stopOpacity={1} />
+                      <stop offset="100%" stopColor="hsl(var(--foreground) / 0.15)" stopOpacity={1} />
+                    </linearGradient>
+                  </defs>
                   <XAxis 
-                    type="number" 
-                    domain={[0, 100]} 
-                    axisLine={false} 
-                    tickLine={false}
-                    tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 12 }}
-                  />
-                  <YAxis 
-                    type="category" 
                     dataKey="name" 
                     axisLine={false} 
                     tickLine={false}
-                    tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 12 }}
-                    width={80}
+                    tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 11 }}
                   />
-                  <Bar dataKey="value" radius={[0, 4, 4, 0]}>
-                    {deliveryMetrics.map((entry, index) => (
+                  <YAxis 
+                    axisLine={false} 
+                    tickLine={false}
+                    tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 12 }}
+                    domain={[80, 100]}
+                  />
+                  <Bar dataKey="value" radius={[6, 6, 0, 0]}>
+                    {deliveryMetrics.map((_, index) => (
                       <Cell 
                         key={`cell-${index}`} 
-                        fill={`hsl(var(--foreground) / ${0.3 + index * 0.15})`} 
+                        fill={index % 2 === 0 ? 'url(#barOrange)' : 'url(#barGrey)'}
                       />
                     ))}
                   </Bar>
