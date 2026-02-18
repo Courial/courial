@@ -1,22 +1,20 @@
 import { motion } from "framer-motion";
-import {
-  Package,
-  Armchair,
-  Pill,
-  Shirt,
-  ShoppingBag,
-  FileText,
-  CarFront,
-  Zap,
-  Users,
-} from "lucide-react";
 import chauffeurImage from "@/assets/chauffeur-service.jpg";
+import conciergeIcon from "@/assets/icons/concierge-task.png";
+import evValetIcon from "@/assets/icons/ev-valet-charge.png";
+import pharmacyIcon from "@/assets/icons/pharmacy.png";
+import dryCleaningIcon from "@/assets/icons/dry-cleaning.png";
+import groceriesIcon from "@/assets/icons/groceries.png";
+import cateringIcon from "@/assets/icons/catering.png";
+import chauffeurIcon from "@/assets/icons/chauffeur.png";
+import furnitureIcon from "@/assets/icons/furniture.png";
+import officeSuppliesIcon from "@/assets/icons/office-supplies.png";
 
 const bentoItems = [
   {
     title: "Concierge Tasks",
     description: "Personal assistant at your fingertips",
-    icon: Users,
+    iconImage: conciergeIcon,
     className: "md:col-span-2",
     featured: true,
     image: "https://images.unsplash.com/photo-1521791136064-7986c2920216?w=600&q=80",
@@ -24,56 +22,56 @@ const bentoItems = [
   {
     title: "EV Valet Charging",
     description: "We charge your electric vehicle while you work",
-    icon: Zap,
+    iconImage: evValetIcon,
     className: "md:col-span-1",
     image: "https://images.unsplash.com/photo-1593941707882-a5bba14938c7?w=600&q=80",
   },
   {
     title: "Pharmacy",
     description: "Prescriptions & medical supplies",
-    icon: Pill,
+    iconImage: pharmacyIcon,
     className: "md:col-span-1",
     image: "https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=600&q=80",
   },
   {
     title: "Dry Cleaning",
     description: "Pick up and delivery to your door",
-    icon: Shirt,
+    iconImage: dryCleaningIcon,
     className: "md:col-span-1",
     image: "https://images.unsplash.com/photo-1558171813-4c088753af8f?w=600&q=80",
   },
   {
     title: "Groceries",
     description: "Fresh from any store you choose",
-    icon: ShoppingBag,
+    iconImage: groceriesIcon,
     className: "md:col-span-1",
     image: "https://images.unsplash.com/photo-1542838132-92c53300491e?w=600&q=80",
   },
   {
     title: "Catering Orders",
     description: "Corporate meals and event catering delivered",
-    icon: Package,
+    iconImage: cateringIcon,
     className: "md:col-span-2",
     image: "https://images.unsplash.com/photo-1555244162-803834f70033?w=800&q=80",
   },
   {
     title: "Chauffeur Services",
     description: "Professional drivers for any occasion",
-    icon: CarFront,
+    iconImage: chauffeurIcon,
     className: "md:col-span-2",
     image: chauffeurImage,
   },
   {
     title: "Furniture Delivery",
     description: "From small items to full room setups",
-    icon: Armchair,
+    iconImage: furnitureIcon,
     className: "md:col-span-1",
     image: "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=600&q=80",
   },
   {
     title: "Office Supplies",
     description: "Documents, packages, and business essentials delivered same-day",
-    icon: FileText,
+    iconImage: officeSuppliesIcon,
     className: "md:col-span-1",
     image: "https://images.unsplash.com/photo-1497366216548-37526070297c?w=800&q=80",
   },
@@ -130,7 +128,6 @@ export const BentoGrid = () => {
           className="grid grid-cols-1 md:grid-cols-4 md:auto-rows-[220px] md:grid-flow-row-dense gap-4 max-w-6xl mx-auto"
         >
           {bentoItems.map((item) => {
-            const Icon = item.icon;
             return (
               <motion.div
                 key={item.title}
@@ -152,9 +149,9 @@ export const BentoGrid = () => {
                 <div className="absolute inset-0 bg-gradient-to-t from-background via-background/70 to-background/30" />
                 
                 <div className="relative z-10 h-full flex flex-col">
-                  <div className={`w-12 h-12 rounded-xl bg-muted flex items-center justify-center mb-4 
-                    group-hover:bg-muted/80 transition-colors ${item.featured ? 'w-14 h-14' : ''}`}>
-                    <Icon className={`text-foreground ${item.featured ? 'w-7 h-7' : 'w-6 h-6'}`} />
+                  <div className={`rounded-xl bg-muted flex items-center justify-center mb-4 
+                    group-hover:bg-muted/80 transition-colors ${item.featured ? 'w-14 h-14' : 'w-12 h-12'}`}>
+                    <img src={item.iconImage} alt={item.title} className={`${item.featured ? 'w-7 h-7' : 'w-6 h-6'}`} />
                   </div>
                   
                   <h3 className={`font-bold mb-3 group-hover:text-primary transition-colors
