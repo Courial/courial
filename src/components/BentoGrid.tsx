@@ -7,7 +7,7 @@ import {
   ShoppingBag,
   FileText,
   CarFront,
-  Zap,
+  Leaf,
   Users,
 } from "lucide-react";
 import chauffeurImage from "@/assets/chauffeur-service.jpg";
@@ -26,7 +26,7 @@ const bentoItems: Array<{ title: string; description: string; icon: typeof Users
   {
     title: "EV Valet Charging",
     description: "We charge your electric vehicle while you work",
-    icon: Zap,
+    icon: Leaf,
     className: "md:col-span-1",
     image: "https://images.unsplash.com/photo-1593941707882-a5bba14938c7?w=600&q=80",
   },
