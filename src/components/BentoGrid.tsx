@@ -11,12 +11,14 @@ import {
   Users,
 } from "lucide-react";
 import chauffeurImage from "@/assets/chauffeur-service.jpg";
+import conciergeTaskIcon from "@/assets/concierge-task-icon.png";
 
-const bentoItems = [
+const bentoItems: Array<{ title: string; description: string; icon: typeof Users; customIcon?: string; className: string; featured?: boolean; image: string }> = [
   {
     title: "Concierge Tasks",
     description: "Personal assistant at your fingertips",
     icon: Users,
+    customIcon: conciergeTaskIcon,
     className: "md:col-span-2",
     featured: true,
     image: "https://images.unsplash.com/photo-1521791136064-7986c2920216?w=600&q=80",
@@ -154,7 +156,11 @@ export const BentoGrid = () => {
                 <div className="relative z-10 h-full flex flex-col">
                   <div className={`w-12 h-12 rounded-xl bg-muted flex items-center justify-center mb-4 
                     group-hover:bg-muted/80 transition-colors ${item.featured ? 'w-14 h-14' : ''}`}>
-                    <Icon className={`text-foreground ${item.featured ? 'w-7 h-7' : 'w-6 h-6'}`} />
+                    {item.customIcon ? (
+                      <img src={item.customIcon} alt={item.title} className={`${item.featured ? 'w-7 h-7' : 'w-6 h-6'}`} />
+                    ) : (
+                      <Icon className={`text-foreground ${item.featured ? 'w-7 h-7' : 'w-6 h-6'}`} />
+                    )}
                   </div>
                   
                   <h3 className={`font-bold mb-3 group-hover:text-primary transition-colors
