@@ -113,7 +113,7 @@ export const BentoGrid = () => {
           className="text-center mb-16"
         >
           <h2 className="text-4xl md:text-5xl font-bold mb-4 gradient-text-black-orange">
-            One platform for all your needs.
+            Whatever the need—handled at a premium standard.
           </h2>
           <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
             From essential logistics to white-glove concierge and chauffeur services, 
