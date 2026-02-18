@@ -149,9 +149,9 @@ export const BentoGrid = () => {
                 <div className="absolute inset-0 bg-gradient-to-t from-background via-background/70 to-background/30" />
                 
                 <div className="relative z-10 h-full flex flex-col">
-                  <div className={`rounded-xl bg-muted flex items-center justify-center mb-4 
-                    group-hover:bg-muted/80 transition-colors ${item.featured ? 'w-14 h-14' : 'w-12 h-12'}`}>
-                    <img src={item.iconImage} alt={item.title} className={`${item.featured ? 'w-[42px] h-[42px]' : 'w-9 h-9'}`} />
+                  <div className="w-10 h-10 rounded-lg bg-muted flex items-center justify-center mb-4 
+                    group-hover:bg-muted/80 transition-colors">
+                    <img src={item.iconImage} alt={item.title} className="w-9 h-9" />
                   </div>
                   
                   <h3 className={`font-bold mb-3 group-hover:text-primary transition-colors
