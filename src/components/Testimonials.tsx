@@ -29,7 +29,7 @@ const testimonials = [
 
 export const Testimonials = () => {
   return (
-    <section className="pb-12 md:pb-16 bg-background">
+    <section className="pb-4 md:pb-6 bg-background">
       <div className="container mx-auto px-6">
         {/* Section Header */}
         <motion.div
