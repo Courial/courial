@@ -150,8 +150,8 @@ export const BentoGrid = () => {
                 
                 <div className="relative z-10 h-full flex flex-col">
                   <div className={`rounded-xl bg-muted flex items-center justify-center mb-4 
-                    group-hover:bg-muted/80 transition-colors ${item.featured ? 'w-[84px] h-[84px]' : 'w-[72px] h-[72px]'}`}>
-                    <img src={item.iconImage} alt={item.title} className={`${item.featured ? 'w-10 h-10' : 'w-9 h-9'}`} />
+                    group-hover:bg-muted/80 transition-colors ${item.featured ? 'w-14 h-14' : 'w-12 h-12'}`}>
+                    <img src={item.iconImage} alt={item.title} className={`${item.featured ? 'w-[42px] h-[42px]' : 'w-9 h-9'}`} />
                   </div>
                   
                   <h3 className={`font-bold mb-3 group-hover:text-primary transition-colors
