@@ -55,11 +55,6 @@ export default function Admin() {
             {sections.map((s) => (
               <Link key={s.href} to={s.href} className="group block">
                 <div className="relative h-full rounded-2xl border border-border bg-card p-6 transition-all duration-200 hover:border-primary/40 hover:shadow-md">
-                  {/* Badge */}
-                  <span className="inline-block text-xs font-semibold text-primary bg-primary/10 px-2.5 py-0.5 rounded-full mb-4">
-                    {s.badge}
-                  </span>
-
                   <div className="flex items-start justify-between gap-4">
                     <div>
                       <h2 className="text-xl font-semibold mb-1">{s.title}</h2>
