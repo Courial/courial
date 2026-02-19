@@ -98,9 +98,9 @@ export default function SuppliesCheckout() {
             Back to Shop
           </Link>
 
-          <div className="grid md:grid-cols-5 gap-12 max-w-4xl">
+          <div className="grid md:grid-cols-5 gap-12 max-w-5xl">
             {/* Shipping form — flush left */}
-            <form onSubmit={handleSubmit} className="md:col-span-3 space-y-3">
+            <form onSubmit={handleSubmit} className="md:col-span-2 space-y-3">
               <h1 className="text-2xl font-bold mb-1">Checkout</h1>
               <p className="text-sm font-semibold text-foreground mb-4">Shipping Details</p>
 
@@ -174,10 +174,10 @@ export default function SuppliesCheckout() {
             </form>
 
             {/* Order summary */}
-            <div className="md:col-span-2">
-              <div className="rounded-xl bg-card border border-border p-6 sticky top-28 hover:border-primary/40 transition-colors min-h-[420px] flex flex-col">
+            <div className="md:col-span-3">
+              <div className="rounded-xl bg-card border border-border p-6 sticky top-28 hover:border-primary/40 transition-colors">
                 <h2 className="text-lg font-semibold mb-5">Order Summary</h2>
-                <div className="space-y-4 flex-1">
+                <div className="space-y-4">
                   {items.map((item) => (
                     <div key={item.id} className="text-sm">
                       <div className="flex flex-wrap items-center gap-x-1.5 text-muted-foreground leading-snug">
