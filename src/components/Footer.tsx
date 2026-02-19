@@ -1,4 +1,5 @@
 import { Link, useNavigate } from "react-router-dom";
+import courialLogoWhite from "@/assets/courial-logo-white.svg";
 import courialLogo from "@/assets/courial-logo.png";
 
 const XIcon = ({ className }: { className?: string }) => (
@@ -128,6 +129,13 @@ export const Footer = () => {
                   </li>
                 ))}
               </ul>
+              {category === "company" && (
+                <img
+                  src={courialLogoWhite}
+                  alt="Courial"
+                  className="mt-5 h-5 w-auto opacity-70"
+                />
+              )}
               {category === "support" && (
                 <div className="flex flex-row gap-2 mt-4">
                   <a
