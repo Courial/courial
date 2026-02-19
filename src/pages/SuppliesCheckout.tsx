@@ -100,13 +100,13 @@ export default function SuppliesCheckout() {
       </div>
 
       <main className="pt-32 lg:pt-36 pb-20">
-        <div className="container mx-auto px-6 max-w-4xl">
+        <div className="container mx-auto px-6">
 
-          <div className="grid md:grid-cols-5 gap-12">
-            {/* Shipping form — flush left */}
+          <div className="grid md:grid-cols-5 gap-12 max-w-4xl">
+            {/* Shipping form — flush left, aligned with BACK TO SHOP */}
             <form onSubmit={handleSubmit} className="md:col-span-3 space-y-3">
               <h1 className="text-2xl font-bold mb-1">Checkout</h1>
-              <p className="text-sm text-muted-foreground mb-4">Shipping Details</p>
+              <p className="text-sm font-semibold text-foreground mb-4">Shipping Details</p>
 
               <Input
                 name="full_name"
@@ -114,7 +114,7 @@ export default function SuppliesCheckout() {
                 value={form.full_name}
                 onChange={handleChange}
                 required
-                className="hover:border-primary/40 transition-colors"
+                className="placeholder:text-foreground/50 hover:border-primary/40 transition-colors"
               />
               <Input
                 name="email"
@@ -123,7 +123,7 @@ export default function SuppliesCheckout() {
                 value={form.email}
                 onChange={handleChange}
                 required
-                className="hover:border-primary/40 transition-colors"
+                className="placeholder:text-foreground/50 hover:border-primary/40 transition-colors"
               />
               <Input
                 name="address_line1"
@@ -131,14 +131,14 @@ export default function SuppliesCheckout() {
                 value={form.address_line1}
                 onChange={handleChange}
                 required
-                className="hover:border-primary/40 transition-colors"
+                className="placeholder:text-foreground/50 hover:border-primary/40 transition-colors"
               />
               <Input
                 name="address_line2"
                 placeholder="Address Line 2 (optional)"
                 value={form.address_line2}
                 onChange={handleChange}
-                className="hover:border-primary/40 transition-colors"
+                className="placeholder:text-foreground/50 hover:border-primary/40 transition-colors"
               />
               <div className="grid grid-cols-3 gap-3">
                 <Input
@@ -147,7 +147,7 @@ export default function SuppliesCheckout() {
                   value={form.city}
                   onChange={handleChange}
                   required
-                  className="hover:border-primary/40 transition-colors"
+                  className="placeholder:text-foreground/50 hover:border-primary/40 transition-colors"
                 />
                 <Input
                   name="state"
@@ -155,7 +155,7 @@ export default function SuppliesCheckout() {
                   value={form.state}
                   onChange={handleChange}
                   required
-                  className="hover:border-primary/40 transition-colors"
+                  className="placeholder:text-foreground/50 hover:border-primary/40 transition-colors"
                 />
                 <Input
                   name="zip"
@@ -163,7 +163,7 @@ export default function SuppliesCheckout() {
                   value={form.zip}
                   onChange={handleChange}
                   required
-                  className="hover:border-primary/40 transition-colors"
+                  className="placeholder:text-foreground/50 hover:border-primary/40 transition-colors"
                 />
               </div>
 
@@ -179,7 +179,7 @@ export default function SuppliesCheckout() {
 
             {/* Order summary */}
             <div className="md:col-span-2">
-              <div className="rounded-xl bg-card border border-border p-5 sticky top-40">
+              <div className="rounded-xl bg-card border border-border p-5 sticky top-40 hover:border-primary/40 transition-colors">
                 <h2 className="text-lg font-semibold mb-4">Order Summary</h2>
                 <div className="space-y-3">
                   {items.map((item) => (
