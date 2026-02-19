@@ -175,17 +175,22 @@ export default function SuppliesCheckout() {
 
             {/* Order summary */}
             <div className="md:col-span-2">
-              <div className="rounded-xl bg-card border border-border p-5 sticky top-28 hover:border-primary/40 transition-colors">
-                <h2 className="text-lg font-semibold mb-4">Order Summary</h2>
-                <div className="space-y-3">
+              <div className="rounded-xl bg-card border border-border p-6 sticky top-28 hover:border-primary/40 transition-colors min-h-[420px] flex flex-col">
+                <h2 className="text-lg font-semibold mb-5">Order Summary</h2>
+                <div className="space-y-4 flex-1">
                   {items.map((item) => (
-                    <div key={item.id} className="flex justify-between text-sm">
-                      <span className="text-muted-foreground">{item.name} × {item.quantity}</span>
-                      <span>{formatPrice(item.price * item.quantity)}</span>
+                    <div key={item.id} className="text-sm">
+                      <div className="flex flex-wrap items-center gap-x-1.5 text-muted-foreground leading-snug">
+                        <span className="text-foreground font-medium">{item.name}</span>
+                        <span className="text-muted-foreground/50">•</span>
+                        <span>×{item.quantity}</span>
+                        <span className="text-muted-foreground/50">•</span>
+                        <span className="text-foreground font-semibold">{formatPrice(item.price * item.quantity)}</span>
+                      </div>
                     </div>
                   ))}
                 </div>
-                <div className="border-t border-border mt-4 pt-4 flex justify-between font-bold text-lg">
+                <div className="border-t border-border mt-6 pt-4 flex justify-between font-bold text-lg">
                   <span>Total</span>
                   <span className="text-primary">{formatPrice(totalPrice)}</span>
                 </div>
