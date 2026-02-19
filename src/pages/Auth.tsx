@@ -70,11 +70,21 @@ const Auth = () => {
       .catch(() => {});
   }, []);
 
-  // Check if already logged in on mount
+  // Check if already logged in on mount, and also listen for OAuth callback sign-ins
   useEffect(() => {
+    // Initial check for existing session
     supabase.auth.getSession().then(({ data: { session } }) => {
       if (session?.user) navigate("/", { replace: true });
     });
+
+    // Listen for sign-in events (catches Google/Apple OAuth redirects back to app)
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      if ((event === "SIGNED_IN" || event === "TOKEN_REFRESHED") && session?.user) {
+        navigate("/", { replace: true });
+      }
+    });
+
+    return () => subscription.unsubscribe();
   }, [navigate]);
 
   const validateEmail = (v: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
