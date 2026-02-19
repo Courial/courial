@@ -57,8 +57,9 @@ export default function Supplies() {
             </div>
             <Button
               variant="outline"
-              onClick={() => setIsOpen(true)}
-              className="relative"
+              onClick={() => totalItems > 0 && setIsOpen(true)}
+              disabled={totalItems === 0}
+              className={`relative transition-colors ${totalItems === 0 ? "opacity-40 cursor-not-allowed text-muted-foreground border-muted-foreground/30" : ""}`}
             >
               <ShoppingCart className="w-5 h-5" />
               {totalItems > 0 && (
