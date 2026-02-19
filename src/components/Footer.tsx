@@ -49,7 +49,6 @@ const footerLinks = {
     { name: "Customers", href: "/" },
     { name: "Businesses", href: "/business" },
     { name: "Courials", href: "/courials" },
-    { name: "Supplies", href: "/supplies" },
   ],
   legal: [
     { name: "Privacy Policy", href: "/privacy" },
@@ -59,6 +58,7 @@ const footerLinks = {
   company: [
     { name: "Blog", href: "/blog" },
     { name: "Shield", href: "/shield" },
+    { name: "Shop", href: "/supplies" },
   ],
 };
 
