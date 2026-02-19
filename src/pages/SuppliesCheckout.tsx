@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useCart } from "@/hooks/useCart";
 import { useAuth } from "@/hooks/useAuth";
 import { Navbar } from "@/components/Navbar";
+import { Footer } from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -66,28 +67,29 @@ export default function SuppliesCheckout() {
 
   if (items.length === 0) {
     return (
-      <div className="dark min-h-screen bg-[hsl(0,0%,7%)] text-[hsl(0,0%,98%)]">
+      <div className="min-h-screen bg-background text-foreground">
         <Navbar />
         <div className="pt-32 text-center">
-          <p className="text-[hsl(0,0%,50%)] mb-4">Your cart is empty</p>
-          <Link to="/supplies"><Button variant="outline" className="border-[hsl(0,0%,20%)] bg-transparent text-[hsl(0,0%,98%)]">Browse Supplies</Button></Link>
+          <p className="text-muted-foreground mb-4">Your cart is empty</p>
+          <Link to="/supplies">
+            <Button variant="outline">Browse Supplies</Button>
+          </Link>
         </div>
+        <Footer />
       </div>
     );
   }
 
-  const inputClass = "bg-[hsl(0,0%,10%)] border-[hsl(0,0%,20%)] text-[hsl(0,0%,98%)] placeholder:text-[hsl(0,0%,40%)] focus-visible:ring-[hsl(24,100%,50%)]";
-
   return (
-    <div className="dark min-h-screen bg-[hsl(0,0%,7%)] text-[hsl(0,0%,98%)]">
+    <div className="min-h-screen bg-background text-foreground">
       <Helmet>
-        <title>Checkout | Courial Supplies</title>
+        <title>Checkout | Courial Shop</title>
       </Helmet>
       <Navbar />
 
       <main className="pt-24 pb-20">
         <div className="container mx-auto px-6 max-w-4xl">
-          <Link to="/supplies" className="inline-flex items-center text-[hsl(0,0%,50%)] hover:text-[hsl(0,0%,98%)] mb-8 transition-colors text-sm">
+          <Link to="/supplies" className="inline-flex items-center text-muted-foreground hover:text-foreground mb-8 transition-colors text-sm">
             <ArrowLeft className="w-4 h-4 mr-1" /> Back to shop
           </Link>
 
@@ -99,39 +101,39 @@ export default function SuppliesCheckout() {
               <h2 className="text-lg font-semibold mb-2">Shipping Details</h2>
               <div className="grid grid-cols-2 gap-4">
                 <div className="col-span-2">
-                  <Label className="text-[hsl(0,0%,60%)] text-xs">Full Name</Label>
-                  <Input name="full_name" value={form.full_name} onChange={handleChange} required className={inputClass} />
+                  <Label className="text-muted-foreground text-xs">Full Name</Label>
+                  <Input name="full_name" value={form.full_name} onChange={handleChange} required />
                 </div>
                 <div className="col-span-2">
-                  <Label className="text-[hsl(0,0%,60%)] text-xs">Email</Label>
-                  <Input name="email" type="email" value={form.email} onChange={handleChange} required className={inputClass} />
+                  <Label className="text-muted-foreground text-xs">Email</Label>
+                  <Input name="email" type="email" value={form.email} onChange={handleChange} required />
                 </div>
                 <div className="col-span-2">
-                  <Label className="text-[hsl(0,0%,60%)] text-xs">Address Line 1</Label>
-                  <Input name="address_line1" value={form.address_line1} onChange={handleChange} required className={inputClass} />
+                  <Label className="text-muted-foreground text-xs">Address Line 1</Label>
+                  <Input name="address_line1" value={form.address_line1} onChange={handleChange} required />
                 </div>
                 <div className="col-span-2">
-                  <Label className="text-[hsl(0,0%,60%)] text-xs">Address Line 2 (optional)</Label>
-                  <Input name="address_line2" value={form.address_line2} onChange={handleChange} className={inputClass} />
+                  <Label className="text-muted-foreground text-xs">Address Line 2 (optional)</Label>
+                  <Input name="address_line2" value={form.address_line2} onChange={handleChange} />
                 </div>
                 <div>
-                  <Label className="text-[hsl(0,0%,60%)] text-xs">City</Label>
-                  <Input name="city" value={form.city} onChange={handleChange} required className={inputClass} />
+                  <Label className="text-muted-foreground text-xs">City</Label>
+                  <Input name="city" value={form.city} onChange={handleChange} required />
                 </div>
                 <div>
-                  <Label className="text-[hsl(0,0%,60%)] text-xs">State</Label>
-                  <Input name="state" value={form.state} onChange={handleChange} required className={inputClass} />
+                  <Label className="text-muted-foreground text-xs">State</Label>
+                  <Input name="state" value={form.state} onChange={handleChange} required />
                 </div>
                 <div>
-                  <Label className="text-[hsl(0,0%,60%)] text-xs">ZIP Code</Label>
-                  <Input name="zip" value={form.zip} onChange={handleChange} required className={inputClass} />
+                  <Label className="text-muted-foreground text-xs">ZIP Code</Label>
+                  <Input name="zip" value={form.zip} onChange={handleChange} required />
                 </div>
               </div>
 
               <Button
                 type="submit"
                 disabled={loading}
-                className="w-full bg-[hsl(24,100%,50%)] hover:bg-[hsl(24,100%,45%)] text-white font-semibold h-12 text-base mt-6"
+                className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-semibold h-12 text-base mt-6"
               >
                 {loading ? <Loader2 className="w-5 h-5 animate-spin mr-2" /> : <Lock className="w-4 h-4 mr-2" />}
                 Pay {formatPrice(totalPrice)}
@@ -140,25 +142,27 @@ export default function SuppliesCheckout() {
 
             {/* Order summary */}
             <div className="md:col-span-2">
-              <div className="rounded-xl bg-[hsl(0,0%,10%)] border border-[hsl(0,0%,20%)] p-5 sticky top-28">
+              <div className="rounded-xl bg-card border border-border p-5 sticky top-28">
                 <h2 className="text-lg font-semibold mb-4">Order Summary</h2>
                 <div className="space-y-3">
                   {items.map((item) => (
                     <div key={item.id} className="flex justify-between text-sm">
-                      <span className="text-[hsl(0,0%,70%)]">{item.name} × {item.quantity}</span>
+                      <span className="text-muted-foreground">{item.name} × {item.quantity}</span>
                       <span>{formatPrice(item.price * item.quantity)}</span>
                     </div>
                   ))}
                 </div>
-                <div className="border-t border-[hsl(0,0%,20%)] mt-4 pt-4 flex justify-between font-bold text-lg">
+                <div className="border-t border-border mt-4 pt-4 flex justify-between font-bold text-lg">
                   <span>Total</span>
-                  <span className="text-[hsl(24,100%,50%)]">{formatPrice(totalPrice)}</span>
+                  <span className="text-primary">{formatPrice(totalPrice)}</span>
                 </div>
               </div>
             </div>
           </div>
         </div>
       </main>
+
+      <Footer />
     </div>
   );
 }
