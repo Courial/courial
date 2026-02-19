@@ -86,24 +86,20 @@ export default function SuppliesCheckout() {
       </Helmet>
       <Navbar />
 
-      {/* Back to Shop — pinned just below the navbar, aligned with logo */}
-      <div className="fixed top-16 lg:top-20 left-0 right-0 z-40 bg-background/95 backdrop-blur-sm">
+      <main className="pt-24 pb-20">
         <div className="container mx-auto px-6">
+
+          {/* Back to Shop — in-flow, matching "Driver Shop" label position */}
           <Link
             to="/supplies"
-            className="inline-flex items-center gap-1 py-2 text-sm font-semibold tracking-wider uppercase text-primary hover:text-primary/80 transition-colors"
+            className="inline-flex items-center gap-1 mb-6 text-sm font-semibold tracking-wider uppercase text-primary hover:text-primary/80 transition-colors"
           >
             <ArrowLeft className="w-3.5 h-3.5" />
             Back to Shop
           </Link>
-        </div>
-      </div>
-
-      <main className="pt-32 lg:pt-36 pb-20">
-        <div className="container mx-auto px-6">
 
           <div className="grid md:grid-cols-5 gap-12 max-w-4xl">
-            {/* Shipping form — flush left, aligned with BACK TO SHOP */}
+            {/* Shipping form — flush left */}
             <form onSubmit={handleSubmit} className="md:col-span-3 space-y-3">
               <h1 className="text-2xl font-bold mb-1">Checkout</h1>
               <p className="text-sm font-semibold text-foreground mb-4">Shipping Details</p>
@@ -179,7 +175,7 @@ export default function SuppliesCheckout() {
 
             {/* Order summary */}
             <div className="md:col-span-2">
-              <div className="rounded-xl bg-card border border-border p-5 sticky top-40 hover:border-primary/40 transition-colors">
+              <div className="rounded-xl bg-card border border-border p-5 sticky top-28 hover:border-primary/40 transition-colors">
                 <h2 className="text-lg font-semibold mb-4">Order Summary</h2>
                 <div className="space-y-3">
                   {items.map((item) => (
