@@ -5,7 +5,6 @@ import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { supabase } from "@/integrations/supabase/client";
 import { ArrowLeft, Loader2, Lock } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
@@ -87,53 +86,84 @@ export default function SuppliesCheckout() {
       </Helmet>
       <Navbar />
 
-      <main className="pt-24 pb-20">
-        <div className="container mx-auto px-6 max-w-4xl">
-          <Link to="/supplies" className="inline-flex items-center text-muted-foreground hover:text-foreground mb-8 transition-colors text-sm">
-            <ArrowLeft className="w-4 h-4 mr-1" /> Back to shop
+      {/* Back to Shop — pinned just below the navbar, aligned with logo */}
+      <div className="fixed top-16 lg:top-20 left-0 right-0 z-40 bg-background/95 backdrop-blur-sm border-b border-border">
+        <div className="container mx-auto px-6">
+          <Link
+            to="/supplies"
+            className="inline-flex items-center gap-1 py-2 text-xs font-bold tracking-widest uppercase text-primary hover:text-primary/80 transition-colors"
+          >
+            <ArrowLeft className="w-3 h-3" />
+            Back to Shop
           </Link>
+        </div>
+      </div>
 
+      <main className="pt-32 lg:pt-36 pb-20">
+        <div className="container mx-auto px-6 max-w-4xl">
           <h1 className="text-2xl font-bold mb-8">Checkout</h1>
 
           <div className="grid md:grid-cols-5 gap-8">
             {/* Shipping form */}
-            <form onSubmit={handleSubmit} className="md:col-span-3 space-y-5">
-              <h2 className="text-lg font-semibold mb-2">Shipping Details</h2>
-              <div className="grid grid-cols-2 gap-4">
-                <div className="col-span-2">
-                  <Label className="text-muted-foreground text-xs">Full Name</Label>
-                  <Input name="full_name" value={form.full_name} onChange={handleChange} required />
-                </div>
-                <div className="col-span-2">
-                  <Label className="text-muted-foreground text-xs">Email</Label>
-                  <Input name="email" type="email" value={form.email} onChange={handleChange} required />
-                </div>
-                <div className="col-span-2">
-                  <Label className="text-muted-foreground text-xs">Address Line 1</Label>
-                  <Input name="address_line1" value={form.address_line1} onChange={handleChange} required />
-                </div>
-                <div className="col-span-2">
-                  <Label className="text-muted-foreground text-xs">Address Line 2 (optional)</Label>
-                  <Input name="address_line2" value={form.address_line2} onChange={handleChange} />
-                </div>
-                <div>
-                  <Label className="text-muted-foreground text-xs">City</Label>
-                  <Input name="city" value={form.city} onChange={handleChange} required />
-                </div>
-                <div>
-                  <Label className="text-muted-foreground text-xs">State</Label>
-                  <Input name="state" value={form.state} onChange={handleChange} required />
-                </div>
-                <div>
-                  <Label className="text-muted-foreground text-xs">ZIP Code</Label>
-                  <Input name="zip" value={form.zip} onChange={handleChange} required />
-                </div>
+            <form onSubmit={handleSubmit} className="md:col-span-3 space-y-3">
+              <h2 className="text-lg font-semibold mb-3">Shipping Details</h2>
+
+              <Input
+                name="full_name"
+                placeholder="Full Name"
+                value={form.full_name}
+                onChange={handleChange}
+                required
+              />
+              <Input
+                name="email"
+                type="email"
+                placeholder="Email"
+                value={form.email}
+                onChange={handleChange}
+                required
+              />
+              <Input
+                name="address_line1"
+                placeholder="Address Line 1"
+                value={form.address_line1}
+                onChange={handleChange}
+                required
+              />
+              <Input
+                name="address_line2"
+                placeholder="Address Line 2 (optional)"
+                value={form.address_line2}
+                onChange={handleChange}
+              />
+              <div className="grid grid-cols-3 gap-3">
+                <Input
+                  name="city"
+                  placeholder="City"
+                  value={form.city}
+                  onChange={handleChange}
+                  required
+                />
+                <Input
+                  name="state"
+                  placeholder="State"
+                  value={form.state}
+                  onChange={handleChange}
+                  required
+                />
+                <Input
+                  name="zip"
+                  placeholder="ZIP Code"
+                  value={form.zip}
+                  onChange={handleChange}
+                  required
+                />
               </div>
 
               <Button
                 type="submit"
                 disabled={loading}
-                className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-semibold h-12 text-base mt-6"
+                className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-semibold h-12 text-base mt-4"
               >
                 {loading ? <Loader2 className="w-5 h-5 animate-spin mr-2" /> : <Lock className="w-4 h-4 mr-2" />}
                 Pay {formatPrice(totalPrice)}
@@ -142,7 +172,7 @@ export default function SuppliesCheckout() {
 
             {/* Order summary */}
             <div className="md:col-span-2">
-              <div className="rounded-xl bg-card border border-border p-5 sticky top-28">
+              <div className="rounded-xl bg-card border border-border p-5 sticky top-40">
                 <h2 className="text-lg font-semibold mb-4">Order Summary</h2>
                 <div className="space-y-3">
                   {items.map((item) => (
