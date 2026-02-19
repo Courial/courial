@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import courialLogo from "@/assets/courial-logo.png";
+import courialLogo from "@/assets/courial-logo-black.svg";
 import profileIcon from "@/assets/profile-icon.png";
 
 const navLinks = [
@@ -47,7 +47,7 @@ export const Navbar = () => {
         <div className="flex items-center justify-between h-16 lg:h-20">
           {/* Logo */}
           <Link to="/" className="flex items-center">
-            <img src={courialLogo} alt="Courial" className="h-[1.875rem]" />
+            <img src={courialLogo} alt="Courial" className="h-[1.875rem] w-auto" />
           </Link>
 
           {/* Desktop Navigation */}
