@@ -7,15 +7,56 @@ import { Footer } from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from "@/components/ui/sheet";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import { Helmet } from "react-helmet-async";
-import { Package, Truck, Loader2, ExternalLink, Edit2, Save, X, ArrowLeft } from "lucide-react";
+import { Package, Truck, Loader2, ExternalLink, Edit2, Save, X, ArrowLeft, Plus } from "lucide-react";
 import { Navigate, Link } from "react-router-dom";
+import { z } from "zod";
+
+const CATEGORIES = ["Electronics", "Bags", "Safety", "Comfort", "Accessories"];
+
+const newProductSchema = z.object({
+  name: z.string().trim().min(1, "Name is required").max(200),
+  description: z.string().trim().max(1000).optional(),
+  price: z.number().positive("Price must be greater than 0"),
+  stock: z.number().int().min(0, "Stock cannot be negative"),
+  category: z.string().optional(),
+  image_url: z.string().trim().url("Must be a valid URL").or(z.literal("")).optional(),
+  active: z.boolean(),
+});
+
+type NewProductForm = {
+  name: string;
+  description: string;
+  price: string;
+  stock: string;
+  category: string;
+  image_url: string;
+  active: boolean;
+};
+
+const defaultNewForm: NewProductForm = {
+  name: "",
+  description: "",
+  price: "",
+  stock: "0",
+  category: "",
+  image_url: "",
+  active: true,
+};
 
 export default function AdminSupplies() {
-  const { user, isAdmin, loading: authLoading } = useAuth();
+  const { isAdmin, loading: authLoading } = useAuth();
   const { toast } = useToast();
   const queryClient = useQueryClient();
+
+  const [addOpen, setAddOpen] = useState(false);
+  const [newForm, setNewForm] = useState<NewProductForm>(defaultNewForm);
+  const [newErrors, setNewErrors] = useState<Record<string, string>>({});
 
   const { data: products = [], isLoading: productsLoading } = useQuery({
     queryKey: ["admin-products"],
@@ -63,10 +104,64 @@ export default function AdminSupplies() {
     },
   });
 
+  const addProductMutation = useMutation({
+    mutationFn: async (payload: {
+      name: string; description: string; price: number; stock: number;
+      category: string; image_url: string; active: boolean;
+    }) => {
+      const { error } = await supabase.from("products").insert({
+        name: payload.name,
+        description: payload.description || null,
+        price: payload.price,
+        stock: payload.stock,
+        category: payload.category || null,
+        image_url: payload.image_url || null,
+        active: payload.active,
+      });
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      toast({ title: "Product added", description: "The new product is now live in the shop." });
+      queryClient.invalidateQueries({ queryKey: ["admin-products"] });
+      setAddOpen(false);
+      setNewForm(defaultNewForm);
+      setNewErrors({});
+    },
+    onError: (err: any) => {
+      toast({ title: "Failed to add product", description: err.message, variant: "destructive" });
+    },
+  });
+
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editForm, setEditForm] = useState({ name: "", price: 0, stock: 0, active: true, image_url: "" });
 
   const formatPrice = (cents: number) => `$${(cents / 100).toFixed(2)}`;
+
+  const handleAddSubmit = () => {
+    const errors: Record<string, string> = {};
+    if (!newForm.name.trim()) errors.name = "Name is required";
+    const priceVal = parseFloat(newForm.price);
+    if (isNaN(priceVal) || priceVal <= 0) errors.price = "Enter a valid price greater than 0";
+    const stockVal = parseInt(newForm.stock, 10);
+    if (isNaN(stockVal) || stockVal < 0) errors.stock = "Stock cannot be negative";
+    if (newForm.image_url && !/^https?:\/\/.+/.test(newForm.image_url.trim())) {
+      errors.image_url = "Must be a valid URL starting with http(s)://";
+    }
+    if (Object.keys(errors).length > 0) {
+      setNewErrors(errors);
+      return;
+    }
+    setNewErrors({});
+    addProductMutation.mutate({
+      name: newForm.name.trim(),
+      description: newForm.description.trim(),
+      price: Math.round(priceVal * 100),
+      stock: stockVal,
+      category: newForm.category,
+      image_url: newForm.image_url.trim(),
+      active: newForm.active,
+    });
+  };
 
   if (authLoading) {
     return (
@@ -174,6 +269,12 @@ export default function AdminSupplies() {
 
             {/* Inventory tab */}
             <TabsContent value="inventory">
+              <div className="flex justify-end mb-4">
+                <Button size="sm" onClick={() => { setAddOpen(true); setNewForm(defaultNewForm); setNewErrors({}); }}>
+                  <Plus className="w-4 h-4 mr-1.5" /> Add Product
+                </Button>
+              </div>
+
               {productsLoading ? (
                 <div className="text-center py-16 text-muted-foreground">
                   <Loader2 className="w-6 h-6 animate-spin mx-auto" />
@@ -196,7 +297,6 @@ export default function AdminSupplies() {
                           {editingId === product.id ? (
                             <>
                               <td className="px-4 py-3 space-y-2">
-                                {/* Image preview + URL input */}
                                 <div className="flex items-center gap-2">
                                   <div className="w-10 h-10 rounded-lg border border-border overflow-hidden shrink-0 bg-muted flex items-center justify-center">
                                     {editForm.image_url ? (
@@ -280,6 +380,142 @@ export default function AdminSupplies() {
       </main>
 
       <Footer />
+
+      {/* Add Product Sheet */}
+      <Sheet open={addOpen} onOpenChange={setAddOpen}>
+        <SheetContent className="w-full sm:max-w-md overflow-y-auto">
+          <SheetHeader className="mb-6">
+            <SheetTitle>Add New Product</SheetTitle>
+            <SheetDescription>Fill in the details below. Price is in USD.</SheetDescription>
+          </SheetHeader>
+
+          <div className="space-y-5">
+            {/* Image preview */}
+            {newForm.image_url && /^https?:\/\/.+/.test(newForm.image_url) && (
+              <div className="w-full aspect-video rounded-xl border border-border overflow-hidden bg-muted">
+                <img src={newForm.image_url} alt="Preview" className="w-full h-full object-cover" />
+              </div>
+            )}
+
+            <div className="space-y-1.5">
+              <Label htmlFor="new-image">Image URL</Label>
+              <Input
+                id="new-image"
+                value={newForm.image_url}
+                onChange={(e) => { setNewForm((p) => ({ ...p, image_url: e.target.value })); setNewErrors((p) => ({ ...p, image_url: "" })); }}
+                placeholder="https://example.com/image.jpg"
+              />
+              {newErrors.image_url && <p className="text-xs text-destructive">{newErrors.image_url}</p>}
+            </div>
+
+            <div className="space-y-1.5">
+              <Label htmlFor="new-name">Product Name <span className="text-destructive">*</span></Label>
+              <Input
+                id="new-name"
+                value={newForm.name}
+                onChange={(e) => { setNewForm((p) => ({ ...p, name: e.target.value })); setNewErrors((p) => ({ ...p, name: "" })); }}
+                placeholder="e.g. Wireless Phone Mount"
+                maxLength={200}
+              />
+              {newErrors.name && <p className="text-xs text-destructive">{newErrors.name}</p>}
+            </div>
+
+            <div className="space-y-1.5">
+              <Label htmlFor="new-description">Description</Label>
+              <Textarea
+                id="new-description"
+                value={newForm.description}
+                onChange={(e) => setNewForm((p) => ({ ...p, description: e.target.value }))}
+                placeholder="Optional product description"
+                className="resize-none"
+                rows={3}
+                maxLength={1000}
+              />
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-1.5">
+                <Label htmlFor="new-price">Price (USD) <span className="text-destructive">*</span></Label>
+                <Input
+                  id="new-price"
+                  type="number"
+                  min="0.01"
+                  step="0.01"
+                  value={newForm.price}
+                  onChange={(e) => { setNewForm((p) => ({ ...p, price: e.target.value })); setNewErrors((p) => ({ ...p, price: "" })); }}
+                  placeholder="0.00"
+                />
+                {newErrors.price && <p className="text-xs text-destructive">{newErrors.price}</p>}
+              </div>
+
+              <div className="space-y-1.5">
+                <Label htmlFor="new-stock">Stock</Label>
+                <Input
+                  id="new-stock"
+                  type="number"
+                  min="0"
+                  step="1"
+                  value={newForm.stock}
+                  onChange={(e) => { setNewForm((p) => ({ ...p, stock: e.target.value })); setNewErrors((p) => ({ ...p, stock: "" })); }}
+                />
+                {newErrors.stock && <p className="text-xs text-destructive">{newErrors.stock}</p>}
+              </div>
+            </div>
+
+            <div className="space-y-1.5">
+              <Label>Category</Label>
+              <Select value={newForm.category} onValueChange={(v) => setNewForm((p) => ({ ...p, category: v }))}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select a category" />
+                </SelectTrigger>
+                <SelectContent>
+                  {CATEGORIES.map((cat) => (
+                    <SelectItem key={cat} value={cat}>{cat}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="space-y-1.5">
+              <Label>Visibility</Label>
+              <div className="flex gap-2">
+                <Button
+                  type="button"
+                  size="sm"
+                  variant={newForm.active ? "default" : "outline"}
+                  onClick={() => setNewForm((p) => ({ ...p, active: true }))}
+                  className="flex-1"
+                >
+                  Active
+                </Button>
+                <Button
+                  type="button"
+                  size="sm"
+                  variant={!newForm.active ? "default" : "outline"}
+                  onClick={() => setNewForm((p) => ({ ...p, active: false }))}
+                  className="flex-1"
+                >
+                  Inactive
+                </Button>
+              </div>
+            </div>
+
+            <div className="flex gap-3 pt-2">
+              <Button
+                className="flex-1"
+                onClick={handleAddSubmit}
+                disabled={addProductMutation.isPending}
+              >
+                {addProductMutation.isPending ? <Loader2 className="w-4 h-4 animate-spin mr-1.5" /> : <Plus className="w-4 h-4 mr-1.5" />}
+                Add Product
+              </Button>
+              <Button variant="outline" onClick={() => setAddOpen(false)} disabled={addProductMutation.isPending}>
+                Cancel
+              </Button>
+            </div>
+          </div>
+        </SheetContent>
+      </Sheet>
     </div>
   );
 }
