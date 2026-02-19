@@ -87,30 +87,30 @@ export default function AdminSupplies() {
         <div className="container mx-auto px-6 py-12">
 
           {/* Header */}
-          <div className="flex items-start justify-between mb-10">
-            <div>
-              <Link to="/admin" className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground mb-3 transition-colors">
-                <ArrowLeft className="w-4 h-4" /> Back to Admin
-              </Link>
-              <p className="text-sm font-medium text-primary uppercase tracking-widest mb-1">Commerce</p>
-              <h1 className="text-3xl font-bold tracking-tight">Shop Admin</h1>
-            </div>
-            <a href="/supplies" target="_blank" rel="noopener noreferrer" className="mt-1">
-              <Button variant="outline" size="sm">
-                <ExternalLink className="w-4 h-4 mr-1.5" /> View Shop
-              </Button>
-            </a>
+          <div className="mb-10">
+            <Link to="/admin" className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground mb-3 transition-colors">
+              <ArrowLeft className="w-4 h-4" /> Back to Admin
+            </Link>
+            <p className="text-sm font-medium text-primary uppercase tracking-widest mb-1">Commerce</p>
+            <h1 className="text-3xl font-bold tracking-tight">Shop Admin</h1>
           </div>
 
           <Tabs defaultValue="orders" className="space-y-6">
-            <TabsList>
-              <TabsTrigger value="orders">
-                <Truck className="w-4 h-4 mr-1.5" /> Orders
-              </TabsTrigger>
-              <TabsTrigger value="inventory">
-                <Package className="w-4 h-4 mr-1.5" /> Inventory
-              </TabsTrigger>
-            </TabsList>
+            <div className="flex items-center gap-3">
+              <TabsList>
+                <TabsTrigger value="orders">
+                  <Truck className="w-4 h-4 mr-1.5" /> Orders
+                </TabsTrigger>
+                <TabsTrigger value="inventory">
+                  <Package className="w-4 h-4 mr-1.5" /> Inventory
+                </TabsTrigger>
+              </TabsList>
+              <a href="/supplies" target="_blank" rel="noopener noreferrer">
+                <Button variant="outline" size="sm">
+                  <ExternalLink className="w-4 h-4 mr-1.5" /> View Shop
+                </Button>
+              </a>
+            </div>
 
             {/* Orders tab */}
             <TabsContent value="orders" className="space-y-4">
