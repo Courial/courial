@@ -93,50 +93,51 @@ export default function Supplies() {
 
           {/* Product Grid */}
           {isLoading ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              {[1, 2, 3, 4, 5, 6].map((i) => (
-                <div key={i} className="rounded-2xl glass-card h-80 animate-pulse" />
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
+                <div key={i} className="rounded-xl glass-card h-64 animate-pulse" />
               ))}
             </div>
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               {filtered.map((product, i) => (
                 <motion.div
                   key={product.id}
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: i * 0.05 }}
-                  className="group rounded-2xl glass-card overflow-hidden transition-all duration-300 hover:border-primary/50"
+                  transition={{ delay: i * 0.03 }}
+                  className="group rounded-xl glass-card overflow-hidden transition-all duration-300 hover:border-primary/50"
                 >
                   <div className="aspect-square bg-muted overflow-hidden">
                     {product.image_url ? (
                       <img src={product.image_url} alt={product.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
                     ) : (
                       <div className="w-full h-full flex items-center justify-center text-muted-foreground">
-                        <Package className="w-12 h-12" />
+                        <Package className="w-10 h-10" />
                       </div>
                     )}
                   </div>
-                  <div className="p-5">
+                  <div className="p-3 md:p-4">
                     {product.category && (
-                      <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider">{product.category}</span>
+                      <span className="text-[10px] md:text-xs font-medium text-muted-foreground uppercase tracking-wider">{product.category}</span>
                     )}
-                    <h3 className="font-semibold text-lg mt-1 text-foreground">{product.name}</h3>
-                    <p className="text-sm text-muted-foreground mt-1 line-clamp-2">{product.description}</p>
-                    <div className="flex items-center justify-between mt-4">
-                      <span className="text-xl font-bold text-primary">{formatPrice(product.price)}</span>
+                    <h3 className="font-semibold text-sm md:text-base mt-0.5 text-foreground line-clamp-1">{product.name}</h3>
+                    <p className="text-xs text-muted-foreground mt-0.5 line-clamp-1 hidden md:block">{product.description}</p>
+                    <div className="flex items-center justify-between mt-2 md:mt-3">
+                      <span className="text-base md:text-lg font-bold text-primary">{formatPrice(product.price)}</span>
                       <Button
                         size="sm"
                         variant="hero"
+                        className="h-7 md:h-8 text-xs px-2 md:px-3"
                         onClick={() => addItem({ id: product.id, name: product.name, price: product.price, image_url: product.image_url })}
                         disabled={product.stock <= 0}
                       >
-                        <Plus className="w-4 h-4 mr-1" />
-                        {product.stock <= 0 ? "Sold Out" : "Add"}
+                        <Plus className="w-3 h-3 mr-0.5" />
+                        {product.stock <= 0 ? "Out" : "Add"}
                       </Button>
                     </div>
                     {product.stock > 0 && product.stock <= 10 && (
-                      <p className="text-xs text-primary mt-2">Only {product.stock} left</p>
+                      <p className="text-[10px] text-primary mt-1">Only {product.stock} left</p>
                     )}
                   </div>
                 </motion.div>
