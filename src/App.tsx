@@ -23,7 +23,12 @@ import Blog from "./pages/Blog";
 import BlogPost from "./pages/BlogPost";
 import AdminBlog from "./pages/AdminBlog";
 import Auth from "./pages/Auth";
+import Supplies from "./pages/Supplies";
+import SuppliesCheckout from "./pages/SuppliesCheckout";
+import SuppliesSuccess from "./pages/SuppliesSuccess";
+import AdminSupplies from "./pages/AdminSupplies";
 import NotFound from "./pages/NotFound";
+import { CartProvider } from "./hooks/useCart";
 
 const queryClient = new QueryClient();
 
@@ -32,32 +37,38 @@ const App = () => (
     <HelmetProvider>
       <TooltipProvider>
         <AuthProvider>
-          <Toaster />
-          <Sonner />
-          <BrowserRouter>
-            <Routes>
-              <Route path="/" element={<Index />} />
-              <Route path="/markets" element={<Markets />} />
-              <Route path="/business" element={<Business />} />
-              <Route path="/partners" element={<Partners />} />
-              <Route path="/users" element={<Users />} />
-              <Route path="/courials" element={<Courials />} />
-              <Route path="/chauffeur" element={<Chauffeur />} />
-              <Route path="/shield" element={<Shield />} />
-              <Route path="/terms" element={<Terms />} />
-              <Route path="/privacy" element={<Privacy />} />
-              <Route path="/ica" element={<ICA />} />
-              <Route path="/help" element={<Help />} />
-              <Route path="/api" element={<Api />} />
-              <Route path="/blog" element={<Blog />} />
-              <Route path="/blog/:slug" element={<BlogPost />} />
-              <Route path="/admin/blog" element={<AdminBlog />} />
-              <Route path="/auth" element={<Auth />} />
-              {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-            <ChatBubble />
-          </BrowserRouter>
+          <CartProvider>
+            <Toaster />
+            <Sonner />
+            <BrowserRouter>
+              <Routes>
+                <Route path="/" element={<Index />} />
+                <Route path="/markets" element={<Markets />} />
+                <Route path="/business" element={<Business />} />
+                <Route path="/partners" element={<Partners />} />
+                <Route path="/users" element={<Users />} />
+                <Route path="/courials" element={<Courials />} />
+                <Route path="/chauffeur" element={<Chauffeur />} />
+                <Route path="/shield" element={<Shield />} />
+                <Route path="/terms" element={<Terms />} />
+                <Route path="/privacy" element={<Privacy />} />
+                <Route path="/ica" element={<ICA />} />
+                <Route path="/help" element={<Help />} />
+                <Route path="/api" element={<Api />} />
+                <Route path="/blog" element={<Blog />} />
+                <Route path="/blog/:slug" element={<BlogPost />} />
+                <Route path="/admin/blog" element={<AdminBlog />} />
+                <Route path="/auth" element={<Auth />} />
+                <Route path="/supplies" element={<Supplies />} />
+                <Route path="/supplies/checkout" element={<SuppliesCheckout />} />
+                <Route path="/supplies/success" element={<SuppliesSuccess />} />
+                <Route path="/admin/supplies" element={<AdminSupplies />} />
+                {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+              <ChatBubble />
+            </BrowserRouter>
+          </CartProvider>
         </AuthProvider>
       </TooltipProvider>
     </HelmetProvider>

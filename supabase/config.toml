@@ -29,3 +29,9 @@ verify_jwt = false
 
 [functions.social-login]
 verify_jwt = false
+
+[functions.create-supplies-payment]
+verify_jwt = false
+
+[functions.shipstation-sync]
+verify_jwt = false
