@@ -87,7 +87,7 @@ export default function SuppliesCheckout() {
       <Navbar />
 
       {/* Back to Shop — pinned just below the navbar, aligned with logo */}
-      <div className="fixed top-16 lg:top-20 left-0 right-0 z-40 bg-background/95 backdrop-blur-sm border-b border-border">
+      <div className="fixed top-16 lg:top-20 left-0 right-0 z-40 bg-background/95 backdrop-blur-sm">
         <div className="container mx-auto px-6">
           <Link
             to="/supplies"
