@@ -129,7 +129,7 @@ export const BentoGrid = () => {
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, margin: "-100px" }}
-          className="grid grid-cols-1 md:grid-cols-4 md:auto-rows-[160px] md:grid-flow-row-dense gap-4 max-w-6xl mx-auto"
+          className="grid grid-cols-1 md:grid-cols-4 md:auto-rows-[190px] md:grid-flow-row-dense gap-4 max-w-6xl mx-auto"
         >
           {bentoItems.map((item) => {
             const Icon = item.icon;
