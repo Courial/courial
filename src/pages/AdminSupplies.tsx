@@ -3,14 +3,14 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { Navbar } from "@/components/Navbar";
+import { Footer } from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
 import { Helmet } from "react-helmet-async";
-import { Package, Truck, Plus, Loader2, ExternalLink, Edit2, Save, X } from "lucide-react";
-import { Navigate } from "react-router-dom";
+import { Package, Truck, Loader2, ExternalLink, Edit2, Save, X, ArrowLeft } from "lucide-react";
+import { Navigate, Link } from "react-router-dom";
 
 export default function AdminSupplies() {
   const { user, isAdmin, loading: authLoading } = useAuth();
@@ -43,8 +43,8 @@ export default function AdminSupplies() {
       if (error) throw error;
       return data;
     },
-    onSuccess: (_, orderId) => {
-      toast({ title: "Sent to fulfillment", description: `Order sent to ShipStation.` });
+    onSuccess: () => {
+      toast({ title: "Sent to fulfillment", description: "Order sent to ShipStation." });
       queryClient.invalidateQueries({ queryKey: ["admin-orders"] });
     },
     onError: (err: any) => {
@@ -68,57 +68,78 @@ export default function AdminSupplies() {
 
   const formatPrice = (cents: number) => `$${(cents / 100).toFixed(2)}`;
 
-  if (authLoading) return <div className="dark min-h-screen bg-[hsl(0,0%,7%)]"><Navbar /><div className="pt-32 text-center text-[hsl(0,0%,50%)]">Loading...</div></div>;
+  if (authLoading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <Loader2 className="w-6 h-6 animate-spin text-muted-foreground" />
+      </div>
+    );
+  }
+
   if (!isAdmin) return <Navigate to="/supplies" replace />;
 
   return (
-    <div className="dark min-h-screen bg-[hsl(0,0%,7%)] text-[hsl(0,0%,98%)]">
-      <Helmet><title>Admin Supplies | Courial</title></Helmet>
+    <div className="min-h-screen bg-background">
+      <Helmet><title>Shop Admin | Courial</title></Helmet>
       <Navbar />
 
-      <main className="pt-24 pb-20">
-        <div className="container mx-auto px-6">
-          <div className="flex items-center justify-between mb-8">
-            <h1 className="text-2xl font-bold">Supplies Admin</h1>
-            <a href="/supplies" target="_blank" rel="noopener noreferrer">
-              <Button variant="outline" size="sm" className="border-[hsl(0,0%,20%)] bg-transparent text-[hsl(0,0%,98%)]">
-                <ExternalLink className="w-4 h-4 mr-1" /> View Shop
+      <main className="pt-20 lg:pt-24">
+        <div className="container mx-auto px-6 py-12">
+
+          {/* Header */}
+          <div className="flex items-start justify-between mb-10">
+            <div>
+              <Link to="/admin" className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground mb-3 transition-colors">
+                <ArrowLeft className="w-4 h-4" /> Back to Admin
+              </Link>
+              <p className="text-sm font-medium text-primary uppercase tracking-widest mb-1">Commerce</p>
+              <h1 className="text-3xl font-bold tracking-tight">Shop Admin</h1>
+            </div>
+            <a href="/supplies" target="_blank" rel="noopener noreferrer" className="mt-1">
+              <Button variant="outline" size="sm">
+                <ExternalLink className="w-4 h-4 mr-1.5" /> View Shop
               </Button>
             </a>
           </div>
 
           <Tabs defaultValue="orders" className="space-y-6">
-            <TabsList className="bg-[hsl(0,0%,10%)] border border-[hsl(0,0%,20%)]">
-              <TabsTrigger value="orders" className="data-[state=active]:bg-[hsl(0,0%,20%)] data-[state=active]:text-[hsl(0,0%,98%)]">
-                <Truck className="w-4 h-4 mr-1" /> Orders
+            <TabsList>
+              <TabsTrigger value="orders">
+                <Truck className="w-4 h-4 mr-1.5" /> Orders
               </TabsTrigger>
-              <TabsTrigger value="inventory" className="data-[state=active]:bg-[hsl(0,0%,20%)] data-[state=active]:text-[hsl(0,0%,98%)]">
-                <Package className="w-4 h-4 mr-1" /> Inventory
+              <TabsTrigger value="inventory">
+                <Package className="w-4 h-4 mr-1.5" /> Inventory
               </TabsTrigger>
             </TabsList>
 
             {/* Orders tab */}
             <TabsContent value="orders" className="space-y-4">
               {ordersLoading ? (
-                <div className="text-center py-12 text-[hsl(0,0%,50%)]"><Loader2 className="w-6 h-6 animate-spin mx-auto" /></div>
+                <div className="text-center py-16 text-muted-foreground">
+                  <Loader2 className="w-6 h-6 animate-spin mx-auto" />
+                </div>
               ) : orders.length === 0 ? (
-                <p className="text-center py-12 text-[hsl(0,0%,50%)]">No orders yet</p>
+                <div className="text-center py-16 border border-border rounded-2xl">
+                  <p className="text-muted-foreground">No orders yet</p>
+                </div>
               ) : (
                 orders.map((order: any) => (
-                  <div key={order.id} className="rounded-xl bg-[hsl(0,0%,10%)] border border-[hsl(0,0%,15%)] p-5">
+                  <div key={order.id} className="rounded-2xl bg-card border border-border p-5">
                     <div className="flex flex-wrap items-start justify-between gap-4 mb-3">
                       <div>
                         <p className="font-semibold">{order.full_name}</p>
-                        <p className="text-sm text-[hsl(0,0%,50%)]">{order.email}</p>
-                        <p className="text-xs text-[hsl(0,0%,40%)] mt-1">
+                        <p className="text-sm text-muted-foreground">{order.email}</p>
+                        <p className="text-xs text-muted-foreground mt-1">
                           {order.address_line1}, {order.city}, {order.state} {order.zip}
                         </p>
                       </div>
                       <div className="text-right">
-                        <p className="font-bold text-[hsl(24,100%,50%)]">{formatPrice(order.total)}</p>
-                        <p className="text-xs text-[hsl(0,0%,40%)]">{new Date(order.created_at).toLocaleDateString()}</p>
-                        <span className={`inline-block mt-1 text-xs px-2 py-0.5 rounded-full font-medium ${
-                          order.fulfillment_status === 'fulfilled' ? 'bg-green-900/40 text-green-400' : 'bg-yellow-900/40 text-yellow-400'
+                        <p className="font-bold text-primary">{formatPrice(order.total)}</p>
+                        <p className="text-xs text-muted-foreground">{new Date(order.created_at).toLocaleDateString()}</p>
+                        <span className={`inline-block mt-1.5 text-xs px-2 py-0.5 rounded-full font-medium ${
+                          order.fulfillment_status === "fulfilled"
+                            ? "bg-green-100 text-green-700"
+                            : "bg-yellow-100 text-yellow-700"
                         }`}>
                           {order.fulfillment_status}
                         </span>
@@ -126,23 +147,23 @@ export default function AdminSupplies() {
                     </div>
 
                     {/* Items */}
-                    <div className="space-y-1 mb-4">
+                    <div className="space-y-1 mb-4 pt-3 border-t border-border">
                       {order.order_items?.map((item: any) => (
-                        <div key={item.id} className="flex justify-between text-sm text-[hsl(0,0%,60%)]">
+                        <div key={item.id} className="flex justify-between text-sm text-muted-foreground">
                           <span>{item.product_name} × {item.quantity}</span>
                           <span>{formatPrice(item.unit_price * item.quantity)}</span>
                         </div>
                       ))}
                     </div>
 
-                    {order.fulfillment_status === 'pending' && (
+                    {order.fulfillment_status === "pending" && (
                       <Button
                         size="sm"
-                        className="bg-[hsl(24,100%,50%)] hover:bg-[hsl(24,100%,45%)] text-white"
+                        variant="hero"
                         onClick={() => fulfillMutation.mutate(order.id)}
                         disabled={fulfillMutation.isPending}
                       >
-                        {fulfillMutation.isPending ? <Loader2 className="w-4 h-4 animate-spin mr-1" /> : <Truck className="w-4 h-4 mr-1" />}
+                        {fulfillMutation.isPending ? <Loader2 className="w-4 h-4 animate-spin mr-1.5" /> : <Truck className="w-4 h-4 mr-1.5" />}
                         Send to Fulfillment
                       </Button>
                     )}
@@ -152,55 +173,69 @@ export default function AdminSupplies() {
             </TabsContent>
 
             {/* Inventory tab */}
-            <TabsContent value="inventory" className="space-y-4">
+            <TabsContent value="inventory">
               {productsLoading ? (
-                <div className="text-center py-12 text-[hsl(0,0%,50%)]"><Loader2 className="w-6 h-6 animate-spin mx-auto" /></div>
+                <div className="text-center py-16 text-muted-foreground">
+                  <Loader2 className="w-6 h-6 animate-spin mx-auto" />
+                </div>
               ) : (
-                <div className="overflow-x-auto">
+                <div className="border border-border rounded-2xl overflow-hidden">
                   <table className="w-full text-sm">
-                    <thead>
-                      <tr className="text-left text-[hsl(0,0%,50%)] border-b border-[hsl(0,0%,20%)]">
-                        <th className="pb-3 font-medium">Product</th>
-                        <th className="pb-3 font-medium">Price</th>
-                        <th className="pb-3 font-medium">Stock</th>
-                        <th className="pb-3 font-medium">Status</th>
-                        <th className="pb-3 font-medium text-right">Actions</th>
+                    <thead className="bg-muted/50 text-left">
+                      <tr>
+                        <th className="px-4 py-3 font-medium text-muted-foreground">Product</th>
+                        <th className="px-4 py-3 font-medium text-muted-foreground">Price</th>
+                        <th className="px-4 py-3 font-medium text-muted-foreground">Stock</th>
+                        <th className="px-4 py-3 font-medium text-muted-foreground">Status</th>
+                        <th className="px-4 py-3 font-medium text-muted-foreground text-right">Actions</th>
                       </tr>
                     </thead>
-                    <tbody>
+                    <tbody className="divide-y divide-border">
                       {products.map((product: any) => (
-                        <tr key={product.id} className="border-b border-[hsl(0,0%,15%)]">
+                        <tr key={product.id} className="hover:bg-muted/30 transition-colors">
                           {editingId === product.id ? (
                             <>
-                              <td className="py-3"><Input value={editForm.name} onChange={(e) => setEditForm((p) => ({ ...p, name: e.target.value }))} className="bg-[hsl(0,0%,12%)] border-[hsl(0,0%,25%)] text-[hsl(0,0%,98%)] h-8 text-sm" /></td>
-                              <td className="py-3"><Input type="number" value={editForm.price / 100} onChange={(e) => setEditForm((p) => ({ ...p, price: Math.round(Number(e.target.value) * 100) }))} className="bg-[hsl(0,0%,12%)] border-[hsl(0,0%,25%)] text-[hsl(0,0%,98%)] h-8 w-24 text-sm" /></td>
-                              <td className="py-3"><Input type="number" value={editForm.stock} onChange={(e) => setEditForm((p) => ({ ...p, stock: Number(e.target.value) }))} className="bg-[hsl(0,0%,12%)] border-[hsl(0,0%,25%)] text-[hsl(0,0%,98%)] h-8 w-20 text-sm" /></td>
-                              <td className="py-3">
-                                <Button size="sm" variant="outline" className="h-7 text-xs border-[hsl(0,0%,25%)] bg-transparent" onClick={() => setEditForm((p) => ({ ...p, active: !p.active }))}>
+                              <td className="px-4 py-3">
+                                <Input value={editForm.name} onChange={(e) => setEditForm((p) => ({ ...p, name: e.target.value }))} className="h-8 text-sm" />
+                              </td>
+                              <td className="px-4 py-3">
+                                <Input type="number" value={editForm.price / 100} onChange={(e) => setEditForm((p) => ({ ...p, price: Math.round(Number(e.target.value) * 100) }))} className="h-8 w-24 text-sm" />
+                              </td>
+                              <td className="px-4 py-3">
+                                <Input type="number" value={editForm.stock} onChange={(e) => setEditForm((p) => ({ ...p, stock: Number(e.target.value) }))} className="h-8 w-20 text-sm" />
+                              </td>
+                              <td className="px-4 py-3">
+                                <Button size="sm" variant="outline" className="h-7 text-xs" onClick={() => setEditForm((p) => ({ ...p, active: !p.active }))}>
                                   {editForm.active ? "Active" : "Inactive"}
                                 </Button>
                               </td>
-                              <td className="py-3 text-right space-x-2">
-                                <Button size="sm" className="h-7 bg-green-600 hover:bg-green-700 text-white" onClick={() => { updateProductMutation.mutate(editForm as any & { id: string }); setEditingId(null); }}>
+                              <td className="px-4 py-3 text-right space-x-2">
+                                <Button size="sm" className="h-7 bg-green-600 hover:bg-green-700 text-white"
+                                  onClick={() => { updateProductMutation.mutate({ ...editForm, id: product.id }); setEditingId(null); }}>
                                   <Save className="w-3 h-3" />
                                 </Button>
-                                <Button size="sm" variant="outline" className="h-7 border-[hsl(0,0%,25%)] bg-transparent text-[hsl(0,0%,60%)]" onClick={() => setEditingId(null)}>
+                                <Button size="sm" variant="outline" className="h-7" onClick={() => setEditingId(null)}>
                                   <X className="w-3 h-3" />
                                 </Button>
                               </td>
                             </>
                           ) : (
                             <>
-                              <td className="py-3 font-medium">{product.name}</td>
-                              <td className="py-3">{formatPrice(product.price)}</td>
-                              <td className="py-3">{product.stock}</td>
-                              <td className="py-3">
-                                <span className={`text-xs px-2 py-0.5 rounded-full ${product.active ? 'bg-green-900/40 text-green-400' : 'bg-red-900/40 text-red-400'}`}>
-                                  {product.active ? 'Active' : 'Inactive'}
+                              <td className="px-4 py-3 font-medium">{product.name}</td>
+                              <td className="px-4 py-3 text-muted-foreground">{formatPrice(product.price)}</td>
+                              <td className="px-4 py-3 text-muted-foreground">{product.stock}</td>
+                              <td className="px-4 py-3">
+                                <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${
+                                  product.active
+                                    ? "bg-green-100 text-green-700"
+                                    : "bg-red-100 text-red-700"
+                                }`}>
+                                  {product.active ? "Active" : "Inactive"}
                                 </span>
                               </td>
-                              <td className="py-3 text-right">
-                                <Button size="sm" variant="outline" className="h-7 border-[hsl(0,0%,25%)] bg-transparent text-[hsl(0,0%,60%)]" onClick={() => { setEditingId(product.id); setEditForm({ name: product.name, price: product.price, stock: product.stock, active: product.active }); }}>
+                              <td className="px-4 py-3 text-right">
+                                <Button size="sm" variant="outline" className="h-7"
+                                  onClick={() => { setEditingId(product.id); setEditForm({ name: product.name, price: product.price, stock: product.stock, active: product.active }); }}>
                                   <Edit2 className="w-3 h-3 mr-1" /> Edit
                                 </Button>
                               </td>
@@ -216,6 +251,8 @@ export default function AdminSupplies() {
           </Tabs>
         </div>
       </main>
+
+      <Footer />
     </div>
   );
 }

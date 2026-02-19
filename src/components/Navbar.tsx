@@ -68,18 +68,11 @@ export const Navbar = () => {
           {/* Desktop CTA */}
           <div className="hidden lg:flex items-center gap-3">
             {!authLoading && isAdmin && (
-              <>
-                <Link to="/admin/blog">
-                  <Button variant="ghost" size="sm" className="border border-foreground/25">
-                    Admin
-                  </Button>
-                </Link>
-                <Link to="/admin/supplies">
-                  <Button variant="ghost" size="sm" className="border border-foreground/25">
-                    Supplies Admin
-                  </Button>
-                </Link>
-              </>
+              <Link to="/admin">
+                <Button variant="ghost" size="sm" className="border border-foreground/25">
+                  Admin
+                </Button>
+              </Link>
             )}
             {user ? (
               <div className="relative group flex items-center justify-center w-10 h-10">
@@ -157,7 +150,7 @@ export const Navbar = () => {
               ))}
               <div className="flex flex-col gap-3 pt-4 border-t border-border">
                 {!authLoading && isAdmin && (
-                  <Link to="/admin/blog" onClick={() => setIsOpen(false)}>
+                  <Link to="/admin" onClick={() => setIsOpen(false)}>
                     <Button variant="ghost" className="w-full justify-start border border-foreground/25">
                       Admin
                     </Button>
