@@ -22,6 +22,7 @@ import Api from "./pages/Api";
 import Blog from "./pages/Blog";
 import BlogPost from "./pages/BlogPost";
 import AdminBlog from "./pages/AdminBlog";
+import Admin from "./pages/Admin";
 import Auth from "./pages/Auth";
 import Supplies from "./pages/Supplies";
 import SuppliesCheckout from "./pages/SuppliesCheckout";
@@ -57,12 +58,13 @@ const App = () => (
                 <Route path="/api" element={<Api />} />
                 <Route path="/blog" element={<Blog />} />
                 <Route path="/blog/:slug" element={<BlogPost />} />
+                <Route path="/admin" element={<Admin />} />
                 <Route path="/admin/blog" element={<AdminBlog />} />
+                <Route path="/admin/shop" element={<AdminSupplies />} />
                 <Route path="/auth" element={<Auth />} />
                 <Route path="/supplies" element={<Supplies />} />
                 <Route path="/supplies/checkout" element={<SuppliesCheckout />} />
                 <Route path="/supplies/success" element={<SuppliesSuccess />} />
-                <Route path="/admin/supplies" element={<AdminSupplies />} />
                 {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                 <Route path="*" element={<NotFound />} />
               </Routes>
