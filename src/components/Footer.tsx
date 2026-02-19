@@ -40,10 +40,10 @@ const socialLinks = [
 ];
 
 const footerLinks = {
-  support: [
-    { name: "Help Center", href: "/help" },
-    { name: "Contact Us", href: "/help#contact" },
-    { name: "API Docs", href: "/help#api-docs" },
+  company: [
+    { name: "Blog", href: "/blog" },
+    { name: "Shield", href: "/shield" },
+    { name: "Shop", href: "/supplies" },
   ],
   services: [
     { name: "Customers", href: "/" },
@@ -55,10 +55,10 @@ const footerLinks = {
     { name: "Terms of Service", href: "/terms" },
     { name: "ICA", href: "/ica" },
   ],
-  company: [
-    { name: "Blog", href: "/blog" },
-    { name: "Shield", href: "/shield" },
-    { name: "Shop", href: "/supplies" },
+  support: [
+    { name: "Help Center", href: "/help" },
+    { name: "Contact Us", href: "/help#contact" },
+    { name: "API Docs", href: "/help#api-docs" },
   ],
 };
 
@@ -128,7 +128,7 @@ export const Footer = () => {
                   </li>
                 ))}
               </ul>
-              {category === "company" && (
+              {category === "support" && (
                 <div className="flex flex-row gap-2 mt-4">
                   <a
                     href="https://courial.onelink.me/lEPx/263244a0"
