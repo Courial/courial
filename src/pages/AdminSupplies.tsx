@@ -205,6 +205,11 @@ export default function AdminSupplies() {
                   <ExternalLink className="w-4 h-4 mr-1.5" /> View Shop
                 </Button>
               </a>
+              <div className="ml-auto">
+                <Button size="sm" onClick={() => { setAddOpen(true); setNewForm(defaultNewForm); setNewErrors({}); }}>
+                  <Plus className="w-4 h-4 mr-1.5" /> Add Product
+                </Button>
+              </div>
             </div>
 
             {/* Orders tab */}
@@ -269,11 +274,6 @@ export default function AdminSupplies() {
 
             {/* Inventory tab */}
             <TabsContent value="inventory">
-              <div className="flex justify-end mb-4">
-                <Button size="sm" onClick={() => { setAddOpen(true); setNewForm(defaultNewForm); setNewErrors({}); }}>
-                  <Plus className="w-4 h-4 mr-1.5" /> Add Product
-                </Button>
-              </div>
 
               {productsLoading ? (
                 <div className="text-center py-16 text-muted-foreground">
