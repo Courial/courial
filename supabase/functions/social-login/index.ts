@@ -38,9 +38,10 @@ serve(async (req) => {
       );
     }
 
+    // Courial API expects "type" and "socialId" (camelCase)
     const params: Record<string, string> = {
-      social_id,
-      provider,
+      type: provider,
+      socialId: social_id,
     };
     if (email) params.email = email;
     if (first_name) params.first_name = first_name;
