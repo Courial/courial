@@ -206,8 +206,8 @@ export default function AdminSupplies() {
                 </Button>
               </a>
               <div className="ml-auto">
-                <Button size="sm" onClick={() => { setAddOpen(true); setNewForm(defaultNewForm); setNewErrors({}); }}>
-                  <Plus className="w-4 h-4 mr-1.5" /> Add Product
+                <Button size="sm" className="bg-green-600 hover:bg-green-700 text-white" onClick={() => { setAddOpen(true); setNewForm(defaultNewForm); setNewErrors({}); }}>
+                  <Plus className="w-4 h-4 mr-1.5" /> Add
                 </Button>
               </div>
             </div>
