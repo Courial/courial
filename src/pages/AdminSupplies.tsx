@@ -53,8 +53,8 @@ export default function AdminSupplies() {
   });
 
   const updateProductMutation = useMutation({
-    mutationFn: async (product: { id: string; name: string; price: number; stock: number; active: boolean }) => {
-      const { error } = await supabase.from("products").update({ name: product.name, price: product.price, stock: product.stock, active: product.active }).eq("id", product.id);
+    mutationFn: async (product: { id: string; name: string; price: number; stock: number; active: boolean; image_url: string }) => {
+      const { error } = await supabase.from("products").update({ name: product.name, price: product.price, stock: product.stock, active: product.active, image_url: product.image_url }).eq("id", product.id);
       if (error) throw error;
     },
     onSuccess: () => {
@@ -64,7 +64,7 @@ export default function AdminSupplies() {
   });
 
   const [editingId, setEditingId] = useState<string | null>(null);
-  const [editForm, setEditForm] = useState({ name: "", price: 0, stock: 0, active: true });
+  const [editForm, setEditForm] = useState({ name: "", price: 0, stock: 0, active: true, image_url: "" });
 
   const formatPrice = (cents: number) => `$${(cents / 100).toFixed(2)}`;
 
@@ -195,8 +195,24 @@ export default function AdminSupplies() {
                         <tr key={product.id} className="hover:bg-muted/30 transition-colors">
                           {editingId === product.id ? (
                             <>
-                              <td className="px-4 py-3">
-                                <Input value={editForm.name} onChange={(e) => setEditForm((p) => ({ ...p, name: e.target.value }))} className="h-8 text-sm" />
+                              <td className="px-4 py-3 space-y-2">
+                                {/* Image preview + URL input */}
+                                <div className="flex items-center gap-2">
+                                  <div className="w-10 h-10 rounded-lg border border-border overflow-hidden shrink-0 bg-muted flex items-center justify-center">
+                                    {editForm.image_url ? (
+                                      <img src={editForm.image_url} alt="" className="w-full h-full object-cover" />
+                                    ) : (
+                                      <span className="text-[10px] text-muted-foreground text-center leading-tight px-1">No img</span>
+                                    )}
+                                  </div>
+                                  <Input
+                                    value={editForm.image_url}
+                                    onChange={(e) => setEditForm((p) => ({ ...p, image_url: e.target.value }))}
+                                    className="h-8 text-xs"
+                                    placeholder="Image URL"
+                                  />
+                                </div>
+                                <Input value={editForm.name} onChange={(e) => setEditForm((p) => ({ ...p, name: e.target.value }))} className="h-8 text-sm" placeholder="Product name" />
                               </td>
                               <td className="px-4 py-3">
                                 <Input type="number" value={editForm.price / 100} onChange={(e) => setEditForm((p) => ({ ...p, price: Math.round(Number(e.target.value) * 100) }))} className="h-8 w-24 text-sm" />
@@ -221,7 +237,18 @@ export default function AdminSupplies() {
                             </>
                           ) : (
                             <>
-                              <td className="px-4 py-3 font-medium">{product.name}</td>
+                              <td className="px-4 py-3">
+                                <div className="flex items-center gap-3">
+                                  <div className="w-10 h-10 rounded-lg border border-border overflow-hidden shrink-0 bg-muted flex items-center justify-center">
+                                    {product.image_url ? (
+                                      <img src={product.image_url} alt={product.name} className="w-full h-full object-cover" />
+                                    ) : (
+                                      <span className="text-[10px] text-muted-foreground text-center leading-tight px-1">No img</span>
+                                    )}
+                                  </div>
+                                  <span className="font-medium">{product.name}</span>
+                                </div>
+                              </td>
                               <td className="px-4 py-3 text-muted-foreground">{formatPrice(product.price)}</td>
                               <td className="px-4 py-3 text-muted-foreground">{product.stock}</td>
                               <td className="px-4 py-3">
@@ -235,7 +262,7 @@ export default function AdminSupplies() {
                               </td>
                               <td className="px-4 py-3 text-right">
                                 <Button size="sm" variant="outline" className="h-7"
-                                  onClick={() => { setEditingId(product.id); setEditForm({ name: product.name, price: product.price, stock: product.stock, active: product.active }); }}>
+                                  onClick={() => { setEditingId(product.id); setEditForm({ name: product.name, price: product.price, stock: product.stock, active: product.active, image_url: product.image_url ?? "" }); }}>
                                   <Edit2 className="w-3 h-3 mr-1" /> Edit
                                 </Button>
                               </td>
