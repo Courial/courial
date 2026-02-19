@@ -91,9 +91,9 @@ export default function SuppliesCheckout() {
         <div className="container mx-auto px-6">
           <Link
             to="/supplies"
-            className="inline-flex items-center gap-1 py-2 text-xs font-bold tracking-widest uppercase text-primary hover:text-primary/80 transition-colors"
+            className="inline-flex items-center gap-1 py-2 text-sm font-semibold tracking-wider uppercase text-primary hover:text-primary/80 transition-colors"
           >
-            <ArrowLeft className="w-3 h-3" />
+            <ArrowLeft className="w-3.5 h-3.5" />
             Back to Shop
           </Link>
         </div>
