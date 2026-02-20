@@ -7,6 +7,18 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
 };
 
+// Shipping rules (must match frontend)
+const SHIPPING_THRESHOLD_CENTS = 5000; // $50.00
+const WEIGHT_LIMIT_OZ = 80;           // 5 lbs
+const FLAT_SHIPPING_CENTS = 799;      // $7.99
+
+function calcShipping(subtotalCents: number, totalWeightOz: number): number {
+  if (subtotalCents >= SHIPPING_THRESHOLD_CENTS && totalWeightOz <= WEIGHT_LIMIT_OZ) {
+    return 0;
+  }
+  return FLAT_SHIPPING_CENTS;
+}
+
 serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
@@ -34,8 +46,13 @@ serve(async (req) => {
       apiVersion: "2025-08-27.basil",
     });
 
-    // Create line items for Stripe
-    const lineItems = items.map((item: any) => ({
+    // Calculate subtotal and shipping server-side (authoritative)
+    const subtotalCents = items.reduce((sum: number, i: any) => sum + i.price * i.quantity, 0);
+    const totalWeightOz = items.reduce((sum: number, i: any) => sum + (i.weight_oz ?? 16) * i.quantity, 0);
+    const shippingCents = calcShipping(subtotalCents, totalWeightOz);
+
+    // Create product line items for Stripe
+    const lineItems: any[] = items.map((item: any) => ({
       price_data: {
         currency: "usd",
         product_data: { name: item.name },
@@ -43,6 +60,18 @@ serve(async (req) => {
       },
       quantity: item.quantity,
     }));
+
+    // Add shipping as a line item if applicable
+    if (shippingCents > 0) {
+      lineItems.push({
+        price_data: {
+          currency: "usd",
+          product_data: { name: "Shipping" },
+          unit_amount: shippingCents,
+        },
+        quantity: 1,
+      });
+    }
 
     // Store shipping in metadata
     const metadata = {
@@ -73,15 +102,14 @@ serve(async (req) => {
       cancel_url: `${origin}/supplies`,
     });
 
-    // Create order in pending state — will be confirmed via success page or webhook
-    const totalCents = items.reduce((sum: number, i: any) => sum + i.price * i.quantity, 0);
-    
+    // Create order in pending state — will be confirmed via stripe-webhook
+    const totalCents = subtotalCents + shippingCents;
+
     const supabaseAdmin = createClient(
       Deno.env.get("SUPABASE_URL") ?? "",
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? ""
     );
 
-    // Save order as "pending" — the stripe-webhook will mark it "paid" and send the email
     const { data: order, error: orderError } = await supabaseAdmin.from("orders").insert({
       user_id: user.id,
       email: shipping.email,
@@ -98,7 +126,7 @@ serve(async (req) => {
 
     if (orderError) throw orderError;
 
-    // Insert order items
+    // Insert order items (product items only, not shipping)
     const orderItems = items.map((item: any) => ({
       order_id: order.id,
       product_id: item.product_id,

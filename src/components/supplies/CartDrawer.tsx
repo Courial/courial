@@ -1,14 +1,21 @@
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { useCart } from "@/hooks/useCart";
-import { Minus, Plus, Trash2, ShoppingBag } from "lucide-react";
+import { Minus, Plus, Trash2, ShoppingBag, Truck } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 export function CartDrawer() {
-  const { items, isOpen, setIsOpen, removeItem, updateQuantity, totalPrice, totalItems } = useCart();
+  const { items, isOpen, setIsOpen, removeItem, updateQuantity, totalPrice, totalItems, totalWeight, shippingCost } = useCart();
   const navigate = useNavigate();
 
   const formatPrice = (cents: number) => `$${(cents / 100).toFixed(2)}`;
+  const WEIGHT_LIMIT_OZ = 80;
+  const SHIPPING_THRESHOLD_CENTS = 5000;
+
+  const isFreeShipping = shippingCost === 0 && items.length > 0;
+  const needsMoreForFree = totalPrice < SHIPPING_THRESHOLD_CENTS
+    ? SHIPPING_THRESHOLD_CENTS - totalPrice
+    : 0;
 
   return (
     <Sheet open={isOpen} onOpenChange={setIsOpen}>
@@ -56,10 +63,36 @@ export function CartDrawer() {
             </div>
 
             <div className="border-t border-border pt-4 space-y-4">
-              <div className="flex justify-between text-lg font-bold">
-                <span>Total</span>
-                <span className="text-primary">{formatPrice(totalPrice)}</span>
+              {/* Shipping nudge / status */}
+              {needsMoreForFree > 0 && totalWeight <= WEIGHT_LIMIT_OZ ? (
+                <div className="flex items-center gap-2 text-xs text-muted-foreground bg-muted/50 rounded-lg px-3 py-2">
+                  <Truck className="w-3.5 h-3.5 shrink-0" />
+                  <span>Add <span className="font-semibold text-foreground">{formatPrice(needsMoreForFree)}</span> more for free shipping</span>
+                </div>
+              ) : isFreeShipping ? (
+                <div className="flex items-center gap-2 text-xs text-green-600 bg-green-50 dark:bg-green-950/30 rounded-lg px-3 py-2">
+                  <Truck className="w-3.5 h-3.5 shrink-0" />
+                  <span className="font-semibold">Free shipping applied!</span>
+                </div>
+              ) : null}
+
+              {/* Subtotal + shipping */}
+              <div className="space-y-1 text-sm">
+                <div className="flex justify-between text-muted-foreground">
+                  <span>Subtotal</span>
+                  <span>{formatPrice(totalPrice)}</span>
+                </div>
+                <div className="flex justify-between text-muted-foreground">
+                  <span>Shipping</span>
+                  <span className={shippingCost === 0 ? "text-green-600 font-medium" : ""}>{shippingCost === 0 ? "Free" : formatPrice(shippingCost)}</span>
+                </div>
               </div>
+
+              <div className="flex justify-between text-lg font-bold border-t border-border pt-3">
+                <span>Total</span>
+                <span className="text-primary">{formatPrice(totalPrice + shippingCost)}</span>
+              </div>
+
               <Button
                 className="w-full h-12 text-base"
                 variant="hero-orange"

@@ -168,7 +168,7 @@ export default function Supplies() {
                         size="sm"
                         variant="hero"
                         className="h-7 md:h-8 text-xs px-2 md:px-3"
-                        onClick={() => addItem({ id: product.id, name: product.name, price: product.price, image_url: product.image_url })}
+                        onClick={() => addItem({ id: product.id, name: product.name, price: product.price, weight_oz: product.weight_oz ?? 16, image_url: product.image_url })}
                         disabled={product.stock <= 0}
                       >
                         <Plus className="w-3 h-3 mr-0.5" />

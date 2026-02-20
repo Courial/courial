@@ -194,6 +194,7 @@ export type Database = {
           price: number
           stock: number
           updated_at: string
+          weight_oz: number
         }
         Insert: {
           active?: boolean
@@ -206,6 +207,7 @@ export type Database = {
           price: number
           stock?: number
           updated_at?: string
+          weight_oz?: number
         }
         Update: {
           active?: boolean
@@ -218,6 +220,7 @@ export type Database = {
           price?: number
           stock?: number
           updated_at?: string
+          weight_oz?: number
         }
         Relationships: []
       }

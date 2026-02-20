@@ -12,7 +12,7 @@ import { Helmet } from "react-helmet-async";
 import { useToast } from "@/hooks/use-toast";
 
 export default function SuppliesCheckout() {
-  const { items, totalPrice, clearCart } = useCart();
+  const { items, totalPrice, shippingCost } = useCart();
   const { user } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
@@ -46,7 +46,7 @@ export default function SuppliesCheckout() {
     try {
       const { data, error } = await supabase.functions.invoke("create-supplies-payment", {
         body: {
-          items: items.map((i) => ({ product_id: i.id, name: i.name, price: i.price, quantity: i.quantity })),
+          items: items.map((i) => ({ product_id: i.id, name: i.name, price: i.price, quantity: i.quantity, weight_oz: i.weight_oz ?? 16 })),
           shipping: form,
           origin: window.location.origin,
         },
@@ -171,7 +171,7 @@ export default function SuppliesCheckout() {
                 className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-semibold h-12 text-base mt-4"
               >
                 {loading ? <Loader2 className="w-5 h-5 animate-spin mr-2" /> : <Lock className="w-4 h-4 mr-2" />}
-                Pay {formatPrice(totalPrice)}
+                Pay {formatPrice(totalPrice + shippingCost)}
               </Button>
             </form>
 
@@ -192,9 +192,21 @@ export default function SuppliesCheckout() {
                     </div>
                   ))}
                 </div>
-                <div className="border-t border-border mt-6 pt-4 flex justify-between font-bold text-lg">
+                <div className="border-t border-border mt-5 pt-4 space-y-2 text-sm text-muted-foreground">
+                  <div className="flex justify-between">
+                    <span>Subtotal</span>
+                    <span>{formatPrice(totalPrice)}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>Shipping</span>
+                    <span className={shippingCost === 0 ? "text-green-600 font-medium" : "text-foreground"}>
+                      {shippingCost === 0 ? "Free" : formatPrice(shippingCost)}
+                    </span>
+                  </div>
+                </div>
+                <div className="border-t border-border mt-3 pt-3 flex justify-between font-bold text-lg">
                   <span>Total</span>
-                  <span className="text-primary">{formatPrice(totalPrice)}</span>
+                  <span className="text-primary">{formatPrice(totalPrice + shippingCost)}</span>
                 </div>
               </div>
             </div>
