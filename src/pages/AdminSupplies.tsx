@@ -64,6 +64,7 @@ export default function AdminSupplies() {
   const queryClient = useQueryClient();
 
   const [addOpen, setAddOpen] = useState(false);
+  const [activeTab, setActiveTab] = useState("orders");
   const [newForm, setNewForm] = useState<NewProductForm>(defaultNewForm);
   const [newErrors, setNewErrors] = useState<Record<string, string>>({});
 
@@ -226,7 +227,7 @@ export default function AdminSupplies() {
             <h1 className="text-3xl font-bold tracking-tight">Shop Admin</h1>
           </div>
 
-          <Tabs defaultValue="orders" className="space-y-6">
+          <Tabs defaultValue="orders" className="space-y-6" onValueChange={setActiveTab}>
             <div className="flex items-center gap-3">
               <TabsList>
                 <TabsTrigger value="orders">
@@ -241,11 +242,13 @@ export default function AdminSupplies() {
                   <ExternalLink className="w-4 h-4 mr-1.5" /> View Shop
                 </Button>
               </a>
-              <div className="ml-auto">
-                <Button size="sm" className="bg-green-600 hover:bg-green-700 text-white" onClick={() => { setAddOpen(true); setNewForm(defaultNewForm); setNewErrors({}); }}>
-                  <Plus className="w-4 h-4 mr-1.5" /> Add
-                </Button>
-              </div>
+              {activeTab === "inventory" && (
+                <div className="ml-auto">
+                  <Button size="sm" className="bg-green-600 hover:bg-green-700 text-white" onClick={() => { setAddOpen(true); setNewForm(defaultNewForm); setNewErrors({}); }}>
+                    <Plus className="w-4 h-4 mr-1.5" /> Add
+                  </Button>
+                </div>
+              )}
             </div>
 
             {/* Orders tab */}
