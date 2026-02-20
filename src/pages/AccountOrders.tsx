@@ -4,8 +4,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Package, ArrowLeft, Loader2, ChevronDown, ChevronUp } from "lucide-react";
+import { Package, ArrowLeft, Loader2, ChevronDown, ChevronUp, ExternalLink } from "lucide-react";
 import { Link, Navigate } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import { useState } from "react";
@@ -29,6 +28,8 @@ interface Order {
   city: string;
   state: string;
   zip: string;
+  tracking_number: string | null;
+  carrier: string | null;
   order_items: OrderItem[];
 }
 
@@ -36,13 +37,24 @@ const statusColors: Record<string, string> = {
   paid: "bg-green-500/10 text-green-600 border-green-500/30",
   pending: "bg-yellow-500/10 text-yellow-600 border-yellow-500/30",
   refunded: "bg-red-500/10 text-red-600 border-red-500/30",
+  cancelled: "bg-red-500/10 text-red-600 border-red-500/30",
 };
 
 const fulfillmentColors: Record<string, string> = {
   pending: "bg-muted text-muted-foreground border-border",
   shipped: "bg-blue-500/10 text-blue-600 border-blue-500/30",
+  fulfilled: "bg-blue-500/10 text-blue-600 border-blue-500/30",
   delivered: "bg-green-500/10 text-green-600 border-green-500/30",
 };
+
+function buildTrackingUrl(carrier: string | null, trackingNumber: string): string {
+  const c = (carrier ?? "").toLowerCase();
+  if (c.includes("ups")) return `https://www.ups.com/track?tracknum=${trackingNumber}`;
+  if (c.includes("fedex")) return `https://www.fedex.com/fedextrack/?tracknumbers=${trackingNumber}`;
+  if (c.includes("usps") || c.includes("stamps")) return `https://tools.usps.com/go/TrackConfirmAction?tLabels=${trackingNumber}`;
+  if (c.includes("dhl")) return `https://www.dhl.com/us-en/home/tracking.html?tracking-id=${trackingNumber}`;
+  return `https://parcelsapp.com/en/tracking/${trackingNumber}`;
+}
 
 export default function AccountOrders() {
   const { user, loading: authLoading } = useAuth();
@@ -109,6 +121,10 @@ export default function AccountOrders() {
           <div className="space-y-4">
             {orders.map((order) => {
               const isExpanded = expandedId === order.id;
+              const trackingUrl = order.tracking_number
+                ? buildTrackingUrl(order.carrier, order.tracking_number)
+                : null;
+
               return (
                 <div
                   key={order.id}
@@ -137,6 +153,28 @@ export default function AccountOrders() {
                       {isExpanded ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
                     </div>
                   </button>
+
+                  {/* Tracking banner — always visible if shipped */}
+                  {order.tracking_number && (
+                    <div className="mx-5 mb-3 -mt-1 px-4 py-3 rounded-lg bg-primary/5 border border-primary/20 flex items-center justify-between gap-3">
+                      <div>
+                        <p className="text-[11px] font-semibold uppercase tracking-wider text-primary/70 mb-0.5">
+                          {order.carrier ? order.carrier.toUpperCase() : "Tracking"}
+                        </p>
+                        <p className="text-sm font-mono font-bold text-foreground">{order.tracking_number}</p>
+                      </div>
+                      {trackingUrl && (
+                        <a
+                          href={trackingUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-1.5 text-xs font-semibold text-primary hover:text-primary/80 transition-colors shrink-0"
+                        >
+                          Track <ExternalLink className="w-3 h-3" />
+                        </a>
+                      )}
+                    </div>
+                  )}
 
                   {/* Expanded details */}
                   {isExpanded && (

@@ -28,6 +28,15 @@ import { z } from "zod";
 
 const CATEGORIES = ["Electronics", "Bags", "Safety", "Comfort", "Accessories"];
 
+function buildTrackingUrl(carrier: string | null, trackingNumber: string): string {
+  const c = (carrier ?? "").toLowerCase();
+  if (c.includes("ups")) return `https://www.ups.com/track?tracknum=${trackingNumber}`;
+  if (c.includes("fedex")) return `https://www.fedex.com/fedextrack/?tracknumbers=${trackingNumber}`;
+  if (c.includes("usps") || c.includes("stamps")) return `https://tools.usps.com/go/TrackConfirmAction?tLabels=${trackingNumber}`;
+  if (c.includes("dhl")) return `https://www.dhl.com/us-en/home/tracking.html?tracking-id=${trackingNumber}`;
+  return `https://parcelsapp.com/en/tracking/${trackingNumber}`;
+}
+
 const newProductSchema = z.object({
   name: z.string().trim().min(1, "Name is required").max(200),
   description: z.string().trim().max(1000).optional(),
@@ -302,6 +311,26 @@ export default function AdminSupplies() {
                           </div>
                         ))}
                       </div>
+
+                      {/* Tracking info */}
+                      {order.tracking_number && (
+                        <div className="mb-4 px-3 py-2.5 rounded-lg bg-primary/5 border border-primary/20 flex items-center justify-between gap-3">
+                          <div>
+                            <p className="text-[10px] font-semibold uppercase tracking-wider text-primary/70 mb-0.5">
+                              {order.carrier ? order.carrier.toUpperCase() : "Tracking"}
+                            </p>
+                            <p className="text-sm font-mono font-bold text-foreground">{order.tracking_number}</p>
+                          </div>
+                          <a
+                            href={buildTrackingUrl(order.carrier, order.tracking_number)}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center gap-1 text-xs font-semibold text-primary hover:text-primary/80 transition-colors shrink-0"
+                          >
+                            Track <ExternalLink className="w-3 h-3" />
+                          </a>
+                        </div>
+                      )}
 
                       {!isCancelled && (
                         <div className="flex flex-wrap gap-2">
