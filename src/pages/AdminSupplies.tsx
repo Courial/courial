@@ -13,8 +13,17 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import { Helmet } from "react-helmet-async";
-import { Package, Truck, Loader2, ExternalLink, Edit2, Save, X, ArrowLeft, Plus } from "lucide-react";
+import { Package, Truck, Loader2, ExternalLink, Edit2, Save, X, ArrowLeft, Plus, XCircle } from "lucide-react";
 import { Navigate, Link } from "react-router-dom";
+import {
+  AlertDialog,
+  AlertDialogContent,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogCancel,
+} from "@/components/ui/alert-dialog";
 import { z } from "zod";
 
 const CATEGORIES = ["Electronics", "Bags", "Safety", "Comfort", "Accessories"];
@@ -57,6 +66,9 @@ export default function AdminSupplies() {
   const [addOpen, setAddOpen] = useState(false);
   const [newForm, setNewForm] = useState<NewProductForm>(defaultNewForm);
   const [newErrors, setNewErrors] = useState<Record<string, string>>({});
+
+  // Cancel / Refund dialog state
+  const [cancelDialogOrder, setCancelDialogOrder] = useState<any | null>(null);
 
   const { data: products = [], isLoading: productsLoading } = useQuery({
     queryKey: ["admin-products"],
@@ -129,6 +141,30 @@ export default function AdminSupplies() {
     },
     onError: (err: any) => {
       toast({ title: "Failed to add product", description: err.message, variant: "destructive" });
+    },
+  });
+
+  const cancelOrderMutation = useMutation({
+    mutationFn: async ({ orderId, refund }: { orderId: string; refund: boolean }) => {
+      const { data, error } = await supabase.functions.invoke("cancel-order", {
+        body: { order_id: orderId, refund },
+      });
+      if (error) throw error;
+      if (data?.error) throw new Error(data.error);
+      return data;
+    },
+    onSuccess: (_data, variables) => {
+      toast({
+        title: variables.refund ? "Order cancelled & refunded" : "Order cancelled",
+        description: variables.refund
+          ? "The refund has been submitted to Stripe."
+          : "The order has been marked as cancelled.",
+      });
+      queryClient.invalidateQueries({ queryKey: ["admin-orders"] });
+      setCancelDialogOrder(null);
+    },
+    onError: (err: any) => {
+      toast({ title: "Failed to cancel order", description: err.message, variant: "destructive" });
     },
   });
 
@@ -223,52 +259,70 @@ export default function AdminSupplies() {
                   <p className="text-muted-foreground">No orders yet</p>
                 </div>
               ) : (
-                orders.map((order: any) => (
-                  <div key={order.id} className="rounded-2xl bg-card border border-border p-5">
-                    <div className="flex flex-wrap items-start justify-between gap-4 mb-3">
-                      <div>
-                        <p className="font-semibold">{order.full_name}</p>
-                        <p className="text-sm text-muted-foreground">{order.email}</p>
-                        <p className="text-xs text-muted-foreground mt-1">
-                          {order.address_line1}, {order.city}, {order.state} {order.zip}
-                        </p>
-                      </div>
-                      <div className="text-right">
-                        <p className="font-bold text-primary">{formatPrice(order.total)}</p>
-                        <p className="text-xs text-muted-foreground">{new Date(order.created_at).toLocaleDateString()}</p>
-                        <span className={`inline-block mt-1.5 text-xs px-2 py-0.5 rounded-full font-medium ${
-                          order.fulfillment_status === "fulfilled"
-                            ? "bg-green-100 text-green-700"
-                            : "bg-yellow-100 text-yellow-700"
-                        }`}>
-                          {order.fulfillment_status}
-                        </span>
-                      </div>
-                    </div>
+                orders.map((order: any) => {
+                  const isCancelled = order.status === "cancelled";
+                  const fulfillmentBadge = isCancelled
+                    ? "bg-red-100 text-red-700"
+                    : order.fulfillment_status === "fulfilled"
+                    ? "bg-green-100 text-green-700"
+                    : "bg-yellow-100 text-yellow-700";
 
-                    {/* Items */}
-                    <div className="space-y-1 mb-4 pt-3 border-t border-border">
-                      {order.order_items?.map((item: any) => (
-                        <div key={item.id} className="flex justify-between text-sm text-muted-foreground">
-                          <span>{item.product_name} × {item.quantity}</span>
-                          <span>{formatPrice(item.unit_price * item.quantity)}</span>
+                  return (
+                    <div key={order.id} className="rounded-2xl bg-card border border-border p-5">
+                      <div className="flex flex-wrap items-start justify-between gap-4 mb-3">
+                        <div>
+                          <p className="font-semibold">{order.full_name}</p>
+                          <p className="text-sm text-muted-foreground">{order.email}</p>
+                          <p className="text-xs text-muted-foreground mt-1">
+                            {order.address_line1}, {order.city}, {order.state} {order.zip}
+                          </p>
                         </div>
-                      ))}
-                    </div>
+                        <div className="text-right">
+                          <p className="font-bold text-primary">{formatPrice(order.total)}</p>
+                          <p className="text-xs text-muted-foreground">{new Date(order.created_at).toLocaleDateString()}</p>
+                          <span className={`inline-block mt-1.5 text-xs px-2 py-0.5 rounded-full font-medium ${fulfillmentBadge}`}>
+                            {isCancelled ? "cancelled" : order.fulfillment_status}
+                          </span>
+                        </div>
+                      </div>
 
-                    {order.fulfillment_status === "pending" && (
-                      <Button
-                        size="sm"
-                        variant="hero"
-                        onClick={() => fulfillMutation.mutate(order.id)}
-                        disabled={fulfillMutation.isPending}
-                      >
-                        {fulfillMutation.isPending ? <Loader2 className="w-4 h-4 animate-spin mr-1.5" /> : <Truck className="w-4 h-4 mr-1.5" />}
-                        Send to Fulfillment
-                      </Button>
-                    )}
-                  </div>
-                ))
+                      {/* Items */}
+                      <div className="space-y-1 mb-4 pt-3 border-t border-border">
+                        {order.order_items?.map((item: any) => (
+                          <div key={item.id} className="flex justify-between text-sm text-muted-foreground">
+                            <span>{item.product_name} × {item.quantity}</span>
+                            <span>{formatPrice(item.unit_price * item.quantity)}</span>
+                          </div>
+                        ))}
+                      </div>
+
+                      {!isCancelled && (
+                        <div className="flex flex-wrap gap-2">
+                          {order.fulfillment_status === "pending" && (
+                            <Button
+                              size="sm"
+                              variant="hero"
+                              onClick={() => fulfillMutation.mutate(order.id)}
+                              disabled={fulfillMutation.isPending}
+                            >
+                              {fulfillMutation.isPending ? <Loader2 className="w-4 h-4 animate-spin mr-1.5" /> : <Truck className="w-4 h-4 mr-1.5" />}
+                              Send to Fulfillment
+                            </Button>
+                          )}
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            className="text-destructive border-destructive/40 hover:bg-destructive/10"
+                            onClick={() => setCancelDialogOrder(order)}
+                          >
+                            <XCircle className="w-4 h-4 mr-1.5" />
+                            Cancel Order
+                          </Button>
+                        </div>
+                      )}
+                    </div>
+                  );
+                })
               )}
             </TabsContent>
 
@@ -516,6 +570,48 @@ export default function AdminSupplies() {
           </div>
         </SheetContent>
       </Sheet>
+
+      {/* Cancel / Refund Dialog */}
+      <AlertDialog open={!!cancelDialogOrder} onOpenChange={(open) => { if (!open) setCancelDialogOrder(null); }}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Cancel Order</AlertDialogTitle>
+            <AlertDialogDescription>
+              How would you like to handle the cancellation for{" "}
+              <span className="font-semibold text-foreground">{cancelDialogOrder?.full_name}</span>?
+              {cancelDialogOrder?.stripe_payment_intent_id
+                ? " A refund can be automatically issued to the customer's original payment method via Stripe."
+                : " This order has no associated payment, so only cancellation is available."}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter className="flex-col sm:flex-col gap-2 sm:space-x-0">
+            {cancelDialogOrder?.stripe_payment_intent_id && (
+              <Button
+                variant="destructive"
+                className="w-full"
+                disabled={cancelOrderMutation.isPending}
+                onClick={() => cancelOrderMutation.mutate({ orderId: cancelDialogOrder.id, refund: true })}
+              >
+                {cancelOrderMutation.isPending
+                  ? <Loader2 className="w-4 h-4 animate-spin mr-1.5" />
+                  : <XCircle className="w-4 h-4 mr-1.5" />}
+                Cancel & Refund Customer
+              </Button>
+            )}
+            <Button
+              variant="outline"
+              className="w-full"
+              disabled={cancelOrderMutation.isPending}
+              onClick={() => cancelOrderMutation.mutate({ orderId: cancelDialogOrder.id, refund: false })}
+            >
+              Cancel Order Only (No Refund)
+            </Button>
+            <AlertDialogCancel className="w-full" disabled={cancelOrderMutation.isPending}>
+              Keep Order
+            </AlertDialogCancel>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }
