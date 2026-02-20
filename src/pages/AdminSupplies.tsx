@@ -13,7 +13,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import { Helmet } from "react-helmet-async";
-import { Package, Truck, Loader2, ExternalLink, Edit2, Save, X, ArrowLeft, Plus, XCircle, RefreshCw } from "lucide-react";
+import { Package, Truck, Loader2, ExternalLink, Edit2, Save, X, ArrowLeft, Plus, XCircle } from "lucide-react";
 import { Navigate, Link } from "react-router-dom";
 import {
   AlertDialog,
@@ -82,6 +82,10 @@ export default function AdminSupplies() {
   // Cancel / Refund dialog state
   const [cancelDialogOrder, setCancelDialogOrder] = useState<any | null>(null);
 
+  // Fulfill dialog state
+  const [fulfillDialogOrder, setFulfillDialogOrder] = useState<any | null>(null);
+  const [fulfillForm, setFulfillForm] = useState({ tracking_number: "", carrier: "" });
+
   // Edit Order panel state
   const [editOrderOpen, setEditOrderOpen] = useState(false);
   const [editingOrder, setEditingOrder] = useState<any | null>(null);
@@ -125,14 +129,19 @@ export default function AdminSupplies() {
   });
 
   const fulfillMutation = useMutation({
-    mutationFn: async (orderId: string) => {
-      const { data, error } = await supabase.functions.invoke("shipstation-sync", { body: { order_id: orderId } });
+    mutationFn: async ({ orderId, tracking_number, carrier }: { orderId: string; tracking_number: string; carrier: string }) => {
+      const { data, error } = await supabase.functions.invoke("manual-fulfill", {
+        body: { order_id: orderId, tracking_number: tracking_number || null, carrier: carrier || null },
+      });
       if (error) throw error;
+      if (data?.error) throw new Error(data.error);
       return data;
     },
     onSuccess: () => {
-      toast({ title: "Sent to fulfillment", description: "Order sent to ShipStation." });
+      toast({ title: "Order fulfilled!", description: "Customer has been notified by email." });
       queryClient.invalidateQueries({ queryKey: ["admin-orders"] });
+      setFulfillDialogOrder(null);
+      setFulfillForm({ tracking_number: "", carrier: "" });
     },
     onError: (err: any) => {
       toast({ title: "Fulfillment error", description: err.message, variant: "destructive" });
@@ -179,39 +188,8 @@ export default function AdminSupplies() {
     },
   });
 
-  const [syncingOrderId, setSyncingOrderId] = useState<string | null>(null);
 
-  const syncTrackingMutation = useMutation({
-    mutationFn: async (orderId: string) => {
-      setSyncingOrderId(orderId);
-      const { data, error } = await supabase.functions.invoke("shipstation-fetch-tracking", {
-        body: { order_id: orderId },
-      });
-      if (error) throw error;
-      if (data?.error) throw new Error(data.error);
-      return data;
-    },
-    onSuccess: (data) => {
-      setSyncingOrderId(null);
-      if (data?.success) {
-        toast({
-          title: "Tracking synced",
-          description: `${data.carrier ? data.carrier.toUpperCase() + " — " : ""}${data.tracking_number}${data.is_partial ? ` (${data.total_shipments} shipments)` : ""}`,
-        });
-        queryClient.invalidateQueries({ queryKey: ["admin-orders"] });
-      } else {
-        toast({
-          title: "No tracking yet",
-          description: data?.message ?? "Label may not have been printed in ShipStation yet.",
-          variant: "destructive",
-        });
-      }
-    },
-    onError: (err: any) => {
-      setSyncingOrderId(null);
-      toast({ title: "Sync failed", description: err.message, variant: "destructive" });
-    },
-  });
+
 
   const cancelOrderMutation = useMutation({
     mutationFn: async ({ orderId, refund }: { orderId: string; refund: boolean }) => {
@@ -394,26 +372,13 @@ export default function AdminSupplies() {
                             <Button
                               size="sm"
                               variant="hero"
-                              onClick={() => fulfillMutation.mutate(order.id)}
-                              disabled={fulfillMutation.isPending}
+                              onClick={() => {
+                                setFulfillDialogOrder(order);
+                                setFulfillForm({ tracking_number: "", carrier: "" });
+                              }}
                             >
-                              {fulfillMutation.isPending ? <Loader2 className="w-4 h-4 animate-spin mr-1.5" /> : <Truck className="w-4 h-4 mr-1.5" />}
-                              Send to Fulfillment
-                            </Button>
-                          )}
-                          {/* Sync Tracking — available once order is in ShipStation */}
-                          {order.shipstation_order_id && (
-                            <Button
-                              size="sm"
-                              variant="outline"
-                              onClick={() => syncTrackingMutation.mutate(order.id)}
-                              disabled={syncingOrderId === order.id}
-                              title={order.tracking_number ? "Re-sync tracking from ShipStation" : "Pull tracking number from ShipStation"}
-                            >
-                              {syncingOrderId === order.id
-                                ? <Loader2 className="w-4 h-4 animate-spin mr-1.5" />
-                                : <RefreshCw className="w-4 h-4 mr-1.5" />}
-                              {order.tracking_number ? "Re-sync Tracking" : "Sync Tracking"}
+                              <Truck className="w-4 h-4 mr-1.5" />
+                              Mark as Fulfilled
                             </Button>
                           )}
                           <Button
@@ -816,6 +781,69 @@ export default function AdminSupplies() {
           </div>
         </SheetContent>
       </Sheet>
+
+      {/* Mark as Fulfilled Dialog */}
+      <AlertDialog open={!!fulfillDialogOrder} onOpenChange={(open) => { if (!open) setFulfillDialogOrder(null); }}>
+        <AlertDialogContent className="max-w-md">
+          <AlertDialogHeader>
+            <AlertDialogTitle>Mark as Fulfilled</AlertDialogTitle>
+            <AlertDialogDescription>
+              Enter the tracking details for{" "}
+              <span className="font-semibold text-foreground">{fulfillDialogOrder?.full_name}</span>'s order.
+              The customer will receive a shipping notification email.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <div className="space-y-4 py-2">
+            <div className="space-y-1.5">
+              <Label>Carrier</Label>
+              <Select value={fulfillForm.carrier} onValueChange={(v) => setFulfillForm((p) => ({ ...p, carrier: v }))}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select carrier (optional)" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="ups">UPS</SelectItem>
+                  <SelectItem value="fedex">FedEx</SelectItem>
+                  <SelectItem value="usps">USPS</SelectItem>
+                  <SelectItem value="dhl">DHL</SelectItem>
+                  <SelectItem value="amazon">Amazon Logistics</SelectItem>
+                  <SelectItem value="other">Other</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="space-y-1.5">
+              <Label>Tracking Number <span className="text-muted-foreground text-xs">(optional)</span></Label>
+              <Input
+                value={fulfillForm.tracking_number}
+                onChange={(e) => setFulfillForm((p) => ({ ...p, tracking_number: e.target.value }))}
+                placeholder="e.g. 1Z999AA10123456784"
+              />
+            </div>
+          </div>
+          <AlertDialogFooter className="flex-col sm:flex-col gap-2 sm:space-x-0">
+            <Button
+              className="w-full"
+              disabled={fulfillMutation.isPending}
+              onClick={() => {
+                if (!fulfillDialogOrder) return;
+                fulfillMutation.mutate({
+                  orderId: fulfillDialogOrder.id,
+                  tracking_number: fulfillForm.tracking_number,
+                  carrier: fulfillForm.carrier,
+                });
+              }}
+            >
+              {fulfillMutation.isPending
+                ? <Loader2 className="w-4 h-4 animate-spin mr-1.5" />
+                : <Truck className="w-4 h-4 mr-1.5" />}
+              Confirm & Notify Customer
+            </Button>
+            <AlertDialogCancel className="w-full" disabled={fulfillMutation.isPending}>
+              Cancel
+            </AlertDialogCancel>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }
+
