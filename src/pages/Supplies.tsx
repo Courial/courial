@@ -147,9 +147,9 @@ export default function Supplies() {
                   transition={{ delay: i * 0.03 }}
                   className="group rounded-xl glass-card overflow-hidden transition-all duration-300 hover:border-primary/50"
                 >
-                  <div className="aspect-square bg-muted overflow-hidden">
+                  <div className="aspect-square bg-muted overflow-hidden flex items-center justify-center">
                     {product.image_url ? (
-                      <img src={product.image_url} alt={product.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
+                      <img src={product.image_url} alt={product.name} className="w-full h-full object-contain p-3 group-hover:scale-105 transition-transform duration-300" />
                     ) : (
                       <div className="w-full h-full flex items-center justify-center text-muted-foreground">
                         <Package className="w-10 h-10" />
