@@ -24,8 +24,11 @@ serve(async (req) => {
     const user = userData.user;
     if (!user?.email) throw new Error("Not authenticated");
 
-    const { items, shipping } = await req.json();
+    const { items, shipping, origin: clientOrigin } = await req.json();
     if (!items?.length || !shipping) throw new Error("Missing items or shipping");
+
+    // Use the origin sent by the client (most reliable), fall back to request header
+    const origin = clientOrigin || req.headers.get("origin") || "https://courial.com";
 
     const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY") || "", {
       apiVersion: "2025-08-27.basil",
@@ -66,8 +69,8 @@ serve(async (req) => {
       line_items: lineItems,
       mode: "payment",
       metadata,
-      success_url: `${req.headers.get("origin")}/supplies/success?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${req.headers.get("origin")}/supplies`,
+      success_url: `${origin}/supplies/success?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${origin}/supplies`,
     });
 
     // Create order in pending state — will be confirmed via success page or webhook
