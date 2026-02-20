@@ -311,8 +311,7 @@ export default function AdminSupplies() {
                           )}
                           <Button
                             size="sm"
-                            variant="outline"
-                            className="text-destructive border-destructive/40 hover:bg-destructive/10"
+                            variant="destructive"
                             onClick={() => setCancelDialogOrder(order)}
                           >
                             <XCircle className="w-4 h-4 mr-1.5" />
