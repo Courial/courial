@@ -48,6 +48,7 @@ export default function SuppliesCheckout() {
         body: {
           items: items.map((i) => ({ product_id: i.id, name: i.name, price: i.price, quantity: i.quantity })),
           shipping: form,
+          origin: window.location.origin,
         },
       });
 
