@@ -41,3 +41,6 @@ verify_jwt = false
 
 [functions.cancel-order]
 verify_jwt = false
+
+[functions.shipstation-webhook]
+verify_jwt = false
