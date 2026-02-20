@@ -1,12 +1,13 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { useCart } from "@/hooks/useCart";
 import { CartDrawer } from "@/components/supplies/CartDrawer";
-import { ShoppingCart, Plus, Package, Zap, Shield, Briefcase } from "lucide-react";
+import { ShoppingCart, Plus, Package, Zap, Shield, Briefcase, Search, ArrowUpDown } from "lucide-react";
 import { Helmet } from "react-helmet-async";
 import { motion } from "framer-motion";
 
@@ -18,6 +19,8 @@ const categoryIcons: Record<string, React.ReactNode> = {
 
 export default function Supplies() {
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  const [search, setSearch] = useState("");
+  const [sortBy, setSortBy] = useState<"name" | "price_asc" | "price_desc">("name");
   const { addItem, totalItems, setIsOpen } = useCart();
 
   const { data: products = [], isLoading } = useQuery({
@@ -30,7 +33,17 @@ export default function Supplies() {
   });
 
   const categories = [...new Set(products.map((p) => p.category).filter(Boolean))] as string[];
-  const filtered = selectedCategory ? products.filter((p) => p.category === selectedCategory) : products;
+
+  const filtered = useMemo(() => {
+    let result = selectedCategory ? products.filter((p) => p.category === selectedCategory) : products;
+    if (search.trim()) {
+      const q = search.toLowerCase();
+      result = result.filter((p) => p.name.toLowerCase().includes(q) || p.description?.toLowerCase().includes(q));
+    }
+    if (sortBy === "price_asc") result = [...result].sort((a, b) => a.price - b.price);
+    else if (sortBy === "price_desc") result = [...result].sort((a, b) => b.price - a.price);
+    return result;
+  }, [products, selectedCategory, search, sortBy]);
 
   const formatPrice = (cents: number) => `$${(cents / 100).toFixed(2)}`;
 
@@ -68,6 +81,31 @@ export default function Supplies() {
                 </span>
               )}
             </Button>
+          </div>
+
+          {/* Search + Sort */}
+          <div className="flex gap-3 mb-6">
+            <div className="relative flex-1 max-w-sm">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground pointer-events-none" />
+              <Input
+                placeholder="Search products…"
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                className="pl-9 placeholder:text-muted-foreground/60 hover:border-primary/40 transition-colors"
+              />
+            </div>
+            <div className="flex items-center gap-2">
+              <ArrowUpDown className="w-4 h-4 text-muted-foreground shrink-0" />
+              <select
+                value={sortBy}
+                onChange={(e) => setSortBy(e.target.value as typeof sortBy)}
+                className="text-sm bg-background border border-input rounded-md px-3 py-2 text-foreground focus:outline-none focus:ring-1 focus:ring-primary hover:border-primary/40 transition-colors"
+              >
+                <option value="name">Name</option>
+                <option value="price_asc">Price: Low → High</option>
+                <option value="price_desc">Price: High → Low</option>
+              </select>
+            </div>
           </div>
 
           {/* Category filters */}
