@@ -48,6 +48,17 @@ serve(async (req) => {
       return new Response("Order not found", { status: 404 });
     }
 
+    // Decrement stock for each ordered item
+    for (const item of order.order_items) {
+      const { error: stockError } = await supabase.rpc("decrement_stock", {
+        p_product_id: item.product_id,
+        p_quantity: item.quantity,
+      });
+      if (stockError) {
+        console.error(`Failed to decrement stock for product ${item.product_id}:`, stockError);
+      }
+    }
+
     // Fetch product images for each order item
     const productIds = order.order_items.map((i: any) => i.product_id);
     const { data: products } = await supabase

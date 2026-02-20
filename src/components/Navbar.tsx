@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Menu, X, User, LogOut } from "lucide-react";
+import { Menu, X, User, LogOut, Package } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
@@ -75,28 +75,35 @@ export const Navbar = () => {
               </Link>
             )}
             {user ? (
-              <div className="relative group flex items-center justify-center w-10 h-10">
-                <button className="rounded-full focus:outline-none focus:ring-2 focus:ring-primary">
-                  <Avatar className="h-10 w-10 border border-foreground">
-                    <AvatarImage src={avatarUrl} alt="Profile" />
-                    <AvatarFallback className="bg-background p-0 flex items-center justify-center">
-                      <img src={profileIcon} alt="" className="h-3/4 w-3/4 object-contain" />
-                    </AvatarFallback>
-                  </Avatar>
-                </button>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className="absolute top-full mt-2 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity border border-foreground/25 whitespace-nowrap"
-                  onClick={() => {
-                    console.log("[Navbar] Sign out - nuking session");
-                    localStorage.clear();
-                    sessionStorage.clear();
-                    window.location.replace("/");
-                  }}
-                >
-                  Sign Out
-                </Button>
+              <div className="flex items-center gap-2">
+                <Link to="/account/orders">
+                  <Button variant="ghost" size="sm" className="border border-foreground/25">
+                    My Orders
+                  </Button>
+                </Link>
+                <div className="relative group flex items-center justify-center w-10 h-10">
+                  <button className="rounded-full focus:outline-none focus:ring-2 focus:ring-primary">
+                    <Avatar className="h-10 w-10 border border-foreground">
+                      <AvatarImage src={avatarUrl} alt="Profile" />
+                      <AvatarFallback className="bg-background p-0 flex items-center justify-center">
+                        <img src={profileIcon} alt="" className="h-3/4 w-3/4 object-contain" />
+                      </AvatarFallback>
+                    </Avatar>
+                  </button>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="absolute top-full mt-2 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity border border-foreground/25 whitespace-nowrap"
+                    onClick={() => {
+                      console.log("[Navbar] Sign out - nuking session");
+                      localStorage.clear();
+                      sessionStorage.clear();
+                      window.location.replace("/");
+                    }}
+                  >
+                    Sign Out
+                  </Button>
+                </div>
               </div>
             ) : !authLoading ? (
               <Link to="/auth">
@@ -159,10 +166,18 @@ export const Navbar = () => {
                 {authLoading ? (
                   <span className="text-xs text-muted-foreground animate-pulse py-2">Checking...</span>
                 ) : user ? (
-                  <Button variant="ghost" className="w-full justify-start border border-foreground/25" onClick={() => { console.log("[Navbar] Sign out - nuking session"); localStorage.clear(); sessionStorage.clear(); window.location.replace("/"); }}>
-                    <LogOut className="w-4 h-4 mr-2" />
-                    Sign Out
-                  </Button>
+                  <>
+                    <Link to="/account/orders" onClick={() => setIsOpen(false)}>
+                      <Button variant="ghost" className="w-full justify-start border border-foreground/25">
+                        <Package className="w-4 h-4 mr-2" />
+                        My Orders
+                      </Button>
+                    </Link>
+                    <Button variant="ghost" className="w-full justify-start border border-foreground/25" onClick={() => { console.log("[Navbar] Sign out - nuking session"); localStorage.clear(); sessionStorage.clear(); window.location.replace("/"); }}>
+                      <LogOut className="w-4 h-4 mr-2" />
+                      Sign Out
+                    </Button>
+                  </>
                 ) : (
                   <Link to="/auth" onClick={() => setIsOpen(false)}>
                     <Button variant="ghost" className="w-full justify-start border border-foreground/25">
