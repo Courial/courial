@@ -80,57 +80,61 @@ serve(async (req) => {
 
       return `
         <tr>
-          <td style="padding:12px 0;border-bottom:1px solid #2a2a2a;vertical-align:middle;">
+          <td style="padding:12px 0;border-bottom:1px solid #eeeeee;vertical-align:middle;">
             <div style="display:flex;align-items:center;gap:12px;">
-              ${absoluteImageUrl ? `<img src="${absoluteImageUrl}" width="56" height="56" style="border-radius:8px;object-fit:cover;flex-shrink:0;" />` : ""}
-              <span style="color:#eee;font-size:14px;">${item.product_name}</span>
+              ${absoluteImageUrl ? `<img src="${absoluteImageUrl}" width="56" height="56" style="border-radius:8px;object-fit:cover;flex-shrink:0;border:1px solid #eeeeee;" />` : ""}
+              <span style="color:#111111;font-size:14px;">${item.product_name}</span>
             </div>
           </td>
-          <td style="padding:12px 0;border-bottom:1px solid #2a2a2a;color:#aaa;text-align:center;font-size:14px;vertical-align:middle;">×${item.quantity}</td>
-          <td style="padding:12px 0;border-bottom:1px solid #2a2a2a;color:#eee;text-align:right;font-size:14px;font-weight:600;vertical-align:middle;">$${((item.unit_price * item.quantity) / 100).toFixed(2)}</td>
+          <td style="padding:12px 0;border-bottom:1px solid #eeeeee;color:#888888;text-align:center;font-size:14px;vertical-align:middle;">×${item.quantity}</td>
+          <td style="padding:12px 0;border-bottom:1px solid #eeeeee;color:#111111;text-align:right;font-size:14px;font-weight:600;vertical-align:middle;">$${((item.unit_price * item.quantity) / 100).toFixed(2)}</td>
         </tr>`;
     }).join("");
 
     const emailHtml = `
-      <div style="background:#111;color:#eee;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;max-width:580px;margin:0 auto;padding:40px 32px;border-radius:14px;">
-        <img src="https://courial.com/favicon.ico" width="32" style="margin-bottom:24px;" />
+      <div style="background:#ffffff;color:#111111;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;max-width:580px;margin:0 auto;padding:40px 32px;border-radius:14px;border:1px solid #e5e5e5;">
+        <!-- Logo: use SVG inline as black wordmark -->
+        <img src="https://courial.com/favicon.ico" width="28" height="28" style="margin-bottom:28px;display:block;" />
 
-        <h1 style="font-size:22px;font-weight:700;margin:0 0 6px;">Order Confirmed ✓</h1>
-        <p style="color:#aaa;margin:0 0 28px;font-size:14px;">Hi ${order.full_name}, your Courial Shop order is confirmed and being processed.</p>
+        <h1 style="font-size:22px;font-weight:700;margin:0 0 6px;color:#111111;">Order Confirmed ✓</h1>
+        <p style="color:#666666;margin:0 0 28px;font-size:14px;">Hi ${order.full_name}, your Courial Shop order is confirmed and being processed.</p>
 
         <!-- Payment badge -->
-        <div style="display:inline-flex;align-items:center;gap:8px;background:#1a2a1a;border:1px solid #2a4a2a;border-radius:8px;padding:8px 14px;margin-bottom:28px;">
+        <div style="display:inline-flex;align-items:center;gap:8px;background:#f0faf0;border:1px solid #bbf7d0;border-radius:8px;padding:8px 14px;margin-bottom:28px;">
           <span style="width:8px;height:8px;border-radius:50%;background:#22c55e;display:inline-block;"></span>
-          <span style="color:#22c55e;font-size:13px;font-weight:600;">Paid</span>
-          <span style="color:#555;font-size:13px;">·</span>
-          <span style="color:#aaa;font-size:13px;">${paymentMethodLabel}</span>
+          <span style="color:#16a34a;font-size:13px;font-weight:600;">Paid</span>
+          <span style="color:#aaaaaa;font-size:13px;">·</span>
+          <span style="color:#555555;font-size:13px;">${paymentMethodLabel}</span>
         </div>
 
         <!-- Items -->
         <table style="width:100%;border-collapse:collapse;">
           <thead>
             <tr>
-              <th style="text-align:left;font-size:11px;color:#555;text-transform:uppercase;letter-spacing:.05em;padding-bottom:10px;">Item</th>
-              <th style="text-align:center;font-size:11px;color:#555;text-transform:uppercase;letter-spacing:.05em;padding-bottom:10px;">Qty</th>
-              <th style="text-align:right;font-size:11px;color:#555;text-transform:uppercase;letter-spacing:.05em;padding-bottom:10px;">Price</th>
+              <th style="text-align:left;font-size:11px;color:#999999;text-transform:uppercase;letter-spacing:.05em;padding-bottom:10px;">Item</th>
+              <th style="text-align:center;font-size:11px;color:#999999;text-transform:uppercase;letter-spacing:.05em;padding-bottom:10px;">Qty</th>
+              <th style="text-align:right;font-size:11px;color:#999999;text-transform:uppercase;letter-spacing:.05em;padding-bottom:10px;">Price</th>
             </tr>
           </thead>
           <tbody>${itemsHtml}</tbody>
         </table>
 
-        <div style="text-align:right;margin-top:18px;font-size:20px;font-weight:700;color:#ff6a00;">
+        <div style="text-align:right;margin-top:18px;font-size:20px;font-weight:700;color:#ff6600;">
           Total: $${(totalCents / 100).toFixed(2)}
         </div>
 
+        <!-- Divider -->
+        <hr style="border:none;border-top:1px solid #eeeeee;margin:28px 0;" />
+
         <!-- Shipping -->
-        <div style="margin-top:28px;padding:18px;background:#1a1a1a;border-radius:10px;">
-          <p style="margin:0 0 8px;font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:#555;">Shipping to</p>
-          <p style="margin:0;font-weight:600;color:#eee;">${order.full_name}</p>
-          <p style="margin:2px 0 0;color:#aaa;font-size:13px;">${order.address_line1}${order.address_line2 ? ", " + order.address_line2 : ""}</p>
-          <p style="margin:2px 0 0;color:#aaa;font-size:13px;">${order.city}, ${order.state} ${order.zip}</p>
+        <div style="padding:18px;background:#f9f9f9;border-radius:10px;border:1px solid #eeeeee;">
+          <p style="margin:0 0 8px;font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:#999999;">Shipping to</p>
+          <p style="margin:0;font-weight:600;color:#111111;">${order.full_name}</p>
+          <p style="margin:2px 0 0;color:#555555;font-size:13px;">${order.address_line1}${order.address_line2 ? ", " + order.address_line2 : ""}</p>
+          <p style="margin:2px 0 0;color:#555555;font-size:13px;">${order.city}, ${order.state} ${order.zip}</p>
         </div>
 
-        <p style="margin-top:28px;font-size:12px;color:#555;">Questions? Contact <a href="mailto:support@courial.com" style="color:#ff6a00;text-decoration:none;">support@courial.com</a></p>
+        <p style="margin-top:28px;font-size:12px;color:#999999;">Questions? Contact <a href="mailto:support@courial.com" style="color:#ff6600;text-decoration:none;">support@courial.com</a></p>
       </div>
     `;
 
