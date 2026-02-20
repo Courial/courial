@@ -82,6 +82,28 @@ export default function AdminSupplies() {
   // Cancel / Refund dialog state
   const [cancelDialogOrder, setCancelDialogOrder] = useState<any | null>(null);
 
+  // Edit Order panel state
+  const [editOrderOpen, setEditOrderOpen] = useState(false);
+  const [editingOrder, setEditingOrder] = useState<any | null>(null);
+  const [editOrderForm, setEditOrderForm] = useState({
+    full_name: "", email: "", address_line1: "", address_line2: "",
+    city: "", state: "", zip: "",
+  });
+
+  const openEditOrder = (order: any) => {
+    setEditingOrder(order);
+    setEditOrderForm({
+      full_name: order.full_name ?? "",
+      email: order.email ?? "",
+      address_line1: order.address_line1 ?? "",
+      address_line2: order.address_line2 ?? "",
+      city: order.city ?? "",
+      state: order.state ?? "",
+      zip: order.zip ?? "",
+    });
+    setEditOrderOpen(true);
+  };
+
   const { data: products = [], isLoading: productsLoading } = useQuery({
     queryKey: ["admin-products"],
     queryFn: async () => {
@@ -345,6 +367,14 @@ export default function AdminSupplies() {
                               Send to Fulfillment
                             </Button>
                           )}
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={() => openEditOrder(order)}
+                          >
+                            <Edit2 className="w-4 h-4 mr-1.5" />
+                            Edit Order
+                          </Button>
                           <Button
                             size="sm"
                             variant="destructive"
@@ -665,6 +695,78 @@ export default function AdminSupplies() {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+
+      {/* Edit Order Sheet */}
+      <Sheet open={editOrderOpen} onOpenChange={setEditOrderOpen}>
+        <SheetContent side="right" className="w-full sm:max-w-md overflow-y-auto">
+          <SheetHeader className="mb-6">
+            <SheetTitle>Edit Order</SheetTitle>
+            <SheetDescription>
+              Update customer info or shipping address for this order.
+            </SheetDescription>
+          </SheetHeader>
+          <div className="space-y-4">
+            <div className="space-y-1.5">
+              <Label>Full Name</Label>
+              <Input value={editOrderForm.full_name} onChange={e => setEditOrderForm(p => ({ ...p, full_name: e.target.value }))} />
+            </div>
+            <div className="space-y-1.5">
+              <Label>Email</Label>
+              <Input type="email" value={editOrderForm.email} onChange={e => setEditOrderForm(p => ({ ...p, email: e.target.value }))} />
+            </div>
+            <div className="space-y-1.5">
+              <Label>Address Line 1</Label>
+              <Input value={editOrderForm.address_line1} onChange={e => setEditOrderForm(p => ({ ...p, address_line1: e.target.value }))} />
+            </div>
+            <div className="space-y-1.5">
+              <Label>Address Line 2 (optional)</Label>
+              <Input value={editOrderForm.address_line2} onChange={e => setEditOrderForm(p => ({ ...p, address_line2: e.target.value }))} />
+            </div>
+            <div className="grid grid-cols-2 gap-3">
+              <div className="space-y-1.5">
+                <Label>City</Label>
+                <Input value={editOrderForm.city} onChange={e => setEditOrderForm(p => ({ ...p, city: e.target.value }))} />
+              </div>
+              <div className="space-y-1.5">
+                <Label>State</Label>
+                <Input value={editOrderForm.state} maxLength={2} onChange={e => setEditOrderForm(p => ({ ...p, state: e.target.value.toUpperCase() }))} />
+              </div>
+            </div>
+            <div className="space-y-1.5">
+              <Label>ZIP Code</Label>
+              <Input value={editOrderForm.zip} onChange={e => setEditOrderForm(p => ({ ...p, zip: e.target.value }))} />
+            </div>
+            <div className="flex gap-3 pt-2">
+              <Button
+                className="flex-1"
+                disabled={!editingOrder}
+                onClick={async () => {
+                  if (!editingOrder) return;
+                  const { error } = await supabase.from("orders").update({
+                    full_name: editOrderForm.full_name.trim(),
+                    email: editOrderForm.email.trim(),
+                    address_line1: editOrderForm.address_line1.trim(),
+                    address_line2: editOrderForm.address_line2.trim() || null,
+                    city: editOrderForm.city.trim(),
+                    state: editOrderForm.state.trim(),
+                    zip: editOrderForm.zip.trim(),
+                  }).eq("id", editingOrder.id);
+                  if (error) {
+                    toast({ title: "Failed to update order", description: error.message, variant: "destructive" });
+                  } else {
+                    toast({ title: "Order updated" });
+                    queryClient.invalidateQueries({ queryKey: ["admin-orders"] });
+                    setEditOrderOpen(false);
+                  }
+                }}
+              >
+                <Save className="w-4 h-4 mr-1.5" /> Save Changes
+              </Button>
+              <Button variant="outline" onClick={() => setEditOrderOpen(false)}>Cancel</Button>
+            </div>
+          </div>
+        </SheetContent>
+      </Sheet>
     </div>
   );
 }
