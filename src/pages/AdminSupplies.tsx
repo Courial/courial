@@ -43,6 +43,7 @@ type NewProductForm = {
   description: string;
   price: string;
   stock: string;
+  weight_oz: string;
   category: string;
   image_url: string;
   active: boolean;
@@ -53,6 +54,7 @@ const defaultNewForm: NewProductForm = {
   description: "",
   price: "",
   stock: "0",
+  weight_oz: "16",
   category: "",
   image_url: "",
   active: true,
@@ -107,8 +109,8 @@ export default function AdminSupplies() {
   });
 
   const updateProductMutation = useMutation({
-    mutationFn: async (product: { id: string; name: string; price: number; stock: number; active: boolean; image_url: string }) => {
-      const { error } = await supabase.from("products").update({ name: product.name, price: product.price, stock: product.stock, active: product.active, image_url: product.image_url }).eq("id", product.id);
+    mutationFn: async (product: { id: string; name: string; price: number; stock: number; weight_oz: number; active: boolean; image_url: string }) => {
+      const { error } = await supabase.from("products").update({ name: product.name, price: product.price, stock: product.stock, weight_oz: product.weight_oz, active: product.active, image_url: product.image_url }).eq("id", product.id);
       if (error) throw error;
     },
     onSuccess: () => {
@@ -119,7 +121,7 @@ export default function AdminSupplies() {
 
   const addProductMutation = useMutation({
     mutationFn: async (payload: {
-      name: string; description: string; price: number; stock: number;
+      name: string; description: string; price: number; stock: number; weight_oz: number;
       category: string; image_url: string; active: boolean;
     }) => {
       const { error } = await supabase.from("products").insert({
@@ -127,6 +129,7 @@ export default function AdminSupplies() {
         description: payload.description || null,
         price: payload.price,
         stock: payload.stock,
+        weight_oz: payload.weight_oz,
         category: payload.category || null,
         image_url: payload.image_url || null,
         active: payload.active,
@@ -170,7 +173,7 @@ export default function AdminSupplies() {
   });
 
   const [editingId, setEditingId] = useState<string | null>(null);
-  const [editForm, setEditForm] = useState({ name: "", price: 0, stock: 0, active: true, image_url: "" });
+  const [editForm, setEditForm] = useState({ name: "", price: 0, stock: 0, weight_oz: 16, active: true, image_url: "" });
 
   const formatPrice = (cents: number) => `$${(cents / 100).toFixed(2)}`;
 
@@ -194,6 +197,7 @@ export default function AdminSupplies() {
       description: newForm.description.trim(),
       price: Math.round(priceVal * 100),
       stock: stockVal,
+      weight_oz: Math.max(1, parseInt(newForm.weight_oz, 10) || 16),
       category: newForm.category,
       image_url: newForm.image_url.trim(),
       active: newForm.active,
@@ -343,6 +347,7 @@ export default function AdminSupplies() {
                         <th className="px-4 py-3 font-medium text-muted-foreground">Product</th>
                         <th className="px-4 py-3 font-medium text-muted-foreground">Price</th>
                         <th className="px-4 py-3 font-medium text-muted-foreground">Stock</th>
+                        <th className="px-4 py-3 font-medium text-muted-foreground">Weight (oz)</th>
                         <th className="px-4 py-3 font-medium text-muted-foreground">Status</th>
                         <th className="px-4 py-3 font-medium text-muted-foreground text-right">Actions</th>
                       </tr>
@@ -377,6 +382,9 @@ export default function AdminSupplies() {
                                 <Input type="number" value={editForm.stock} onChange={(e) => setEditForm((p) => ({ ...p, stock: Number(e.target.value) }))} className="h-8 w-20 text-sm" />
                               </td>
                               <td className="px-4 py-3">
+                                <Input type="number" value={editForm.weight_oz} onChange={(e) => setEditForm((p) => ({ ...p, weight_oz: Number(e.target.value) }))} className="h-8 w-20 text-sm" placeholder="oz" />
+                              </td>
+                              <td className="px-4 py-3">
                                 <Button size="sm" variant="outline" className="h-7 text-xs" onClick={() => setEditForm((p) => ({ ...p, active: !p.active }))}>
                                   {editForm.active ? "Active" : "Inactive"}
                                 </Button>
@@ -407,6 +415,7 @@ export default function AdminSupplies() {
                               </td>
                               <td className="px-4 py-3 text-muted-foreground">{formatPrice(product.price)}</td>
                               <td className="px-4 py-3 text-muted-foreground">{product.stock}</td>
+                              <td className="px-4 py-3 text-muted-foreground">{product.weight_oz ?? 16} oz</td>
                               <td className="px-4 py-3">
                                 <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${
                                   product.active
@@ -418,7 +427,7 @@ export default function AdminSupplies() {
                               </td>
                               <td className="px-4 py-3 text-right">
                                 <Button size="sm" variant="outline" className="h-7"
-                                  onClick={() => { setEditingId(product.id); setEditForm({ name: product.name, price: product.price, stock: product.stock, active: product.active, image_url: product.image_url ?? "" }); }}>
+                                  onClick={() => { setEditingId(product.id); setEditForm({ name: product.name, price: product.price, stock: product.stock, weight_oz: product.weight_oz ?? 16, active: product.active, image_url: product.image_url ?? "" }); }}>
                                   <Edit2 className="w-3 h-3 mr-1" /> Edit
                                 </Button>
                               </td>
@@ -489,7 +498,7 @@ export default function AdminSupplies() {
               />
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-3 gap-4">
               <div className="space-y-1.5">
                 <Label htmlFor="new-price">Price (USD) <span className="text-destructive">*</span></Label>
                 <Input
@@ -515,6 +524,19 @@ export default function AdminSupplies() {
                   onChange={(e) => { setNewForm((p) => ({ ...p, stock: e.target.value })); setNewErrors((p) => ({ ...p, stock: "" })); }}
                 />
                 {newErrors.stock && <p className="text-xs text-destructive">{newErrors.stock}</p>}
+              </div>
+
+              <div className="space-y-1.5">
+                <Label htmlFor="new-weight">Weight (oz)</Label>
+                <Input
+                  id="new-weight"
+                  type="number"
+                  min="1"
+                  step="1"
+                  value={newForm.weight_oz}
+                  onChange={(e) => setNewForm((p) => ({ ...p, weight_oz: e.target.value }))}
+                  placeholder="16"
+                />
               </div>
             </div>
 
