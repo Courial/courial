@@ -44,3 +44,6 @@ verify_jwt = false
 
 [functions.shipstation-webhook]
 verify_jwt = false
+
+[functions.shipstation-fetch-tracking]
+verify_jwt = false

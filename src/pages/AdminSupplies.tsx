@@ -13,7 +13,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import { Helmet } from "react-helmet-async";
-import { Package, Truck, Loader2, ExternalLink, Edit2, Save, X, ArrowLeft, Plus, XCircle } from "lucide-react";
+import { Package, Truck, Loader2, ExternalLink, Edit2, Save, X, ArrowLeft, Plus, XCircle, RefreshCw } from "lucide-react";
 import { Navigate, Link } from "react-router-dom";
 import {
   AlertDialog,
@@ -176,6 +176,40 @@ export default function AdminSupplies() {
     },
     onError: (err: any) => {
       toast({ title: "Failed to add product", description: err.message, variant: "destructive" });
+    },
+  });
+
+  const [syncingOrderId, setSyncingOrderId] = useState<string | null>(null);
+
+  const syncTrackingMutation = useMutation({
+    mutationFn: async (orderId: string) => {
+      setSyncingOrderId(orderId);
+      const { data, error } = await supabase.functions.invoke("shipstation-fetch-tracking", {
+        body: { order_id: orderId },
+      });
+      if (error) throw error;
+      if (data?.error) throw new Error(data.error);
+      return data;
+    },
+    onSuccess: (data) => {
+      setSyncingOrderId(null);
+      if (data?.success) {
+        toast({
+          title: "Tracking synced",
+          description: `${data.carrier ? data.carrier.toUpperCase() + " — " : ""}${data.tracking_number}${data.is_partial ? ` (${data.total_shipments} shipments)` : ""}`,
+        });
+        queryClient.invalidateQueries({ queryKey: ["admin-orders"] });
+      } else {
+        toast({
+          title: "No tracking yet",
+          description: data?.message ?? "Label may not have been printed in ShipStation yet.",
+          variant: "destructive",
+        });
+      }
+    },
+    onError: (err: any) => {
+      setSyncingOrderId(null);
+      toast({ title: "Sync failed", description: err.message, variant: "destructive" });
     },
   });
 
@@ -365,6 +399,21 @@ export default function AdminSupplies() {
                             >
                               {fulfillMutation.isPending ? <Loader2 className="w-4 h-4 animate-spin mr-1.5" /> : <Truck className="w-4 h-4 mr-1.5" />}
                               Send to Fulfillment
+                            </Button>
+                          )}
+                          {/* Sync Tracking — available once order is in ShipStation */}
+                          {order.shipstation_order_id && (
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              onClick={() => syncTrackingMutation.mutate(order.id)}
+                              disabled={syncingOrderId === order.id}
+                              title={order.tracking_number ? "Re-sync tracking from ShipStation" : "Pull tracking number from ShipStation"}
+                            >
+                              {syncingOrderId === order.id
+                                ? <Loader2 className="w-4 h-4 animate-spin mr-1.5" />
+                                : <RefreshCw className="w-4 h-4 mr-1.5" />}
+                              {order.tracking_number ? "Re-sync Tracking" : "Sync Tracking"}
                             </Button>
                           )}
                           <Button
