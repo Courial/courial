@@ -81,6 +81,7 @@ serve(async (req) => {
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? ""
     );
 
+    // Save order as "pending" — the stripe-webhook will mark it "paid" and send the email
     const { data: order, error: orderError } = await supabaseAdmin.from("orders").insert({
       user_id: user.id,
       email: shipping.email,
@@ -91,7 +92,7 @@ serve(async (req) => {
       state: shipping.state,
       zip: shipping.zip,
       stripe_payment_intent_id: session.id,
-      status: "paid",
+      status: "pending",
       total: totalCents,
     }).select("id").single();
 
@@ -107,60 +108,6 @@ serve(async (req) => {
     }));
 
     await supabaseAdmin.from("order_items").insert(orderItems);
-
-    // Send order confirmation email
-    const itemsHtml = items.map((item: any) =>
-      `<tr>
-        <td style="padding:8px 0;border-bottom:1px solid #333;color:#ccc;">${item.name}</td>
-        <td style="padding:8px 0;border-bottom:1px solid #333;color:#ccc;text-align:center;">×${item.quantity}</td>
-        <td style="padding:8px 0;border-bottom:1px solid #333;color:#ccc;text-align:right;">$${((item.price * item.quantity) / 100).toFixed(2)}</td>
-      </tr>`
-    ).join("");
-
-    const emailHtml = `
-      <div style="background:#111;color:#eee;font-family:sans-serif;max-width:560px;margin:0 auto;padding:40px 32px;border-radius:12px;">
-        <img src="https://courial.com/favicon.ico" width="32" style="margin-bottom:24px;" />
-        <h1 style="font-size:22px;font-weight:700;margin:0 0 8px;">Order Confirmed ✓</h1>
-        <p style="color:#aaa;margin:0 0 28px;">Hi ${shipping.full_name}, your Courial Shop order is confirmed!</p>
-
-        <table style="width:100%;border-collapse:collapse;">
-          <thead>
-            <tr>
-              <th style="text-align:left;font-size:11px;color:#666;text-transform:uppercase;padding-bottom:8px;">Item</th>
-              <th style="text-align:center;font-size:11px;color:#666;text-transform:uppercase;padding-bottom:8px;">Qty</th>
-              <th style="text-align:right;font-size:11px;color:#666;text-transform:uppercase;padding-bottom:8px;">Price</th>
-            </tr>
-          </thead>
-          <tbody>${itemsHtml}</tbody>
-        </table>
-
-        <div style="text-align:right;margin-top:16px;font-size:18px;font-weight:700;color:#ff6a00;">
-          Total: $${(totalCents / 100).toFixed(2)}
-        </div>
-
-        <div style="margin-top:28px;padding-top:20px;border-top:1px solid #333;font-size:13px;color:#aaa;">
-          <p style="margin:0 0 4px;font-weight:600;color:#eee;">Shipping to</p>
-          <p style="margin:0;">${shipping.full_name}</p>
-          <p style="margin:0;">${shipping.address_line1}${shipping.address_line2 ? ", " + shipping.address_line2 : ""}</p>
-          <p style="margin:0;">${shipping.city}, ${shipping.state} ${shipping.zip}</p>
-        </div>
-
-        <p style="margin-top:28px;font-size:12px;color:#666;">Questions? Reply to this email or contact support@courial.com</p>
-      </div>
-    `;
-
-    try {
-      await supabaseAdmin.functions.invoke("send-email", {
-        body: {
-          to: shipping.email,
-          subject: "Your Courial Shop order is confirmed",
-          html: emailHtml,
-        },
-      });
-    } catch (emailErr) {
-      console.error("Failed to send confirmation email:", emailErr);
-      // Don't fail the whole request if email fails
-    }
 
     return new Response(JSON.stringify({ url: session.url }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
