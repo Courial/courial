@@ -54,7 +54,8 @@ export default function SuppliesCheckout() {
 
       if (error) throw error;
       if (data?.url) {
-        window.location.href = data.url;
+        // Open in new tab to avoid iframe restrictions (preview & Stripe CSP)
+        window.open(data.url, "_blank", "noopener,noreferrer");
       } else {
         throw new Error("No checkout URL returned");
       }
