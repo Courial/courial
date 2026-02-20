@@ -126,6 +126,7 @@ export type Database = {
         Row: {
           address_line1: string
           address_line2: string | null
+          carrier: string | null
           city: string
           country: string
           created_at: string
@@ -134,10 +135,12 @@ export type Database = {
           full_name: string
           id: string
           shipped_at: string | null
+          shipstation_order_id: string | null
           state: string
           status: string
           stripe_payment_intent_id: string | null
           total: number
+          tracking_number: string | null
           updated_at: string
           user_id: string | null
           zip: string
@@ -145,6 +148,7 @@ export type Database = {
         Insert: {
           address_line1: string
           address_line2?: string | null
+          carrier?: string | null
           city: string
           country?: string
           created_at?: string
@@ -153,10 +157,12 @@ export type Database = {
           full_name: string
           id?: string
           shipped_at?: string | null
+          shipstation_order_id?: string | null
           state: string
           status?: string
           stripe_payment_intent_id?: string | null
           total: number
+          tracking_number?: string | null
           updated_at?: string
           user_id?: string | null
           zip: string
@@ -164,6 +170,7 @@ export type Database = {
         Update: {
           address_line1?: string
           address_line2?: string | null
+          carrier?: string | null
           city?: string
           country?: string
           created_at?: string
@@ -172,10 +179,12 @@ export type Database = {
           full_name?: string
           id?: string
           shipped_at?: string | null
+          shipstation_order_id?: string | null
           state?: string
           status?: string
           stripe_payment_intent_id?: string | null
           total?: number
+          tracking_number?: string | null
           updated_at?: string
           user_id?: string | null
           zip?: string
