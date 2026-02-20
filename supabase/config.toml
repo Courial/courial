@@ -47,3 +47,6 @@ verify_jwt = false
 
 [functions.shipstation-fetch-tracking]
 verify_jwt = false
+
+[functions.manual-fulfill]
+verify_jwt = false
