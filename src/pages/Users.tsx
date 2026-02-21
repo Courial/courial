@@ -116,7 +116,7 @@ const Users = () => {
               Everything You Need, Delivered
             </h2>
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-              We handle the pickups and deliveries so you can focus on what matters most.
+              Relax. We've got you.
             </p>
           </motion.div>
 
