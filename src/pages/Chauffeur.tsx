@@ -303,7 +303,7 @@ const Chauffeur = () => {
       </section>
 
       {/* CTA */}
-      <section className="py-12 md:py-24 relative">
+      <section className="pt-0 pb-12 md:pt-0 md:pb-24 relative">
         <div className="container mx-auto px-6 relative z-10">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
