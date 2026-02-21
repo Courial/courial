@@ -113,7 +113,7 @@ const Users = () => {
             className="text-center mb-16"
           >
             <h2 className="text-4xl md:text-5xl font-bold mb-6 gradient-text-black-orange">
-              Everything You Need, Delivered
+              Everything You Need, Handled
             </h2>
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
               Relax. We've got you.
