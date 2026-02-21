@@ -245,11 +245,8 @@ const Shield = () => {
                   transition={{ duration: 0.4, delay: index * 0.15 }}
                   className="group rounded-2xl glass-card p-8 text-center transition-all duration-300 hover:border-primary/50 relative"
                 >
-                  <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-primary text-primary-foreground text-sm font-bold px-3 py-1 rounded-full">
-                    {step.step}
-                  </div>
                   <div className="w-14 h-14 rounded-xl bg-muted flex items-center justify-center mb-6 mx-auto group-hover:bg-muted/80 transition-colors">
-                    <Icon className="w-7 h-7 text-foreground" />
+                    <span className="text-2xl font-bold text-foreground">{index + 1}</span>
                   </div>
                   <h3 className="text-xl font-bold mb-3 group-hover:text-primary transition-colors">
                     {step.title}
