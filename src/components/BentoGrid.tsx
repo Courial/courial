@@ -74,7 +74,7 @@ const bentoItems: Array<{ title: string; description: string; icon: typeof Users
   },
   {
     title: "Office Supplies",
-    description: "On-demand delivery for docs, packages, and business essentials.",
+    description: "On-demand delivery for docs and business essentials.",
     icon: FileText,
     className: "md:col-span-1",
     image: "https://images.unsplash.com/photo-1497366216548-37526070297c?w=800&q=80",
