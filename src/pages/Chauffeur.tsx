@@ -50,17 +50,15 @@ const chauffeurFeatures = [
 const regions = [
   {
     name: "Southeast Asia",
-    cities: [
-      { name: "Bangkok, Thailand", status: "live" },
-      { name: "Singapore", status: "2026" },
-      { name: "Hong Kong", status: "2026" },
-      { name: "Dubai", status: "2026" },
+    lines: [
+      { text: "Bangkok, Thailand", highlight: "(Live)" },
+      { text: "Singapore, Hong Kong & Dubai", highlight: "(Coming 2026)" },
     ],
   },
   {
     name: "United States",
-    cities: [
-      { name: "San Francisco, Los Angeles, Chicago, NYC, DC, Boston, Atlanta & Miami", status: "Coming 2026" },
+    lines: [
+      { text: "San Francisco, Los Angeles, Chicago, NYC, DC, Boston, Atlanta & Miami", highlight: "(Coming 2026)" },
     ],
   },
 ];
@@ -284,9 +282,9 @@ const Chauffeur = () => {
                 {regions[0].name}
               </h3>
               <div className="text-sm text-muted-foreground space-y-1">
-                {regions[0].cities.map((city) => (
-                  <p key={city.name}>
-                    {city.name} {city.status === "live" ? <span className="text-primary font-semibold">(Live)</span> : <span>({city.status})</span>}
+                {regions[0].lines.map((line) => (
+                  <p key={line.text}>
+                    {line.text} <span className={line.highlight === "(Live)" ? "text-primary font-semibold" : ""}>{line.highlight}</span>
                   </p>
                 ))}
               </div>
@@ -330,9 +328,9 @@ const Chauffeur = () => {
                 {regions[1].name}
               </h3>
               <div className="text-sm text-muted-foreground space-y-1">
-                {regions[1].cities.map((city) => (
-                  <p key={city.name}>
-                    {city.name} <span>({city.status})</span>
+                {regions[1].lines.map((line) => (
+                  <p key={line.text}>
+                    {line.text} <span>{line.highlight}</span>
                   </p>
                 ))}
               </div>
