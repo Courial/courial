@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { Car, Shield, Clock, Globe, Star, MapPin, ArrowRight, Calendar, Bell, DollarSign, Crown, Headphones, Sparkles, Heart, CarFront, CupSoda } from "lucide-react";
+import { Car, Shield, Clock, Globe, Star, MapPin, ArrowRight, Calendar, Bell, DollarSign, Crown, Headphones, Wand2, Heart, CarFront, CupSoda } from "lucide-react";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { Button } from "@/components/ui/button";
@@ -19,7 +19,7 @@ const whyUsFeatures = [
       "Our chauffeurs know their cities block by block. Expect exact timing, smooth routes, and zero guesswork.",
   },
   {
-    icon: Sparkles,
+    icon: Wand2,
     title: "Effortless by Design",
     description:
       "AI-powered, real people behind the wheel—seamless trips from pickup to drop-off, every time.",
