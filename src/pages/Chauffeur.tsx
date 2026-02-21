@@ -267,7 +267,7 @@ const Chauffeur = () => {
       {/* Availability Section */}
       <section className="pt-0 pb-12 md:pt-0 md:pb-24 relative">
         <div className="container mx-auto px-6 relative z-10">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-3xl mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-3xl mx-auto md:items-start">
             {/* Southeast Asia */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
@@ -297,6 +297,7 @@ const Chauffeur = () => {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.4, delay: 0.1 }}
+              className="md:self-stretch"
             >
               <div className="group glass-card rounded-2xl p-6 text-center transition-all duration-300 hover:border-primary/50 h-full flex flex-col items-center justify-center">
                 <div className="w-12 h-12 rounded-xl bg-muted flex items-center justify-center mx-auto mb-2">
