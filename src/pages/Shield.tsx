@@ -31,10 +31,6 @@ const whyShieldFeatures = [
     icon: Users,
     text: "Built for everyday drivers + teams: Great for personal use, fleets, and anyone who parks in busy areas.",
   },
-  {
-    icon: DollarSign,
-    text: "Predictable costs: One plan that helps you avoid surprise expenses.",
-  },
 ];
 
 const howItWorks = [
@@ -202,9 +198,17 @@ const Shield = () => {
               <p className="text-lg text-muted-foreground mb-6">
                 Parking tickets happen to everyone. Shield exists so they don't have to ruin your day—or your budget.
               </p>
-              <p className="text-lg text-muted-foreground">
+              <p className="text-lg text-muted-foreground mb-6">
                 Whether you're an everyday driver or managing a fleet, <span className="font-bold text-foreground">Shield has you covered</span>.
               </p>
+              <div className="group rounded-2xl glass-card p-6 transition-all duration-300 hover:border-primary/50">
+                <div className="flex items-start gap-4">
+                  <div className="w-10 h-10 rounded-xl bg-muted flex items-center justify-center flex-shrink-0 group-hover:bg-muted/80 transition-colors">
+                    <DollarSign className="w-5 h-5 text-foreground" />
+                  </div>
+                  <p className="text-lg text-foreground">Predictable costs: One plan that helps you avoid surprise expenses.</p>
+                </div>
+              </div>
             </motion.div>
           </div>
         </div>
