@@ -255,50 +255,64 @@ const Chauffeur = () => {
       {/* Availability Section */}
       <section className="pt-0 pb-12 md:pt-0 md:pb-24 relative">
         <div className="container mx-auto px-6 relative z-10">
-          <div className="grid grid-cols-2 gap-4 max-w-md mx-auto mb-4">
-            {regions.map((region, index) => (
-              <motion.div
-                key={region.name}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.4, delay: index * 0.1 }}
-                className="group rounded-2xl glass-card p-6 text-center transition-all duration-300 hover:border-primary/50"
-              >
-                <div className="w-10 h-10 rounded-xl bg-muted flex items-center justify-center mb-4 mx-auto group-hover:bg-muted/80 transition-colors">
-                  <MapPin className="w-5 h-5 text-foreground" />
-                </div>
-                <h3 className="text-lg font-bold mb-2 group-hover:text-primary transition-colors">
-                  {region.name}
-                </h3>
-                <p className="text-sm text-muted-foreground">{region.description}</p>
-              </motion.div>
-            ))}
-          </div>
-
-          {/* Waitlist Form */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5, delay: 0.3 }}
-            className="max-w-xs mx-auto"
-          >
-            <div className="group glass-card rounded-2xl p-6 text-center transition-all duration-300 hover:border-primary/50">
-              <div className="w-12 h-12 rounded-xl bg-muted flex items-center justify-center mx-auto mb-2">
-                <Bell className="w-6 h-6 text-foreground" />
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-3xl mx-auto">
+            {/* Southeast Asia */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.4 }}
+              className="group rounded-2xl glass-card p-6 text-center transition-all duration-300 hover:border-primary/50"
+            >
+              <div className="w-10 h-10 rounded-xl bg-muted flex items-center justify-center mb-4 mx-auto group-hover:bg-muted/80 transition-colors">
+                <MapPin className="w-5 h-5 text-foreground" />
               </div>
-              <h3 className="text-xl font-bold mb-2">Get Notified</h3>
-              <p className="text-muted-foreground mb-6">
-                Be the first to know when<br />Chauffeur arrives in your city.
-              </p>
-              <a href="https://chauffeured.ai/#footer" target="_blank" rel="noopener noreferrer">
-                <Button variant="hero" className="whitespace-nowrap">
-                  Join Waitlist
-                </Button>
-              </a>
-            </div>
-          </motion.div>
+              <h3 className="text-lg font-bold mb-2 group-hover:text-primary transition-colors">
+                {regions[0].name}
+              </h3>
+              <p className="text-sm text-muted-foreground">{regions[0].description}</p>
+            </motion.div>
+
+            {/* Get Notified */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.4, delay: 0.1 }}
+            >
+              <div className="group glass-card rounded-2xl p-6 text-center transition-all duration-300 hover:border-primary/50 h-full flex flex-col items-center justify-center">
+                <div className="w-12 h-12 rounded-xl bg-muted flex items-center justify-center mx-auto mb-2">
+                  <Bell className="w-6 h-6 text-foreground" />
+                </div>
+                <h3 className="text-xl font-bold mb-2">Get Notified</h3>
+                <p className="text-muted-foreground mb-6">
+                  Be the first to know when<br />Chauffeur arrives in your city.
+                </p>
+                <a href="https://chauffeured.ai/#footer" target="_blank" rel="noopener noreferrer">
+                  <Button variant="hero" className="whitespace-nowrap">
+                    Join Waitlist
+                  </Button>
+                </a>
+              </div>
+            </motion.div>
+
+            {/* United States */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.4, delay: 0.2 }}
+              className="group rounded-2xl glass-card p-6 text-center transition-all duration-300 hover:border-primary/50"
+            >
+              <div className="w-10 h-10 rounded-xl bg-muted flex items-center justify-center mb-4 mx-auto group-hover:bg-muted/80 transition-colors">
+                <MapPin className="w-5 h-5 text-foreground" />
+              </div>
+              <h3 className="text-lg font-bold mb-2 group-hover:text-primary transition-colors">
+                {regions[1].name}
+              </h3>
+              <p className="text-sm text-muted-foreground">{regions[1].description}</p>
+            </motion.div>
+          </div>
         </div>
       </section>
 
