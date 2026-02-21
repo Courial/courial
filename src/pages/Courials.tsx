@@ -195,7 +195,7 @@ const Courials = () => {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5 }}
-            className="max-w-3xl mx-auto text-center glass-card rounded-3xl px-6 md:px-8 py-12"
+            className="max-w-xl mx-auto text-center glass-card rounded-3xl px-6 py-10"
           >
             <h2 className="text-3xl md:text-4xl font-bold mb-4 gradient-text-black-orange">
               Ready to Join the Team?
