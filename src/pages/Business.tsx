@@ -74,7 +74,7 @@ const Business = () => {
               <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 gradient-text-black-orange">
                 Power Your
                 <br />
-                Delivery Operations
+                <span className="whitespace-nowrap">Delivery Operations</span>
               </h1>
               <p className="text-xl text-muted-foreground mb-10">
                 From local merchants to enterprise e-commerce, we provide the
