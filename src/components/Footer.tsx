@@ -130,11 +130,17 @@ export const Footer = () => {
                 ))}
               </ul>
               {category === "company" && (
-                <img
-                  src={courialLogoWhite}
-                  alt="Courial"
-                  className="mt-5 h-5 w-auto opacity-70"
-                />
+                <a
+                  href="/"
+                  onClick={(e) => handleLinkClick(e, "/")}
+                  className="mt-5 inline-block cursor-pointer"
+                >
+                  <img
+                    src={courialLogoWhite}
+                    alt="Courial"
+                    className="h-5 w-auto opacity-70 hover:opacity-100 transition-opacity"
+                  />
+                </a>
               )}
               {category === "support" && (
                 <div className="flex flex-row gap-2 mt-4">
