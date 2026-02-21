@@ -308,7 +308,7 @@ const Chauffeur = () => {
                   Be the first to know when<br />Chauffeur arrives in your city.
                 </p>
                 <a href="https://chauffeured.ai/#footer" target="_blank" rel="noopener noreferrer">
-                  <Button variant="hero" className="whitespace-nowrap">
+                  <Button variant="hero" className="whitespace-nowrap hover:bg-primary hover:text-primary-foreground">
                     Join Waitlist
                   </Button>
                 </a>
