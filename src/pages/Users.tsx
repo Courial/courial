@@ -161,7 +161,7 @@ const Users = () => {
               Ready to Simplify Your Life?
             </h2>
             <p className="text-muted-foreground mb-8">
-              Download the app and experience the easiest way to get anything delivered.
+              Download the app and experience just how easy it is.
             </p>
             <a href="https://courial.onelink.me/lEPx/263244a0" target="_blank" rel="noopener noreferrer">
               <Button variant="hero" size="xl" className="group">
