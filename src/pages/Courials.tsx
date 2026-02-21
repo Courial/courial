@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { DollarSign, Clock, MapPin, Zap, ShieldCheck, Car, ArrowRight } from "lucide-react";
+import { HandCoins, Clock, MapPin, PersonStanding, ShieldCheck, Leaf, ArrowRight } from "lucide-react";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { Button } from "@/components/ui/button";
@@ -8,7 +8,7 @@ import courialsEarningsIllustration from "@/assets/courials-earnings-illustratio
 
 const features = [
   {
-    icon: DollarSign,
+    icon: HandCoins,
     title: "Keep Up to 80%",
     description:
       "As true partners, Courials keep up to 80% of delivery fees—far more than any other platform.",
@@ -26,7 +26,7 @@ const features = [
       "Select your preferred work locations and neighborhoods. No forced dispatching.",
   },
   {
-    icon: Zap,
+    icon: PersonStanding,
     title: "Stay Busy",
     description:
       "Deliver anything—from documents to furniture—so you're always earning, never waiting.",
@@ -38,7 +38,7 @@ const features = [
       "No manipulative algorithms or surge games. Transparent, fair pay every time.",
   },
   {
-    icon: Car,
+    icon: Leaf,
     title: "EV Incentives",
     description:
       "Get rewarded for going green with special bonuses and priority access for EV drivers.",
