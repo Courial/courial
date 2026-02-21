@@ -50,7 +50,7 @@ const howItWorks = [
     step: "03",
     icon: FileCheck,
     title: "Submit if needed",
-    description: "If a qualifying ticket hits, submit it in minutes and Shield takes it from there.",
+    description: "If a qualifying ticket hits, submit it in minutes on the Shield app.",
   },
 ];
 
