@@ -220,7 +220,7 @@ const Chauffeur = () => {
       </section>
 
       {/* Chauffeurs Section */}
-      <section className="py-12 md:py-24 relative">
+      <section className="pt-0 pb-12 md:pt-0 md:pb-24 relative">
         <div className="absolute inset-0 bg-gradient-to-b from-transparent via-primary/5 to-transparent" />
         <div className="container mx-auto px-6 relative z-10">
           <motion.div
