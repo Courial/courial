@@ -127,7 +127,7 @@ const Chauffeur = () => {
       {/* Set Your Preferences */}
       <section className="pt-0 pb-12 md:pt-0 md:pb-24 relative">
         <div className="container mx-auto px-6">
-          <div className="grid lg:grid-cols-2 gap-16 items-center max-w-6xl mx-auto">
+          <div className="grid lg:grid-cols-2 gap-8 lg:gap-16 items-center max-w-6xl mx-auto">
             <motion.div
               initial={{ opacity: 0, x: -30 }}
               whileInView={{ opacity: 1, x: 0 }}
