@@ -71,8 +71,10 @@ const Business = () => {
               <span className="text-primary font-semibold text-sm uppercase tracking-wider mb-4 block">
                 For Businesses
               </span>
-              <h1 className="text-4xl md:text-5xl lg:text-[3.3rem] font-bold mb-6 gradient-text-black-orange whitespace-nowrap">
-                Power Your Delivery Operations
+              <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 gradient-text-black-orange">
+                Power Your
+                <br />
+                Delivery Operations
               </h1>
               <p className="text-xl text-muted-foreground mb-10">
                 From local merchants to enterprise e-commerce, we provide the
