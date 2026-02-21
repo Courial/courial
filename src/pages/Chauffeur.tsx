@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { Car, Shield, Clock, Globe, Star, MapPin, ArrowRight, Calendar, Bell, DollarSign, Crown, Headphones, Zap, Settings, Sparkles } from "lucide-react";
+import { Car, Shield, Clock, Globe, Star, MapPin, ArrowRight, Calendar, Bell, DollarSign, Crown, Headphones, Zap, Heart, CarFront, GlassWater } from "lucide-react";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { Button } from "@/components/ui/button";
@@ -136,9 +136,9 @@ const Chauffeur = () => {
               className="order-2 lg:order-1 grid gap-4"
             >
               {[
-                { icon: Settings, text: "Choose preferred chauffeurs and receive ride acceptances only from drivers you trust" },
-                { icon: Car, text: "See the exact vehicle you're booking, including year, color, make/model" },
-                { icon: Sparkles, text: "Chilled bottled water, phone chargers, impeccably maintained vehicles no more than five years old" },
+                { icon: Heart, text: "Choose favorite chauffeurs and receive ride acceptances only from drivers you trust" },
+                { icon: CarFront, text: "See the exact vehicle you're booking, including year, color, make/model" },
+                { icon: GlassWater, text: "Chilled bottled water, phone chargers, impeccably maintained vehicles no more than five years old" },
               ].map((item, index) => (
                 <div
                   key={index}
