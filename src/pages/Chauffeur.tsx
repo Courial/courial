@@ -70,7 +70,7 @@ const Chauffeur = () => {
       <Navbar />
 
       {/* Hero */}
-      <section className="pt-24 md:pt-32 pb-0 md:pb-0 relative overflow-hidden">
+      <section className="pt-24 md:pt-32 pb-12 md:pb-20 relative overflow-hidden">
         <div className="absolute inset-0 grid-pattern opacity-50" />
         <div className="absolute inset-0 radial-gradient" />
 
