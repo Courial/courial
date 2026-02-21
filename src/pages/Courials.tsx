@@ -104,7 +104,7 @@ const Courials = () => {
       </section>
 
       {/* Earnings Section */}
-      <section className="py-12 md:py-24 relative">
+      <section className="pb-12 md:pb-24 relative">
         <div className="container mx-auto px-6">
           <div className="grid lg:grid-cols-2 gap-16 items-center max-w-6xl mx-auto">
             <motion.div
