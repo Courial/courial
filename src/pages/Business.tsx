@@ -4,6 +4,7 @@ import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
+import businessIllustration from "@/assets/business-handshake.png";
 
 const features = [
   {
@@ -56,41 +57,53 @@ const Business = () => {
       <Navbar />
 
       {/* Hero */}
-      <section className="pt-32 pb-20 relative overflow-hidden">
+      <section className="pt-24 md:pt-32 pb-12 md:pb-20 relative overflow-hidden">
         <div className="absolute inset-0 grid-pattern opacity-50" />
         <div className="absolute inset-0 radial-gradient" />
 
         <div className="container mx-auto px-6 relative z-10">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            className="max-w-4xl mx-auto text-center"
-          >
-            <span className="text-primary font-semibold text-sm uppercase tracking-wider mb-4 block">
-              For Businesses
-            </span>
-            <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold mb-6 gradient-text-black-orange">
-              Power Your Delivery
-              <br />
-              Operations
-            </h1>
-            <p className="text-xl text-muted-foreground mb-10 max-w-2xl mx-auto">
-              From local merchants to enterprise e-commerce, we provide the
-              delivery infrastructure that scales with your business.
-            </p>
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-              <Button variant="hero" size="xl" className="group" onClick={handleScheduleDemo}>
-                Contact Sales
-                <ArrowRight className="w-5 h-5 transition-transform group-hover:translate-x-1" />
-              </Button>
-              <Link to="/help#api-docs">
-                <Button variant="hero-outline" size="xl">
-                  View API Docs
+          <div className="grid lg:grid-cols-2 gap-12 items-center max-w-6xl mx-auto">
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6 }}
+            >
+              <span className="text-primary font-semibold text-sm uppercase tracking-wider mb-4 block">
+                For Businesses
+              </span>
+              <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 gradient-text-black-orange">
+                Power Your Delivery Operations
+              </h1>
+              <p className="text-xl text-muted-foreground mb-10">
+                From local merchants to enterprise e-commerce, we provide the
+                delivery infrastructure that scales with your business.
+              </p>
+              <div className="flex flex-col sm:flex-row items-start gap-4">
+                <Button variant="hero" size="xl" className="group" onClick={handleScheduleDemo}>
+                  Contact Sales
+                  <ArrowRight className="w-5 h-5 transition-transform group-hover:translate-x-1" />
                 </Button>
-              </Link>
-            </div>
-          </motion.div>
+                <Link to="/help#api-docs">
+                  <Button variant="hero-outline" size="xl">
+                    View API Docs
+                  </Button>
+                </Link>
+              </div>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, x: 30 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+              className="block"
+            >
+              <img 
+                src={businessIllustration} 
+                alt="Business partnership illustration" 
+                className="w-[65%] max-w-md mx-auto md:w-full"
+              />
+            </motion.div>
+          </div>
         </div>
       </section>
 
