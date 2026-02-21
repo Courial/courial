@@ -66,7 +66,7 @@ const Courials = () => {
                 For Courials
               </span>
               <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 gradient-text-black-orange">
-                Courial is The Ultimate Side-Hustle
+                The Ultimate Side-Hustle
               </h1>
               <p className="text-xl text-muted-foreground mb-10">
                 Our team of experienced Courials is here to save the day. 
