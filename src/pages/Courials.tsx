@@ -201,7 +201,7 @@ const Courials = () => {
               Ready to Join the Team?
             </h2>
             <p className="text-muted-foreground mb-8">
-              Download the Courial app and start earning on your own terms. Be your own boss while being part of something bigger.
+              Download the Courial app and start earning on your own terms.<br /> Be your own boss while being part of something bigger.
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
               <a href="https://apps.apple.com/us/app/courial-partner/id1521638474" target="_blank" rel="noopener noreferrer">
