@@ -194,7 +194,7 @@ const Shield = () => {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6 }}
-              className="order-1 lg:order-2"
+              className="order-1 lg:order-2 lg:self-start"
             >
               <h2 className="text-3xl md:text-4xl font-bold mb-6 gradient-text-black-orange">
                 Why Shield
