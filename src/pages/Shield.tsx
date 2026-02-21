@@ -44,7 +44,7 @@ const howItWorks = [
     step: "02",
     icon: Car,
     title: "Park like normal",
-    description: "Go about your day without worrying about every meter and sign.",
+    description: "Go about your day without worrying about meters and signs.",
   },
   {
     step: "03",
