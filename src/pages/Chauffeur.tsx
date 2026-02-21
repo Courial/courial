@@ -58,7 +58,8 @@ const regions = [
   {
     name: "United States",
     lines: [
-      { text: "San Francisco, Los Angeles, Chicago, NYC, DC, Boston, Atlanta & Miami", highlight: "(Coming 2026)" },
+      { text: "San Francisco, Los Angeles, Chicago, NYC, DC, Boston, Atlanta & Miami", highlight: "" },
+      { text: "", highlight: "(Coming 2026)" },
     ],
   },
 ];
