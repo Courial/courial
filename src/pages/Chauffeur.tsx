@@ -102,15 +102,11 @@ const Chauffeur = () => {
               transition={{ duration: 0.6, delay: 0.2 }}
               className="block"
             >
-              <div className="relative w-[97.5%] max-w-2xl mx-auto md:w-[150%]">
-                <div className="absolute inset-0 backdrop-blur-md z-10 pointer-events-none [mask-image:linear-gradient(to_right,black_0%,transparent_25%,transparent_75%,black_100%)] [webkit-mask-image:linear-gradient(to_right,black_0%,transparent_25%,transparent_75%,black_100%)]" />
-                <div className="absolute inset-0 backdrop-blur-md z-10 pointer-events-none [mask-image:linear-gradient(to_bottom,black_0%,transparent_25%,transparent_75%,black_100%)] [webkit-mask-image:linear-gradient(to_bottom,black_0%,transparent_25%,transparent_75%,black_100%)]" />
-                <img 
-                  src={chauffeurIllustration} 
-                  alt="Luxury chauffeur service illustration" 
-                  className="w-full"
-                />
-              </div>
+              <img 
+                src={chauffeurIllustration} 
+                alt="Luxury chauffeur service illustration" 
+                className="w-[78%] max-w-lg mx-auto md:w-[120%]"
+              />
             </motion.div>
           </div>
         </div>
