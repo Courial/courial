@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X, User, LogOut, Package } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -31,6 +31,13 @@ export const Navbar = () => {
     : "U";
   const avatarUrl = user?.user_metadata?.avatar_url;
 
+  const handleNavClick = useCallback((e: React.MouseEvent, href: string) => {
+    e.preventDefault();
+    setIsOpen(false);
+    navigate(href);
+    setTimeout(() => window.scrollTo({ top: 0, behavior: 'smooth' }), 100);
+  }, [navigate]);
+
   const isActive = (href: string) => {
     if (href === "/") return location.pathname === "/";
     return location.pathname.startsWith(href);
@@ -53,7 +60,7 @@ export const Navbar = () => {
           {/* Desktop Navigation */}
           <div className="hidden lg:flex items-center gap-1">
             {navLinks.map((link) => (
-              <Link key={link.name} to={link.href}>
+              <a key={link.name} href={link.href} onClick={(e) => handleNavClick(e, link.href)}>
                 <Button 
                   variant={isActive(link.href) ? "nav-active" : "nav"} 
                   size="sm" 
@@ -61,7 +68,7 @@ export const Navbar = () => {
                 >
                   {link.name}
                 </Button>
-              </Link>
+              </a>
             ))}
           </div>
 
@@ -140,10 +147,10 @@ export const Navbar = () => {
           >
             <div className="container mx-auto px-6 py-6 flex flex-col gap-4">
               {navLinks.map((link) => (
-                <Link
+                <a
                   key={link.name}
-                  to={link.href}
-                  onClick={() => setIsOpen(false)}
+                  href={link.href}
+                  onClick={(e) => handleNavClick(e, link.href)}
                   className={`py-2 text-lg font-medium transition-colors ${
                     link.name === "Blog"
                       ? "animate-glow-text font-bold"
@@ -153,7 +160,7 @@ export const Navbar = () => {
                   }`}
                 >
                   {link.name}
-                </Link>
+                </a>
               ))}
               <div className="flex flex-col gap-3 pt-4 border-t border-border">
                 {!authLoading && isAdmin && (
