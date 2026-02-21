@@ -143,7 +143,7 @@ const Courials = () => {
       </section>
 
       {/* Features Grid */}
-      <section className="py-12 md:py-24">
+      <section className="pb-12 md:pb-24">
         <div className="container mx-auto px-6">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
