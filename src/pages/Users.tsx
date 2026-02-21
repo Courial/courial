@@ -3,7 +3,7 @@ import { Package, Clock, MapPin, Smartphone, ShieldCheck, Hand, ArrowRight } fro
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { Button } from "@/components/ui/button";
-import usersIllustration from "@/assets/users-illustration.png";
+import usersIllustration from "@/assets/users-hero.png";
 
 const features = [
   {
