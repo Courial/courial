@@ -283,7 +283,7 @@ const Chauffeur = () => {
               <h3 className="text-lg font-bold mb-2 group-hover:text-primary transition-colors">
                 {regions[0].name}
               </h3>
-              <div className="text-sm text-muted-foreground space-y-1 text-left">
+              <div className="text-sm text-muted-foreground space-y-1">
                 {regions[0].cities.map((city) => (
                   <p key={city.name}>
                     {city.name} {city.status === "live" ? <span className="text-primary font-semibold">(Live)</span> : <span>({city.status})</span>}
@@ -329,7 +329,7 @@ const Chauffeur = () => {
               <h3 className="text-lg font-bold mb-2 group-hover:text-primary transition-colors">
                 {regions[1].name}
               </h3>
-              <div className="text-sm text-muted-foreground space-y-1 text-left">
+              <div className="text-sm text-muted-foreground space-y-1">
                 {regions[1].cities.map((city) => (
                   <p key={city.name}>
                     {city.name} <span>({city.status})</span>
