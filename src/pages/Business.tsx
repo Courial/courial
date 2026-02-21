@@ -168,7 +168,7 @@ const Business = () => {
               Ready to Transform Your Logistics?
             </h2>
             <p className="text-muted-foreground mb-8">
-              Join hundreds of businesses that trust Courial for their delivery needs.
+              Join hundreds of businesses that trust Courial for their unique logistics needs.
             </p>
             <Button variant="hero" size="xl" className="group" onClick={handleScheduleDemo}>
               Schedule a Demo
