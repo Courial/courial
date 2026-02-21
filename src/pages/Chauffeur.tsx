@@ -48,8 +48,21 @@ const chauffeurFeatures = [
 ];
 
 const regions = [
-  { name: "Southeast Asia", description: "Coming 2026" },
-  { name: "United States", description: "Coming 2026" },
+  {
+    name: "Southeast Asia",
+    cities: [
+      { name: "Bangkok, Thailand", status: "live" },
+      { name: "Singapore", status: "2026" },
+      { name: "Hong Kong", status: "2026" },
+      { name: "Dubai", status: "2026" },
+    ],
+  },
+  {
+    name: "United States",
+    cities: [
+      { name: "San Francisco, Los Angeles, Chicago, NYC, DC, Boston, Atlanta & Miami", status: "Coming 2026" },
+    ],
+  },
 ];
 
 const Chauffeur = () => {
@@ -270,7 +283,13 @@ const Chauffeur = () => {
               <h3 className="text-lg font-bold mb-2 group-hover:text-primary transition-colors">
                 {regions[0].name}
               </h3>
-              <p className="text-sm text-muted-foreground">{regions[0].description}</p>
+              <div className="text-sm text-muted-foreground space-y-1 text-left">
+                {regions[0].cities.map((city) => (
+                  <p key={city.name}>
+                    {city.name} {city.status === "live" ? <span className="text-primary font-semibold">(Live)</span> : <span>({city.status})</span>}
+                  </p>
+                ))}
+              </div>
             </motion.div>
 
             {/* Get Notified */}
@@ -310,7 +329,13 @@ const Chauffeur = () => {
               <h3 className="text-lg font-bold mb-2 group-hover:text-primary transition-colors">
                 {regions[1].name}
               </h3>
-              <p className="text-sm text-muted-foreground">{regions[1].description}</p>
+              <div className="text-sm text-muted-foreground space-y-1 text-left">
+                {regions[1].cities.map((city) => (
+                  <p key={city.name}>
+                    {city.name} <span>({city.status})</span>
+                  </p>
+                ))}
+              </div>
             </motion.div>
           </div>
         </div>
