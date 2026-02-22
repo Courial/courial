@@ -35,6 +35,7 @@ const logos = [
 
 const LogoSet = ({ keyPrefix }: { keyPrefix: string }) => (
   <div className="flex shrink-0 items-center gap-16 px-8">
+    <div className="shrink-0 w-24" aria-hidden="true" />
     {logos.map((logo, index) => (
       <div
         key={`${keyPrefix}-${index}`}
@@ -47,6 +48,7 @@ const LogoSet = ({ keyPrefix }: { keyPrefix: string }) => (
         />
       </div>
     ))}
+    <div className="shrink-0 w-24" aria-hidden="true" />
   </div>
 );
 
