@@ -59,11 +59,11 @@ export const LogoTicker: React.FC = () => {
         </p>
       </div>
       
-      <div className="container mx-auto px-6 relative overflow-hidden">
+      <div className="relative w-full overflow-hidden">
         <div className="pointer-events-none absolute left-0 top-0 z-10 h-full w-24 bg-gradient-to-r from-background to-transparent" />
         <div className="pointer-events-none absolute right-0 top-0 z-10 h-full w-24 bg-gradient-to-l from-background to-transparent" />
         
-        <div className="flex animate-scroll">
+        <div className="flex animate-scroll w-max">
           <LogoSet keyPrefix="logo-1" />
           <LogoSet keyPrefix="logo-2" />
         </div>
