@@ -13,6 +13,7 @@ import sequoiaLogo from '@/assets/logos/sequoia.png';
 import thermofisherLogo from '@/assets/logos/thermofisher.png';
 import tmobileLogo from '@/assets/logos/tmobile.png';
 import ezcaterLogo from '@/assets/logos/ezcater.png';
+import sohohouseLogo from '@/assets/logos/sohohouse.png';
 
 const logos = [
   { name: 'Amazon', src: amazonLogo },
@@ -26,6 +27,7 @@ const logos = [
   { name: 'Neuralink', src: neuralinkLogo },
   { name: 'Palo Alto Networks', src: paloaltoLogo },
   { name: 'Sequoia', src: sequoiaLogo },
+  { name: 'Soho House', src: sohohouseLogo },
   { name: 'Thermo Fisher', src: thermofisherLogo },
   { name: 'T-Mobile', src: tmobileLogo },
   { name: 'ezCater', src: ezcaterLogo },
