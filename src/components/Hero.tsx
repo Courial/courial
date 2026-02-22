@@ -7,7 +7,7 @@ export const Hero: React.FC = () => {
       <img
         src={appScreenshot}
         alt="Courial app home screen"
-        className="max-w-[56%] max-h-[49vh] object-contain drop-shadow-[0_20px_40px_rgba(0,0,0,0.35)] rounded-2xl"
+        className="max-w-[56%] max-h-[49vh] object-contain rounded-2xl"
       />
     </div>
   );
