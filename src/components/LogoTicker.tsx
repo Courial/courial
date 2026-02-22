@@ -20,6 +20,7 @@ const logos = [
   { name: 'Apple', src: appleLogo },
   { name: 'Chase', src: chaseLogo },
   { name: 'Coca-Cola', src: cokeLogo },
+  { name: 'ezCater', src: ezcaterLogo },
   { name: 'Ferrari', src: ferrariLogo },
   { name: 'Ford', src: fordLogo },
   { name: 'Meta', src: metaLogo },
@@ -30,12 +31,10 @@ const logos = [
   { name: 'Soho House', src: sohohouseLogo },
   { name: 'Thermo Fisher', src: thermofisherLogo },
   { name: 'T-Mobile', src: tmobileLogo },
-  { name: 'ezCater', src: ezcaterLogo },
 ];
 
 const LogoSet = ({ keyPrefix }: { keyPrefix: string }) => (
   <div className="flex shrink-0 items-center gap-16 px-8">
-    <div className="shrink-0 w-24" aria-hidden="true" />
     {logos.map((logo, index) => (
       <div
         key={`${keyPrefix}-${index}`}
@@ -48,7 +47,6 @@ const LogoSet = ({ keyPrefix }: { keyPrefix: string }) => (
         />
       </div>
     ))}
-    <div className="shrink-0 w-24" aria-hidden="true" />
   </div>
 );
 
