@@ -5,9 +5,6 @@ import { motion } from "framer-motion";
 import { Helmet } from "react-helmet-async";
 import { MapPin, Search, ArrowDownUp, Store, Car, ParkingCircle, PackageOpen, ConciergeBell } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import chauffeurImg from "@/assets/chauffeur-illustration.png";
-import deliverImg from "@/assets/illustration-delivery.png";
-import conciergeImg from "@/assets/concierge-task-icon.png";
 
 type ServiceTab = "send" | "receive" | "store";
 
@@ -41,31 +38,48 @@ const Book = () => {
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.3 }}
-              className="grid grid-cols-2 gap-2 mb-6"
+              className="grid grid-cols-2 gap-3 mb-6"
             >
               {[
-                { label: "Chauffeur", href: "/chauffeur", img: chauffeurImg, icon: Car },
-                { label: "Valet", href: "/book", img: null, icon: ParkingCircle },
-                { label: "Deliver", href: "/book", img: deliverImg, icon: PackageOpen },
-                { label: "Concierge", href: "/book", img: conciergeImg, icon: ConciergeBell },
-              ].map((item) => (
-                <Link
-                  key={item.label}
-                  to={item.href}
-                  className="group relative rounded-xl bg-muted border border-border overflow-hidden h-[90px] flex flex-col justify-between p-3 hover:border-foreground/30 hover:shadow-sm transition-all duration-200"
-                >
-                  <span className="text-sm font-bold text-foreground z-10">{item.label}</span>
-                  {item.img ? (
-                    <img
-                      src={item.img}
-                      alt={item.label}
-                      className="absolute bottom-0 right-0 w-16 h-16 object-contain opacity-70 group-hover:opacity-90 transition-opacity"
+                { label: "Chauffeur", desc: "Professional drivers for any occasion", href: "/chauffeur", image: "https://images.unsplash.com/photo-1549317661-bd32c8ce0afa?w=400&q=80", icon: Car },
+                { label: "Valet", desc: "We park so you don't have to", href: "/book", image: "https://images.unsplash.com/photo-1580273916550-e323be2ae537?w=400&q=80", icon: ParkingCircle },
+                { label: "Deliver", desc: "Packages delivered door to door", href: "/book", image: "https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=400&q=80", icon: PackageOpen },
+                { label: "Concierge", desc: "Personal assistant at your fingertips", href: "/book", image: "https://images.unsplash.com/photo-1521791136064-7986c2920216?w=400&q=80", icon: ConciergeBell },
+              ].map((item) => {
+                const Icon = item.icon;
+                return (
+                  <Link
+                    key={item.label}
+                    to={item.href}
+                    className="group relative rounded-2xl glass-card overflow-hidden h-[160px] p-4 flex flex-col transition-all duration-300 hover:border-primary/50"
+                  >
+                    {/* Background image */}
+                    <div
+                      className="absolute inset-0 opacity-40 group-hover:opacity-50 transition-opacity duration-300"
+                      style={{
+                        backgroundImage: `url(${item.image})`,
+                        backgroundSize: "cover",
+                        backgroundPosition: "center",
+                      }}
                     />
-                  ) : (
-                    <item.icon className="absolute bottom-2 right-2 w-10 h-10 text-muted-foreground/40 group-hover:text-muted-foreground/60 transition-colors" />
-                  )}
-                </Link>
-              ))}
+                    {/* Gradient overlay */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-background via-background/70 to-background/30" />
+
+                    {/* Content */}
+                    <div className="relative z-10 flex flex-col h-full">
+                      <div className="w-10 h-10 rounded-xl bg-muted flex items-center justify-center mb-auto group-hover:bg-muted/80 transition-colors">
+                        <Icon className="w-5 h-5 text-foreground" />
+                      </div>
+                      <div>
+                        <h3 className="text-sm font-bold text-foreground mb-0.5 group-hover:text-primary transition-colors">
+                          {item.label}
+                        </h3>
+                        <p className="text-xs text-muted-foreground leading-snug">{item.desc}</p>
+                      </div>
+                    </div>
+                  </Link>
+                );
+              })}
             </motion.div>
 
             {/* Title */}
