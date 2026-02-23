@@ -121,9 +121,11 @@ export const Navbar = () => {
             ) : (
               <div className="w-[70px]" />
             )}
-            <Button variant="hero" size="sm">
-              Book Now
-            </Button>
+            <Link to="/book">
+              <Button variant="hero" size="sm">
+                Book Now
+              </Button>
+            </Link>
           </div>
 
           {/* Mobile Menu Button */}
@@ -192,7 +194,9 @@ export const Navbar = () => {
                     </Button>
                   </Link>
                 )}
-                <Button variant="hero">Book Now</Button>
+                <Link to="/book" onClick={() => setIsOpen(false)}>
+                  <Button variant="hero" className="w-full">Book Now</Button>
+                </Link>
               </div>
             </div>
           </motion.div>

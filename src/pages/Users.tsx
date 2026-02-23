@@ -1,4 +1,5 @@
 import { motion } from "framer-motion";
+import { Link } from "react-router-dom";
 import { Package, Clock, MapPin, Smartphone, ShieldCheck, Hand, ArrowRight } from "lucide-react";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
@@ -80,9 +81,11 @@ const Users = () => {
                     <ArrowRight className="w-5 h-5 transition-transform group-hover:translate-x-1" />
                   </Button>
                 </a>
-                <Button variant="hero-outline" size="xl">
-                  Book Now
-                </Button>
+                <Link to="/book">
+                  <Button variant="hero-outline" size="xl">
+                    Book Now
+                  </Button>
+                </Link>
               </div>
             </motion.div>
 
