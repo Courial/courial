@@ -218,7 +218,7 @@ const Book = () => {
                         className="p-1 bg-transparent border-none outline-none cursor-pointer"
                       >
                         <div className={cn(
-                          "w-24 h-16 flex items-center justify-center transition-all duration-300",
+                          "w-20 h-14 flex items-center justify-center transition-all duration-300",
                           isActive ? "grayscale-0 opacity-100 scale-110" : "grayscale opacity-30 scale-100"
                         )}>
                           <img src={v.image} alt={v.label} className="max-w-full max-h-full object-contain" />
