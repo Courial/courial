@@ -4,6 +4,7 @@ import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { useAuth } from "@/hooks/useAuth";
 import { useAllPosts, useUpsertPost, useDeletePost, DbBlogPost } from "@/hooks/useBlogPosts";
+import { useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { lovable } from "@/integrations/lovable/index";
 import { Button } from "@/components/ui/button";
@@ -24,6 +25,7 @@ const AdminBlog = () => {
   const { data: posts, isLoading } = useAllPosts();
   const upsertPost = useUpsertPost();
   const deletePost = useDeletePost();
+  const queryClient = useQueryClient();
 
   const [editingPost, setEditingPost] = useState<Partial<DbBlogPost> | null>(null);
   const [showTopics, setShowTopics] = useState(false);
@@ -68,6 +70,7 @@ const AdminBlog = () => {
       });
       if (error) throw error;
       toast.success(`${target === "featured" ? "Featured" : "Secondary"} image generated!`);
+      queryClient.invalidateQueries({ queryKey: ["blog-posts"] });
     } catch (e: any) {
       toast.error(e.message || "Failed to generate image");
     } finally {
