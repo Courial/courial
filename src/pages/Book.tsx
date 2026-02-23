@@ -1,14 +1,25 @@
 import React, { useState } from "react";
 import { Navbar } from "@/components/Navbar";
 import { Link } from "react-router-dom";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { Helmet } from "react-helmet-async";
-import { MapPin, Search, CarFront, ParkingCircle, Leaf, Box, ConciergeBell } from "lucide-react";
+import { MapPin, Search, CarFront, ParkingCircle, Leaf, Box, ConciergeBell, PersonStanding, Bike, Truck, Clock, CalendarIcon } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
+import { format } from "date-fns";
 import { Button } from "@/components/ui/button";
+import { Calendar } from "@/components/ui/calendar";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { cn } from "@/lib/utils";
 import chauffeurImage from "@/assets/chauffeur-service.jpg";
 import deliverBox from "@/assets/deliver-box.png";
-import deliverVehicles from "@/assets/deliver-vehicles.png";
+
+type VehicleId = "walker" | "scooter" | "car" | "truck";
+const vehicleOptions: { id: VehicleId; label: string; icon: LucideIcon }[] = [
+  { id: "walker", label: "Walker", icon: PersonStanding },
+  { id: "scooter", label: "Scooter", icon: Bike },
+  { id: "car", label: "Car", icon: CarFront },
+  { id: "truck", label: "Truck", icon: Truck },
+];
 
 type ServiceId = "deliver" | "concierge" | "chauffeur" | "valet";
 
@@ -23,9 +34,10 @@ const Book = () => {
   const [selectedService, setSelectedService] = useState<ServiceId>("deliver");
   const [pickup, setPickup] = useState("");
   const [dropoff, setDropoff] = useState("");
-
-  const isSearchEnabled = pickup.trim().length > 0 && dropoff.trim().length > 0;
-  const selected = serviceCards.find(s => s.id === selectedService)!;
+  const [timeMode, setTimeMode] = useState<"now" | "later">("now");
+  const [selectedDate, setSelectedDate] = useState<Date>();
+  const [selectedTime, setSelectedTime] = useState("12:00");
+  const [selectedVehicle, setSelectedVehicle] = useState<VehicleId | null>(null);
 
   return (
     <div className="min-h-screen bg-background">
@@ -97,24 +109,120 @@ const Book = () => {
               })}
             </motion.div>
 
-            {/* Title with box icon */}
+            {/* Title row with box icon + Now/Later toggle */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.4 }}
               key={selectedService}
             >
-              <div className="flex items-center gap-3 mb-4">
-                {selectedService === "deliver" && (
-                  <img src={deliverBox} alt="Delivery box" className="w-10 h-10" />
-                )}
-                <h1 className="text-3xl font-bold text-foreground">{selected.label}</h1>
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center gap-3">
+                  {selectedService === "deliver" && (
+                    <img src={deliverBox} alt="Delivery box" className="w-10 h-10" />
+                  )}
+                  <h1 className="text-3xl font-bold text-foreground">
+                    {serviceCards.find(s => s.id === selectedService)!.label}
+                  </h1>
+                </div>
+
+                {/* Now / Later pill toggle */}
+                <div className="flex bg-muted rounded-full p-1 gap-0.5">
+                  <button
+                    onClick={() => setTimeMode("now")}
+                    className={cn(
+                      "px-4 py-1.5 rounded-full text-xs font-semibold transition-all duration-200",
+                      timeMode === "now"
+                        ? "bg-foreground text-background shadow-sm"
+                        : "text-muted-foreground hover:text-foreground"
+                    )}
+                  >
+                    Now
+                  </button>
+                  <button
+                    onClick={() => setTimeMode("later")}
+                    className={cn(
+                      "px-4 py-1.5 rounded-full text-xs font-semibold transition-all duration-200 flex items-center gap-1.5",
+                      timeMode === "later"
+                        ? "bg-foreground text-background shadow-sm"
+                        : "text-muted-foreground hover:text-foreground"
+                    )}
+                  >
+                    <Clock className="w-3 h-3" />
+                    Later
+                  </button>
+                </div>
               </div>
 
-              {/* Vehicle types for Deliver */}
+              {/* Date/Time picker when "Later" is selected */}
+              <AnimatePresence>
+                {timeMode === "later" && (
+                  <motion.div
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: "auto" }}
+                    exit={{ opacity: 0, height: 0 }}
+                    transition={{ duration: 0.2 }}
+                    className="overflow-hidden mb-4"
+                  >
+                    <div className="flex gap-2">
+                      <Popover>
+                        <PopoverTrigger asChild>
+                          <Button
+                            variant="outline"
+                            className={cn(
+                              "flex-1 justify-start text-left font-normal rounded-xl h-11",
+                              !selectedDate && "text-muted-foreground"
+                            )}
+                          >
+                            <CalendarIcon className="w-4 h-4 mr-2" />
+                            {selectedDate ? format(selectedDate, "MMM d, yyyy") : "Pick date"}
+                          </Button>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-auto p-0" align="start">
+                          <Calendar
+                            mode="single"
+                            selected={selectedDate}
+                            onSelect={setSelectedDate}
+                            disabled={(date) => date < new Date()}
+                            initialFocus
+                            className={cn("p-3 pointer-events-auto")}
+                          />
+                        </PopoverContent>
+                      </Popover>
+                      <div className="relative">
+                        <input
+                          type="time"
+                          value={selectedTime}
+                          onChange={(e) => setSelectedTime(e.target.value)}
+                          className="h-11 px-3 rounded-xl border border-border bg-background text-sm text-foreground outline-none focus:border-foreground transition-colors w-[110px]"
+                        />
+                      </div>
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+
+              {/* Vehicle type icons for Deliver */}
               {selectedService === "deliver" && (
-                <div className="mb-6">
-                  <img src={deliverVehicles} alt="Vehicle types — walker, scooter, car, truck" className="w-full max-w-[360px]" />
+                <div className="flex gap-3 mb-6">
+                  {vehicleOptions.map((v) => {
+                    const isActive = selectedVehicle === v.id;
+                    return (
+                      <button
+                        key={v.id}
+                        onClick={() => setSelectedVehicle(isActive ? null : v.id)}
+                        className={cn(
+                          "flex flex-col items-center gap-1.5 p-3 rounded-xl border transition-all duration-200 min-w-[70px]",
+                          isActive
+                            ? "border-primary bg-primary/10 text-primary"
+                            : "border-border bg-background text-muted-foreground hover:border-foreground/30 hover:text-foreground"
+                        )}
+                      >
+                        <v.icon className={cn("w-6 h-6 transition-colors", isActive ? "text-primary" : "")} />
+                        <span className="text-[11px] font-medium">{v.label}</span>
+                      </button>
+                    );
+                  })}
                 </div>
               )}
             </motion.div>
@@ -149,9 +257,9 @@ const Book = () => {
 
             {/* Search Button */}
             <Button
-              disabled={!isSearchEnabled}
+              disabled={!(pickup.trim().length > 0 && dropoff.trim().length > 0)}
               className="w-full mt-6 rounded-xl h-12"
-              variant={isSearchEnabled ? "hero" : "secondary"}
+              variant={pickup.trim().length > 0 && dropoff.trim().length > 0 ? "hero" : "secondary"}
             >
               <Search className="w-4 h-4 mr-2" />
               Search
