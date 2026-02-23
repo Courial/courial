@@ -44,7 +44,7 @@ const Book = () => {
             >
               {[
                 { label: "Chauffeur", desc: "Professional drivers for any occasion", href: "/chauffeur", image: chauffeurImage, icons: [CarFront] as LucideIcon[] },
-                { label: "Valet", desc: "We park & charge your EV", href: "/book", image: "https://images.unsplash.com/photo-1580273916550-e323be2ae537?w=400&q=80", icons: [ParkingCircle, Leaf] as LucideIcon[] },
+                { label: "Valet", desc: "More than parking. We park it, charge it, or drive it—whatever you need.", href: "/book", image: "https://images.unsplash.com/photo-1580273916550-e323be2ae537?w=400&q=80", icons: [ParkingCircle, Leaf] as LucideIcon[] },
                 { label: "Deliver", desc: "Packages delivered door to door", href: "/book", image: "https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=400&q=80", icons: [Box] as LucideIcon[] },
                 { label: "Concierge", desc: "Personal assistant at your fingertips", href: "/book", image: "https://images.unsplash.com/photo-1521791136064-7986c2920216?w=400&q=80", icons: [ConciergeBell] as LucideIcon[] },
               ].map((item) => (
