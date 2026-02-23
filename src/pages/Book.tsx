@@ -1,10 +1,13 @@
 import React, { useState } from "react";
 import { Navbar } from "@/components/Navbar";
+import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Helmet } from "react-helmet-async";
-import { MapPin, Square, Search, Package, ArrowDownUp, Store } from "lucide-react";
+import { MapPin, Search, ArrowDownUp, Store, Car, ParkingCircle, PackageOpen, ConciergeBell } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import courierIllustration from "@/assets/illustration-delivery.png";
+import chauffeurImg from "@/assets/chauffeur-illustration.png";
+import deliverImg from "@/assets/illustration-delivery.png";
+import conciergeImg from "@/assets/concierge-task-icon.png";
 
 type ServiceTab = "send" | "receive" | "store";
 
@@ -33,21 +36,37 @@ const Book = () => {
         {/* Left Column — Booking Card */}
         <div className="w-full max-w-[440px] flex-shrink-0 border-r border-border overflow-y-auto">
           <div className="p-8">
-            {/* Hero illustration for "Send" tab */}
-            {activeTab === "send" && (
-              <motion.div
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.3 }}
-                className="mb-6 rounded-2xl overflow-hidden bg-muted"
-              >
-                <img
-                  src={courierIllustration}
-                  alt="Courier delivery illustration"
-                  className="w-full h-48 object-cover"
-                />
-              </motion.div>
-            )}
+            {/* Service Bento Grid */}
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.3 }}
+              className="grid grid-cols-2 gap-2 mb-6"
+            >
+              {[
+                { label: "Chauffeur", href: "/chauffeur", img: chauffeurImg, icon: Car },
+                { label: "Valet", href: "/book", img: null, icon: ParkingCircle },
+                { label: "Deliver", href: "/book", img: deliverImg, icon: PackageOpen },
+                { label: "Concierge", href: "/book", img: conciergeImg, icon: ConciergeBell },
+              ].map((item) => (
+                <Link
+                  key={item.label}
+                  to={item.href}
+                  className="group relative rounded-xl bg-muted border border-border overflow-hidden h-[90px] flex flex-col justify-between p-3 hover:border-foreground/30 hover:shadow-sm transition-all duration-200"
+                >
+                  <span className="text-sm font-bold text-foreground z-10">{item.label}</span>
+                  {item.img ? (
+                    <img
+                      src={item.img}
+                      alt={item.label}
+                      className="absolute bottom-0 right-0 w-16 h-16 object-contain opacity-70 group-hover:opacity-90 transition-opacity"
+                    />
+                  ) : (
+                    <item.icon className="absolute bottom-2 right-2 w-10 h-10 text-muted-foreground/40 group-hover:text-muted-foreground/60 transition-colors" />
+                  )}
+                </Link>
+              ))}
+            </motion.div>
 
             {/* Title */}
             <motion.div
