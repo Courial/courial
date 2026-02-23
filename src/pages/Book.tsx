@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import { Helmet } from "react-helmet-async";
 import { MapPin, Search, ArrowDownUp, Store, Car, ParkingCircle, PackageOpen, ConciergeBell } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import chauffeurImage from "@/assets/chauffeur-service.jpg";
 
 type ServiceTab = "send" | "receive" | "store";
 
@@ -41,7 +42,7 @@ const Book = () => {
               className="grid grid-cols-2 gap-3 mb-6"
             >
               {[
-                { label: "Chauffeur", desc: "Professional drivers for any occasion", href: "/chauffeur", image: "https://images.unsplash.com/photo-1549317661-bd32c8ce0afa?w=400&q=80", icon: Car },
+                { label: "Chauffeur", desc: "Professional drivers for any occasion", href: "/chauffeur", image: chauffeurImage, icon: Car },
                 { label: "Valet", desc: "We park so you don't have to", href: "/book", image: "https://images.unsplash.com/photo-1580273916550-e323be2ae537?w=400&q=80", icon: ParkingCircle },
                 { label: "Deliver", desc: "Packages delivered door to door", href: "/book", image: "https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=400&q=80", icon: PackageOpen },
                 { label: "Concierge", desc: "Personal assistant at your fingertips", href: "/book", image: "https://images.unsplash.com/photo-1521791136064-7986c2920216?w=400&q=80", icon: ConciergeBell },
