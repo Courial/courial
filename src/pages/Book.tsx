@@ -46,7 +46,7 @@ const Book = () => {
                 { label: "Chauffeur", desc: "Professional drivers, ready when you need more than just a ride.", href: "/chauffeur", image: chauffeurImage, icons: [CarFront] as LucideIcon[] },
                 { label: "Valet", desc: "More than parking. We park it, charge it, or drive it—whatever you need.", href: "/book", image: "https://images.unsplash.com/photo-1617788138017-80ad40651399?w=600&q=80", icons: [ParkingCircle, Leaf] as LucideIcon[] },
                 { label: "Deliver", desc: "Your products deserve more than just a driver. They deserve Courial.", href: "/book", image: "https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=400&q=80", icons: [Box] as LucideIcon[] },
-                { label: "Concierge", desc: "Whatever. Whenever. If it’s possible, we’ll get it done.", href: "/book", image: "https://images.unsplash.com/photo-1521791136064-7986c2920216?w=400&q=80", icons: [ConciergeBell] as LucideIcon[] },
+                { label: "Concierge", desc: "Whatever. Whenever.\nIf it’s possible, we’ll get it done.", href: "/book", image: "https://images.unsplash.com/photo-1521791136064-7986c2920216?w=400&q=80", icons: [ConciergeBell] as LucideIcon[] },
               ].map((item) => (
                   <Link
                     key={item.label}
@@ -78,7 +78,7 @@ const Book = () => {
                         <h3 className="text-sm font-bold text-foreground mb-0.5 group-hover:text-primary transition-colors">
                           {item.label}
                         </h3>
-                        <p className="text-xs text-muted-foreground leading-snug">{item.desc}</p>
+                        <p className="text-xs text-muted-foreground leading-snug whitespace-pre-line">{item.desc}</p>
                       </div>
                     </div>
                   </Link>
