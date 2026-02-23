@@ -1,10 +1,26 @@
+import { useState } from "react";
 import { useParams, Link, Navigate } from "react-router-dom";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { motion } from "framer-motion";
-import { ArrowLeft, Calendar, Clock, User, Loader2 } from "lucide-react";
+import { ArrowLeft, Calendar, Clock, User, Loader2, Share2, Mail, Users, AtSign } from "lucide-react";
 import { usePublishedPost } from "@/hooks/useBlogPosts";
 import { Helmet } from "react-helmet-async";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { useAuth } from "@/hooks/useAuth";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 
 interface ContentBlock {
   type: string;
@@ -100,6 +116,65 @@ const renderBlock = (block: ContentBlock, index: number) => {
 const BlogPost = () => {
   const { slug } = useParams<{ slug: string }>();
   const { data: post, isLoading } = usePublishedPost(slug || "");
+  const { isAdmin } = useAuth();
+  const { toast } = useToast();
+  const [emailing, setEmailing] = useState(false);
+  const [confirmOpen, setConfirmOpen] = useState(false);
+  const [sendMode, setSendMode] = useState<"all" | "specific">("all");
+  const [specificEmails, setSpecificEmails] = useState("");
+
+  const handleShare = async () => {
+    if (!post) return;
+    const postUrl = `${window.location.origin}/blog/${post.slug}`;
+    const shareText = `Check out "${post.title}" on the Courial Blog! 📖`;
+
+    if (navigator.share) {
+      try {
+        await navigator.share({ title: post.title, text: shareText, url: postUrl });
+      } catch { /* user cancelled */ }
+    } else {
+      try {
+        await navigator.clipboard.writeText(postUrl);
+        toast({ title: "Link copied!", description: "Share this article with your network." });
+      } catch {
+        toast({ title: "Failed to copy", variant: "destructive" });
+      }
+    }
+  };
+
+  const handleEmailClick = () => {
+    setSendMode("all");
+    setSpecificEmails("");
+    setConfirmOpen(true);
+  };
+
+  const parsedSpecificEmails = specificEmails
+    .split(/[,;\s]+/)
+    .map((e) => e.trim().toLowerCase())
+    .filter((e) => e.includes("@"));
+
+  const handleEmailConfirm = async () => {
+    if (!post) return;
+    if (sendMode === "specific" && parsedSpecificEmails.length === 0) {
+      toast({ title: "No valid emails", description: "Enter at least one valid email address.", variant: "destructive" });
+      return;
+    }
+    setConfirmOpen(false);
+    setEmailing(true);
+    try {
+      const body: Record<string, unknown> = { postId: post.id, dryRun: true };
+      if (sendMode === "specific") {
+        body.emails = parsedSpecificEmails;
+      }
+      const { data, error } = await supabase.functions.invoke("email-blog-post", { body });
+      if (error) throw error;
+      toast({ title: "Dry run complete", description: `Would send to ${data?.recipientCount || 0} recipient(s). No emails were actually sent.` });
+    } catch (e: any) {
+      toast({ title: "Error", description: e.message || "Failed to invoke email function", variant: "destructive" });
+    } finally {
+      setEmailing(false);
+    }
+  };
 
   if (isLoading) {
     return (
@@ -147,9 +222,22 @@ const BlogPost = () => {
             transition={{ duration: 0.5 }}
             className="max-w-2xl mx-auto"
           >
-            <span className="text-xs font-semibold text-primary uppercase tracking-wide">
-              {post.category}
-            </span>
+            {/* Category + Action Buttons */}
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-semibold text-primary uppercase tracking-wide">
+                {post.category}
+              </span>
+              <div className="flex items-center gap-2 ml-auto">
+                <Button variant="ghost" size="sm" onClick={handleShare} className="gap-1.5">
+                  <Share2 className="w-3.5 h-3.5" /> Share
+                </Button>
+                {isAdmin && (
+                  <Button variant="ghost" size="sm" onClick={handleEmailClick} disabled={emailing} className="gap-1.5">
+                    <Mail className="w-3.5 h-3.5" /> {emailing ? "Sending..." : "Email to Users"}
+                  </Button>
+                )}
+              </div>
+            </div>
 
             <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-foreground mt-3 mb-6 tracking-tight leading-tight">
               {post.title}
@@ -229,6 +317,76 @@ const BlogPost = () => {
       </main>
 
       <Footer />
+
+      {/* Email Confirmation Dialog */}
+      <AlertDialog open={confirmOpen} onOpenChange={setConfirmOpen}>
+        <AlertDialogContent className="max-w-md">
+          <AlertDialogHeader>
+            <AlertDialogTitle className="flex items-center gap-2">
+              <Mail className="w-5 h-5 text-primary" />
+              Email Blog Post
+            </AlertDialogTitle>
+            <AlertDialogDescription asChild>
+              <div className="space-y-4">
+                <span className="block text-sm">
+                  Send <strong>"{post?.title}"</strong> via email.
+                </span>
+
+                {/* Mode toggle */}
+                <div className="flex gap-2 justify-center">
+                  <Button
+                    type="button"
+                    size="sm"
+                    variant={sendMode === "all" ? "default" : "outline"}
+                    className="flex-1 gap-1.5"
+                    onClick={() => setSendMode("all")}
+                  >
+                    <Users className="w-3.5 h-3.5" /> All Users
+                  </Button>
+                  <Button
+                    type="button"
+                    size="sm"
+                    variant={sendMode === "specific" ? "default" : "outline"}
+                    className="flex-1 gap-1.5"
+                    onClick={() => setSendMode("specific")}
+                  >
+                    <AtSign className="w-3.5 h-3.5" /> Specific Emails
+                  </Button>
+                </div>
+
+                {sendMode === "specific" && (
+                  <div className="space-y-2">
+                    <Input
+                      placeholder="Enter emails separated by commas..."
+                      value={specificEmails}
+                      onChange={(e) => setSpecificEmails(e.target.value)}
+                      className="bg-background"
+                    />
+                    <span className="block text-xs text-muted-foreground">
+                      {parsedSpecificEmails.length > 0
+                        ? `📬 ${parsedSpecificEmails.length} recipient(s)`
+                        : "Enter one or more email addresses"}
+                    </span>
+                  </div>
+                )}
+
+                <span className="block text-muted-foreground text-xs font-medium text-primary">
+                  🧪 DRY RUN — No emails will actually be sent.
+                </span>
+              </div>
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={handleEmailConfirm}
+              disabled={sendMode === "specific" && parsedSpecificEmails.length === 0}
+            >
+              {sendMode === "all" ? "Test: Send to All" : `Test: Send to ${parsedSpecificEmails.length}`}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 };
