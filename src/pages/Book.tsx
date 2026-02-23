@@ -19,8 +19,8 @@ import truckIcon from "@/assets/truck-icon.png";
 
 type VehicleId = "walker" | "scooter" | "car" | "truck";
 const vehicleOptions: { id: VehicleId; label: string; image: string; sizeClass: string }[] = [
-  { id: "walker", label: "Walker", image: walkerIcon, sizeClass: "w-20 h-14" },
-  { id: "scooter", label: "Scooter", image: bikeIcon, sizeClass: "w-16 h-11" },
+  { id: "walker", label: "Walker", image: walkerIcon, sizeClass: "w-[72px] h-[50px]" },
+  { id: "scooter", label: "Scooter", image: bikeIcon, sizeClass: "w-[51px] h-[35px]" },
   { id: "car", label: "Car", image: carIcon, sizeClass: "w-[88px] h-[62px]" },
   { id: "truck", label: "Truck", image: truckIcon, sizeClass: "w-20 h-14" },
 ];
