@@ -228,7 +228,7 @@ const BlogPost = () => {
                 {post.category}
               </span>
               <div className="flex items-center gap-2 ml-auto">
-                <Button variant="ghost" size="sm" onClick={handleShare} className="gap-1.5">
+                <Button variant="ghost" size="sm" onClick={handleShare} className="gap-1.5 text-primary hover:text-primary">
                   <Share2 className="w-3.5 h-3.5" /> Share
                 </Button>
                 {isAdmin && (
