@@ -3,7 +3,7 @@ import { Navbar } from "@/components/Navbar";
 import { Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { Helmet } from "react-helmet-async";
-import { MapPin, Search, CarFront, ParkingCircle, Leaf, Box, ConciergeBell, PersonStanding, Bike, Truck, Clock, CalendarIcon } from "lucide-react";
+import { MapPin, Search, CarFront, ParkingCircle, Leaf, Box, ConciergeBell, Clock, CalendarIcon } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import { format } from "date-fns";
 import { Button } from "@/components/ui/button";
@@ -12,13 +12,17 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { cn } from "@/lib/utils";
 import chauffeurImage from "@/assets/chauffeur-service.jpg";
 import deliverBox from "@/assets/deliver-box.png";
+import walkerIcon from "@/assets/walker-icon.png";
+import bikeIcon from "@/assets/bike-icon.png";
+import carIcon from "@/assets/car-icon.png";
+import truckIcon from "@/assets/truck-icon.png";
 
 type VehicleId = "walker" | "scooter" | "car" | "truck";
-const vehicleOptions: { id: VehicleId; label: string; icon: LucideIcon }[] = [
-  { id: "walker", label: "Walker", icon: PersonStanding },
-  { id: "scooter", label: "Scooter", icon: Bike },
-  { id: "car", label: "Car", icon: CarFront },
-  { id: "truck", label: "Truck", icon: Truck },
+const vehicleOptions: { id: VehicleId; label: string; image: string }[] = [
+  { id: "walker", label: "Walker", image: walkerIcon },
+  { id: "scooter", label: "Scooter", image: bikeIcon },
+  { id: "car", label: "Car", image: carIcon },
+  { id: "truck", label: "Truck", image: truckIcon },
 ];
 
 type ServiceId = "deliver" | "concierge" | "chauffeur" | "valet";
@@ -212,14 +216,24 @@ const Book = () => {
                         key={v.id}
                         onClick={() => setSelectedVehicle(isActive ? null : v.id)}
                         className={cn(
-                          "flex flex-col items-center gap-1.5 p-3 rounded-xl border transition-all duration-200 min-w-[70px]",
+                          "flex flex-col items-center gap-1.5 p-3 rounded-xl border transition-all duration-300 min-w-[70px]",
                           isActive
-                            ? "border-primary bg-primary/10 text-primary"
-                            : "border-border bg-background text-muted-foreground hover:border-foreground/30 hover:text-foreground"
+                            ? "border-primary bg-primary/5 shadow-sm"
+                            : "border-border bg-background hover:border-foreground/30"
                         )}
                       >
-                        <v.icon className={cn("w-6 h-6 transition-colors", isActive ? "text-primary" : "")} />
-                        <span className="text-[11px] font-medium">{v.label}</span>
+                        <div className={cn(
+                          "w-10 h-10 flex items-center justify-center transition-all duration-300",
+                          isActive ? "grayscale-0 opacity-100 scale-110" : "grayscale opacity-40 scale-100"
+                        )}>
+                          <img src={v.image} alt={v.label} className="max-w-full max-h-full object-contain" />
+                        </div>
+                        <span className={cn(
+                          "text-[10px] font-bold uppercase tracking-tight transition-colors",
+                          isActive ? "text-primary" : "text-muted-foreground"
+                        )}>
+                          {v.label}
+                        </span>
                       </button>
                     );
                   })}
