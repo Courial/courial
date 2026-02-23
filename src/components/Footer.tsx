@@ -129,7 +129,7 @@ export const Footer = () => {
                   </li>
                 ))}
               </ul>
-              {category === "company" && (
+              {category === "legal" && (
                 <a
                   href="/"
                   onClick={(e) => handleLinkClick(e, "/")}
