@@ -54,7 +54,7 @@ export default function Admin() {
           <div className="grid gap-4 sm:grid-cols-2">
             {sections.map((s) => (
               <Link key={s.href} to={s.href} className="group block">
-                <div className="relative h-full rounded-2xl border border-border bg-card p-6 transition-all duration-200 hover:border-primary/40 hover:shadow-md">
+                <div className={`relative h-full rounded-2xl border p-6 transition-all duration-200 hover:shadow-md ${s.title === "Blog" ? "border-primary/20 bg-primary/5 hover:border-primary/40" : "border-border bg-card hover:border-primary/40"}`}>
                   <div className="flex items-start justify-between gap-4">
                     <div>
                       <h2 className="text-xl font-semibold mb-1">{s.title}</h2>
