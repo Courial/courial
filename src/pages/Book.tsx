@@ -18,11 +18,11 @@ import carIcon from "@/assets/car-icon.png";
 import truckIcon from "@/assets/truck-icon.png";
 
 type VehicleId = "walker" | "scooter" | "car" | "truck";
-const vehicleOptions: { id: VehicleId; label: string; image: string }[] = [
-  { id: "walker", label: "Walker", image: walkerIcon },
-  { id: "scooter", label: "Scooter", image: bikeIcon },
-  { id: "car", label: "Car", image: carIcon },
-  { id: "truck", label: "Truck", image: truckIcon },
+const vehicleOptions: { id: VehicleId; label: string; image: string; sizeClass: string }[] = [
+  { id: "walker", label: "Walker", image: walkerIcon, sizeClass: "w-20 h-14" },
+  { id: "scooter", label: "Scooter", image: bikeIcon, sizeClass: "w-16 h-11" },
+  { id: "car", label: "Car", image: carIcon, sizeClass: "w-[88px] h-[62px]" },
+  { id: "truck", label: "Truck", image: truckIcon, sizeClass: "w-20 h-14" },
 ];
 
 type ServiceId = "deliver" | "concierge" | "chauffeur" | "valet";
@@ -218,7 +218,7 @@ const Book = () => {
                         className="p-1 bg-transparent border-none outline-none cursor-pointer"
                       >
                         <div className={cn(
-                          "w-20 h-14 flex items-center justify-center transition-all duration-300",
+                          `${v.sizeClass} flex items-center justify-center transition-all duration-300`,
                           isActive ? "grayscale-0 opacity-100 scale-110" : "grayscale opacity-30 scale-100"
                         )}>
                           <img src={v.image} alt={v.label} className="max-w-full max-h-full object-contain" />
