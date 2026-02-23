@@ -1,21 +1,19 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import {
-  LayoutDashboard, ShoppingCart, Package, BookOpen, ShoppingBag,
+  LayoutDashboard, ShoppingCart, BookOpen, ShoppingBag,
   ChevronLeft, ChevronRight, Shield, BarChart3,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { AdminOverview } from "./AdminOverview";
 import { AdminOrders } from "./AdminOrders";
-import { AdminProducts } from "./AdminProducts";
 import { AdminAnalytics } from "./AdminAnalytics";
 
-type Tab = "overview" | "orders" | "products" | "analytics";
+type Tab = "overview" | "orders" | "analytics";
 
 const NAV_ITEMS: { id: Tab; label: string; icon: React.ElementType }[] = [
   { id: "overview", label: "Overview", icon: LayoutDashboard },
   { id: "orders", label: "Orders", icon: ShoppingCart },
-  { id: "products", label: "Products", icon: Package },
   { id: "analytics", label: "Analytics", icon: BarChart3 },
 ];
 
@@ -95,7 +93,6 @@ export const AdminLayout = () => {
         <div className="max-w-7xl mx-auto p-6 md:p-8">
           {activeTab === "overview" && <AdminOverview />}
           {activeTab === "orders" && <AdminOrders />}
-          {activeTab === "products" && <AdminProducts />}
           {activeTab === "analytics" && <AdminAnalytics />}
         </div>
       </main>
