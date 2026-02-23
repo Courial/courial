@@ -6,6 +6,86 @@ const corsHeaders = {
   "Access-Control-Allow-Methods": "POST, OPTIONS",
 };
 
+const COURIAL_BASE = "https://gocourial.com/userApis";
+
+interface CourialUser {
+  firstName: string;
+  lastName: string;
+  email: string;
+}
+
+interface CourialUsersResponse {
+  success: number;
+  code: number;
+  msg: string;
+  data: {
+    users: CourialUser[];
+    pagination: {
+      totalRecords: number;
+      currentPage: number;
+      totalPages: number;
+      limit: number;
+    };
+  };
+}
+
+async function fetchEndpointPage(endpoint: string, page: number, limit: number, apiKey: string): Promise<CourialUsersResponse | null> {
+  const url = `${endpoint}?page=${page}&limit=${limit}`;
+  try {
+    const res = await fetch(url, {
+      method: "GET",
+      headers: { "security_key": apiKey, "Authorization": `Bearer ${apiKey}` },
+    });
+    if (!res.ok) {
+      const text = await res.text();
+      console.error(`[email-blog-post] ${endpoint} p${page}: ${res.status} ${text}`);
+      return null;
+    }
+    return await res.json() as CourialUsersResponse;
+  } catch (e) {
+    console.error(`[email-blog-post] fetch error ${endpoint} p${page}:`, e);
+    return null;
+  }
+}
+
+async function fetchAllCourialEmails(apiKey: string): Promise<string[]> {
+  const emails = new Set<string>();
+  const endpoints = [
+    `${COURIAL_BASE}/get_courial_users`,
+    `${COURIAL_BASE}/get_dsd_courial_users`,
+  ];
+  const LIMIT = 1000; // max batch size
+  const CONCURRENCY = 10; // parallel pages
+
+  for (const endpoint of endpoints) {
+    // First request to get totalPages
+    const first = await fetchEndpointPage(endpoint, 1, LIMIT, apiKey);
+    if (!first || first.success !== 1 || !first.data?.users) continue;
+
+    for (const u of first.data.users) {
+      if (u.email?.includes("@")) emails.add(u.email.toLowerCase().trim());
+    }
+
+    const totalPages = first.data.pagination.totalPages;
+    console.log(`[email-blog-post] ${endpoint}: ${first.data.pagination.totalRecords} users, ${totalPages} pages`);
+
+    // Fetch remaining pages in parallel batches
+    for (let batch = 2; batch <= totalPages; batch += CONCURRENCY) {
+      const pages = Array.from({ length: Math.min(CONCURRENCY, totalPages - batch + 1) }, (_, i) => batch + i);
+      const results = await Promise.all(pages.map((p) => fetchEndpointPage(endpoint, p, LIMIT, apiKey)));
+      for (const r of results) {
+        if (r?.success === 1 && r.data?.users) {
+          for (const u of r.data.users) {
+            if (u.email?.includes("@")) emails.add(u.email.toLowerCase().trim());
+          }
+        }
+      }
+    }
+  }
+
+  return Array.from(emails);
+}
+
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response("ok", { headers: corsHeaders });
@@ -77,12 +157,15 @@ Deno.serve(async (req) => {
     if (emails && Array.isArray(emails) && emails.length > 0) {
       recipientEmails = emails;
     } else {
-      // Get all auth users via admin API
-      const { data: { users: allUsers }, error: usersError } = await supabase.auth.admin.listUsers({ perPage: 1000 });
-      if (usersError) throw usersError;
-      recipientEmails = allUsers
-        .filter((u) => u.email)
-        .map((u) => u.email!);
+      // Fetch from Courial Production API
+      const apiKey = Deno.env.get("COURIAL_API_SECURITY_KEY");
+      if (!apiKey) {
+        return new Response(JSON.stringify({ error: "COURIAL_API_SECURITY_KEY not configured" }), {
+          status: 500,
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
+      }
+      recipientEmails = await fetchAllCourialEmails(apiKey);
     }
 
     console.log(`[email-blog-post] Post: "${post.title}" | Recipients: ${recipientEmails.length} | Dry run: ${!!dryRun}`);
@@ -99,7 +182,6 @@ Deno.serve(async (req) => {
     }
 
     // TODO: Implement actual email sending via SendGrid here
-    // For now, return as if dry run
     return new Response(JSON.stringify({
       ok: true,
       sent: 0,
