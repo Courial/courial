@@ -3,7 +3,8 @@ import { Navbar } from "@/components/Navbar";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Helmet } from "react-helmet-async";
-import { MapPin, Search, ArrowDownUp, Store, Car, ParkingCircle, PackageOpen, ConciergeBell } from "lucide-react";
+import { MapPin, Search, ArrowDownUp, Store, CarFront, ParkingCircle, Leaf, Box, ConciergeBell } from "lucide-react";
+import type { LucideIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import chauffeurImage from "@/assets/chauffeur-service.jpg";
 
@@ -42,13 +43,11 @@ const Book = () => {
               className="grid grid-cols-2 gap-3 mb-6"
             >
               {[
-                { label: "Chauffeur", desc: "Professional drivers for any occasion", href: "/chauffeur", image: chauffeurImage, icon: Car },
-                { label: "Valet", desc: "We park so you don't have to", href: "/book", image: "https://images.unsplash.com/photo-1580273916550-e323be2ae537?w=400&q=80", icon: ParkingCircle },
-                { label: "Deliver", desc: "Packages delivered door to door", href: "/book", image: "https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=400&q=80", icon: PackageOpen },
-                { label: "Concierge", desc: "Personal assistant at your fingertips", href: "/book", image: "https://images.unsplash.com/photo-1521791136064-7986c2920216?w=400&q=80", icon: ConciergeBell },
-              ].map((item) => {
-                const Icon = item.icon;
-                return (
+                { label: "Chauffeur", desc: "Professional drivers for any occasion", href: "/chauffeur", image: chauffeurImage, icons: [CarFront] as LucideIcon[] },
+                { label: "Valet", desc: "We park & charge your EV", href: "/book", image: "https://images.unsplash.com/photo-1580273916550-e323be2ae537?w=400&q=80", icons: [ParkingCircle, Leaf] as LucideIcon[] },
+                { label: "Deliver", desc: "Packages delivered door to door", href: "/book", image: "https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=400&q=80", icons: [Box] as LucideIcon[] },
+                { label: "Concierge", desc: "Personal assistant at your fingertips", href: "/book", image: "https://images.unsplash.com/photo-1521791136064-7986c2920216?w=400&q=80", icons: [ConciergeBell] as LucideIcon[] },
+              ].map((item) => (
                   <Link
                     key={item.label}
                     to={item.href}
@@ -68,8 +67,12 @@ const Book = () => {
 
                     {/* Content */}
                     <div className="relative z-10 flex flex-col h-full">
-                      <div className="w-10 h-10 rounded-xl bg-muted flex items-center justify-center mb-auto group-hover:bg-muted/80 transition-colors">
-                        <Icon className="w-5 h-5 text-foreground" />
+                      <div className="flex gap-1.5 mb-auto">
+                        {item.icons.map((Icon, idx) => (
+                          <div key={idx} className="w-10 h-10 rounded-xl bg-muted flex items-center justify-center group-hover:bg-muted/80 transition-colors">
+                            <Icon className="w-5 h-5 text-foreground" />
+                          </div>
+                        ))}
                       </div>
                       <div>
                         <h3 className="text-sm font-bold text-foreground mb-0.5 group-hover:text-primary transition-colors">
@@ -79,8 +82,7 @@ const Book = () => {
                       </div>
                     </div>
                   </Link>
-                );
-              })}
+                ))}
             </motion.div>
 
             {/* Title */}
