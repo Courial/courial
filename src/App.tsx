@@ -31,8 +31,14 @@ import AdminSupplies from "./pages/AdminSupplies";
 import AccountOrders from "./pages/AccountOrders";
 import NotFound from "./pages/NotFound";
 import { CartProvider } from "./hooks/useCart";
+import { useTrackVisit } from "./hooks/useTrackVisit";
 
 const queryClient = new QueryClient();
+
+const VisitTracker = () => {
+  useTrackVisit();
+  return null;
+};
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
@@ -43,6 +49,7 @@ const App = () => (
             <Toaster />
             <Sonner />
             <BrowserRouter>
+              <VisitTracker />
               <Routes>
                 <Route path="/" element={<Index />} />
                 <Route path="/markets" element={<Markets />} />

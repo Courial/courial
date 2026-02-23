@@ -233,6 +233,42 @@ export type Database = {
         }
         Relationships: []
       }
+      site_visits: {
+        Row: {
+          city: string | null
+          country: string | null
+          duration_seconds: number | null
+          entered_at: string
+          id: string
+          ip_address: string | null
+          page_path: string
+          session_id: string
+          user_agent: string | null
+        }
+        Insert: {
+          city?: string | null
+          country?: string | null
+          duration_seconds?: number | null
+          entered_at?: string
+          id?: string
+          ip_address?: string | null
+          page_path: string
+          session_id: string
+          user_agent?: string | null
+        }
+        Update: {
+          city?: string | null
+          country?: string | null
+          duration_seconds?: number | null
+          entered_at?: string
+          id?: string
+          ip_address?: string | null
+          page_path?: string
+          session_id?: string
+          user_agent?: string | null
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           created_at: string
