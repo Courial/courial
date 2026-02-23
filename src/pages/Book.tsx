@@ -208,32 +208,21 @@ const Book = () => {
 
               {/* Vehicle type icons for Deliver */}
               {selectedService === "deliver" && (
-                <div className="flex gap-3 mb-6">
+                <div className="flex gap-4 mb-6 justify-center">
                   {vehicleOptions.map((v) => {
                     const isActive = selectedVehicle === v.id;
                     return (
                       <button
                         key={v.id}
                         onClick={() => setSelectedVehicle(isActive ? null : v.id)}
-                        className={cn(
-                          "flex flex-col items-center gap-1.5 p-3 rounded-xl border transition-all duration-300 min-w-[70px]",
-                          isActive
-                            ? "border-primary bg-primary/5 shadow-sm"
-                            : "border-border bg-background hover:border-foreground/30"
-                        )}
+                        className="p-1 bg-transparent border-none outline-none cursor-pointer"
                       >
                         <div className={cn(
-                          "w-10 h-10 flex items-center justify-center transition-all duration-300",
-                          isActive ? "grayscale-0 opacity-100 scale-110" : "grayscale opacity-40 scale-100"
+                          "w-12 h-12 flex items-center justify-center transition-all duration-300",
+                          isActive ? "grayscale-0 opacity-100" : "grayscale opacity-30"
                         )}>
                           <img src={v.image} alt={v.label} className="max-w-full max-h-full object-contain" />
                         </div>
-                        <span className={cn(
-                          "text-[10px] font-bold uppercase tracking-tight transition-colors",
-                          isActive ? "text-primary" : "text-muted-foreground"
-                        )}>
-                          {v.label}
-                        </span>
                       </button>
                     );
                   })}
