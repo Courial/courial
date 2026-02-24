@@ -508,7 +508,7 @@ const Book = () => {
             <DialogTitle className="text-2xl font-bold text-foreground">Fare Summary</DialogTitle>
           </div>
 
-          <div className="space-y-4 mb-6">
+          <div className="space-y-4 mb-3">
             <p className="text-sm text-muted-foreground leading-relaxed">
               Your delivery rate is calculated in advance using distance, estimated time, and the selected vehicle type. The price shown before checkout reflects the projected cost of completing your delivery efficiently and on time.
             </p>
