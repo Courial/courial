@@ -28,7 +28,7 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 type VehicleId = "walker" | "scooter" | "car" | "van" | "truck";
 const vehicleOptions: { id: VehicleId; label: string; image: string; scale?: string }[] = [
   { id: "walker", label: "Walker", image: vehicleWalker, scale: "scale-[0.8]" },
-  { id: "scooter", label: "Scooter", image: vehicleScooter, scale: "scale-[0.8]" },
+  { id: "scooter", label: "Scooter", image: vehicleScooter, scale: "scale-[0.75]" },
   { id: "car", label: "Car", image: vehicleCar },
   { id: "van", label: "Van", image: vehicleVan },
   { id: "truck", label: "Truck", image: vehicleTruck },
@@ -242,10 +242,10 @@ const Book = () => {
                           <button
                             key={v.id}
                             onClick={() => setSelectedVehicle(isActive ? null : v.id)}
-                            className="flex-shrink-0 w-1/4 p-1 bg-transparent border-none outline-none cursor-pointer flex flex-col items-center gap-1"
+                            className="flex-shrink-0 w-1/4 px-2 py-1 bg-transparent border-none outline-none cursor-pointer flex flex-col items-center gap-1"
                           >
                             <div className={cn(
-                              "w-[80px] h-[56px] flex items-center justify-center transition-all duration-300",
+                              "w-[80px] h-[56px] flex items-end justify-center transition-all duration-300",
                               isActive ? "grayscale-0 opacity-100 scale-110" : "grayscale opacity-30 scale-100"
                             )}>
                               <img src={v.image} alt={v.label} className={cn("max-w-full max-h-full object-contain", v.scale)} />
