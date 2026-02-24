@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { Helmet } from "react-helmet-async";
 import { MapPin, Search, CarFront, ParkingCircle, Leaf, Box, ConciergeBell, Clock, CalendarIcon } from "lucide-react";
-import { LoadScript } from "@react-google-maps/api";
+
 import { Hero } from "@/components/Hero";
 import { LogoTicker } from "@/components/LogoTicker";
 import { BentoGrid } from "@/components/BentoGrid";
@@ -53,8 +53,6 @@ const serviceCards: { id: ServiceId; label: string; desc: string; href: string; 
   { id: "valet", label: "Valet", desc: "More than parking. We park it, charge it, or drive it—whatever you need.", href: "/book", image: "https://images.unsplash.com/photo-1617788138017-80ad40651399?w=600&q=80", icons: [ParkingCircle, Leaf] },
 ];
 
-const GOOGLE_MAPS_API_KEY = "AIzaSyABwhqI6wMVFEgPjyGTjB8XHUHTsVBiG4o";
-const MAPS_LIBRARIES: ("places")[] = ["places"];
 
 const Book = () => {
   const [selectedService, setSelectedService] = useState<ServiceId>("deliver");
@@ -67,20 +65,19 @@ const Book = () => {
   const [selectedTime, setSelectedTime] = useState("12:00");
   const [selectedVehicle, setSelectedVehicle] = useState<VehicleId | null>(null);
 
-  const handlePickupSelect = useCallback((place: google.maps.places.PlaceResult) => {
+  const handlePickupSelect = useCallback((place: any) => {
     if (place.geometry?.location) {
       setPickupCoords({ lat: place.geometry.location.lat(), lng: place.geometry.location.lng() });
     }
   }, []);
 
-  const handleDropoffSelect = useCallback((place: google.maps.places.PlaceResult) => {
+  const handleDropoffSelect = useCallback((place: any) => {
     if (place.geometry?.location) {
       setDropoffCoords({ lat: place.geometry.location.lat(), lng: place.geometry.location.lng() });
     }
   }, []);
 
   return (
-    <LoadScript googleMapsApiKey={GOOGLE_MAPS_API_KEY} libraries={MAPS_LIBRARIES}>
     <div className="min-h-screen bg-background">
       <Helmet>
         <title>Book a Courier — Courial</title>
@@ -354,7 +351,6 @@ const Book = () => {
         </div>
       </div>
     </div>
-    </LoadScript>
   );
 };
 
