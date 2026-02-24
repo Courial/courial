@@ -443,7 +443,8 @@ const Book = () => {
 
                     {/* ETA info — visible when both addresses set */}
                     {pickupCoords && dropoffCoords && (
-                      <p className="text-lg font-medium text-muted-foreground text-center py-4">
+                      <p className="text-[15px] font-medium text-muted-foreground text-center py-4 flex items-center justify-center gap-1.5">
+                        <Box className="w-4 h-4" />
                         4 mins away • 2:01 AM dropoff
                       </p>
                     )}
