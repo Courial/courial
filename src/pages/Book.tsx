@@ -262,43 +262,55 @@ const Book = () => {
               )}
             </motion.div>
 
-            {/* Input Fields */}
-            <div className="space-y-0">
-              <div className="relative group">
-                <div className="flex items-center gap-3 px-4 py-4 border border-border rounded-t-xl bg-background transition-colors focus-within:border-foreground">
-                  <div className="flex-shrink-0 w-3 h-3 rounded-full border-[2.5px] border-foreground" />
-                  <input
-                    type="text"
-                    placeholder="Pickup location"
-                    value={pickup}
-                    onChange={(e) => setPickup(e.target.value)}
-                    className="w-full bg-transparent text-sm text-foreground placeholder:text-muted-foreground outline-none"
-                  />
-                </div>
-              </div>
-              <div className="relative group">
-                <div className="flex items-center gap-3 px-4 py-4 border border-border border-t-0 rounded-b-xl bg-background transition-colors focus-within:border-foreground">
-                  <div className="flex-shrink-0 w-3 h-3 bg-foreground" />
-                  <input
-                    type="text"
-                    placeholder="Dropoff location"
-                    value={dropoff}
-                    onChange={(e) => setDropoff(e.target.value)}
-                    className="w-full bg-transparent text-sm text-foreground placeholder:text-muted-foreground outline-none"
-                  />
-                </div>
-              </div>
-            </div>
+            <AnimatePresence>
+              {selectedVehicle && (
+                <motion.div
+                  initial={{ opacity: 0, height: 0 }}
+                  animate={{ opacity: 1, height: "auto" }}
+                  exit={{ opacity: 0, height: 0 }}
+                  transition={{ duration: 0.2 }}
+                  className="overflow-hidden"
+                >
+                  {/* Input Fields */}
+                  <div className="space-y-0">
+                    <div className="relative group">
+                      <div className="flex items-center gap-3 px-4 py-4 border border-border rounded-t-xl bg-background transition-colors focus-within:border-foreground">
+                        <div className="flex-shrink-0 w-3 h-3 rounded-full border-[2.5px] border-foreground" />
+                        <input
+                          type="text"
+                          placeholder="Pickup location"
+                          value={pickup}
+                          onChange={(e) => setPickup(e.target.value)}
+                          className="w-full bg-transparent text-sm text-foreground placeholder:text-muted-foreground outline-none"
+                        />
+                      </div>
+                    </div>
+                    <div className="relative group">
+                      <div className="flex items-center gap-3 px-4 py-4 border border-border border-t-0 rounded-b-xl bg-background transition-colors focus-within:border-foreground">
+                        <div className="flex-shrink-0 w-3 h-3 bg-foreground" />
+                        <input
+                          type="text"
+                          placeholder="Dropoff location"
+                          value={dropoff}
+                          onChange={(e) => setDropoff(e.target.value)}
+                          className="w-full bg-transparent text-sm text-foreground placeholder:text-muted-foreground outline-none"
+                        />
+                      </div>
+                    </div>
+                  </div>
 
-            {/* Search Button */}
-            <Button
-              disabled={!(pickup.trim().length > 0 && dropoff.trim().length > 0)}
-              className="w-full mt-6 rounded-xl h-12"
-              variant={pickup.trim().length > 0 && dropoff.trim().length > 0 ? "hero" : "secondary"}
-            >
-              <Search className="w-4 h-4 mr-2" />
-              Search
-            </Button>
+                  {/* Search Button */}
+                  <Button
+                    disabled={!(pickup.trim().length > 0 && dropoff.trim().length > 0)}
+                    className="w-full mt-6 rounded-xl h-12"
+                    variant={pickup.trim().length > 0 && dropoff.trim().length > 0 ? "hero" : "secondary"}
+                  >
+                    <Search className="w-4 h-4 mr-2" />
+                    Search
+                  </Button>
+                </motion.div>
+              )}
+            </AnimatePresence>
           </div>
         </div>
 
