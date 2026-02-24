@@ -343,3 +343,8 @@
     background-color: transparent !important;
   }
 }
+
+/* Ensure Google Places autocomplete dropdown appears above all UI */
+.pac-container {
+  z-index: 10000 !important;
+}
