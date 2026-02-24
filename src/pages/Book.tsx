@@ -3,7 +3,7 @@ import { Navbar } from "@/components/Navbar";
 import { Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { Helmet } from "react-helmet-async";
-import { MapPin, Search, CarFront, ParkingCircle, Leaf, Box, ConciergeBell, Clock, CalendarIcon } from "lucide-react";
+import { MapPin, Search, CarFront, ParkingCircle, Leaf, Box, ConciergeBell, Clock, CalendarIcon, ChevronDown } from "lucide-react";
 
 import { Hero } from "@/components/Hero";
 import { LogoTicker } from "@/components/LogoTicker";
@@ -64,6 +64,7 @@ const Book = () => {
   const [selectedDate, setSelectedDate] = useState<Date>();
   const [selectedTime, setSelectedTime] = useState("12:00");
   const [selectedVehicle, setSelectedVehicle] = useState<VehicleId | null>(null);
+  const [showAllServices, setShowAllServices] = useState(true);
 
   const handlePickupSelect = useCallback((place: any) => {
     if (place.geometry?.location) {
@@ -94,57 +95,114 @@ const Book = () => {
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.3 }}
-              className="grid grid-cols-2 gap-3 mb-6"
+              className="mb-6"
             >
-              {serviceCards.map((item) => {
-                const isSelected = selectedService === item.id;
-                const cardContent = (
-                  <>
-                    <div
-                      className="absolute inset-0 opacity-40 group-hover:opacity-50 transition-opacity duration-300"
-                      style={{
-                        backgroundImage: `url(${item.image})`,
-                        backgroundSize: "cover",
-                        backgroundPosition: "center",
-                      }}
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-background via-background/70 to-background/30" />
-                    <div className="relative z-10 flex flex-col h-full">
-                      <div className="flex gap-1.5 mb-auto">
-                        {item.icons.map((Icon, idx) => (
-                          <div key={idx} className="w-10 h-10 rounded-xl bg-muted flex items-center justify-center group-hover:bg-muted/80 transition-colors">
-                            <Icon className="w-5 h-5 text-foreground" />
+              {/* Collapsed: show only selected card full-width */}
+              {!showAllServices && (
+                <div className="relative">
+                  {(() => {
+                    const item = serviceCards.find(s => s.id === selectedService)!;
+                    return (
+                      <div className="group relative rounded-2xl glass-card overflow-hidden h-[80px] p-4 flex items-center gap-4 border-primary border-2 transition-all duration-300">
+                        <div
+                          className="absolute inset-0 opacity-30"
+                          style={{
+                            backgroundImage: `url(${item.image})`,
+                            backgroundSize: "cover",
+                            backgroundPosition: "center",
+                          }}
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-r from-background via-background/80 to-background/40" />
+                        <div className="relative z-10 flex items-center gap-3 flex-1">
+                          <div className="flex gap-1.5">
+                            {item.icons.map((Icon, idx) => (
+                              <div key={idx} className="w-9 h-9 rounded-xl bg-muted flex items-center justify-center">
+                                <Icon className="w-4 h-4 text-foreground" />
+                              </div>
+                            ))}
                           </div>
-                        ))}
+                          <div>
+                            <h3 className="text-sm font-bold text-foreground">{item.label}</h3>
+                            <p className="text-xs text-muted-foreground leading-snug line-clamp-1">{item.desc.split('\n')[0]}</p>
+                          </div>
+                        </div>
+                        <button
+                          onClick={() => setShowAllServices(true)}
+                          className="relative z-10 w-8 h-8 rounded-full bg-muted/80 hover:bg-muted flex items-center justify-center transition-colors flex-shrink-0"
+                        >
+                          <ChevronDown className="w-4 h-4 text-foreground" />
+                        </button>
                       </div>
-                      <div>
-                        <h3 className="text-sm font-bold text-foreground mb-0.5 group-hover:text-primary transition-colors">
-                          {item.label}
-                        </h3>
-                        <p className="text-xs text-muted-foreground leading-snug whitespace-pre-line">{item.desc}</p>
-                      </div>
+                    );
+                  })()}
+                </div>
+              )}
+
+              {/* Expanded: show all service cards in grid */}
+              <AnimatePresence>
+                {showAllServices && (
+                  <motion.div
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: "auto" }}
+                    exit={{ opacity: 0, height: 0 }}
+                    transition={{ duration: 0.25 }}
+                    className="overflow-hidden"
+                  >
+                    <div className="grid grid-cols-2 gap-3">
+                      {serviceCards.map((item) => {
+                        const isSelected = selectedService === item.id;
+                        const cardContent = (
+                          <>
+                            <div
+                              className="absolute inset-0 opacity-40 group-hover:opacity-50 transition-opacity duration-300"
+                              style={{
+                                backgroundImage: `url(${item.image})`,
+                                backgroundSize: "cover",
+                                backgroundPosition: "center",
+                              }}
+                            />
+                            <div className="absolute inset-0 bg-gradient-to-t from-background via-background/70 to-background/30" />
+                            <div className="relative z-10 flex flex-col h-full">
+                              <div className="flex gap-1.5 mb-auto">
+                                {item.icons.map((Icon, idx) => (
+                                  <div key={idx} className="w-10 h-10 rounded-xl bg-muted flex items-center justify-center group-hover:bg-muted/80 transition-colors">
+                                    <Icon className="w-5 h-5 text-foreground" />
+                                  </div>
+                                ))}
+                              </div>
+                              <div>
+                                <h3 className="text-sm font-bold text-foreground mb-0.5 group-hover:text-primary transition-colors">
+                                  {item.label}
+                                </h3>
+                                <p className="text-xs text-muted-foreground leading-snug whitespace-pre-line">{item.desc}</p>
+                              </div>
+                            </div>
+                          </>
+                        );
+                        const cardClass = `group relative rounded-2xl glass-card overflow-hidden h-[160px] p-4 flex flex-col transition-all duration-300 ${isSelected ? "border-primary border-2" : "hover:border-primary/50"}`;
+
+                        const handleClick = (e: React.MouseEvent) => {
+                          if (!item.external) {
+                            e.preventDefault();
+                            setSelectedService(item.id);
+                            setShowAllServices(false);
+                          }
+                        };
+
+                        return item.external ? (
+                          <a key={item.label} href={item.href} target="_blank" rel="noopener noreferrer" className={cardClass}>
+                            {cardContent}
+                          </a>
+                        ) : (
+                          <Link key={item.label} to={item.href} onClick={handleClick} className={cardClass}>
+                            {cardContent}
+                          </Link>
+                        );
+                      })}
                     </div>
-                  </>
-                );
-                const cardClass = `group relative rounded-2xl glass-card overflow-hidden h-[160px] p-4 flex flex-col transition-all duration-300 ${isSelected ? "border-primary border-2" : "hover:border-primary/50"}`;
-
-                const handleClick = (e: React.MouseEvent) => {
-                  if (!item.external) {
-                    e.preventDefault();
-                    setSelectedService(item.id);
-                  }
-                };
-
-                return item.external ? (
-                  <a key={item.label} href={item.href} target="_blank" rel="noopener noreferrer" className={cardClass}>
-                    {cardContent}
-                  </a>
-                ) : (
-                  <Link key={item.label} to={item.href} onClick={handleClick} className={cardClass}>
-                    {cardContent}
-                  </Link>
-                );
-              })}
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </motion.div>
 
             {/* Title row with box icon + Now/Later toggle */}
