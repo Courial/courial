@@ -501,9 +501,6 @@ const Book = () => {
                   <img src={vehicleOptions.find(v => v.id === selectedVehicle)!.image} alt={selectedVehicle} className="h-6 object-contain" />
                 )}
               </div>
-              <button onClick={() => setShowPriceBreakdown(false)} className="text-foreground hover:opacity-70 transition-opacity">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-              </button>
             </div>
           </div>
           <div className="px-7 pb-7">
@@ -558,7 +555,7 @@ const Book = () => {
 
           <Button
             onClick={() => setShowPriceBreakdown(false)}
-            className="w-full rounded-xl h-12 text-sm font-semibold"
+            className="w-auto mx-auto rounded-xl h-9 px-8 text-sm font-semibold"
             variant="hero"
           >
             Close
