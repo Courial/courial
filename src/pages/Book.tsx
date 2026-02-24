@@ -711,16 +711,7 @@ const Book = () => {
         <div className="hidden md:flex flex-1 relative overflow-hidden">
           {pickupCoords || dropoffCoords ? (
             <div className="flex-1 relative">
-              <BookingMap pickupCoords={pickupCoords} dropoffCoords={dropoffCoords} pickupAddress={pickup} dropoffAddress={dropoff} pickupPlaceName={pickupPlaceName} dropoffPlaceName={dropoffPlaceName} />
-              {/* Pulsing tracking marker when active */}
-              {bookingState === "active" && pickupCoords && (
-                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-10 pointer-events-none">
-                  <div className="relative">
-                    <div className="w-4 h-4 rounded-full bg-primary" />
-                    <div className="absolute inset-0 w-4 h-4 rounded-full bg-primary animate-ping opacity-75" />
-                  </div>
-                </div>
-              )}
+              <BookingMap pickupCoords={pickupCoords} dropoffCoords={dropoffCoords} pickupAddress={pickup} dropoffAddress={dropoff} pickupPlaceName={pickupPlaceName} dropoffPlaceName={dropoffPlaceName} bookingState={bookingState} />
             </div>
           ) : (
             <div className="flex-1 overflow-y-auto">
