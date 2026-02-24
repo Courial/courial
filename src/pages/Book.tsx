@@ -491,36 +491,64 @@ const Book = () => {
       </div>
       {/* Price Breakdown Dialog */}
       <Dialog open={showPriceBreakdown} onOpenChange={setShowPriceBreakdown}>
-        <DialogContent className="sm:max-w-md bg-background border-border rounded-2xl p-6 [&>button]:hidden">
+        <DialogContent className="sm:max-w-md bg-background border-border rounded-2xl p-6 overflow-y-auto max-h-[90vh] [&>button]:hidden">
           <div className="flex items-start justify-between mb-4">
-            <DialogTitle className="text-2xl font-bold text-foreground">Price Breakdown</DialogTitle>
+            <DialogTitle className="text-2xl font-bold text-foreground">Fare Summary</DialogTitle>
             <button onClick={() => setShowPriceBreakdown(false)} className="text-foreground hover:opacity-70 transition-opacity mt-1">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
             </button>
           </div>
 
-          <p className="text-sm text-muted-foreground leading-relaxed mb-6">
-            You agree to pay the upfront price and applicable wait time fees. The amount presented may be adjusted up or down at the end of the trip if the actual route has tolls/surcharges that differ from the estimated route. Your price may also change based on the rates below if the length, duration, or route of your trip changes. Your upfront price or final adjusted price may be subject to dynamic multipliers to account for marketplace factors, including supply and demand patterns.
-          </p>
+          <div className="space-y-4 mb-6">
+            <p className="text-sm text-muted-foreground leading-relaxed">
+              Your delivery rate is calculated in advance using distance, estimated time, and the selected vehicle type. The price shown before checkout reflects the projected cost of completing your delivery efficiently and on time.
+            </p>
+            
+            <p className="text-sm text-muted-foreground leading-relaxed">
+              By confirming your request, you authorize Courial to charge the estimated amount, along with any applicable wait time or route-related adjustments.
+            </p>
 
-          <div className="space-y-3 mb-6">
-            {[
-              { label: "Base Fare", value: "$0.09" },
-              { label: "Minimum Fare", value: "$5.40" },
-              { label: "+ Per Minute", value: "$0.25" },
-              { label: "+ Per Mile", value: "$0.93" },
-            ].map((row) => (
-              <div key={row.label} className="flex items-center justify-between gap-2">
-                <span className="text-sm font-semibold text-foreground">{row.label}</span>
-                <div className="flex-1 border-b border-dotted border-muted-foreground/30 mx-2" />
-                <span className="text-sm font-semibold text-foreground">{row.value}</span>
-              </div>
-            ))}
+            <div className="space-y-2">
+              <p className="text-sm font-semibold text-foreground">Final pricing may vary if:</p>
+              <ul className="text-sm text-muted-foreground leading-relaxed space-y-1">
+                <li>• The completed route includes tolls or surcharges not included in the initial estimate</li>
+                <li>• The delivery distance or duration changes from the original request</li>
+                <li>• Pickup or drop-off conditions result in additional time</li>
+                <li>• Real-time demand requires dynamic pricing adjustments</li>
+              </ul>
+            </div>
+
+            <p className="text-sm text-muted-foreground leading-relaxed">
+              Our pricing model is designed to ensure reliability, availability, and fair compensation across the network.
+            </p>
           </div>
 
-          <p className="text-sm text-muted-foreground leading-relaxed mb-6">
-            Additional wait time charges may apply to your trip if the driver has waited 2 minute(s): $0.33 per minute.
-          </p>
+          <div className="mb-6">
+            <h3 className="text-lg font-bold text-foreground mb-4">Rate Structure</h3>
+            <div className="space-y-3">
+              {[
+                { label: "Base Fee", value: "$0.09" },
+                { label: "Minimum Charge", value: "$5.40" },
+                { label: "Per Minute", value: "$0.25" },
+                { label: "Per Mile", value: "$0.93" },
+              ].map((row) => (
+                <div key={row.label} className="flex items-center justify-between gap-2">
+                  <span className="text-sm font-semibold text-foreground">{row.label}</span>
+                  <div className="flex-1 border-b border-dotted border-muted-foreground/30 mx-2" />
+                  <span className="text-sm font-semibold text-foreground">{row.value}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="mb-6">
+            <h3 className="text-lg font-bold text-foreground mb-2">Wait Time Policy</h3>
+            <p className="text-sm text-muted-foreground leading-relaxed">
+              Drivers are scheduled to begin service promptly upon arrival.
+              After a 2-minute grace period, wait time is billed at:
+            </p>
+            <p className="text-sm font-bold text-foreground mt-2">$0.33 per additional minute</p>
+          </div>
 
           <Button
             onClick={() => setShowPriceBreakdown(false)}
