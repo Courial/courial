@@ -547,7 +547,7 @@ const Book = () => {
               Courials are scheduled to begin service promptly upon arrival.
               After a 2-minute grace period, wait time is billed at:
             </p>
-            <p className="text-sm font-bold text-foreground mt-2">$0.33 per additional minute</p>
+            <p className="text-sm font-bold text-foreground mt-2">$0.50 per additional minute</p>
           </div>
 
           <Button
