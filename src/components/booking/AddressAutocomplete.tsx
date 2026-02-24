@@ -1,16 +1,26 @@
-import React, { useRef, useState } from "react";
+/// <reference types="google.maps" />
+import React, { useRef, useEffect, useState } from "react";
 
-// Mock LA addresses for test mode
-const MOCK_ADDRESSES = [
-  { address: "1111 S Figueroa St, Los Angeles, CA 90015", lat: 34.0430, lng: -118.2673 },
-  { address: "6801 Hollywood Blvd, Los Angeles, CA 90028", lat: 34.1017, lng: -118.3385 },
-  { address: "200 Santa Monica Pier, Santa Monica, CA 90401", lat: 34.0094, lng: -118.4973 },
-  { address: "5905 Wilshire Blvd, Los Angeles, CA 90036", lat: 34.0639, lng: -118.3592 },
-  { address: "111 S Grand Ave, Los Angeles, CA 90012", lat: 34.0553, lng: -118.2498 },
-  { address: "700 W 5th St, Los Angeles, CA 90071", lat: 34.0488, lng: -118.2568 },
-  { address: "3400 Riverside Dr, Los Angeles, CA 90027", lat: 34.1185, lng: -118.2637 },
-  { address: "10250 Santa Monica Blvd, Los Angeles, CA 90067", lat: 34.0584, lng: -118.4172 },
-];
+const GOOGLE_MAPS_API_KEY = "AIzaSyDxJoLqE0Whu0VmkQv4zVpcVim4UZ3e_c4";
+
+// Load Google Maps script once
+let googleMapsPromise: Promise<void> | null = null;
+function loadGoogleMaps(): Promise<void> {
+  if (googleMapsPromise) return googleMapsPromise;
+  if ((window as any).google?.maps?.places) {
+    googleMapsPromise = Promise.resolve();
+    return googleMapsPromise;
+  }
+  googleMapsPromise = new Promise((resolve, reject) => {
+    const script = document.createElement("script");
+    script.src = `https://maps.googleapis.com/maps/api/js?key=${GOOGLE_MAPS_API_KEY}&libraries=places`;
+    script.async = true;
+    script.onload = () => resolve();
+    script.onerror = () => reject(new Error("Failed to load Google Maps"));
+    document.head.appendChild(script);
+  });
+  return googleMapsPromise;
+}
 
 interface AddressAutocompleteProps {
   placeholder: string;
@@ -27,62 +37,46 @@ const AddressAutocomplete: React.FC<AddressAutocompleteProps> = ({
   onChange,
   className,
 }) => {
-  const [showSuggestions, setShowSuggestions] = useState(false);
-  const [filteredAddresses, setFilteredAddresses] = useState(MOCK_ADDRESSES);
-  const wrapperRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
+  const autocompleteRef = useRef<google.maps.places.Autocomplete | null>(null);
+  const [ready, setReady] = useState(false);
 
-  const handleChange = (val: string) => {
-    onChange(val);
-    const q = val.toLowerCase();
-    setFilteredAddresses(
-      q.length > 0
-        ? MOCK_ADDRESSES.filter((a) => a.address.toLowerCase().includes(q))
-        : MOCK_ADDRESSES
-    );
-    setShowSuggestions(true);
-  };
+  useEffect(() => {
+    loadGoogleMaps().then(() => setReady(true)).catch(console.error);
+  }, []);
 
-  const handleSelect = (item: typeof MOCK_ADDRESSES[0]) => {
-    onChange(item.address);
-    setShowSuggestions(false);
-    onPlaceSelect({
-      formatted_address: item.address,
-      geometry: {
-        location: {
-          lat: () => item.lat,
-          lng: () => item.lng,
-        },
-      },
+  useEffect(() => {
+    if (!ready || !inputRef.current || autocompleteRef.current) return;
+
+    const autocomplete = new google.maps.places.Autocomplete(inputRef.current, {
+      types: ["address"],
+      componentRestrictions: { country: "us" },
     });
-  };
+
+    autocomplete.addListener("place_changed", () => {
+      const place = autocomplete.getPlace();
+      if (place?.formatted_address) {
+        onChange(place.formatted_address);
+        onPlaceSelect(place);
+      }
+    });
+
+    autocompleteRef.current = autocomplete;
+
+    return () => {
+      google.maps.event.clearInstanceListeners(autocomplete);
+    };
+  }, [ready]);
 
   return (
-    <div ref={wrapperRef} className="relative w-full">
-      <input
-        type="text"
-        placeholder={placeholder}
-        value={value}
-        onChange={(e) => handleChange(e.target.value)}
-        onFocus={() => setShowSuggestions(true)}
-        onBlur={() => setTimeout(() => setShowSuggestions(false), 150)}
-        className={className}
-      />
-      {showSuggestions && filteredAddresses.length > 0 && (
-        <div className="absolute top-full left-0 right-0 z-50 mt-1 bg-background border border-border rounded-xl shadow-lg max-h-48 overflow-y-auto">
-          {filteredAddresses.map((item, i) => (
-            <button
-              key={i}
-              type="button"
-              onMouseDown={(e) => e.preventDefault()}
-              onClick={() => handleSelect(item)}
-              className="w-full text-left px-3 py-2.5 text-sm text-foreground hover:bg-muted transition-colors first:rounded-t-xl last:rounded-b-xl"
-            >
-              {item.address}
-            </button>
-          ))}
-        </div>
-      )}
-    </div>
+    <input
+      ref={inputRef}
+      type="text"
+      placeholder={placeholder}
+      value={value}
+      onChange={(e) => onChange(e.target.value)}
+      className={className}
+    />
   );
 };
 
