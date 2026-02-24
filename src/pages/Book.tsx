@@ -26,9 +26,9 @@ import vehicleTruck from "@/assets/vehicle-truck.png";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
 type VehicleId = "walker" | "scooter" | "car" | "van" | "truck";
-const vehicleOptions: { id: VehicleId; label: string; image: string }[] = [
+const vehicleOptions: { id: VehicleId; label: string; image: string; scale?: string }[] = [
   { id: "walker", label: "Walker", image: vehicleWalker },
-  { id: "scooter", label: "Scooter", image: vehicleScooter },
+  { id: "scooter", label: "Scooter", image: vehicleScooter, scale: "scale-[0.8]" },
   { id: "car", label: "Car", image: vehicleCar },
   { id: "van", label: "Van", image: vehicleVan },
   { id: "truck", label: "Truck", image: vehicleTruck },
@@ -248,7 +248,7 @@ const Book = () => {
                               "w-[80px] h-[56px] flex items-center justify-center transition-all duration-300",
                               isActive ? "grayscale-0 opacity-100 scale-110" : "grayscale opacity-30 scale-100"
                             )}>
-                              <img src={v.image} alt={v.label} className="max-w-full max-h-full object-contain" />
+                              <img src={v.image} alt={v.label} className={cn("max-w-full max-h-full object-contain", v.scale)} />
                             </div>
                             <span className={cn(
                               "text-[10px] font-medium transition-colors",
