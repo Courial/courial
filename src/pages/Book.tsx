@@ -336,7 +336,7 @@ const Book = () => {
         <div className="hidden md:flex flex-1 relative overflow-hidden">
           {pickupCoords || dropoffCoords ? (
             <div className="flex-1">
-              <BookingMap pickupCoords={pickupCoords} dropoffCoords={dropoffCoords} />
+              <BookingMap pickupCoords={pickupCoords} dropoffCoords={dropoffCoords} pickupAddress={pickup} dropoffAddress={dropoff} />
             </div>
           ) : (
             <div className="flex-1 overflow-y-auto">
