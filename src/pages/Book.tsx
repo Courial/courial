@@ -5,8 +5,11 @@ import { Navbar } from "@/components/Navbar";
 import { Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { Helmet } from "react-helmet-async";
-import { MapPin, Search, CarFront, ParkingCircle, Leaf, Box, ConciergeBell, Clock, CalendarIcon, ChevronDown, Info } from "lucide-react";
+import { MapPin, Search, CarFront, ParkingCircle, Leaf, Box, ConciergeBell, Clock, CalendarIcon, ChevronDown, Info, Plus, Trash2, CreditCard } from "lucide-react";
 import visaIcon from "@/assets/card-icons/visa.svg";
+import mastercardIcon from "@/assets/card-icons/mastercard.svg";
+import amexIcon from "@/assets/card-icons/amex.svg";
+import discoverIcon from "@/assets/card-icons/discover.svg";
 
 import { Hero } from "@/components/Hero";
 import { LogoTicker } from "@/components/LogoTicker";
@@ -70,6 +73,15 @@ const Book = () => {
   const [showAllServices, setShowAllServices] = useState(true);
   const [notes, setNotes] = useState("");
   const [showPriceBreakdown, setShowPriceBreakdown] = useState(false);
+  const [showPaymentMethods, setShowPaymentMethods] = useState(false);
+  const [selectedPaymentMethod, setSelectedPaymentMethod] = useState("visa-4242");
+
+  const paymentMethods = [
+    { id: "visa-4242", type: "visa", label: "Visa", last4: "4242", icon: visaIcon },
+    { id: "mc-8831", type: "mastercard", label: "Mastercard", last4: "8831", icon: mastercardIcon },
+  ];
+
+  const activePayment = paymentMethods.find(p => p.id === selectedPaymentMethod) || paymentMethods[0];
 
   const isFormValid = pickup.trim().length > 0 && dropoff.trim().length > 0 && selectedVehicle !== null && notes.trim().length > 0;
 
@@ -442,8 +454,14 @@ const Book = () => {
 
                     {/* Payment Method + Request Button */}
                     <div className="flex items-center gap-3">
-                      {/* Payment Card Icon */}
-                      <img src={visaIcon} alt="Visa" className="w-12 h-auto flex-shrink-0 rounded" />
+                      {/* Payment Card Icon + Down Arrow */}
+                      <button
+                        onClick={() => setShowPaymentMethods(true)}
+                        className="flex items-center gap-1 flex-shrink-0 hover:opacity-80 transition-opacity"
+                      >
+                        <img src={activePayment.icon} alt={activePayment.label} className="w-12 h-auto rounded" />
+                        <ChevronDown className="w-3 h-3 text-muted-foreground" />
+                      </button>
 
                       {/* Request Delivery Button */}
                       <Button
@@ -558,6 +576,93 @@ const Book = () => {
           >
             Close
           </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Payment Methods Dialog */}
+      <Dialog open={showPaymentMethods} onOpenChange={setShowPaymentMethods}>
+        <DialogContent className="sm:max-w-md bg-background border-border !rounded-[25px] p-0 overflow-y-auto max-h-[90vh] [&>button]:hidden">
+          <div className="bg-muted/80 rounded-t-[25px] px-7 pt-7 pb-5">
+            <div className="flex items-center gap-3">
+              <CreditCard className="w-7 h-7 text-foreground" />
+              <span className="text-[1.65rem] font-bold text-foreground">Payment</span>
+            </div>
+          </div>
+
+          <div className="px-7 pb-2">
+            <DialogTitle className="text-2xl font-bold text-foreground mb-4">Your Methods</DialogTitle>
+
+            {/* Saved Cards */}
+            <div className="space-y-3 mb-6">
+              {paymentMethods.map((method) => (
+                <div
+                  key={method.id}
+                  onClick={() => {
+                    setSelectedPaymentMethod(method.id);
+                    setShowPaymentMethods(false);
+                  }}
+                  className={cn(
+                    "flex items-center gap-3 p-3 rounded-xl border cursor-pointer transition-all",
+                    selectedPaymentMethod === method.id
+                      ? "border-foreground bg-muted/60"
+                      : "border-border hover:bg-muted/40"
+                  )}
+                >
+                  <img src={method.icon} alt={method.label} className="w-10 h-auto rounded" />
+                  <div className="flex-1">
+                    <p className="text-sm font-semibold text-foreground">{method.label}</p>
+                    <p className="text-xs text-muted-foreground">•••• {method.last4}</p>
+                  </div>
+                  {selectedPaymentMethod === method.id && (
+                    <div className="w-2 h-2 rounded-full bg-foreground" />
+                  )}
+                  <button
+                    onClick={(e) => { e.stopPropagation(); }}
+                    className="p-1.5 rounded-lg hover:bg-destructive/10 text-muted-foreground hover:text-destructive transition-colors"
+                  >
+                    <Trash2 className="w-4 h-4" />
+                  </button>
+                </div>
+              ))}
+            </div>
+
+            {/* Add New Card */}
+            <button className="flex items-center gap-3 w-full p-3 rounded-xl border border-dashed border-border hover:bg-muted/40 transition-colors mb-6">
+              <div className="w-10 h-7 rounded bg-muted flex items-center justify-center">
+                <Plus className="w-4 h-4 text-muted-foreground" />
+              </div>
+              <span className="text-sm font-semibold text-foreground">Add credit or debit card</span>
+            </button>
+
+            {/* Alternative Payment Methods */}
+            <div className="mb-6">
+              <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-3">Other methods</p>
+              <div className="space-y-3">
+                <button className="flex items-center gap-3 w-full p-3 rounded-xl border border-border hover:bg-muted/40 transition-colors">
+                  <div className="w-10 h-7 rounded bg-[#003087] flex items-center justify-center">
+                    <span className="text-[0.5rem] font-bold italic text-white">Pay<span className="text-[#009cde]">Pal</span></span>
+                  </div>
+                  <span className="text-sm font-semibold text-foreground">PayPal</span>
+                </button>
+                <button className="flex items-center gap-3 w-full p-3 rounded-xl border border-border hover:bg-muted/40 transition-colors">
+                  <div className="w-10 h-7 rounded bg-foreground flex items-center justify-center">
+                    <span className="text-[0.5rem] font-bold text-background tracking-tight"> Pay</span>
+                  </div>
+                  <span className="text-sm font-semibold text-foreground">Apple Pay</span>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div className="px-7 pb-7">
+            <Button
+              onClick={() => setShowPaymentMethods(false)}
+              className="w-auto mx-auto rounded-xl h-9 px-8 text-sm font-semibold"
+              variant="hero"
+            >
+              Close
+            </Button>
           </div>
         </DialogContent>
       </Dialog>
