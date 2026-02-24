@@ -15,7 +15,7 @@ const MOCK_ADDRESSES = [
 interface AddressAutocompleteProps {
   placeholder: string;
   value: string;
-  onPlaceSelect: (place: google.maps.places.PlaceResult | { geometry: { location: { lat: () => number; lng: () => number } }; formatted_address: string }) => void;
+  onPlaceSelect: (place: any) => void;
   onChange: (value: string) => void;
   className?: string;
 }
