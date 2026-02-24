@@ -3,7 +3,7 @@ import { Navbar } from "@/components/Navbar";
 import { Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { Helmet } from "react-helmet-async";
-import { MapPin, Search, CarFront, ParkingCircle, Leaf, Box, ConciergeBell, Clock, CalendarIcon, ChevronDown } from "lucide-react";
+import { MapPin, Search, CarFront, ParkingCircle, Leaf, Box, ConciergeBell, Clock, CalendarIcon, ChevronDown, Info, User, Briefcase } from "lucide-react";
 
 import { Hero } from "@/components/Hero";
 import { LogoTicker } from "@/components/LogoTicker";
@@ -389,14 +389,50 @@ const Book = () => {
                     </div>
                   </div>
 
-                  {/* Request Delivery Button */}
-                  <Button
-                    disabled={!(pickup.trim().length > 0 && dropoff.trim().length > 0)}
-                    className="w-full mt-6 rounded-xl h-12 text-base font-semibold"
-                    variant={pickup.trim().length > 0 && dropoff.trim().length > 0 ? "hero" : "secondary"}
-                  >
-                    Request delivery
-                  </Button>
+                  {/* Pricing & Payment Section */}
+                  <div className="mt-6 rounded-2xl border border-border bg-background p-5">
+                    {/* Total Row */}
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-1.5">
+                        <span className="text-lg font-bold text-foreground">Total</span>
+                        <Info className="w-4 h-4 text-muted-foreground" />
+                      </div>
+                      <span className="text-lg font-bold text-foreground">$21.59</span>
+                    </div>
+
+                    <div className="border-t border-border my-4" />
+
+                    {/* Payment Method + Request Button */}
+                    <div className="flex items-center gap-3">
+                      {/* Payment Method Selector */}
+                      <div className="flex items-center gap-3 flex-1 min-w-0">
+                        <div className="flex bg-muted rounded-xl overflow-hidden flex-shrink-0">
+                          <div className="w-10 h-10 flex items-center justify-center bg-background border border-border rounded-l-xl">
+                            <User className="w-4 h-4 text-foreground" />
+                          </div>
+                          <div className="w-10 h-10 flex items-center justify-center">
+                            <Briefcase className="w-4 h-4 text-muted-foreground" />
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-1 min-w-0">
+                          <div className="min-w-0">
+                            <p className="text-sm font-semibold text-foreground leading-tight">Personal</p>
+                            <p className="text-xs text-muted-foreground truncate">American Express •...</p>
+                          </div>
+                          <ChevronDown className="w-3.5 h-3.5 text-muted-foreground flex-shrink-0" />
+                        </div>
+                      </div>
+
+                      {/* Request Delivery Button */}
+                      <Button
+                        disabled={!(pickup.trim().length > 0 && dropoff.trim().length > 0)}
+                        className="rounded-xl h-12 px-6 text-sm font-semibold flex-shrink-0"
+                        variant={pickup.trim().length > 0 && dropoff.trim().length > 0 ? "hero" : "secondary"}
+                      >
+                        Request delivery
+                      </Button>
+                    </div>
+                  </div>
                 </motion.div>
               )}
             </AnimatePresence>
