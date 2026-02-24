@@ -418,7 +418,7 @@ const Book = () => {
                   <div className="space-y-0">
                     <div className="relative group">
                       <div className="flex items-center gap-3 px-4 py-4 border border-border rounded-xl bg-background transition-colors focus-within:border-foreground mb-2">
-                        <div className="flex-shrink-0 w-3 h-3 rounded-full border-[2.5px] border-foreground" />
+                        <div className="flex-shrink-0 w-2.5 h-2.5 rounded-full bg-green-500" />
                         <AddressAutocomplete
                           placeholder="Pickup location"
                           value={pickup}
@@ -430,7 +430,7 @@ const Book = () => {
                     </div>
                     <div className="relative group mt-2">
                       <div className="flex items-center gap-3 px-4 py-4 border border-border rounded-xl bg-background transition-colors focus-within:border-foreground">
-                        <div className="flex-shrink-0 w-3 h-3 bg-foreground" />
+                        <div className="flex-shrink-0 w-2.5 h-2.5 bg-red-500" />
                         <AddressAutocomplete
                           placeholder="Dropoff location"
                           value={dropoff}
