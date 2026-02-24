@@ -348,7 +348,7 @@ const Book = () => {
                           "px-2.5 py-1 rounded-full text-[11px] font-normal transition-all border leading-none",
                           value === true
                             ? "bg-background text-foreground border-primary"
-                            : "bg-background text-foreground/75 border-border/60"
+                            : "bg-background text-foreground/75 border-border/60 hover:border-foreground"
                         )}
                       >
                         {label}
