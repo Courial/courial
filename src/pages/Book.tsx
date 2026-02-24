@@ -347,7 +347,7 @@ const Book = () => {
                         className={cn(
                           "px-2.5 py-1 rounded-full text-[11px] font-semibold transition-all border leading-none",
                           value === true
-                            ? "bg-foreground/75 text-background border-foreground/75"
+                            ? "bg-background text-primary border-primary"
                             : "bg-background text-muted-foreground border-border/60"
                         )}
                       >
