@@ -92,7 +92,7 @@ const BookingMap: React.FC<BookingMapProps> = ({ pickupCoords, dropoffCoords, pi
           fillColor: "#22c55e",
           fillOpacity: 1,
           strokeColor: "#ffffff",
-          strokeWeight: 2,
+          strokeWeight: 1,
         },
         title: pickupAddress || "Pickup",
       });
@@ -110,7 +110,7 @@ const BookingMap: React.FC<BookingMapProps> = ({ pickupCoords, dropoffCoords, pi
           fillColor: "#ef4444",
           fillOpacity: 1,
           strokeColor: "#ffffff",
-          strokeWeight: 2,
+          strokeWeight: 1,
         },
         title: dropoffAddress || "Dropoff",
       });
