@@ -440,11 +440,25 @@ const Book = () => {
                     <div className="border-t border-border my-4" />
 
                     {/* Payment Method + Request Button */}
-                    <div className="flex flex-col gap-4">
+                    <div className="flex items-center gap-3">
+                      {/* Payment Method */}
+                      <div className="flex items-center gap-3 flex-1 min-w-0">
+                        <div className="w-10 h-10 rounded-xl bg-muted flex items-center justify-center flex-shrink-0">
+                          <CreditCard className="w-5 h-5 text-foreground" />
+                        </div>
+                        <div className="flex items-center gap-1 min-w-0">
+                          <div className="min-w-0">
+                            <p className="text-sm font-semibold text-foreground leading-tight">Visa</p>
+                            <p className="text-xs text-muted-foreground truncate">•••• 4242</p>
+                          </div>
+                          <ChevronDown className="w-3.5 h-3.5 text-muted-foreground flex-shrink-0" />
+                        </div>
+                      </div>
+
                       {/* Request Delivery Button */}
                       <Button
                         disabled={!isFormValid}
-                        className="w-full rounded-xl h-12 text-sm font-semibold transition-all duration-300"
+                        className="rounded-xl h-6 px-4 text-xs font-semibold flex-shrink-0"
                         variant={isFormValid ? "hero" : "secondary"}
                       >
                         Book Delivery
