@@ -544,7 +544,7 @@ const Book = () => {
           <div className="mb-6">
             <h3 className="text-lg font-bold text-foreground mb-2">Wait Time Policy</h3>
             <p className="text-sm text-muted-foreground leading-relaxed">
-              Drivers are scheduled to begin service promptly upon arrival.
+              Courials are scheduled to begin service promptly upon arrival.
               After a 2-minute grace period, wait time is billed at:
             </p>
             <p className="text-sm font-bold text-foreground mt-2">$0.33 per additional minute</p>
