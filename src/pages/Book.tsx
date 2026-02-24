@@ -5,7 +5,8 @@ import { Navbar } from "@/components/Navbar";
 import { Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { Helmet } from "react-helmet-async";
-import { MapPin, Search, CarFront, ParkingCircle, Leaf, Box, ConciergeBell, Clock, CalendarIcon, ChevronDown, Info, CreditCard } from "lucide-react";
+import { MapPin, Search, CarFront, ParkingCircle, Leaf, Box, ConciergeBell, Clock, CalendarIcon, ChevronDown, Info } from "lucide-react";
+import visaIcon from "@/assets/card-icons/visa.svg";
 
 import { Hero } from "@/components/Hero";
 import { LogoTicker } from "@/components/LogoTicker";
@@ -442,9 +443,7 @@ const Book = () => {
                     {/* Payment Method + Request Button */}
                     <div className="flex items-center gap-3">
                       {/* Payment Card Icon */}
-                      <div className="w-12 h-8 rounded-md bg-[#1a1f71] flex items-center justify-center flex-shrink-0">
-                        <span className="text-[0.5rem] font-bold italic text-white tracking-wider">VISA</span>
-                      </div>
+                      <img src={visaIcon} alt="Visa" className="w-12 h-auto flex-shrink-0 rounded" />
 
                       {/* Request Delivery Button */}
                       <Button
