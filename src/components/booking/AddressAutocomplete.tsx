@@ -102,7 +102,8 @@ const AddressAutocomplete: React.FC<AddressAutocompleteProps> = ({
     autocomplete.addListener("place_changed", () => {
       const place = autocomplete.getPlace();
       if (place?.geometry) {
-        const address = place.formatted_address || place.name || "";
+        const rawAddress = place.formatted_address || place.name || "";
+        const address = rawAddress.replace(/,?\s*(USA|US|United States)\s*$/i, '').trim();
         isSelectingRef.current = true;
         onChange(address);
         setInputText(address);
