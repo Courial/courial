@@ -406,6 +406,7 @@ const BookingMap: React.FC<BookingMapProps> = ({ pickupCoords, dropoffCoords, pi
         .gm-style-iw-d { overflow: hidden !important; }
         button.gm-ui-hover-effect { display: none !important; }
         .gm-style-iw-chr { display: none !important; }
+        .gm-style-iw-tc { display: none !important; }
       `}</style>
       <div ref={mapRef} className="w-full h-full" />
     </>
