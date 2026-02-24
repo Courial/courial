@@ -411,19 +411,20 @@ const Book = () => {
                   </div>
 
                   {/* Delivery Requirements Notice */}
-                  <div className="mt-3 text-xs text-foreground">
-                    <p className="text-muted-foreground leading-relaxed">Before placing your order, please ensure your shipment meets the following criteria:</p>
-                    <ul className="text-muted-foreground leading-relaxed mt-1 space-y-0.5">
-                      <li>• The total declared value does not exceed $300</li>
-                      <li>• Items are properly packaged, sealed, and ready at the time of pickup</li>
-                      <li>• Contents do not fall under restricted categories</li>
-                    </ul>
-                    <Collapsible className="mt-2">
-                      <CollapsibleTrigger className="flex items-center gap-1 font-semibold cursor-pointer hover:opacity-70 transition-opacity">
-                        More info
-                        <ChevronDown className="w-3.5 h-3.5 transition-transform duration-200 [&[data-state=open]]:rotate-180" />
-                      </CollapsibleTrigger>
-                      <CollapsibleContent className="space-y-3 mt-2">
+                  <Collapsible className="mt-3 text-xs text-foreground">
+                    <CollapsibleTrigger className="flex items-center gap-1 font-semibold cursor-pointer hover:opacity-70 transition-opacity">
+                      Delivery Requirements
+                      <ChevronDown className="w-3.5 h-3.5 transition-transform duration-200 [&[data-state=open]]:rotate-180" />
+                    </CollapsibleTrigger>
+                    <CollapsibleContent className="space-y-3 mt-2">
+                      <div>
+                        <p className="text-muted-foreground leading-relaxed">Before placing your order, please ensure your shipment meets the following criteria:</p>
+                        <ul className="text-muted-foreground leading-relaxed mt-1 space-y-0.5">
+                          <li>• The total declared value does not exceed $300</li>
+                          <li>• Items are properly packaged, sealed, and ready at the time of pickup</li>
+                          <li>• Contents do not fall under restricted categories</li>
+                        </ul>
+                      </div>
                       <div>
                         <p className="font-semibold mb-1">Restricted Items</p>
                         <p className="text-muted-foreground leading-relaxed">Courial does not transport alcohol, prescription or non-prescription drugs, firearms, hazardous materials, illegal goods, or items with significant sentimental or irreplaceable value.</p>
@@ -435,7 +436,6 @@ const Book = () => {
                       </div>
                     </CollapsibleContent>
                   </Collapsible>
-                  </div>
 
                   {/* Pricing & Payment Section */}
                   <div className="mt-3 rounded-2xl border border-border bg-background p-5">
