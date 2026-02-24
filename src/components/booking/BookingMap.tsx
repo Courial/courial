@@ -19,7 +19,7 @@ interface BookingMapProps {
 
 function buildInfoContent(address: string, placeName?: string | null): string {
   const label = placeName || address;
-  return `<div style="font-size:18px;font-weight:500;color:rgba(0,0,0,0.75);padding:2px 4px;white-space:nowrap;">${label}</div>`;
+  return `<div style="font-size:13.5px;font-weight:400;color:rgba(0,0,0,0.75);padding:2px 4px;white-space:nowrap;">${label}</div>`;
 }
 
 // Reuse the same loader from AddressAutocomplete
