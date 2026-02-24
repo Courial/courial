@@ -93,10 +93,10 @@ const Book = () => {
   const handlePickupSelect = useCallback((place: any) => {
     if (place.geometry?.location) {
       setPickupCoords({ lat: place.geometry.location.lat(), lng: place.geometry.location.lng() });
-      // Store place name if it differs from formatted address (i.e. it's an establishment)
       const name = place.name || null;
       const addr = place.formatted_address || "";
-      setPickupPlaceName(name && !addr.startsWith(name) ? name : null);
+      const isEstablishment = name && !addr.startsWith(name);
+      setPickupPlaceName(isEstablishment ? name : null);
     }
   }, []);
 
@@ -105,7 +105,8 @@ const Book = () => {
       setDropoffCoords({ lat: place.geometry.location.lat(), lng: place.geometry.location.lng() });
       const name = place.name || null;
       const addr = place.formatted_address || "";
-      setDropoffPlaceName(name && !addr.startsWith(name) ? name : null);
+      const isEstablishment = name && !addr.startsWith(name);
+      setDropoffPlaceName(isEstablishment ? name : null);
     }
   }, []);
 
@@ -426,27 +427,37 @@ const Book = () => {
                   {/* Input Fields */}
                   <div className="space-y-0">
                     <div className="relative group">
-                      <div className="flex items-center gap-3 px-4 py-4 border border-border rounded-xl bg-background transition-colors focus-within:border-foreground mb-2">
-                        <div className="flex-shrink-0 w-2.5 h-2.5 rounded-full bg-green-500" />
-                        <AddressAutocomplete
-                          placeholder="Pickup location"
-                          value={pickup}
-                          onChange={setPickup}
-                          onPlaceSelect={handlePickupSelect}
-                          className="w-full bg-transparent text-sm text-foreground placeholder:text-muted-foreground outline-none"
-                        />
+                      <div className="flex items-start gap-3 px-4 py-3 border border-border rounded-xl bg-background transition-colors focus-within:border-foreground mb-2">
+                        <div className="flex-shrink-0 w-2.5 h-2.5 rounded-full bg-green-500 mt-[7px]" />
+                        <div className="flex-1 min-w-0">
+                          {pickupPlaceName && pickupCoords && (
+                            <div className="text-sm font-semibold text-foreground leading-tight">{pickupPlaceName}</div>
+                          )}
+                          <AddressAutocomplete
+                            placeholder="Pickup location"
+                            value={pickup}
+                            onChange={(v) => { setPickup(v); if (!v) setPickupPlaceName(null); }}
+                            onPlaceSelect={handlePickupSelect}
+                            className={`w-full bg-transparent text-foreground placeholder:text-muted-foreground outline-none ${pickupPlaceName && pickupCoords ? 'text-muted-foreground text-xs mt-0.5' : 'text-sm'}`}
+                          />
+                        </div>
                       </div>
                     </div>
                     <div className="relative group mt-2">
-                      <div className="flex items-center gap-3 px-4 py-4 border border-border rounded-xl bg-background transition-colors focus-within:border-foreground">
-                        <div className="flex-shrink-0 w-2.5 h-2.5 bg-red-500" />
-                        <AddressAutocomplete
-                          placeholder="Dropoff location"
-                          value={dropoff}
-                          onChange={setDropoff}
-                          onPlaceSelect={handleDropoffSelect}
-                          className="w-full bg-transparent text-sm text-foreground placeholder:text-muted-foreground outline-none"
-                        />
+                      <div className="flex items-start gap-3 px-4 py-3 border border-border rounded-xl bg-background transition-colors focus-within:border-foreground">
+                        <div className="flex-shrink-0 w-2.5 h-2.5 bg-red-500 mt-[7px]" />
+                        <div className="flex-1 min-w-0">
+                          {dropoffPlaceName && dropoffCoords && (
+                            <div className="text-sm font-semibold text-foreground leading-tight">{dropoffPlaceName}</div>
+                          )}
+                          <AddressAutocomplete
+                            placeholder="Dropoff location"
+                            value={dropoff}
+                            onChange={(v) => { setDropoff(v); if (!v) setDropoffPlaceName(null); }}
+                            onPlaceSelect={handleDropoffSelect}
+                            className={`w-full bg-transparent text-foreground placeholder:text-muted-foreground outline-none ${dropoffPlaceName && dropoffCoords ? 'text-muted-foreground text-xs mt-0.5' : 'text-sm'}`}
+                          />
+                        </div>
                       </div>
                     </div>
 

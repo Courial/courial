@@ -18,10 +18,8 @@ interface BookingMapProps {
 }
 
 function buildInfoContent(address: string, placeName?: string | null): string {
-  if (placeName) {
-    return `<div style="font-size:12px;font-weight:500;color:rgba(0,0,0,0.75);padding:2px 4px;white-space:nowrap;"><div style="font-weight:600;">${placeName}</div><div style="opacity:0.7;margin-top:1px;">${address}</div></div>`;
-  }
-  return `<div style="font-size:12px;font-weight:500;color:rgba(0,0,0,0.75);padding:2px 4px;white-space:nowrap;">${address}</div>`;
+  const label = placeName || address;
+  return `<div style="font-size:12px;font-weight:500;color:rgba(0,0,0,0.75);padding:2px 4px;white-space:nowrap;">${label}</div>`;
 }
 
 // Reuse the same loader from AddressAutocomplete
@@ -197,7 +195,6 @@ const BookingMap: React.FC<BookingMapProps> = ({ pickupCoords, dropoffCoords, pi
       <style>{`
         .gm-style-iw { background: white !important; box-shadow: 0 2px 8px rgba(0,0,0,0.15) !important; border: none !important; border-radius: 8px !important; }
         .gm-style-iw-d { overflow: hidden !important; }
-        .gm-style-iw-tc { display: none !important; }
         button.gm-ui-hover-effect { display: none !important; }
         .gm-style-iw-chr { display: none !important; }
       `}</style>
