@@ -123,14 +123,14 @@ const Book = () => {
                           </div>
                           <div>
                             <h3 className="text-sm font-bold text-foreground">{item.label}</h3>
-                            <p className="text-xs text-muted-foreground leading-snug line-clamp-1">{item.desc.split('\n')[0]}</p>
+                            <p className="text-xs text-muted-foreground leading-snug line-clamp-2 whitespace-pre-line">{item.desc}</p>
                           </div>
                         </div>
                         <button
                           onClick={() => setShowAllServices(true)}
-                          className="relative z-10 w-8 h-8 rounded-full bg-muted/80 hover:bg-muted flex items-center justify-center transition-colors flex-shrink-0"
+                          className="relative z-10 w-9 h-9 rounded-xl bg-muted/80 hover:bg-muted flex items-center justify-center transition-colors flex-shrink-0"
                         >
-                          <ChevronDown className="w-4 h-4 text-foreground" />
+                          <ChevronDown className="w-3.5 h-3.5 text-foreground" />
                         </button>
                       </div>
                     );
