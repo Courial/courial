@@ -772,8 +772,8 @@ const Book = () => {
 
               {/* Price / Receipt */}
               {deliveryStep >= 5 ? (
-                <div className="rounded-xl border border-primary/20 bg-primary/5 p-4 mb-4">
-                  <p className="text-xs font-bold uppercase tracking-wider text-primary/70 mb-2">Receipt</p>
+                <div className="rounded-xl border border-border bg-muted/50 p-4 mb-4">
+                  <p className="text-xs font-bold uppercase tracking-wider text-muted-foreground mb-2">Receipt</p>
                   <div className="space-y-1.5 text-sm">
                     <div className="flex justify-between">
                       <span className="text-muted-foreground">Base fare</span>
@@ -788,12 +788,24 @@ const Book = () => {
                       <span className="text-foreground">$4.50</span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-muted-foreground">Service fee</span>
-                      <span className="text-foreground">$2.16</span>
+                      <span className="text-muted-foreground">Extra Weight fee</span>
+                      <span className="text-foreground">$3.00</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Stairs fee</span>
+                      <span className="text-foreground">$2.00</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Add'l Courial fee</span>
+                      <span className="text-foreground">$8.00</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Wait time fee (5 mins)</span>
+                      <span className="text-foreground">$2.50</span>
                     </div>
                     <div className="border-t border-border pt-1.5 flex justify-between font-bold">
                       <span className="text-foreground">Total</span>
-                      <span className="text-primary">$21.59</span>
+                      <span className="text-foreground">$29.31</span>
                     </div>
                   </div>
                 </div>
