@@ -390,7 +390,7 @@ const Book = () => {
                   </div>
 
                   {/* Pricing & Payment Section */}
-                  <div className="mt-6 rounded-2xl border border-border bg-background p-5">
+                  <div className="mt-3 rounded-2xl border border-border bg-background p-5">
                     {/* Total Row */}
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-1.5">
@@ -424,7 +424,7 @@ const Book = () => {
                         className="rounded-xl h-12 px-6 text-sm font-semibold flex-shrink-0"
                         variant={pickup.trim().length > 0 && dropoff.trim().length > 0 ? "hero" : "secondary"}
                       >
-                        Request delivery
+                        Book Delivery
                       </Button>
                     </div>
                   </div>
