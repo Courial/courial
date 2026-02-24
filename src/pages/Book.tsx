@@ -324,11 +324,11 @@ const Book = () => {
               {/* Quick Options Pills — before vehicle selection */}
               {selectedService === "deliver" && (
                 <div className="mb-4">
-                  <p className="text-[11px] text-muted-foreground mb-1.5">My product is</p>
-                  <div className="flex flex-wrap gap-1.5">
+                  <div className="flex flex-wrap items-center gap-1.5">
+                    <span className="text-[11px] text-muted-foreground mr-0.5">My product is</span>
                     {([
                       { label: "Over 70 lbs", value: over70lbs, setter: setOver70lbs },
-                      { label: "2 Courials", value: twoCourials, setter: setTwoCourials },
+                      { label: "Require 2 Courials", value: twoCourials, setter: setTwoCourials },
                       { label: "Stairs", value: hasStairs, setter: setHasStairs },
                     ] as const).map(({ label, value, setter }) => (
                       <button
@@ -341,7 +341,7 @@ const Book = () => {
                           if (label === "Over 70 lbs" && newVal === true && (selectedVehicle === "walker" || selectedVehicle === "scooter")) {
                             setSelectedVehicle(null);
                           }
-                          if (label === "2 Courials" && newVal === true && selectedVehicle !== "van" && selectedVehicle !== "truck") {
+                          if (label === "Require 2 Courials" && newVal === true && selectedVehicle !== "van" && selectedVehicle !== "truck") {
                             setSelectedVehicle(null);
                           }
                         }}
