@@ -489,41 +489,6 @@ const Book = () => {
                     </div>
                   </div>
 
-                  {/* Quick Options Pills */}
-                  <div className="mt-3 mb-1">
-                    <div className="flex flex-wrap items-center justify-center gap-1.5">
-                      {([
-                        { label: "Over 70 lbs", value: over70lbs, setter: setOver70lbs },
-                        { label: "Require 2 Courials", value: twoCourials, setter: setTwoCourials },
-                        { label: "Involves stairs", value: hasStairs, setter: setHasStairs },
-                      ] as const).map(({ label, value, setter }) => (
-                        <button
-                          key={label}
-                          type="button"
-                          onClick={() => {
-                            const newVal = value === true ? null : true;
-                            setter(newVal);
-                            if (label === "Over 70 lbs" && newVal === true && (selectedVehicle === "walker" || selectedVehicle === "scooter")) {
-                              setSelectedVehicle(null);
-                            }
-                            if (label === "Require 2 Courials" && newVal === true && selectedVehicle !== "van" && selectedVehicle !== "truck") {
-                              setSelectedVehicle(null);
-                            }
-                          }}
-                          className={cn(
-                            "px-2.5 py-1 rounded-full text-[11px] font-normal transition-all border leading-none",
-                            value === true
-                              ? "bg-background text-foreground border-primary"
-                              : "bg-background text-foreground/75 border-border/60 hover:border-foreground/50"
-                          )}
-                        >
-                          {label}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-
-                  <div className="border-t border-border mt-3" />
 
                   {/* Delivery Requirements Notice */}
                   <Collapsible className="mt-3 text-xs text-foreground">
@@ -734,8 +699,14 @@ const Book = () => {
 
                 {/* Order Details */}
                 <div className="space-y-0 mb-1">
+                  {notes.trim() && (
+                    <div className="py-2">
+                      <p className="text-xs font-medium text-muted-foreground mb-0.5">Add'l Notes</p>
+                      <p className="text-xs text-foreground">{notes}</p>
+                    </div>
+                  )}
                   {(over70lbs || twoCourials || hasStairs) && (
-                    <div className="py-2 border-b border-border">
+                    <div className="py-2">
                       <div className="flex flex-wrap gap-1.5">
                         {over70lbs && <span className="text-xs text-muted-foreground bg-muted px-2 py-0.5 rounded-full">Over 70 lbs</span>}
                         {twoCourials && <span className="text-xs text-muted-foreground bg-muted px-2 py-0.5 rounded-full">2 Courials</span>}
@@ -743,12 +714,7 @@ const Book = () => {
                       </div>
                     </div>
                   )}
-                  {notes.trim() && (
-                    <div className="py-2 border-b border-border">
-                      <p className="text-xs font-medium text-muted-foreground mb-0.5">Add'l Notes</p>
-                      <p className="text-xs text-foreground">{notes}</p>
-                    </div>
-                  )}
+                  <div className="border-t border-border" />
                 </div>
 
                 {/* Trip Summary */}
