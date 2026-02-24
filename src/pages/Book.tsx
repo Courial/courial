@@ -388,7 +388,7 @@ const Book = () => {
                     <div className="flex items-start gap-3 px-4 py-4 border border-border rounded-xl bg-background transition-colors focus-within:border-foreground">
                       <textarea
                         placeholder="Provide all relevant pickup and drop-off details, including contact numbers, special instructions, access information (stairs, elevators, gate codes), and any other important notes. Please be as thorough as possible."
-                        className="w-full bg-transparent text-sm text-foreground placeholder:text-foreground/25 outline-none resize-none overflow-hidden"
+                        className="w-full bg-transparent text-sm text-foreground placeholder:text-foreground/35 outline-none resize-none overflow-hidden"
                         rows={1}
                         value={notes}
                         onChange={(e) => setNotes(e.target.value)}
