@@ -53,7 +53,7 @@ const serviceCards: { id: ServiceId; label: string; desc: string; href: string; 
   { id: "valet", label: "Valet", desc: "More than parking. We park it, charge it, or drive it—whatever you need.", href: "/book", image: "https://images.unsplash.com/photo-1617788138017-80ad40651399?w=600&q=80", icons: [ParkingCircle, Leaf] },
 ];
 
-const GOOGLE_MAPS_API_KEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY || "";
+const GOOGLE_MAPS_API_KEY = "AIzaSyABwhqI6wMVFEgPjyGTjB8XHUHTsVBiG4o";
 const MAPS_LIBRARIES: ("places")[] = ["places"];
 
 const Book = () => {
