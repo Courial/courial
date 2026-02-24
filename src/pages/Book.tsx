@@ -732,8 +732,27 @@ const Book = () => {
                   </div>
                 </div>
 
+                {/* Order Details */}
+                <div className="space-y-0 mb-1">
+                  {(over70lbs || twoCourials || hasStairs) && (
+                    <div className="py-2 border-b border-border">
+                      <div className="flex flex-wrap gap-1.5">
+                        {over70lbs && <span className="text-xs text-muted-foreground bg-muted px-2 py-0.5 rounded-full">Over 70 lbs</span>}
+                        {twoCourials && <span className="text-xs text-muted-foreground bg-muted px-2 py-0.5 rounded-full">2 Courials</span>}
+                        {hasStairs && <span className="text-xs text-muted-foreground bg-muted px-2 py-0.5 rounded-full">Involves stairs</span>}
+                      </div>
+                    </div>
+                  )}
+                  {notes.trim() && (
+                    <div className="py-2 border-b border-border">
+                      <p className="text-xs font-medium text-muted-foreground mb-0.5">Add'l Notes</p>
+                      <p className="text-xs text-foreground">{notes}</p>
+                    </div>
+                  )}
+                </div>
+
                 {/* Trip Summary */}
-                <div className="space-y-3">
+                <div className="space-y-3 pt-2">
                   <div className="flex items-start gap-3">
                     <div className="flex-shrink-0 w-2.5 h-2.5 rounded-full bg-green-500 mt-[5px]" />
                     <div className="min-w-0">
