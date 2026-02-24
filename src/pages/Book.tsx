@@ -658,12 +658,13 @@ const Book = () => {
                   </div>
                   <div className="flex-1">
                     <div className="flex items-center gap-2">
-                      <h3 className="text-base font-bold text-foreground">Marcus D.</h3>
+                      <h3 className="text-base font-bold text-foreground">Marcus</h3>
                       <Star className="w-3.5 h-3.5 text-primary fill-primary" />
                       <span className="text-sm text-muted-foreground">4.68</span>
                     </div>
-                    <div className="text-xs text-muted-foreground mt-0.5">Black Toyota Corolla · Courial Since '25</div>
-                    <div className="text-xs text-muted-foreground mt-0.5">Plate: ABC 1234</div>
+                    <div className="text-xs text-muted-foreground mt-0.5">Courial Since '25</div>
+                    <div className="text-xs text-muted-foreground mt-0.5">Black Toyota Corolla</div>
+                    <div className="text-xs font-bold text-foreground mt-0.5">ABC1234</div>
                   </div>
                   {selectedVehicle && (
                     <img
