@@ -38,6 +38,7 @@ const BookingMap: React.FC<BookingMapProps> = ({ pickupCoords, dropoffCoords, pi
   const mapRef = useRef<HTMLDivElement>(null);
   const mapInstanceRef = useRef<google.maps.Map | null>(null);
   const markersRef = useRef<google.maps.Marker[]>([]);
+  const infoWindowsRef = useRef<google.maps.InfoWindow[]>([]);
   const polylineRef = useRef<google.maps.Polyline | null>(null);
   const directionsRendererRef = useRef<google.maps.DirectionsRenderer | null>(null);
   const [ready, setReady] = useState(false);
@@ -74,6 +75,10 @@ const BookingMap: React.FC<BookingMapProps> = ({ pickupCoords, dropoffCoords, pi
     markersRef.current.forEach((m) => m.setMap(null));
     markersRef.current = [];
 
+    // Clear existing info windows
+    infoWindowsRef.current.forEach((iw) => iw.close());
+    infoWindowsRef.current = [];
+
     // Clear existing directions
     if (directionsRendererRef.current) {
       directionsRendererRef.current.setMap(null);
@@ -98,6 +103,14 @@ const BookingMap: React.FC<BookingMapProps> = ({ pickupCoords, dropoffCoords, pi
       });
       markersRef.current.push(marker);
       bounds.extend(pickupCoords);
+
+      if (pickupAddress) {
+        const infoWindow = new google.maps.InfoWindow({
+          content: `<div style="font-size:12px;font-weight:500;color:rgba(0,0,0,0.75);padding:2px 4px;white-space:nowrap;">${pickupAddress}</div>`,
+        });
+        infoWindow.open(map, marker);
+        infoWindowsRef.current.push(infoWindow);
+      }
     }
 
     if (dropoffCoords) {
@@ -116,6 +129,14 @@ const BookingMap: React.FC<BookingMapProps> = ({ pickupCoords, dropoffCoords, pi
       });
       markersRef.current.push(marker);
       bounds.extend(dropoffCoords);
+
+      if (dropoffAddress) {
+        const infoWindow = new google.maps.InfoWindow({
+          content: `<div style="font-size:12px;font-weight:500;color:rgba(0,0,0,0.75);padding:2px 4px;white-space:nowrap;">${dropoffAddress}</div>`,
+        });
+        infoWindow.open(map, marker);
+        infoWindowsRef.current.push(infoWindow);
+      }
     }
 
     // Fit bounds
@@ -162,7 +183,18 @@ const BookingMap: React.FC<BookingMapProps> = ({ pickupCoords, dropoffCoords, pi
     );
   }
 
-  return <div ref={mapRef} className="w-full h-full" />;
+  return (
+    <>
+      <style>{`
+        .gm-style-iw { background: white !important; box-shadow: 0 2px 8px rgba(0,0,0,0.15) !important; border: none !important; border-radius: 8px !important; }
+        .gm-style-iw-d { overflow: hidden !important; }
+        .gm-style-iw-tc { display: none !important; }
+        button.gm-ui-hover-effect { display: none !important; }
+        .gm-style-iw-chr { display: none !important; }
+      `}</style>
+      <div ref={mapRef} className="w-full h-full" />
+    </>
+  );
 };
 
 export default BookingMap;
