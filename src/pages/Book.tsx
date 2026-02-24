@@ -623,8 +623,7 @@ const Book = () => {
                 </div>
               </div>
               <div className="text-center">
-                <h2 className="text-xl font-bold text-foreground mb-1">Finding your courier...</h2>
-                <p className="text-sm text-muted-foreground">Matching you with the best available Courial nearby</p>
+                <h2 className="text-xl font-bold text-foreground mb-1">Matching you with the best available Courial nearby</h2>
               </div>
               <button
                 onClick={handleCancelBooking}
