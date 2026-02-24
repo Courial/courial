@@ -4,6 +4,12 @@ import { Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { Helmet } from "react-helmet-async";
 import { MapPin, Search, CarFront, ParkingCircle, Leaf, Box, ConciergeBell, Clock, CalendarIcon } from "lucide-react";
+import { Hero } from "@/components/Hero";
+import { LogoTicker } from "@/components/LogoTicker";
+import { BentoGrid } from "@/components/BentoGrid";
+import { TechShowcase } from "@/components/TechShowcase";
+import { Testimonials } from "@/components/Testimonials";
+import { Footer } from "@/components/Footer";
 import type { LucideIcon } from "lucide-react";
 import { format } from "date-fns";
 import { Button } from "@/components/ui/button";
@@ -271,28 +277,41 @@ const Book = () => {
         </div>
 
         {/* Right Column — Map Placeholder */}
-        <div className="hidden md:flex flex-1 bg-muted relative items-center justify-center overflow-hidden">
-          <div
-            className="absolute inset-0 opacity-30"
-            style={{
-              backgroundImage: `
-                linear-gradient(to right, hsl(var(--border)) 1px, transparent 1px),
-                linear-gradient(to bottom, hsl(var(--border)) 1px, transparent 1px)
-              `,
-              backgroundSize: "60px 60px",
-            }}
-          />
-          <div className="relative z-10 text-center">
-            <div className="w-16 h-16 rounded-full bg-background border border-border flex items-center justify-center mx-auto mb-4 shadow-sm">
-              <MapPin className="w-7 h-7 text-muted-foreground" />
+        <div className="hidden md:flex flex-1 relative overflow-hidden">
+          {pickup.trim().length > 0 && dropoff.trim().length > 0 ? (
+            <div className="flex-1 bg-muted relative flex items-center justify-center">
+              <div
+                className="absolute inset-0 opacity-30"
+                style={{
+                  backgroundImage: `
+                    linear-gradient(to right, hsl(var(--border)) 1px, transparent 1px),
+                    linear-gradient(to bottom, hsl(var(--border)) 1px, transparent 1px)
+                  `,
+                  backgroundSize: "60px 60px",
+                }}
+              />
+              <div className="relative z-10 text-center">
+                <div className="w-16 h-16 rounded-full bg-background border border-border flex items-center justify-center mx-auto mb-4 shadow-sm">
+                  <MapPin className="w-7 h-7 text-muted-foreground" />
+                </div>
+                <p className="text-sm font-medium text-muted-foreground">Map view coming soon</p>
+                <p className="text-xs text-muted-foreground/60 mt-1">Google Maps integration</p>
+              </div>
+              <div className="absolute bottom-6 right-6 flex flex-col gap-0.5">
+                <button className="w-10 h-10 bg-background border border-border rounded-t-lg flex items-center justify-center text-foreground text-lg font-medium hover:bg-muted transition-colors">+</button>
+                <button className="w-10 h-10 bg-background border border-border rounded-b-lg flex items-center justify-center text-foreground text-lg font-medium hover:bg-muted transition-colors">−</button>
+              </div>
             </div>
-            <p className="text-sm font-medium text-muted-foreground">Map view coming soon</p>
-            <p className="text-xs text-muted-foreground/60 mt-1">Google Maps integration</p>
-          </div>
-          <div className="absolute bottom-6 right-6 flex flex-col gap-0.5">
-            <button className="w-10 h-10 bg-background border border-border rounded-t-lg flex items-center justify-center text-foreground text-lg font-medium hover:bg-muted transition-colors">+</button>
-            <button className="w-10 h-10 bg-background border border-border rounded-b-lg flex items-center justify-center text-foreground text-lg font-medium hover:bg-muted transition-colors">−</button>
-          </div>
+          ) : (
+            <div className="flex-1 overflow-y-auto">
+              <Hero />
+              <LogoTicker />
+              <BentoGrid />
+              <TechShowcase />
+              <Testimonials />
+              <Footer />
+            </div>
+          )}
         </div>
       </div>
     </div>
