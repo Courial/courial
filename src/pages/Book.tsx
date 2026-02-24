@@ -27,7 +27,7 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 
 type VehicleId = "walker" | "scooter" | "car" | "van" | "truck";
 const vehicleOptions: { id: VehicleId; label: string; image: string; scale?: string }[] = [
-  { id: "walker", label: "Walker", image: vehicleWalker },
+  { id: "walker", label: "Walker", image: vehicleWalker, scale: "scale-[0.8]" },
   { id: "scooter", label: "Scooter", image: vehicleScooter, scale: "scale-[0.8]" },
   { id: "car", label: "Car", image: vehicleCar },
   { id: "van", label: "Van", image: vehicleVan },
