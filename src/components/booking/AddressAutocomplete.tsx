@@ -22,20 +22,24 @@ const AddressAutocomplete: React.FC<AddressAutocompleteProps> = ({
     if (!inputRef.current || !window.google?.maps?.places) return;
     if (autocompleteRef.current) return;
 
-    const autocomplete = new google.maps.places.Autocomplete(inputRef.current, {
-      types: ["address"],
-      fields: ["formatted_address", "geometry", "name", "place_id"],
-    });
+    try {
+      const autocomplete = new google.maps.places.Autocomplete(inputRef.current, {
+        types: ["address"],
+        fields: ["formatted_address", "geometry", "name", "place_id"],
+      });
 
-    autocomplete.addListener("place_changed", () => {
-      const place = autocomplete.getPlace();
-      if (place?.formatted_address) {
-        onChange(place.formatted_address);
-        onPlaceSelect(place);
-      }
-    });
+      autocomplete.addListener("place_changed", () => {
+        const place = autocomplete.getPlace();
+        if (place?.formatted_address) {
+          onChange(place.formatted_address);
+          onPlaceSelect(place);
+        }
+      });
 
-    autocompleteRef.current = autocomplete;
+      autocompleteRef.current = autocomplete;
+    } catch (e) {
+      console.warn("Google Places Autocomplete failed to initialize:", e);
+    }
   }, [onPlaceSelect, onChange]);
 
   return (
