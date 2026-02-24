@@ -492,7 +492,7 @@ const Book = () => {
       {/* Price Breakdown Dialog */}
       <Dialog open={showPriceBreakdown} onOpenChange={setShowPriceBreakdown}>
         <DialogContent className="sm:max-w-md bg-background border-border !rounded-[25px] p-0 overflow-y-auto max-h-[90vh] [&>button]:hidden">
-          <div className="bg-muted/50 rounded-t-[25px] px-7 pt-7 pb-5">
+          <div className="bg-muted/80 rounded-t-[25px] px-7 pt-7 pb-5">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <img src={deliverBox} alt="Deliver" className="w-8 h-8" />
