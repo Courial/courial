@@ -324,12 +324,12 @@ const Book = () => {
               {/* Quick Options Pills — before vehicle selection */}
               {selectedService === "deliver" && (
                 <div className="mb-4">
-                  <div className="flex flex-wrap items-center gap-1.5">
-                    <span className="text-[11px] text-muted-foreground mr-0.5">My product is</span>
+                  <div className="flex flex-wrap items-center justify-center gap-1.5">
+                    <span className="text-[11px] text-muted-foreground mr-0.5">Product is</span>
                     {([
                       { label: "Over 70 lbs", value: over70lbs, setter: setOver70lbs },
                       { label: "Require 2 Courials", value: twoCourials, setter: setTwoCourials },
-                      { label: "Stairs", value: hasStairs, setter: setHasStairs },
+                      { label: "Involves stairs", value: hasStairs, setter: setHasStairs },
                     ] as const).map(({ label, value, setter }) => (
                       <button
                         key={label}
