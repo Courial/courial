@@ -88,7 +88,7 @@ const BookingMap: React.FC<BookingMapProps> = ({ pickupCoords, dropoffCoords, pi
         map,
         icon: {
           path: google.maps.SymbolPath.CIRCLE,
-          scale: 9,
+          scale: 10,
           fillColor: "#22c55e",
           fillOpacity: 1,
           strokeColor: "#ffffff",
@@ -106,7 +106,7 @@ const BookingMap: React.FC<BookingMapProps> = ({ pickupCoords, dropoffCoords, pi
         map,
         icon: {
           path: "M -6 -6 L 6 -6 L 6 6 L -6 6 Z",
-          scale: 1.125,
+          scale: 1.24,
           fillColor: "#ef4444",
           fillOpacity: 1,
           strokeColor: "#ffffff",
