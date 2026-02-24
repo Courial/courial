@@ -18,17 +18,20 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { cn } from "@/lib/utils";
 import chauffeurImage from "@/assets/chauffeur-service.jpg";
 import deliverBox from "@/assets/deliver-box.png";
-import walkerIcon from "@/assets/walker-icon.png";
-import bikeIcon from "@/assets/bike-icon.png";
-import carIcon from "@/assets/car-icon.png";
-import truckIcon from "@/assets/truck-icon.png";
+import vehicleWalker from "@/assets/vehicle-walker.png";
+import vehicleScooter from "@/assets/vehicle-scooter.png";
+import vehicleCar from "@/assets/vehicle-car.png";
+import vehicleVan from "@/assets/vehicle-van.png";
+import vehicleTruck from "@/assets/vehicle-truck.png";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 
-type VehicleId = "walker" | "scooter" | "car" | "truck";
-const vehicleOptions: { id: VehicleId; label: string; image: string; sizeClass: string }[] = [
-  { id: "walker", label: "Walker", image: walkerIcon, sizeClass: "w-[72px] h-[50px]" },
-  { id: "scooter", label: "Scooter", image: bikeIcon, sizeClass: "w-[51px] h-[35px]" },
-  { id: "car", label: "Car", image: carIcon, sizeClass: "w-[88px] h-[62px]" },
-  { id: "truck", label: "Truck", image: truckIcon, sizeClass: "w-20 h-14" },
+type VehicleId = "walker" | "scooter" | "car" | "van" | "truck";
+const vehicleOptions: { id: VehicleId; label: string; image: string }[] = [
+  { id: "walker", label: "Walker", image: vehicleWalker },
+  { id: "scooter", label: "Scooter", image: vehicleScooter },
+  { id: "car", label: "Car", image: vehicleCar },
+  { id: "van", label: "Van", image: vehicleVan },
+  { id: "truck", label: "Truck", image: vehicleTruck },
 ];
 
 type ServiceId = "deliver" | "concierge" | "chauffeur" | "valet";
@@ -48,6 +51,10 @@ const Book = () => {
   const [selectedDate, setSelectedDate] = useState<Date>();
   const [selectedTime, setSelectedTime] = useState("12:00");
   const [selectedVehicle, setSelectedVehicle] = useState<VehicleId | null>(null);
+  const [vehicleScrollIndex, setVehicleScrollIndex] = useState(0);
+  const maxVisibleVehicles = 4;
+  const canScrollVehicleLeft = vehicleScrollIndex > 0;
+  const canScrollVehicleRight = vehicleScrollIndex + maxVisibleVehicles < vehicleOptions.length;
 
   return (
     <div className="min-h-screen bg-background">
@@ -214,24 +221,53 @@ const Book = () => {
 
               {/* Vehicle type icons for Deliver */}
               {selectedService === "deliver" && (
-                <div className="flex gap-4 mb-6 justify-center">
-                  {vehicleOptions.map((v) => {
-                    const isActive = selectedVehicle === v.id;
-                    return (
-                      <button
-                        key={v.id}
-                        onClick={() => setSelectedVehicle(isActive ? null : v.id)}
-                        className="p-1 bg-transparent border-none outline-none cursor-pointer"
-                      >
-                        <div className={cn(
-                          `${v.sizeClass} flex items-center justify-center transition-all duration-300`,
-                          isActive ? "grayscale-0 opacity-100 scale-110" : "grayscale opacity-30 scale-100"
-                        )}>
-                          <img src={v.image} alt={v.label} className="max-w-full max-h-full object-contain" />
-                        </div>
-                      </button>
-                    );
-                  })}
+                <div className="flex items-center gap-1 mb-6">
+                  <button
+                    onClick={() => setVehicleScrollIndex(i => Math.max(0, i - 1))}
+                    className={cn(
+                      "p-1 rounded-full transition-opacity",
+                      canScrollVehicleLeft ? "opacity-60 hover:opacity-100" : "opacity-0 pointer-events-none"
+                    )}
+                  >
+                    <ChevronLeft className="w-4 h-4 text-foreground" />
+                  </button>
+                  <div className="flex-1 overflow-hidden">
+                    <div
+                      className="flex transition-transform duration-300 ease-out"
+                      style={{ transform: `translateX(-${vehicleScrollIndex * 25}%)` }}
+                    >
+                      {vehicleOptions.map((v) => {
+                        const isActive = selectedVehicle === v.id;
+                        return (
+                          <button
+                            key={v.id}
+                            onClick={() => setSelectedVehicle(isActive ? null : v.id)}
+                            className="flex-shrink-0 w-1/4 p-1 bg-transparent border-none outline-none cursor-pointer flex flex-col items-center gap-1"
+                          >
+                            <div className={cn(
+                              "w-[80px] h-[56px] flex items-center justify-center transition-all duration-300",
+                              isActive ? "grayscale-0 opacity-100 scale-110" : "grayscale opacity-30 scale-100"
+                            )}>
+                              <img src={v.image} alt={v.label} className="max-w-full max-h-full object-contain" />
+                            </div>
+                            <span className={cn(
+                              "text-[10px] font-medium transition-colors",
+                              isActive ? "text-foreground" : "text-muted-foreground/50"
+                            )}>{v.label}</span>
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+                  <button
+                    onClick={() => setVehicleScrollIndex(i => Math.min(vehicleOptions.length - maxVisibleVehicles, i + 1))}
+                    className={cn(
+                      "p-1 rounded-full transition-opacity",
+                      canScrollVehicleRight ? "opacity-60 hover:opacity-100" : "opacity-0 pointer-events-none"
+                    )}
+                  >
+                    <ChevronRight className="w-4 h-4 text-foreground" />
+                  </button>
                 </div>
               )}
             </motion.div>
