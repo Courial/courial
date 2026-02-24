@@ -1,11 +1,11 @@
 import React, { useState, useCallback } from "react";
-import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { Navbar } from "@/components/Navbar";
 import { Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { Helmet } from "react-helmet-async";
-import { MapPin, Search, CarFront, ParkingCircle, Leaf, Box, ConciergeBell, Clock, CalendarIcon, ChevronDown, Info, Plus, Trash2, CreditCard, CheckCircle2, Loader2 } from "lucide-react";
+import { MapPin, Search, CarFront, ParkingCircle, Leaf, Box, ConciergeBell, Clock, CalendarIcon, ChevronDown, Info, Plus, Trash2, CreditCard } from "lucide-react";
 import visaIcon from "@/assets/card-icons/visa.svg";
 import mastercardIcon from "@/assets/card-icons/mastercard.svg";
 import amexIcon from "@/assets/card-icons/amex.svg";
@@ -80,9 +80,7 @@ const Book = () => {
   const [over70lbs, setOver70lbs] = useState<boolean | null>(null);
   const [twoCourials, setTwoCourials] = useState<boolean | null>(null);
   const [hasStairs, setHasStairs] = useState<boolean | null>(null);
-  const [bookingState, setBookingState] = useState<"idle" | "loading" | "success">("idle");
-  const [showBookingConfirm, setShowBookingConfirm] = useState(false);
-  const [testOrderId, setTestOrderId] = useState<string | null>(null);
+
   const paymentMethods = [
     { id: "visa-4242", type: "visa", label: "Visa", last4: "4242", icon: visaIcon },
     { id: "mc-8831", type: "mastercard", label: "Mastercard", last4: "8831", icon: mastercardIcon },
@@ -91,57 +89,6 @@ const Book = () => {
   const activePayment = paymentMethods.find(p => p.id === selectedPaymentMethod) || paymentMethods[0];
 
   const isFormValid = pickup.trim().length > 0 && dropoff.trim().length > 0 && selectedVehicle !== null && notes.trim().length > 0;
-
-  const handleBookDelivery = useCallback(async () => {
-    if (!isFormValid) return;
-    setBookingState("loading");
-    setShowBookingConfirm(true);
-
-    // Simulate API call delay (test mode)
-    await new Promise(resolve => setTimeout(resolve, 2000));
-
-    const orderId = `TEST-${Date.now().toString(36).toUpperCase()}`;
-    setTestOrderId(orderId);
-    setBookingState("success");
-    console.log("[Book] Test order created:", {
-      orderId,
-      service: selectedService,
-      vehicle: selectedVehicle,
-      pickup,
-      dropoff,
-      pickupCoords,
-      dropoffCoords,
-      timeMode,
-      scheduledDate: timeMode === "later" ? selectedDate : null,
-      scheduledTime: timeMode === "later" ? selectedTime : null,
-      notes,
-      over70lbs,
-      twoCourials,
-      hasStairs,
-      payment: activePayment.id,
-      fareEstimate: "$21.59",
-    });
-  }, [isFormValid, selectedService, selectedVehicle, pickup, dropoff, pickupCoords, dropoffCoords, timeMode, selectedDate, selectedTime, notes, over70lbs, twoCourials, hasStairs, activePayment]);
-
-  const resetBooking = useCallback(() => {
-    setBookingState("idle");
-    setShowBookingConfirm(false);
-    setTestOrderId(null);
-    setPickup("");
-    setDropoff("");
-    setPickupCoords(null);
-    setDropoffCoords(null);
-    setPickupPlaceName(null);
-    setDropoffPlaceName(null);
-    setSelectedVehicle(null);
-    setNotes("");
-    setOver70lbs(null);
-    setTwoCourials(null);
-    setHasStairs(null);
-    setTimeMode("now");
-    setSelectedService(null);
-    setShowAllServices(true);
-  }, []);
 
   const handlePickupSelect = useCallback((place: any) => {
     if (place.geometry?.location) {
@@ -592,16 +539,11 @@ const Book = () => {
 
                       {/* Request Delivery Button */}
                       <Button
-                        disabled={!isFormValid || bookingState === "loading"}
-                        onClick={handleBookDelivery}
+                        disabled={!isFormValid}
                         className="flex-1 rounded h-8 text-base font-semibold"
                         variant={isFormValid ? "hero" : "secondary"}
                       >
-                        {bookingState === "loading" ? (
-                          <><Loader2 className="w-4 h-4 mr-2 animate-spin" />Booking...</>
-                        ) : (
-                          "Book Delivery"
-                        )}
+                        Book Delivery
                       </Button>
                     </div>
                   </div>
@@ -796,84 +738,6 @@ const Book = () => {
               Close
             </Button>
           </div>
-        </DialogContent>
-      </Dialog>
-
-      {/* Booking Confirmation Dialog (Test Mode) */}
-      <Dialog open={showBookingConfirm} onOpenChange={(open) => { if (!open && bookingState === "success") resetBooking(); else if (!open) { setShowBookingConfirm(false); setBookingState("idle"); } }}>
-        <DialogContent className="sm:max-w-md bg-background border-border !rounded-[25px] p-0 overflow-hidden [&>button]:hidden">
-          <AnimatePresence mode="wait">
-            {bookingState === "loading" ? (
-              <motion.div
-                key="loading"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                className="flex flex-col items-center justify-center py-16 px-7"
-              >
-                <Loader2 className="w-12 h-12 text-primary animate-spin mb-4" />
-                <DialogTitle className="text-xl font-bold text-foreground mb-2">Placing your order...</DialogTitle>
-                <DialogDescription className="text-sm text-muted-foreground text-center">Connecting to the Courial network</DialogDescription>
-              </motion.div>
-            ) : bookingState === "success" ? (
-              <motion.div
-                key="success"
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.3 }}
-              >
-                <div className="bg-primary/10 px-7 pt-7 pb-5 flex flex-col items-center">
-                  <CheckCircle2 className="w-14 h-14 text-primary mb-3" />
-                  <DialogTitle className="text-2xl font-bold text-foreground">Delivery Booked!</DialogTitle>
-                  <DialogDescription className="sr-only">Your test delivery has been booked successfully</DialogDescription>
-                  <span className="inline-block mt-2 px-3 py-1 rounded-full bg-primary/20 text-primary text-xs font-bold tracking-wider uppercase">Test Mode</span>
-                </div>
-                <div className="px-7 py-5 space-y-3">
-                  <div className="flex justify-between text-sm">
-                    <span className="text-muted-foreground">Order ID</span>
-                    <span className="font-mono font-bold text-foreground">{testOrderId}</span>
-                  </div>
-                  <div className="flex justify-between text-sm">
-                    <span className="text-muted-foreground">Vehicle</span>
-                    <span className="font-semibold text-foreground capitalize">{selectedVehicle}</span>
-                  </div>
-                  <div className="flex justify-between text-sm">
-                    <span className="text-muted-foreground">Timing</span>
-                    <span className="font-semibold text-foreground">{timeMode === "now" ? "ASAP" : `${selectedDate ? format(selectedDate, "MMM d") : "—"} at ${selectedTime}`}</span>
-                  </div>
-                  <div className="border-t border-border pt-3">
-                    <div className="flex items-start gap-2 mb-2">
-                      <div className="w-2 h-2 rounded-full bg-primary mt-1.5 flex-shrink-0" />
-                      <p className="text-sm text-foreground leading-snug">{pickup}</p>
-                    </div>
-                    <div className="flex items-start gap-2">
-                      <div className="w-2 h-2 rounded-full bg-foreground mt-1.5 flex-shrink-0" />
-                      <p className="text-sm text-foreground leading-snug">{dropoff}</p>
-                    </div>
-                  </div>
-                  {notes && (
-                    <div className="border-t border-border pt-3">
-                      <p className="text-xs text-muted-foreground mb-1">Notes</p>
-                      <p className="text-sm text-foreground">{notes}</p>
-                    </div>
-                  )}
-                  <div className="flex justify-between text-sm border-t border-border pt-3">
-                    <span className="text-muted-foreground">Fare Estimate</span>
-                    <span className="font-bold text-foreground">$21.59</span>
-                  </div>
-                  <div className="flex justify-between text-sm">
-                    <span className="text-muted-foreground">Payment</span>
-                    <span className="font-semibold text-foreground">{activePayment.label} •••• {activePayment.last4}</span>
-                  </div>
-                </div>
-                <div className="px-7 pb-7">
-                  <Button onClick={resetBooking} variant="hero" className="w-full rounded-xl h-10 text-sm font-semibold">
-                    Done
-                  </Button>
-                </div>
-              </motion.div>
-            ) : null}
-          </AnimatePresence>
         </DialogContent>
       </Dialog>
     </div>
