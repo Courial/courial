@@ -328,7 +328,7 @@ const Book = () => {
                     {([
                       { label: "Over 70 lbs", value: over70lbs, setter: setOver70lbs },
                       { label: "Require 2 Courials", value: twoCourials, setter: setTwoCourials },
-                      { label: "Has stairs", value: hasStairs, setter: setHasStairs },
+                      { label: "Involves stairs", value: hasStairs, setter: setHasStairs },
                     ] as const).map(({ label, value, setter }) => (
                       <button
                         key={label}
