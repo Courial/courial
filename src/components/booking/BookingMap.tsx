@@ -20,7 +20,7 @@ interface BookingMapProps {
 
 function buildInfoContent(address: string, placeName?: string | null): string {
   const label = placeName || address;
-  return `<div style="font-size:13.5px;font-weight:400;color:rgba(0,0,0,0.75);padding:2px 4px;white-space:nowrap;">${label}</div>`;
+  return `<div style="font-size:10px;font-weight:400;color:rgba(0,0,0,0.75);padding:1px 3px;max-width:160px;word-wrap:break-word;line-height:1.3;">${label}</div>`;
 }
 
 // Car SVG icon as data URL for markers
