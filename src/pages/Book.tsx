@@ -508,15 +508,9 @@ const Book = () => {
               By confirming your request, you authorize Courial to charge the estimated amount, along with any applicable wait time or route-related adjustments.
             </p>
 
-            <div className="space-y-2">
-              <p className="text-sm font-semibold text-foreground">Final pricing may vary if:</p>
-              <ul className="text-sm text-muted-foreground leading-relaxed space-y-1">
-                <li>• The completed route includes tolls or surcharges not included in the initial estimate</li>
-                <li>• The delivery distance or duration changes from the original request</li>
-                <li>• Pickup or drop-off conditions result in additional time</li>
-                <li>• Real-time demand requires dynamic pricing adjustments</li>
-              </ul>
-            </div>
+            <p className="text-sm text-muted-foreground leading-relaxed">
+              Final pricing may vary if the completed route includes tolls or surcharges not reflected in the initial estimate, if the delivery distance or duration differs from the original request, if pickup or drop-off conditions require additional time, or if real-time demand necessitates dynamic pricing adjustments.
+            </p>
 
             <p className="text-sm text-muted-foreground leading-relaxed">
               Our pricing model is designed to ensure reliability, availability, and fair compensation across the network.
