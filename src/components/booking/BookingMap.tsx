@@ -62,6 +62,46 @@ function getVehicleIconSize(vehicleType?: string | null): { w: number; h: number
     default: return { w: 28, h: 40 };
   }
 }
+// Calculate bearing (degrees) between two lat/lng points
+function getBearing(from: { lat: number; lng: number }, to: { lat: number; lng: number }): number {
+  const dLng = ((to.lng - from.lng) * Math.PI) / 180;
+  const fromLat = (from.lat * Math.PI) / 180;
+  const toLat = (to.lat * Math.PI) / 180;
+  const y = Math.sin(dLng) * Math.cos(toLat);
+  const x = Math.cos(fromLat) * Math.sin(toLat) - Math.sin(fromLat) * Math.cos(toLat) * Math.cos(dLng);
+  return ((Math.atan2(y, x) * 180) / Math.PI + 360) % 360;
+}
+
+// Pre-load an image and create rotated versions via canvas
+const rotatedIconCache = new Map<string, string>();
+
+function createRotatedIcon(url: string, angleDeg: number, w: number, h: number): Promise<string> {
+  // Round angle to nearest 5 degrees for caching
+  const roundedAngle = Math.round(angleDeg / 5) * 5;
+  const cacheKey = `${url}_${roundedAngle}_${w}_${h}`;
+  if (rotatedIconCache.has(cacheKey)) return Promise.resolve(rotatedIconCache.get(cacheKey)!);
+
+  return new Promise((resolve) => {
+    const img = new Image();
+    img.crossOrigin = "anonymous";
+    img.onload = () => {
+      const maxDim = Math.ceil(Math.sqrt(w * w + h * h));
+      const canvas = document.createElement("canvas");
+      canvas.width = maxDim;
+      canvas.height = maxDim;
+      const ctx = canvas.getContext("2d")!;
+      ctx.translate(maxDim / 2, maxDim / 2);
+      ctx.rotate((roundedAngle * Math.PI) / 180);
+      ctx.drawImage(img, -w / 2, -h / 2, w, h);
+      const dataUrl = canvas.toDataURL("image/png");
+      rotatedIconCache.set(cacheKey, dataUrl);
+      resolve(dataUrl);
+    };
+    img.onerror = () => resolve(url); // fallback to unrotated
+    img.src = url;
+  });
+}
+
 let googleMapsPromise: Promise<void> | null = null;
 function loadGoogleMaps(): Promise<void> {
   if (googleMapsPromise) return googleMapsPromise;
@@ -259,46 +299,57 @@ const BookingMap: React.FC<BookingMapProps> = ({ pickupCoords, dropoffCoords, pi
       return;
     }
 
-    // Create 4 car markers at random positions around pickup
+    // Create 4 car markers at random positions around pickup, rotated toward pickup
     const startPositions = generateRandomPositions(pickupCoords, 4, 3);
-    const cars = startPositions.map((pos) => {
-      const marker = new google.maps.Marker({
-        position: pos,
-        map,
-        icon: {
-          url: getVehicleIconUrl(vehicleType),
-          scaledSize: new google.maps.Size(getVehicleIconSize(vehicleType).w, getVehicleIconSize(vehicleType).h),
-          anchor: new google.maps.Point(getVehicleIconSize(vehicleType).w / 2, getVehicleIconSize(vehicleType).h / 2),
-        },
-        zIndex: 5,
-      });
-      return marker;
+    const iconUrl = getVehicleIconUrl(vehicleType);
+    const iconSize = getVehicleIconSize(vehicleType);
+
+    // Pre-create rotated icons for each car pointing toward pickup
+    const rotatedIconPromises = startPositions.map((pos) => {
+      const bearing = getBearing(pos, pickupCoords);
+      return createRotatedIcon(iconUrl, bearing, iconSize.w, iconSize.h);
     });
-    carMarkersRef.current = cars;
 
-    // Animate cars moving toward pickup
-    const startTime = performance.now();
-    const duration = 3000; // 3 seconds to match loading time
-
-    const animate = (now: number) => {
-      const elapsed = now - startTime;
-      const progress = Math.min(elapsed / duration, 1);
-      // Ease out cubic
-      const eased = 1 - Math.pow(1 - progress, 3);
-
-      cars.forEach((car, i) => {
-        const start = startPositions[i];
-        const lat = start.lat + (pickupCoords.lat - start.lat) * eased;
-        const lng = start.lng + (pickupCoords.lng - start.lng) * eased;
-        car.setPosition({ lat, lng });
+    Promise.all(rotatedIconPromises).then((rotatedUrls) => {
+      const maxDim = Math.ceil(Math.sqrt(iconSize.w * iconSize.w + iconSize.h * iconSize.h));
+      const cars = startPositions.map((pos, i) => {
+        const marker = new google.maps.Marker({
+          position: pos,
+          map,
+          icon: {
+            url: rotatedUrls[i],
+            scaledSize: new google.maps.Size(maxDim, maxDim),
+            anchor: new google.maps.Point(maxDim / 2, maxDim / 2),
+          },
+          zIndex: 5,
+        });
+        return marker;
       });
+      carMarkersRef.current = cars;
 
-      if (progress < 1) {
-        carAnimationRef.current = requestAnimationFrame(animate);
-      }
-    };
+      // Animate cars moving toward pickup
+      const startTime = performance.now();
+      const duration = 3000;
 
-    carAnimationRef.current = requestAnimationFrame(animate);
+      const animate = (now: number) => {
+        const elapsed = now - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+        const eased = 1 - Math.pow(1 - progress, 3);
+
+        cars.forEach((car, i) => {
+          const start = startPositions[i];
+          const lat = start.lat + (pickupCoords.lat - start.lat) * eased;
+          const lng = start.lng + (pickupCoords.lng - start.lng) * eased;
+          car.setPosition({ lat, lng });
+        });
+
+        if (progress < 1) {
+          carAnimationRef.current = requestAnimationFrame(animate);
+        }
+      };
+
+      carAnimationRef.current = requestAnimationFrame(animate);
+    });
 
     return cleanup;
   }, [bookingState, pickupCoords]);
@@ -358,32 +409,34 @@ const BookingMap: React.FC<BookingMapProps> = ({ pickupCoords, dropoffCoords, pi
         });
         pulsingDotRef.current = pulseDot;
 
-        // Create tracking car marker
+        // Create tracking car marker (will be updated with rotated icon)
+        const iconUrl = getVehicleIconUrl(vehicleType);
+        const iconSize = getVehicleIconSize(vehicleType);
+        const maxDim = Math.ceil(Math.sqrt(iconSize.w * iconSize.w + iconSize.h * iconSize.h));
+
         const carMarker = new google.maps.Marker({
           position: pickupCoords,
           map,
           icon: {
-            url: getVehicleIconUrl(vehicleType),
-            scaledSize: new google.maps.Size(getVehicleIconSize(vehicleType).w, getVehicleIconSize(vehicleType).h),
-            anchor: new google.maps.Point(getVehicleIconSize(vehicleType).w / 2, getVehicleIconSize(vehicleType).h / 2),
+            url: iconUrl,
+            scaledSize: new google.maps.Size(maxDim, maxDim),
+            anchor: new google.maps.Point(maxDim / 2, maxDim / 2),
           },
           zIndex: 10,
         });
         trackingMarkerRef.current = carMarker;
 
         // Animate along route path — slow loop
-        const totalDuration = 20000; // 20s to traverse the whole route
+        const totalDuration = 20000;
         const startTime = performance.now();
-
-        // Pulse animation for the blue dot
         let pulseScale = 18;
         let pulseGrowing = true;
+        let lastBearing = -999;
 
         const animate = (now: number) => {
           const elapsed = now - startTime;
-          const progress = (elapsed % totalDuration) / totalDuration; // loops
+          const progress = (elapsed % totalDuration) / totalDuration;
           
-          // Find position along path
           const totalPoints = path.length;
           const exactIndex = progress * (totalPoints - 1);
           const idx = Math.floor(exactIndex);
@@ -398,6 +451,23 @@ const BookingMap: React.FC<BookingMapProps> = ({ pickupCoords, dropoffCoords, pi
           const pos = { lat, lng };
           carMarker.setPosition(pos);
           pulseDot.setPosition(pos);
+
+          // Rotate icon to match bearing along path
+          const bearing = getBearing(
+            { lat: from.lat(), lng: from.lng() },
+            { lat: to.lat(), lng: to.lng() }
+          );
+          const roundedBearing = Math.round(bearing / 5) * 5;
+          if (roundedBearing !== lastBearing) {
+            lastBearing = roundedBearing;
+            createRotatedIcon(iconUrl, bearing, iconSize.w, iconSize.h).then((rotatedUrl) => {
+              carMarker.setIcon({
+                url: rotatedUrl,
+                scaledSize: new google.maps.Size(maxDim, maxDim),
+                anchor: new google.maps.Point(maxDim / 2, maxDim / 2),
+              });
+            });
+          }
 
           // Animate pulse
           if (pulseGrowing) {
