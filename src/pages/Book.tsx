@@ -378,11 +378,13 @@ const Book = () => {
                   </div>
 
                   {/* Notes Field */}
-                  <div className="relative group mt-3">
-                    <div className="flex items-start gap-3 px-4 py-4 border border-border border-t-0 rounded-b-xl bg-background transition-colors focus-within:border-foreground -mt-[1px]">
+                  <div className="relative group mt-4">
+                    <div className="flex items-start gap-3 px-4 py-4 border border-border rounded-xl bg-background transition-colors focus-within:border-foreground">
                       <textarea
                         placeholder="Provide all relevant pickup and drop-off details, including contact numbers, special instructions, access information (stairs, elevators, gate codes), and any other important notes. Please be as thorough as possible."
-                        className="w-full bg-transparent text-sm text-foreground/50 placeholder:text-foreground/50 outline-none resize-none min-h-[60px]"
+                        className="w-full bg-transparent text-sm text-foreground/50 placeholder:text-foreground/50 outline-none resize-none overflow-hidden"
+                        rows={4}
+                        onInput={(e) => { const t = e.currentTarget; t.style.height = 'auto'; t.style.height = t.scrollHeight + 'px'; }}
                       />
                     </div>
                   </div>
