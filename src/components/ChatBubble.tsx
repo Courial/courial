@@ -1,17 +1,22 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { MessageCircle } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 export const ChatBubble = () => {
   const [isVisible, setIsVisible] = useState(true);
   const navigate = useNavigate();
+  const location = useLocation();
+
+  const isBookingPage = location.pathname === "/book";
 
   const handleClick = () => {
     setIsVisible(false);
     navigate("/help");
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
+
+  if (isBookingPage) return null;
 
   return (
     <AnimatePresence>
