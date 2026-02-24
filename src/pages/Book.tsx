@@ -389,14 +389,13 @@ const Book = () => {
                     </div>
                   </div>
 
-                  {/* Search Button */}
+                  {/* Request Delivery Button */}
                   <Button
                     disabled={!(pickup.trim().length > 0 && dropoff.trim().length > 0)}
-                    className="w-full mt-6 rounded-xl h-12"
+                    className="w-full mt-6 rounded-xl h-12 text-base font-semibold"
                     variant={pickup.trim().length > 0 && dropoff.trim().length > 0 ? "hero" : "secondary"}
                   >
-                    <Search className="w-4 h-4 mr-2" />
-                    Search
+                    Request delivery
                   </Button>
                 </motion.div>
               )}
