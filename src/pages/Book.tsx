@@ -23,15 +23,15 @@ import vehicleScooter from "@/assets/vehicle-scooter.png";
 import vehicleCar from "@/assets/vehicle-car.png";
 import vehicleVan from "@/assets/vehicle-van.png";
 import vehicleTruck from "@/assets/vehicle-truck.png";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+
 
 type VehicleId = "walker" | "scooter" | "car" | "van" | "truck";
-const vehicleOptions: { id: VehicleId; label: string; image: string; imgClass?: string; extraClass?: string }[] = [
-  { id: "walker", label: "Walker", image: vehicleWalker, imgClass: "max-h-[45px]", extraClass: "mr-[-8px]" },
-  { id: "scooter", label: "Scooter", image: vehicleScooter, imgClass: "max-h-[34px]" },
-  { id: "car", label: "Car", image: vehicleCar },
-  { id: "van", label: "Van", image: vehicleVan },
-  { id: "truck", label: "Truck", image: vehicleTruck },
+const vehicleOptions: { id: VehicleId; label: string; image: string; imgClass?: string }[] = [
+  { id: "walker", label: "Walker", image: vehicleWalker, imgClass: "max-h-[38px]" },
+  { id: "scooter", label: "Scooter", image: vehicleScooter, imgClass: "max-h-[30px]" },
+  { id: "car", label: "Car", image: vehicleCar, imgClass: "max-h-[40px]" },
+  { id: "van", label: "Van", image: vehicleVan, imgClass: "max-h-[40px]" },
+  { id: "truck", label: "Truck", image: vehicleTruck, imgClass: "max-h-[40px]" },
 ];
 
 type ServiceId = "deliver" | "concierge" | "chauffeur" | "valet";
@@ -51,10 +51,6 @@ const Book = () => {
   const [selectedDate, setSelectedDate] = useState<Date>();
   const [selectedTime, setSelectedTime] = useState("12:00");
   const [selectedVehicle, setSelectedVehicle] = useState<VehicleId | null>(null);
-  const [vehicleScrollIndex, setVehicleScrollIndex] = useState(0);
-  const maxVisibleVehicles = 4;
-  const canScrollVehicleLeft = vehicleScrollIndex > 0;
-  const canScrollVehicleRight = vehicleScrollIndex + maxVisibleVehicles < vehicleOptions.length;
 
   return (
     <div className="min-h-screen bg-background">
@@ -221,53 +217,28 @@ const Book = () => {
 
               {/* Vehicle type icons for Deliver */}
               {selectedService === "deliver" && (
-                <div className="flex items-center gap-1 mb-6">
-                  <button
-                    onClick={() => setVehicleScrollIndex(i => Math.max(0, i - 1))}
-                    className={cn(
-                      "p-1 rounded-full transition-opacity",
-                      canScrollVehicleLeft ? "opacity-60 hover:opacity-100" : "opacity-0 pointer-events-none"
-                    )}
-                  >
-                    <ChevronLeft className="w-4 h-4 text-foreground" />
-                  </button>
-                  <div className="flex-1 overflow-hidden">
-                    <div
-                      className="flex transition-transform duration-300 ease-out"
-                      style={{ transform: `translateX(-${vehicleScrollIndex * 25}%)` }}
-                    >
-                      {vehicleOptions.map((v) => {
-                        const isActive = selectedVehicle === v.id;
-                        return (
-                          <button
-                            key={v.id}
-                            onClick={() => setSelectedVehicle(isActive ? null : v.id)}
-                            className={cn("flex-shrink-0 w-1/4 px-2 py-1 bg-transparent border-none outline-none cursor-pointer flex flex-col items-center gap-1", v.extraClass)}
-                          >
-                            <div className={cn(
-                              "w-[80px] h-[56px] flex items-end justify-center transition-all duration-300",
-                              isActive ? "grayscale-0 opacity-100 scale-110" : "grayscale opacity-30 scale-100"
-                            )}>
-                              <img src={v.image} alt={v.label} className={cn("max-w-full max-h-full object-contain", v.imgClass)} />
-                            </div>
-                            <span className={cn(
-                              "text-[10px] font-medium transition-colors",
-                              isActive ? "text-foreground" : "text-muted-foreground/50"
-                            )}>{v.label}</span>
-                          </button>
-                        );
-                      })}
-                    </div>
-                  </div>
-                  <button
-                    onClick={() => setVehicleScrollIndex(i => Math.min(vehicleOptions.length - maxVisibleVehicles, i + 1))}
-                    className={cn(
-                      "p-1 rounded-full transition-opacity",
-                      canScrollVehicleRight ? "opacity-60 hover:opacity-100" : "opacity-0 pointer-events-none"
-                    )}
-                  >
-                    <ChevronRight className="w-4 h-4 text-foreground" />
-                  </button>
+                <div className="flex items-end justify-center gap-4 mb-6">
+                  {vehicleOptions.map((v) => {
+                    const isActive = selectedVehicle === v.id;
+                    return (
+                      <button
+                        key={v.id}
+                        onClick={() => setSelectedVehicle(isActive ? null : v.id)}
+                        className="bg-transparent border-none outline-none cursor-pointer flex flex-col items-center gap-1"
+                      >
+                        <div className={cn(
+                          "h-[44px] flex items-end justify-center transition-all duration-300",
+                          isActive ? "grayscale-0 opacity-100 scale-110" : "grayscale opacity-30 scale-100"
+                        )}>
+                          <img src={v.image} alt={v.label} className={cn("object-contain", v.imgClass)} />
+                        </div>
+                        <span className={cn(
+                          "text-[10px] font-medium transition-colors",
+                          isActive ? "text-foreground" : "text-muted-foreground/50"
+                        )}>{v.label}</span>
+                      </button>
+                    );
+                  })}
                 </div>
               )}
             </motion.div>
