@@ -1,4 +1,5 @@
 import React, { useState, useCallback } from "react";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { Navbar } from "@/components/Navbar";
 import { Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
@@ -390,26 +391,31 @@ const Book = () => {
                   </div>
 
                   {/* Package Requirements Notice */}
-                  <div className="mt-3 text-xs text-foreground space-y-3">
-                    <div>
-                      <p className="font-semibold mb-1">Package Requirements</p>
-                      <p className="text-muted-foreground leading-relaxed">Before placing your order, please ensure your shipment meets the following criteria:</p>
-                      <ul className="text-muted-foreground leading-relaxed mt-1 space-y-0.5">
-                        <li>• The total declared value does not exceed $300</li>
-                        <li>• Items are properly packaged, sealed, and ready at the time of pickup</li>
-                        <li>• Contents do not fall under restricted categories</li>
-                      </ul>
-                    </div>
-                    <div>
-                      <p className="font-semibold mb-1">Restricted Items</p>
-                      <p className="text-muted-foreground leading-relaxed">Courial does not transport alcohol, prescription or non-prescription drugs, firearms, hazardous materials, illegal goods, or items with significant sentimental or irreplaceable value.</p>
-                      <p className="text-muted-foreground leading-relaxed mt-1">All shipments must comply with local, state, and federal laws, as well as Courial's platform policies. Orders involving restricted or unlawful items may be canceled, and accounts may be suspended or terminated. Courial reserves the right to cooperate with law enforcement in cases involving illegal activity.</p>
-                    </div>
-                    <div>
-                      <p className="font-semibold mb-1">Insurance & Agreement</p>
-                      <p className="text-muted-foreground leading-relaxed">Courial does not provide cargo insurance coverage. By confirming your delivery request, you acknowledge and accept Courial's Terms and Conditions.</p>
-                    </div>
-                  </div>
+                  <Collapsible className="mt-3 text-xs text-foreground">
+                    <CollapsibleTrigger className="flex items-center gap-1 font-semibold cursor-pointer hover:opacity-70 transition-opacity">
+                      Package Requirements
+                      <ChevronDown className="w-3.5 h-3.5 transition-transform duration-200 [&[data-state=open]]:rotate-180" />
+                    </CollapsibleTrigger>
+                    <CollapsibleContent className="space-y-3 mt-2">
+                      <div>
+                        <p className="text-muted-foreground leading-relaxed">Before placing your order, please ensure your shipment meets the following criteria:</p>
+                        <ul className="text-muted-foreground leading-relaxed mt-1 space-y-0.5">
+                          <li>• The total declared value does not exceed $300</li>
+                          <li>• Items are properly packaged, sealed, and ready at the time of pickup</li>
+                          <li>• Contents do not fall under restricted categories</li>
+                        </ul>
+                      </div>
+                      <div>
+                        <p className="font-semibold mb-1">Restricted Items</p>
+                        <p className="text-muted-foreground leading-relaxed">Courial does not transport alcohol, prescription or non-prescription drugs, firearms, hazardous materials, illegal goods, or items with significant sentimental or irreplaceable value.</p>
+                        <p className="text-muted-foreground leading-relaxed mt-1">All shipments must comply with local, state, and federal laws, as well as Courial's platform policies. Orders involving restricted or unlawful items may be canceled, and accounts may be suspended or terminated. Courial reserves the right to cooperate with law enforcement in cases involving illegal activity.</p>
+                      </div>
+                      <div>
+                        <p className="font-semibold mb-1">Insurance & Agreement</p>
+                        <p className="text-muted-foreground leading-relaxed">Courial does not provide cargo insurance coverage. By confirming your delivery request, you acknowledge and accept Courial's Terms and Conditions.</p>
+                      </div>
+                    </CollapsibleContent>
+                  </Collapsible>
 
                   {/* Pricing & Payment Section */}
                   <div className="mt-3 rounded-2xl border border-border bg-background p-5">
