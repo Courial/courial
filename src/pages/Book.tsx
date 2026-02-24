@@ -75,6 +75,9 @@ const Book = () => {
   const [showPriceBreakdown, setShowPriceBreakdown] = useState(false);
   const [showPaymentMethods, setShowPaymentMethods] = useState(false);
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState("visa-4242");
+  const [over70lbs, setOver70lbs] = useState<boolean | null>(null);
+  const [twoCourials, setTwoCourials] = useState<boolean | null>(null);
+  const [hasStairs, setHasStairs] = useState<boolean | null>(null);
 
   const paymentMethods = [
     { id: "visa-4242", type: "visa", label: "Visa", last4: "4242", icon: visaIcon },
@@ -368,6 +371,43 @@ const Book = () => {
                   transition={{ duration: 0.2 }}
                   className="overflow-hidden"
                 >
+                {/* Quick Options Pills */}
+                  <div className="flex flex-wrap gap-2 mb-1">
+                    {([
+                      { label: "Over 70 lbs?", value: over70lbs, setter: setOver70lbs },
+                      { label: "Two Courials?", value: twoCourials, setter: setTwoCourials },
+                      { label: "Stairs?", value: hasStairs, setter: setHasStairs },
+                    ] as const).map(({ label, value, setter }) => (
+                      <div key={label} className="flex items-center gap-1">
+                        <span className="text-xs font-medium text-muted-foreground mr-0.5">{label}</span>
+                        <button
+                          type="button"
+                          onClick={() => setter(value === true ? null : true)}
+                          className={cn(
+                            "px-3 py-1 rounded-full text-xs font-semibold transition-all border",
+                            value === true
+                              ? "bg-foreground text-background border-foreground"
+                              : "bg-background text-muted-foreground border-border hover:border-foreground/40"
+                          )}
+                        >
+                          Yes
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setter(value === false ? null : false)}
+                          className={cn(
+                            "px-3 py-1 rounded-full text-xs font-semibold transition-all border",
+                            value === false
+                              ? "bg-foreground text-background border-foreground"
+                              : "bg-background text-muted-foreground border-border hover:border-foreground/40"
+                          )}
+                        >
+                          No
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+
                   {/* Input Fields */}
                   <div className="space-y-0">
                     <div className="relative group">
