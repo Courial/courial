@@ -27,11 +27,11 @@ import vehicleTruck from "@/assets/vehicle-truck.png";
 
 type VehicleId = "walker" | "scooter" | "car" | "van" | "truck";
 const vehicleCaptions: Record<VehicleId, string> = {
-  walker: "for food, documents, small parcels",
-  scooter: "for catering trays, small electronics, grocery",
-  car: "for retail, small appliances",
-  van: "for furniture, medium appliances",
-  truck: "for moves, palletized freight, commercial loads",
+  walker: "Best for food, documents, small parcels",
+  scooter: "Best for catering trays, small electronics, grocery",
+  car: "Best for retail, small appliances",
+  van: "Best for furniture, medium appliances",
+  truck: "Best for moves, palletized freight, commercial loads",
 };
 const vehicleOptions: { id: VehicleId; label: string; image: string; imgClass?: string }[] = [
   { id: "walker", label: "Walker", image: vehicleWalker, imgClass: "max-h-[38px]" },
