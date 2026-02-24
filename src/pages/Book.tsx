@@ -503,7 +503,7 @@ const Book = () => {
               </div>
             </div>
           </div>
-          <div className="px-7 pb-7">
+          <div className="px-7 pt-0 pb-4">
           <div className="mb-4">
             <DialogTitle className="text-2xl font-bold text-foreground">Fare Summary</DialogTitle>
           </div>
