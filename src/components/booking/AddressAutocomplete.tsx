@@ -1,5 +1,5 @@
 /// <reference types="google.maps" />
-import React, { useRef, useEffect, useState } from "react";
+import React, { useRef, useEffect, useState, useCallback } from "react";
 
 const GOOGLE_MAPS_API_KEY = "AIzaSyDxJoLqE0Whu0VmkQv4zVpcVim4UZ3e_c4";
 
@@ -16,7 +16,10 @@ function loadGoogleMaps(): Promise<void> {
     script.src = `https://maps.googleapis.com/maps/api/js?key=${GOOGLE_MAPS_API_KEY}&libraries=places`;
     script.async = true;
     script.onload = () => resolve();
-    script.onerror = () => reject(new Error("Failed to load Google Maps"));
+    script.onerror = () => {
+      googleMapsPromise = null;
+      reject(new Error("Failed to load Google Maps"));
+    };
     document.head.appendChild(script);
   });
   return googleMapsPromise;
@@ -40,24 +43,39 @@ const AddressAutocomplete: React.FC<AddressAutocompleteProps> = ({
   const inputRef = useRef<HTMLInputElement>(null);
   const autocompleteRef = useRef<google.maps.places.Autocomplete | null>(null);
   const [ready, setReady] = useState(false);
+  const isSelectingRef = useRef(false);
 
   useEffect(() => {
-    loadGoogleMaps().then(() => setReady(true)).catch(console.error);
+    loadGoogleMaps()
+      .then(() => {
+        console.log("[AddressAutocomplete] Google Maps loaded");
+        setReady(true);
+      })
+      .catch((err) => console.error("[AddressAutocomplete] Failed to load:", err));
   }, []);
 
   useEffect(() => {
     if (!ready || !inputRef.current || autocompleteRef.current) return;
 
+    console.log("[AddressAutocomplete] Initializing autocomplete");
     const autocomplete = new google.maps.places.Autocomplete(inputRef.current, {
-      types: ["address"],
       componentRestrictions: { country: "us" },
+      fields: ["formatted_address", "geometry", "name"],
     });
 
     autocomplete.addListener("place_changed", () => {
       const place = autocomplete.getPlace();
-      if (place?.formatted_address) {
-        onChange(place.formatted_address);
+      console.log("[AddressAutocomplete] Place selected:", place);
+      if (place?.geometry) {
+        const address = place.formatted_address || place.name || "";
+        isSelectingRef.current = true;
+        onChange(address);
         onPlaceSelect(place);
+        // Sync input value
+        if (inputRef.current) {
+          inputRef.current.value = address;
+        }
+        setTimeout(() => { isSelectingRef.current = false; }, 100);
       }
     });
 
@@ -68,14 +86,28 @@ const AddressAutocomplete: React.FC<AddressAutocompleteProps> = ({
     };
   }, [ready]);
 
+  // Sync the input value when the parent value changes (e.g. reset)
+  useEffect(() => {
+    if (inputRef.current && inputRef.current.value !== value) {
+      inputRef.current.value = value;
+    }
+  }, [value]);
+
+  const handleChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!isSelectingRef.current) {
+      onChange(e.target.value);
+    }
+  }, [onChange]);
+
   return (
     <input
       ref={inputRef}
       type="text"
       placeholder={placeholder}
-      value={value}
-      onChange={(e) => onChange(e.target.value)}
+      defaultValue={value}
+      onChange={handleChange}
       className={className}
+      autoComplete="off"
     />
   );
 };
