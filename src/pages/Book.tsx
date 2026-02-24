@@ -402,7 +402,7 @@ const Book = () => {
                       <textarea
                         placeholder="Provide all relevant pickup and drop-off details, including contact numbers, special instructions, access information (stairs, elevators, gate codes), and any other important notes. Please be as thorough as possible."
                         className="w-full bg-transparent text-sm text-foreground placeholder:text-foreground/35 outline-none resize-none overflow-hidden"
-                        rows={1}
+                        rows={4}
                         value={notes}
                         onChange={(e) => setNotes(e.target.value)}
                         onInput={(e) => { const t = e.currentTarget; t.style.height = 'auto'; t.style.height = t.scrollHeight + 'px'; }}
