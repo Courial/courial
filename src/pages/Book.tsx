@@ -128,7 +128,7 @@ const Book = () => {
                         </div>
                         <button
                           onClick={() => setShowAllServices(true)}
-                          className="relative z-10 w-9 h-9 rounded-xl bg-muted/80 hover:bg-muted flex items-center justify-center transition-colors flex-shrink-0"
+                          className="relative z-10 w-10 h-10 rounded-xl bg-muted/15 hover:bg-muted/25 flex items-center justify-center transition-colors flex-shrink-0"
                         >
                           <ChevronDown className="w-3.5 h-3.5 text-foreground" />
                         </button>
