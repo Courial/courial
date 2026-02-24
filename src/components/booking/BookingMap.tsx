@@ -144,7 +144,7 @@ const BookingMap: React.FC<BookingMapProps> = ({ pickupCoords, dropoffCoords, pi
   const carAnimationRef = useRef<number | null>(null);
   const trackingMarkerRef = useRef<google.maps.Marker | null>(null);
   const trackingAnimationRef = useRef<number | null>(null);
-  const pulsingDotRef = useRef<google.maps.Marker | null>(null);
+  
   const [ready, setReady] = useState(false);
 
   const defaultCenter = useMemo(() => ({ lat: 34.0522, lng: -118.2437 }), []);
@@ -368,10 +368,6 @@ const BookingMap: React.FC<BookingMapProps> = ({ pickupCoords, dropoffCoords, pi
         trackingMarkerRef.current.setMap(null);
         trackingMarkerRef.current = null;
       }
-      if (pulsingDotRef.current) {
-        pulsingDotRef.current.setMap(null);
-        pulsingDotRef.current = null;
-      }
     };
 
     if (bookingState !== "active") {
@@ -392,22 +388,6 @@ const BookingMap: React.FC<BookingMapProps> = ({ pickupCoords, dropoffCoords, pi
 
         const path = result.routes[0].overview_path;
 
-        // Create pulsing blue dot at current car position
-        const pulseDot = new google.maps.Marker({
-          position: pickupCoords,
-          map,
-          icon: {
-            path: google.maps.SymbolPath.CIRCLE,
-            scale: 18,
-            fillColor: "#276EF1",
-            fillOpacity: 0.2,
-            strokeColor: "#276EF1",
-            strokeWeight: 1,
-            strokeOpacity: 0.4,
-          },
-          zIndex: 3,
-        });
-        pulsingDotRef.current = pulseDot;
 
         // Create tracking car marker (will be updated with rotated icon)
         const iconUrl = getVehicleIconUrl(vehicleType);
@@ -429,8 +409,6 @@ const BookingMap: React.FC<BookingMapProps> = ({ pickupCoords, dropoffCoords, pi
         // Animate along route path — slow loop
         const totalDuration = 20000;
         const startTime = performance.now();
-        let pulseScale = 18;
-        let pulseGrowing = true;
         let lastBearing = -999;
 
         const animate = (now: number) => {
@@ -450,7 +428,6 @@ const BookingMap: React.FC<BookingMapProps> = ({ pickupCoords, dropoffCoords, pi
           
           const pos = { lat, lng };
           carMarker.setPosition(pos);
-          pulseDot.setPosition(pos);
 
           // Rotate icon to match bearing along path
           const bearing = getBearing(
@@ -469,23 +446,6 @@ const BookingMap: React.FC<BookingMapProps> = ({ pickupCoords, dropoffCoords, pi
             });
           }
 
-          // Animate pulse
-          if (pulseGrowing) {
-            pulseScale += 0.3;
-            if (pulseScale >= 24) pulseGrowing = false;
-          } else {
-            pulseScale -= 0.3;
-            if (pulseScale <= 14) pulseGrowing = true;
-          }
-          pulseDot.setIcon({
-            path: google.maps.SymbolPath.CIRCLE,
-            scale: pulseScale,
-            fillColor: "#276EF1",
-            fillOpacity: 0.15,
-            strokeColor: "#276EF1",
-            strokeWeight: 1.5,
-            strokeOpacity: 0.5,
-          });
 
           trackingAnimationRef.current = requestAnimationFrame(animate);
         };
