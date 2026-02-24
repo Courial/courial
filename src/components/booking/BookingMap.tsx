@@ -16,6 +16,7 @@ interface BookingMapProps {
   pickupPlaceName?: string | null;
   dropoffPlaceName?: string | null;
   bookingState?: "input" | "loading" | "active";
+  vehicleType?: string | null;
 }
 
 function buildInfoContent(address: string, placeName?: string | null): string {
@@ -40,9 +41,27 @@ function buildInfoContent(address: string, placeName?: string | null): string {
     : `<div style="${style}">${line1}</div>`;
 }
 
-// Car SVG icon as data URL for markers
-const CAR_SVG = `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="32" height="32"><path fill="#111" d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.42 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99zM6.5 16c-.83 0-1.5-.67-1.5-1.5S5.67 13 6.5 13s1.5.67 1.5 1.5S7.33 16 6.5 16zm11 0c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zM5 11l1.5-4.5h11L19 11H5z"/></svg>`)}`;
+// Vehicle top-down icon URLs mapped by type
+const VEHICLE_ICON_MAP: Record<string, string> = {
+  walker: "/map-icons/walker-top.png",
+  scooter: "/map-icons/bike-top.png",
+  car: "/map-icons/car-top.png",
+  van: "/map-icons/car-top.png",
+  truck: "/map-icons/truck-top.png",
+};
 
+function getVehicleIconUrl(vehicleType?: string | null): string {
+  return VEHICLE_ICON_MAP[vehicleType || "car"] || VEHICLE_ICON_MAP.car;
+}
+
+function getVehicleIconSize(vehicleType?: string | null): { w: number; h: number } {
+  switch (vehicleType) {
+    case "walker": return { w: 32, h: 28 };
+    case "scooter": return { w: 24, h: 40 };
+    case "truck": return { w: 28, h: 44 };
+    default: return { w: 28, h: 40 };
+  }
+}
 let googleMapsPromise: Promise<void> | null = null;
 function loadGoogleMaps(): Promise<void> {
   if (googleMapsPromise) return googleMapsPromise;
@@ -74,7 +93,7 @@ function generateRandomPositions(center: LatLng, count: number, radiusKm: number
   return positions;
 }
 
-const BookingMap: React.FC<BookingMapProps> = ({ pickupCoords, dropoffCoords, pickupAddress, dropoffAddress, pickupPlaceName, dropoffPlaceName, bookingState = "input" }) => {
+const BookingMap: React.FC<BookingMapProps> = ({ pickupCoords, dropoffCoords, pickupAddress, dropoffAddress, pickupPlaceName, dropoffPlaceName, bookingState = "input", vehicleType }) => {
   const mapRef = useRef<HTMLDivElement>(null);
   const mapInstanceRef = useRef<google.maps.Map | null>(null);
   const markersRef = useRef<google.maps.Marker[]>([]);
@@ -247,9 +266,9 @@ const BookingMap: React.FC<BookingMapProps> = ({ pickupCoords, dropoffCoords, pi
         position: pos,
         map,
         icon: {
-          url: CAR_SVG,
-          scaledSize: new google.maps.Size(28, 28),
-          anchor: new google.maps.Point(14, 14),
+          url: getVehicleIconUrl(vehicleType),
+          scaledSize: new google.maps.Size(getVehicleIconSize(vehicleType).w, getVehicleIconSize(vehicleType).h),
+          anchor: new google.maps.Point(getVehicleIconSize(vehicleType).w / 2, getVehicleIconSize(vehicleType).h / 2),
         },
         zIndex: 5,
       });
@@ -344,9 +363,9 @@ const BookingMap: React.FC<BookingMapProps> = ({ pickupCoords, dropoffCoords, pi
           position: pickupCoords,
           map,
           icon: {
-            url: CAR_SVG,
-            scaledSize: new google.maps.Size(32, 32),
-            anchor: new google.maps.Point(16, 16),
+            url: getVehicleIconUrl(vehicleType),
+            scaledSize: new google.maps.Size(getVehicleIconSize(vehicleType).w, getVehicleIconSize(vehicleType).h),
+            anchor: new google.maps.Point(getVehicleIconSize(vehicleType).w / 2, getVehicleIconSize(vehicleType).h / 2),
           },
           zIndex: 10,
         });
