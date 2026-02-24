@@ -526,7 +526,7 @@ const Book = () => {
             </p>
           </div>
 
-          <div className="mb-6">
+          <div>
             <h3 className="text-lg font-bold text-foreground mb-4">Rate Structure</h3>
             <div className="space-y-3">
               {[
@@ -543,15 +543,14 @@ const Book = () => {
               ))}
             </div>
           </div>
-
           </div>
-          <div className="bg-muted/80 -mx-7 px-7 py-4">
+          <div className="bg-muted/80 px-7 py-4">
             <div className="flex items-center justify-between">
               <span className="text-base text-foreground">Fare Estimate</span>
               <span className="text-base font-bold text-foreground">$21.59</span>
             </div>
           </div>
-          <div>
+          <div className="px-7 pb-7">
 
           <div className="flex items-center justify-between">
             <span className="text-sm font-semibold text-foreground">Payment method</span>
