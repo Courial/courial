@@ -3,7 +3,7 @@ import { Navbar } from "@/components/Navbar";
 import { Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { Helmet } from "react-helmet-async";
-import { MapPin, Search, CarFront, ParkingCircle, Leaf, Box, ConciergeBell, Clock, CalendarIcon, ChevronDown, Info, User, Briefcase } from "lucide-react";
+import { MapPin, Search, CarFront, ParkingCircle, Leaf, Box, ConciergeBell, Clock, CalendarIcon, ChevronDown, Info, CreditCard } from "lucide-react";
 
 import { Hero } from "@/components/Hero";
 import { LogoTicker } from "@/components/LogoTicker";
@@ -406,18 +406,13 @@ const Book = () => {
                     <div className="flex items-center gap-3">
                       {/* Payment Method Selector */}
                       <div className="flex items-center gap-3 flex-1 min-w-0">
-                        <div className="flex bg-muted rounded-xl overflow-hidden flex-shrink-0">
-                          <div className="w-10 h-10 flex items-center justify-center bg-background border border-border rounded-l-xl">
-                            <User className="w-4 h-4 text-foreground" />
-                          </div>
-                          <div className="w-10 h-10 flex items-center justify-center">
-                            <Briefcase className="w-4 h-4 text-muted-foreground" />
-                          </div>
+                        <div className="w-10 h-10 rounded-xl bg-muted flex items-center justify-center flex-shrink-0">
+                          <CreditCard className="w-5 h-5 text-foreground" />
                         </div>
                         <div className="flex items-center gap-1 min-w-0">
                           <div className="min-w-0">
-                            <p className="text-sm font-semibold text-foreground leading-tight">Personal</p>
-                            <p className="text-xs text-muted-foreground truncate">American Express •...</p>
+                            <p className="text-sm font-semibold text-foreground leading-tight">Visa</p>
+                            <p className="text-xs text-muted-foreground truncate">•••• 4242</p>
                           </div>
                           <ChevronDown className="w-3.5 h-3.5 text-muted-foreground flex-shrink-0" />
                         </div>
