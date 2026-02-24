@@ -544,7 +544,7 @@ const Book = () => {
             </div>
           </div>
           </div>
-          <div className="bg-muted/80 px-7 py-4">
+          <div className="bg-muted/80 px-7 py-2">
             <div className="flex items-center justify-between">
               <span className="text-base text-foreground">Fare Estimate</span>
               <span className="text-base font-bold text-foreground">$21.59</span>
