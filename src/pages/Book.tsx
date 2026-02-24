@@ -1,4 +1,5 @@
 import React, { useState, useCallback } from "react";
+import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { Navbar } from "@/components/Navbar";
 import { Link } from "react-router-dom";
@@ -67,6 +68,7 @@ const Book = () => {
   const [selectedVehicle, setSelectedVehicle] = useState<VehicleId | null>(null);
   const [showAllServices, setShowAllServices] = useState(true);
   const [notes, setNotes] = useState("");
+  const [showPriceBreakdown, setShowPriceBreakdown] = useState(false);
 
   const isFormValid = pickup.trim().length > 0 && dropoff.trim().length > 0 && selectedVehicle !== null && notes.trim().length > 0;
 
@@ -428,7 +430,9 @@ const Book = () => {
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-1.5">
                         <span className="text-lg font-bold text-foreground">Total</span>
-                        <Info className="w-4 h-4 text-muted-foreground" />
+                        <button type="button" onClick={() => setShowPriceBreakdown(true)} className="cursor-pointer hover:opacity-70 transition-opacity">
+                          <Info className="w-4 h-4 text-muted-foreground" />
+                        </button>
                       </div>
                       <span className="text-lg font-bold text-foreground">$21.59</span>
                     </div>
@@ -485,6 +489,48 @@ const Book = () => {
           )}
         </div>
       </div>
+      {/* Price Breakdown Dialog */}
+      <Dialog open={showPriceBreakdown} onOpenChange={setShowPriceBreakdown}>
+        <DialogContent className="sm:max-w-md bg-background border-border rounded-2xl p-6 [&>button]:hidden">
+          <div className="flex items-start justify-between mb-4">
+            <DialogTitle className="text-2xl font-bold text-foreground">Price Breakdown</DialogTitle>
+            <button onClick={() => setShowPriceBreakdown(false)} className="text-foreground hover:opacity-70 transition-opacity mt-1">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            </button>
+          </div>
+
+          <p className="text-sm text-muted-foreground leading-relaxed mb-6">
+            You agree to pay the upfront price and applicable wait time fees. The amount presented may be adjusted up or down at the end of the trip if the actual route has tolls/surcharges that differ from the estimated route. Your price may also change based on the rates below if the length, duration, or route of your trip changes. Your upfront price or final adjusted price may be subject to dynamic multipliers to account for marketplace factors, including supply and demand patterns.
+          </p>
+
+          <div className="space-y-3 mb-6">
+            {[
+              { label: "Base Fare", value: "$0.09" },
+              { label: "Minimum Fare", value: "$5.40" },
+              { label: "+ Per Minute", value: "$0.25" },
+              { label: "+ Per Mile", value: "$0.93" },
+            ].map((row) => (
+              <div key={row.label} className="flex items-center justify-between gap-2">
+                <span className="text-sm font-semibold text-foreground">{row.label}</span>
+                <div className="flex-1 border-b border-dotted border-muted-foreground/30 mx-2" />
+                <span className="text-sm font-semibold text-foreground">{row.value}</span>
+              </div>
+            ))}
+          </div>
+
+          <p className="text-sm text-muted-foreground leading-relaxed mb-6">
+            Additional wait time charges may apply to your trip if the driver has waited 2 minute(s): $0.33 per minute.
+          </p>
+
+          <Button
+            onClick={() => setShowPriceBreakdown(false)}
+            className="w-full rounded-xl h-12 text-sm font-semibold"
+            variant="hero"
+          >
+            Close
+          </Button>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
