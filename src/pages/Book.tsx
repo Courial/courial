@@ -653,7 +653,7 @@ const Book = () => {
               {/* Driver Card */}
               <div className="rounded-2xl border border-border bg-background p-5 mb-4">
                 <div className="flex items-center gap-4 mb-4">
-                  <div className="w-12 h-12 rounded-full bg-muted flex items-center justify-center text-lg font-bold text-foreground">
+                  <div className="w-15 h-15 rounded-full bg-muted flex items-center justify-center text-xl font-bold text-foreground" style={{ width: 60, height: 60 }}>
                     M
                   </div>
                   <div className="flex-1">
