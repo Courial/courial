@@ -734,6 +734,12 @@ const Book = () => {
 
                 {/* Order Details */}
                 <div className="space-y-0 mb-1">
+                  {notes.trim() && (
+                    <div className="py-2 border-b border-border">
+                      <p className="text-xs font-medium text-muted-foreground mb-0.5">Add'l Notes</p>
+                      <p className="text-xs text-foreground">{notes}</p>
+                    </div>
+                  )}
                   {(over70lbs || twoCourials || hasStairs) && (
                     <div className="py-2 border-b border-border">
                       <div className="flex flex-wrap gap-1.5">
@@ -741,12 +747,6 @@ const Book = () => {
                         {twoCourials && <span className="text-xs text-muted-foreground bg-muted px-2 py-0.5 rounded-full">2 Courials</span>}
                         {hasStairs && <span className="text-xs text-muted-foreground bg-muted px-2 py-0.5 rounded-full">Involves stairs</span>}
                       </div>
-                    </div>
-                  )}
-                  {notes.trim() && (
-                    <div className="py-2 border-b border-border">
-                      <p className="text-xs font-medium text-muted-foreground mb-0.5">Add'l Notes</p>
-                      <p className="text-xs text-foreground">{notes}</p>
                     </div>
                   )}
                 </div>
