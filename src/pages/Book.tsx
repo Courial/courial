@@ -66,6 +66,9 @@ const Book = () => {
   const [selectedTime, setSelectedTime] = useState("12:00");
   const [selectedVehicle, setSelectedVehicle] = useState<VehicleId | null>(null);
   const [showAllServices, setShowAllServices] = useState(true);
+  const [notes, setNotes] = useState("");
+
+  const isFormValid = pickup.trim().length > 0 && dropoff.trim().length > 0 && selectedVehicle !== null && notes.trim().length > 0;
 
   const handlePickupSelect = useCallback((place: any) => {
     if (place.geometry?.location) {
@@ -385,6 +388,8 @@ const Book = () => {
                         placeholder="Provide all relevant pickup and drop-off details, including contact numbers, special instructions, access information (stairs, elevators, gate codes), and any other important notes. Please be as thorough as possible."
                         className="w-full bg-transparent text-sm text-foreground/50 placeholder:text-foreground/50 outline-none resize-none overflow-hidden"
                         rows={4}
+                        value={notes}
+                        onChange={(e) => setNotes(e.target.value)}
                         onInput={(e) => { const t = e.currentTarget; t.style.height = 'auto'; t.style.height = t.scrollHeight + 'px'; }}
                       />
                     </div>
@@ -448,9 +453,9 @@ const Book = () => {
 
                       {/* Request Delivery Button */}
                       <Button
-                        disabled={!(pickup.trim().length > 0 && dropoff.trim().length > 0)}
+                        disabled={!isFormValid}
                         className="rounded-xl h-12 px-6 text-sm font-semibold flex-shrink-0"
-                        variant={pickup.trim().length > 0 && dropoff.trim().length > 0 ? "hero" : "secondary"}
+                        variant={isFormValid ? "hero" : "secondary"}
                       >
                         Book Delivery
                       </Button>
