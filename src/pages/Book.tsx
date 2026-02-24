@@ -352,7 +352,7 @@ const Book = () => {
                   {/* Input Fields */}
                   <div className="space-y-0">
                     <div className="relative group">
-                      <div className="flex items-center gap-3 px-4 py-4 border border-border rounded-t-xl bg-background transition-colors focus-within:border-foreground">
+                      <div className="flex items-center gap-3 px-4 py-4 border border-border rounded-xl bg-background transition-colors focus-within:border-foreground mb-2">
                         <div className="flex-shrink-0 w-3 h-3 rounded-full border-[2.5px] border-foreground" />
                         <AddressAutocomplete
                           placeholder="Pickup location"
