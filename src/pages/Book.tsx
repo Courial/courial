@@ -55,7 +55,7 @@ const serviceCards: { id: ServiceId; label: string; desc: string; href: string; 
 
 
 const Book = () => {
-  const [selectedService, setSelectedService] = useState<ServiceId>("deliver");
+  const [selectedService, setSelectedService] = useState<ServiceId | null>(null);
   const [pickup, setPickup] = useState("");
   const [dropoff, setDropoff] = useState("");
   const [pickupCoords, setPickupCoords] = useState<{ lat: number; lng: number } | null>(null);
@@ -98,7 +98,7 @@ const Book = () => {
               className="mb-6"
             >
               {/* Collapsed: show only selected card full-width */}
-              {!showAllServices && (
+              {!showAllServices && selectedService && (
                 <div className="relative">
                   {(() => {
                     const item = serviceCards.find(s => s.id === selectedService)!;
@@ -205,7 +205,8 @@ const Book = () => {
               </AnimatePresence>
             </motion.div>
 
-            {/* Title row with box icon + Now/Later toggle */}
+            {/* Title row with box icon + Now/Later toggle — only when service selected */}
+            {selectedService && (
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -337,6 +338,7 @@ const Book = () => {
                 </div>
               )}
             </motion.div>
+            )}
 
             <AnimatePresence>
               {selectedVehicle && (
