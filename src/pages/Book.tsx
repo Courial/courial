@@ -29,9 +29,9 @@ type VehicleId = "walker" | "scooter" | "car" | "van" | "truck";
 const vehicleOptions: { id: VehicleId; label: string; image: string; imgClass?: string }[] = [
   { id: "walker", label: "Walker", image: vehicleWalker, imgClass: "max-h-[38px]" },
   { id: "scooter", label: "Scooter", image: vehicleScooter, imgClass: "max-h-[30px]" },
-  { id: "car", label: "Car", image: vehicleCar, imgClass: "max-h-[40px]" },
-  { id: "van", label: "Van", image: vehicleVan, imgClass: "max-h-[40px]" },
-  { id: "truck", label: "Truck", image: vehicleTruck, imgClass: "max-h-[40px]" },
+  { id: "car", label: "Car", image: vehicleCar, imgClass: "max-h-[32px]" },
+  { id: "van", label: "Van", image: vehicleVan, imgClass: "max-h-[32px]" },
+  { id: "truck", label: "Truck", image: vehicleTruck, imgClass: "max-h-[32px]" },
 ];
 
 type ServiceId = "deliver" | "concierge" | "chauffeur" | "valet";
@@ -224,18 +224,14 @@ const Book = () => {
                       <button
                         key={v.id}
                         onClick={() => setSelectedVehicle(isActive ? null : v.id)}
-                        className="bg-transparent border-none outline-none cursor-pointer flex flex-col items-center gap-1"
+                        className="bg-transparent border-none outline-none cursor-pointer flex items-center"
                       >
                         <div className={cn(
-                          "h-[44px] flex items-end justify-center transition-all duration-300",
+                          "h-[36px] flex items-end justify-center transition-all duration-300",
                           isActive ? "grayscale-0 opacity-100 scale-110" : "grayscale opacity-30 scale-100"
                         )}>
                           <img src={v.image} alt={v.label} className={cn("object-contain", v.imgClass)} />
                         </div>
-                        <span className={cn(
-                          "text-[10px] font-medium transition-colors",
-                          isActive ? "text-foreground" : "text-muted-foreground/50"
-                        )}>{v.label}</span>
                       </button>
                     );
                   })}
