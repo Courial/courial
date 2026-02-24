@@ -26,6 +26,13 @@ import vehicleTruck from "@/assets/vehicle-truck.png";
 
 
 type VehicleId = "walker" | "scooter" | "car" | "van" | "truck";
+const vehicleCaptions: Record<VehicleId, string> = {
+  walker: "for food, documents, small parcels",
+  scooter: "for catering trays, small electronics, grocery",
+  car: "for retail, small appliances",
+  van: "for furniture, medium appliances",
+  truck: "for moves, palletized freight, commercial loads",
+};
 const vehicleOptions: { id: VehicleId; label: string; image: string; imgClass?: string }[] = [
   { id: "walker", label: "Walker", image: vehicleWalker, imgClass: "max-h-[38px]" },
   { id: "scooter", label: "Scooter", image: vehicleScooter, imgClass: "max-h-[30px]" },
@@ -217,24 +224,40 @@ const Book = () => {
 
               {/* Vehicle type icons for Deliver */}
               {selectedService === "deliver" && (
-                <div className="flex items-end justify-center gap-4 mb-6">
-                  {vehicleOptions.map((v) => {
-                    const isActive = selectedVehicle === v.id;
-                    return (
-                      <button
-                        key={v.id}
-                        onClick={() => setSelectedVehicle(isActive ? null : v.id)}
-                        className="bg-transparent border-none outline-none cursor-pointer flex items-center"
+                <div className="mb-6">
+                  <div className="flex items-end justify-center gap-4">
+                    {vehicleOptions.map((v) => {
+                      const isActive = selectedVehicle === v.id;
+                      return (
+                        <button
+                          key={v.id}
+                          onClick={() => setSelectedVehicle(isActive ? null : v.id)}
+                          className="bg-transparent border-none outline-none cursor-pointer flex items-center"
+                        >
+                          <div className={cn(
+                            "h-[36px] flex items-end justify-center transition-all duration-300",
+                            isActive ? "grayscale-0 opacity-100 scale-110" : "grayscale opacity-30 scale-100"
+                          )}>
+                            <img src={v.image} alt={v.label} className={cn("object-contain", v.imgClass)} />
+                          </div>
+                        </button>
+                      );
+                    })}
+                  </div>
+                  <AnimatePresence mode="wait">
+                    {selectedVehicle && (
+                      <motion.p
+                        key={selectedVehicle}
+                        initial={{ opacity: 0, y: -4 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -4 }}
+                        transition={{ duration: 0.15 }}
+                        className="text-xs text-muted-foreground text-center mt-2"
                       >
-                        <div className={cn(
-                          "h-[36px] flex items-end justify-center transition-all duration-300",
-                          isActive ? "grayscale-0 opacity-100 scale-110" : "grayscale opacity-30 scale-100"
-                        )}>
-                          <img src={v.image} alt={v.label} className={cn("object-contain", v.imgClass)} />
-                        </div>
-                      </button>
-                    );
-                  })}
+                        {vehicleCaptions[selectedVehicle]}
+                      </motion.p>
+                    )}
+                  </AnimatePresence>
                 </div>
               )}
             </motion.div>
