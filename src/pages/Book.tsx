@@ -451,7 +451,7 @@ const Book = () => {
                   </div>
 
                   {/* Notes Field */}
-                  <div className="relative group mt-2.5">
+                  <div className="relative group mt-1">
                     <div className="flex items-start gap-3 px-4 py-4 border border-border rounded-xl bg-background transition-colors focus-within:border-foreground">
                       <textarea
                         placeholder="Provide all relevant pickup and drop-off details, including contact numbers, special instructions, access information, gate codes, and any other important notes."
