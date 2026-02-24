@@ -19,8 +19,19 @@ interface BookingMapProps {
 }
 
 function buildInfoContent(address: string, placeName?: string | null): string {
-  const label = placeName || address;
-  return `<div style="font-size:10px;font-weight:400;color:rgba(0,0,0,0.75);padding:1px 3px;max-width:160px;word-wrap:break-word;line-height:1.3;">${label}</div>`;
+  if (placeName) {
+    return `<div style="font-size:10px;font-weight:400;color:rgba(0,0,0,0.75);padding:1px 3px;line-height:1.3;">${placeName}</div>`;
+  }
+  // Remove country (USA, US, United States) from end
+  let clean = address.replace(/,?\s*(USA|US|United States)\s*$/i, '').trim();
+  // Split into street line and city/state/zip line
+  const parts = clean.split(',').map(p => p.trim()).filter(Boolean);
+  let line1 = parts[0] || '';
+  let line2 = parts.slice(1).join(', ');
+  const html = line2
+    ? `<div style="font-size:10px;font-weight:400;color:rgba(0,0,0,0.75);padding:1px 3px;line-height:1.3;">${line1}<br/>${line2}</div>`
+    : `<div style="font-size:10px;font-weight:400;color:rgba(0,0,0,0.75);padding:1px 3px;line-height:1.3;">${line1}</div>`;
+  return html;
 }
 
 // Car SVG icon as data URL for markers
