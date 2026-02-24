@@ -440,6 +440,13 @@ const Book = () => {
                         />
                       </div>
                     </div>
+
+                    {/* ETA info — visible when both addresses set */}
+                    {pickupCoords && dropoffCoords && (
+                      <p className="text-xs text-muted-foreground text-center py-4">
+                        4 mins away • 2:01 AM dropoff
+                      </p>
+                    )}
                   </div>
 
                   {/* Notes Field */}
