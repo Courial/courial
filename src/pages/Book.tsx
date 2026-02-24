@@ -544,6 +544,23 @@ const Book = () => {
             </div>
           </div>
 
+          <div className="border-t border-border my-4" />
+
+          <div className="flex items-center justify-between mb-1">
+            <span className="text-base font-bold text-foreground">Fare Estimate</span>
+            <span className="text-base font-bold text-foreground">$21.59</span>
+          </div>
+
+          <div className="border-t border-border my-4" />
+
+          <div className="flex items-center justify-between">
+            <span className="text-sm font-semibold text-foreground">Payment method</span>
+            <div className="flex items-center gap-2">
+              <CreditCard className="w-4 h-4 text-muted-foreground" />
+              <span className="text-sm text-muted-foreground">Visa •••• 4242</span>
+            </div>
+          </div>
+
           <div className="mb-6">
             <h3 className="text-lg font-bold text-foreground mb-2">Wait Time Policy</h3>
             <p className="text-sm text-muted-foreground leading-relaxed">
