@@ -442,7 +442,7 @@ const Book = () => {
                     {/* Total Row */}
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-1.5">
-                        <span className="text-lg font-bold text-foreground">Total</span>
+                        <span className="text-lg font-bold text-foreground">Fee estimate</span>
                         <button type="button" onClick={() => setShowPriceBreakdown(true)} className="cursor-pointer hover:opacity-70 transition-opacity">
                           <Info className="w-4 h-4 text-muted-foreground" />
                         </button>
