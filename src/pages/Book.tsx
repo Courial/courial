@@ -492,11 +492,20 @@ const Book = () => {
       {/* Price Breakdown Dialog */}
       <Dialog open={showPriceBreakdown} onOpenChange={setShowPriceBreakdown}>
         <DialogContent className="sm:max-w-md bg-background border-border rounded-2xl p-6 overflow-y-auto max-h-[90vh] [&>button]:hidden">
-          <div className="flex items-start justify-between mb-4">
-            <DialogTitle className="text-2xl font-bold text-foreground">Fare Summary</DialogTitle>
-            <button onClick={() => setShowPriceBreakdown(false)} className="text-foreground hover:opacity-70 transition-opacity mt-1">
+          <div className="flex items-center justify-between mb-2">
+            <div className="flex items-center gap-3">
+              <img src={deliverBox} alt="Deliver" className="w-8 h-8" />
+              <span className="text-lg font-bold text-foreground">Deliver</span>
+              {selectedVehicle && (
+                <img src={vehicleOptions.find(v => v.id === selectedVehicle)!.image} alt={selectedVehicle} className="h-6 object-contain" />
+              )}
+            </div>
+            <button onClick={() => setShowPriceBreakdown(false)} className="text-foreground hover:opacity-70 transition-opacity">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
             </button>
+          </div>
+          <div className="mb-4">
+            <DialogTitle className="text-2xl font-bold text-foreground">Fare Summary</DialogTitle>
           </div>
 
           <div className="space-y-4 mb-6">
