@@ -19,19 +19,25 @@ interface BookingMapProps {
 }
 
 function buildInfoContent(address: string, placeName?: string | null): string {
+  const style = 'font-size:12.5px;font-weight:400;color:rgba(0,0,0,0.75);padding:6px 4px;line-height:1.4;';
   if (placeName) {
-    return `<div style="font-size:10px;font-weight:400;color:rgba(0,0,0,0.75);padding:1px 3px;line-height:1.3;">${placeName}</div>`;
+    // Remove country from address for second line
+    let clean = address.replace(/,?\s*(USA|US|United States)\s*$/i, '').trim();
+    const parts = clean.split(',').map(p => p.trim()).filter(Boolean);
+    // Show place name on line 1, city/state on line 2
+    const line2 = parts.length > 1 ? parts.slice(1).join(', ') : '';
+    return line2
+      ? `<div style="${style}"><strong>${placeName}</strong><br/>${line2}</div>`
+      : `<div style="${style}"><strong>${placeName}</strong></div>`;
   }
-  // Remove country (USA, US, United States) from end
+  // Remove country
   let clean = address.replace(/,?\s*(USA|US|United States)\s*$/i, '').trim();
-  // Split into street line and city/state/zip line
   const parts = clean.split(',').map(p => p.trim()).filter(Boolean);
   let line1 = parts[0] || '';
   let line2 = parts.slice(1).join(', ');
-  const html = line2
-    ? `<div style="font-size:10px;font-weight:400;color:rgba(0,0,0,0.75);padding:1px 3px;line-height:1.3;">${line1}<br/>${line2}</div>`
-    : `<div style="font-size:10px;font-weight:400;color:rgba(0,0,0,0.75);padding:1px 3px;line-height:1.3;">${line1}</div>`;
-  return html;
+  return line2
+    ? `<div style="${style}">${line1}<br/>${line2}</div>`
+    : `<div style="${style}">${line1}</div>`;
 }
 
 // Car SVG icon as data URL for markers
