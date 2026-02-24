@@ -13,6 +13,15 @@ interface BookingMapProps {
   dropoffCoords: LatLng | null;
   pickupAddress?: string;
   dropoffAddress?: string;
+  pickupPlaceName?: string | null;
+  dropoffPlaceName?: string | null;
+}
+
+function buildInfoContent(address: string, placeName?: string | null): string {
+  if (placeName) {
+    return `<div style="font-size:12px;font-weight:500;color:rgba(0,0,0,0.75);padding:2px 4px;white-space:nowrap;"><div style="font-weight:600;">${placeName}</div><div style="opacity:0.7;margin-top:1px;">${address}</div></div>`;
+  }
+  return `<div style="font-size:12px;font-weight:500;color:rgba(0,0,0,0.75);padding:2px 4px;white-space:nowrap;">${address}</div>`;
 }
 
 // Reuse the same loader from AddressAutocomplete
@@ -34,7 +43,7 @@ function loadGoogleMaps(): Promise<void> {
   return googleMapsPromise;
 }
 
-const BookingMap: React.FC<BookingMapProps> = ({ pickupCoords, dropoffCoords, pickupAddress, dropoffAddress }) => {
+const BookingMap: React.FC<BookingMapProps> = ({ pickupCoords, dropoffCoords, pickupAddress, dropoffAddress, pickupPlaceName, dropoffPlaceName }) => {
   const mapRef = useRef<HTMLDivElement>(null);
   const mapInstanceRef = useRef<google.maps.Map | null>(null);
   const markersRef = useRef<google.maps.Marker[]>([]);
@@ -106,7 +115,7 @@ const BookingMap: React.FC<BookingMapProps> = ({ pickupCoords, dropoffCoords, pi
 
       if (pickupAddress) {
         const infoWindow = new google.maps.InfoWindow({
-          content: `<div style="font-size:12px;font-weight:500;color:rgba(0,0,0,0.75);padding:2px 4px;white-space:nowrap;">${pickupAddress}</div>`,
+          content: buildInfoContent(pickupAddress, pickupPlaceName),
         });
         infoWindow.open(map, marker);
         infoWindowsRef.current.push(infoWindow);
@@ -132,7 +141,7 @@ const BookingMap: React.FC<BookingMapProps> = ({ pickupCoords, dropoffCoords, pi
 
       if (dropoffAddress) {
         const infoWindow = new google.maps.InfoWindow({
-          content: `<div style="font-size:12px;font-weight:500;color:rgba(0,0,0,0.75);padding:2px 4px;white-space:nowrap;">${dropoffAddress}</div>`,
+          content: buildInfoContent(dropoffAddress, dropoffPlaceName),
         });
         infoWindow.open(map, marker);
         infoWindowsRef.current.push(infoWindow);
@@ -173,7 +182,7 @@ const BookingMap: React.FC<BookingMapProps> = ({ pickupCoords, dropoffCoords, pi
       map.setCenter(coords);
       map.setZoom(14);
     }
-  }, [pickupCoords, dropoffCoords, pickupAddress, dropoffAddress]);
+  }, [pickupCoords, dropoffCoords, pickupAddress, dropoffAddress, pickupPlaceName, dropoffPlaceName]);
 
   if (!ready) {
     return (

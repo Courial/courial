@@ -66,6 +66,8 @@ const Book = () => {
   const [dropoff, setDropoff] = useState("");
   const [pickupCoords, setPickupCoords] = useState<{ lat: number; lng: number } | null>(null);
   const [dropoffCoords, setDropoffCoords] = useState<{ lat: number; lng: number } | null>(null);
+  const [pickupPlaceName, setPickupPlaceName] = useState<string | null>(null);
+  const [dropoffPlaceName, setDropoffPlaceName] = useState<string | null>(null);
   const [timeMode, setTimeMode] = useState<"now" | "later">("now");
   const [selectedDate, setSelectedDate] = useState<Date>();
   const [selectedTime, setSelectedTime] = useState("12:00");
@@ -91,12 +93,19 @@ const Book = () => {
   const handlePickupSelect = useCallback((place: any) => {
     if (place.geometry?.location) {
       setPickupCoords({ lat: place.geometry.location.lat(), lng: place.geometry.location.lng() });
+      // Store place name if it differs from formatted address (i.e. it's an establishment)
+      const name = place.name || null;
+      const addr = place.formatted_address || "";
+      setPickupPlaceName(name && !addr.startsWith(name) ? name : null);
     }
   }, []);
 
   const handleDropoffSelect = useCallback((place: any) => {
     if (place.geometry?.location) {
       setDropoffCoords({ lat: place.geometry.location.lat(), lng: place.geometry.location.lng() });
+      const name = place.name || null;
+      const addr = place.formatted_address || "";
+      setDropoffPlaceName(name && !addr.startsWith(name) ? name : null);
     }
   }, []);
 
@@ -537,7 +546,7 @@ const Book = () => {
         <div className="hidden md:flex flex-1 relative overflow-hidden">
           {pickupCoords || dropoffCoords ? (
             <div className="flex-1">
-              <BookingMap pickupCoords={pickupCoords} dropoffCoords={dropoffCoords} pickupAddress={pickup} dropoffAddress={dropoff} />
+              <BookingMap pickupCoords={pickupCoords} dropoffCoords={dropoffCoords} pickupAddress={pickup} dropoffAddress={dropoff} pickupPlaceName={pickupPlaceName} dropoffPlaceName={dropoffPlaceName} />
             </div>
           ) : (
             <div className="flex-1 overflow-y-auto">
