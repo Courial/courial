@@ -82,6 +82,7 @@ const Book = () => {
   const [hasStairs, setHasStairs] = useState<boolean | null>(null);
   const [bookingState, setBookingState] = useState<"input" | "loading" | "active">("input");
   const [loadingProgress, setLoadingProgress] = useState(0);
+  const [deliveryStep, setDeliveryStep] = useState(0);
 
   const paymentMethods = [
     { id: "visa-4242", type: "visa", label: "Visa", last4: "4242", icon: visaIcon },
@@ -117,7 +118,17 @@ const Book = () => {
   const handleCancelBooking = useCallback(() => {
     setBookingState("input");
     setLoadingProgress(0);
+    setDeliveryStep(0);
   }, []);
+
+  const deliverySteps = [
+    { label: "Order Accepted", desc: "Your delivery request has been confirmed" },
+    { label: "Courial at Pickup", desc: "Your courier has arrived at the pickup location" },
+    { label: "Courial Picked Up", desc: "Package has been collected" },
+    { label: "Courial at Drop-off", desc: "Your courier has arrived at the destination" },
+    { label: "Courial Dropped Off", desc: "Package has been delivered" },
+    { label: "Order Complete", desc: "Invoice sent — thank you!" },
+  ];
 
   const handlePickupSelect = useCallback((place: any) => {
     if (place.geometry?.location) {
@@ -662,10 +673,61 @@ const Book = () => {
                   )}
                 </div>
 
-                {/* Status */}
-                <div className="rounded-xl bg-muted/60 px-4 py-3 mb-4">
-                  <p className="text-sm font-semibold text-foreground">Courier is on the way to pickup</p>
-                  <p className="text-xs text-muted-foreground mt-0.5">Estimated arrival: 4 mins</p>
+                {/* Delivery Status Stepper */}
+                <div className="mb-4">
+                  <div className="space-y-0">
+                    {deliverySteps.map((step, i) => {
+                      const isCompleted = i < deliveryStep;
+                      const isCurrent = i === deliveryStep;
+                      const isFuture = i > deliveryStep;
+                      return (
+                        <div key={step.label} className="flex gap-3">
+                          {/* Vertical line + dot */}
+                          <div className="flex flex-col items-center">
+                            <div
+                              className={cn(
+                                "w-3 h-3 rounded-full border-2 shrink-0 transition-all duration-300",
+                                isCompleted
+                                  ? "bg-primary border-primary"
+                                  : isCurrent
+                                  ? "bg-primary border-primary ring-4 ring-primary/20"
+                                  : "bg-muted border-border"
+                              )}
+                            />
+                            {i < deliverySteps.length - 1 && (
+                              <div
+                                className={cn(
+                                  "w-0.5 flex-1 min-h-[24px] transition-colors duration-300",
+                                  isCompleted ? "bg-primary" : "bg-border"
+                                )}
+                              />
+                            )}
+                          </div>
+                          {/* Label */}
+                          <div className={cn("pb-3", i === deliverySteps.length - 1 && "pb-0")}>
+                            <p
+                              className={cn(
+                                "text-sm font-semibold leading-tight transition-colors",
+                                isCurrent ? "text-foreground" : isCompleted ? "text-muted-foreground" : "text-muted-foreground/50"
+                              )}
+                            >
+                              {step.label}
+                              {isCompleted && <span className="ml-1.5 text-primary">✓</span>}
+                            </p>
+                            {isCurrent && (
+                              <motion.p
+                                initial={{ opacity: 0, y: -4 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                className="text-xs text-muted-foreground mt-0.5"
+                              >
+                                {step.desc}
+                              </motion.p>
+                            )}
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
                 </div>
 
                 {/* Trip Summary */}
@@ -687,20 +749,65 @@ const Book = () => {
                 </div>
               </div>
 
-              {/* Price */}
-              <div className="flex items-center justify-between px-1 mb-4">
-                <span className="text-sm text-muted-foreground">Estimated fare</span>
-                <span className="text-sm font-bold text-foreground">$21.59</span>
-              </div>
+              {/* Price / Receipt */}
+              {deliveryStep >= 5 ? (
+                <div className="rounded-xl border border-primary/20 bg-primary/5 p-4 mb-4">
+                  <p className="text-xs font-bold uppercase tracking-wider text-primary/70 mb-2">Receipt</p>
+                  <div className="space-y-1.5 text-sm">
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Base fare</span>
+                      <span className="text-foreground">$5.40</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Distance (4.2 mi)</span>
+                      <span className="text-foreground">$3.91</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Time (18 min)</span>
+                      <span className="text-foreground">$4.50</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Service fee</span>
+                      <span className="text-foreground">$2.16</span>
+                    </div>
+                    <div className="border-t border-border pt-1.5 flex justify-between font-bold">
+                      <span className="text-foreground">Total</span>
+                      <span className="text-primary">$21.59</span>
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                <div className="flex items-center justify-between px-1 mb-4">
+                  <span className="text-sm text-muted-foreground">Estimated fare</span>
+                  <span className="text-sm font-bold text-foreground">$21.59</span>
+                </div>
+              )}
 
-              {/* Cancel Button */}
-              <div className="mt-auto">
-                <button
-                  onClick={handleCancelBooking}
-                  className="w-full py-3 rounded-full text-sm font-semibold text-muted-foreground bg-muted hover:bg-muted/80 transition-colors"
-                >
-                  Cancel Delivery
-                </button>
+              {/* Action Buttons */}
+              <div className="mt-auto space-y-2">
+                {deliveryStep < 5 && (
+                  <button
+                    onClick={() => setDeliveryStep((s) => Math.min(s + 1, 5))}
+                    className="w-full py-3 rounded-full text-sm font-semibold text-primary-foreground bg-primary hover:bg-primary/90 transition-colors"
+                  >
+                    {["Arrive at Pickup", "Pick Up Package", "Arrive at Drop-off", "Drop Off Package", "Complete Order"][deliveryStep]}
+                  </button>
+                )}
+                {deliveryStep >= 5 ? (
+                  <button
+                    onClick={handleCancelBooking}
+                    className="w-full py-3 rounded-full text-sm font-semibold text-primary-foreground bg-primary hover:bg-primary/90 transition-colors"
+                  >
+                    Done
+                  </button>
+                ) : (
+                  <button
+                    onClick={handleCancelBooking}
+                    className="w-full py-3 rounded-full text-sm font-semibold text-muted-foreground bg-muted hover:bg-muted/80 transition-colors"
+                  >
+                    Cancel Delivery
+                  </button>
+                )}
               </div>
             </motion.div>
           </div>
