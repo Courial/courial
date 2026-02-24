@@ -1,9 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useCallback } from "react";
 import { Navbar } from "@/components/Navbar";
 import { Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { Helmet } from "react-helmet-async";
 import { MapPin, Search, CarFront, ParkingCircle, Leaf, Box, ConciergeBell, Clock, CalendarIcon } from "lucide-react";
+import { LoadScript } from "@react-google-maps/api";
 import { Hero } from "@/components/Hero";
 import { LogoTicker } from "@/components/LogoTicker";
 import { BentoGrid } from "@/components/BentoGrid";
@@ -16,6 +17,8 @@ import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
+import AddressAutocomplete from "@/components/booking/AddressAutocomplete";
+import BookingMap from "@/components/booking/BookingMap";
 import chauffeurImage from "@/assets/chauffeur-service.jpg";
 import deliverBox from "@/assets/deliver-box.png";
 import vehicleWalker from "@/assets/vehicle-walker.png";
@@ -50,16 +53,34 @@ const serviceCards: { id: ServiceId; label: string; desc: string; href: string; 
   { id: "valet", label: "Valet", desc: "More than parking. We park it, charge it, or drive it—whatever you need.", href: "/book", image: "https://images.unsplash.com/photo-1617788138017-80ad40651399?w=600&q=80", icons: [ParkingCircle, Leaf] },
 ];
 
+const GOOGLE_MAPS_API_KEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY || "";
+const MAPS_LIBRARIES: ("places")[] = ["places"];
+
 const Book = () => {
   const [selectedService, setSelectedService] = useState<ServiceId>("deliver");
   const [pickup, setPickup] = useState("");
   const [dropoff, setDropoff] = useState("");
+  const [pickupCoords, setPickupCoords] = useState<{ lat: number; lng: number } | null>(null);
+  const [dropoffCoords, setDropoffCoords] = useState<{ lat: number; lng: number } | null>(null);
   const [timeMode, setTimeMode] = useState<"now" | "later">("now");
   const [selectedDate, setSelectedDate] = useState<Date>();
   const [selectedTime, setSelectedTime] = useState("12:00");
   const [selectedVehicle, setSelectedVehicle] = useState<VehicleId | null>(null);
 
+  const handlePickupSelect = useCallback((place: google.maps.places.PlaceResult) => {
+    if (place.geometry?.location) {
+      setPickupCoords({ lat: place.geometry.location.lat(), lng: place.geometry.location.lng() });
+    }
+  }, []);
+
+  const handleDropoffSelect = useCallback((place: google.maps.places.PlaceResult) => {
+    if (place.geometry?.location) {
+      setDropoffCoords({ lat: place.geometry.location.lat(), lng: place.geometry.location.lng() });
+    }
+  }, []);
+
   return (
+    <LoadScript googleMapsApiKey={GOOGLE_MAPS_API_KEY} libraries={MAPS_LIBRARIES}>
     <div className="min-h-screen bg-background">
       <Helmet>
         <title>Book a Courier — Courial</title>
@@ -276,11 +297,11 @@ const Book = () => {
                     <div className="relative group">
                       <div className="flex items-center gap-3 px-4 py-4 border border-border rounded-t-xl bg-background transition-colors focus-within:border-foreground">
                         <div className="flex-shrink-0 w-3 h-3 rounded-full border-[2.5px] border-foreground" />
-                        <input
-                          type="text"
+                        <AddressAutocomplete
                           placeholder="Pickup location"
                           value={pickup}
-                          onChange={(e) => setPickup(e.target.value)}
+                          onChange={setPickup}
+                          onPlaceSelect={handlePickupSelect}
                           className="w-full bg-transparent text-sm text-foreground placeholder:text-muted-foreground outline-none"
                         />
                       </div>
@@ -288,11 +309,11 @@ const Book = () => {
                     <div className="relative group">
                       <div className="flex items-center gap-3 px-4 py-4 border border-border border-t-0 rounded-b-xl bg-background transition-colors focus-within:border-foreground">
                         <div className="flex-shrink-0 w-3 h-3 bg-foreground" />
-                        <input
-                          type="text"
+                        <AddressAutocomplete
                           placeholder="Dropoff location"
                           value={dropoff}
-                          onChange={(e) => setDropoff(e.target.value)}
+                          onChange={setDropoff}
+                          onPlaceSelect={handleDropoffSelect}
                           className="w-full bg-transparent text-sm text-foreground placeholder:text-muted-foreground outline-none"
                         />
                       </div>
@@ -316,29 +337,9 @@ const Book = () => {
 
         {/* Right Column — Map Placeholder */}
         <div className="hidden md:flex flex-1 relative overflow-hidden">
-          {pickup.trim().length > 0 && dropoff.trim().length > 0 ? (
-            <div className="flex-1 bg-muted relative flex items-center justify-center">
-              <div
-                className="absolute inset-0 opacity-30"
-                style={{
-                  backgroundImage: `
-                    linear-gradient(to right, hsl(var(--border)) 1px, transparent 1px),
-                    linear-gradient(to bottom, hsl(var(--border)) 1px, transparent 1px)
-                  `,
-                  backgroundSize: "60px 60px",
-                }}
-              />
-              <div className="relative z-10 text-center">
-                <div className="w-16 h-16 rounded-full bg-background border border-border flex items-center justify-center mx-auto mb-4 shadow-sm">
-                  <MapPin className="w-7 h-7 text-muted-foreground" />
-                </div>
-                <p className="text-sm font-medium text-muted-foreground">Map view coming soon</p>
-                <p className="text-xs text-muted-foreground/60 mt-1">Google Maps integration</p>
-              </div>
-              <div className="absolute bottom-6 right-6 flex flex-col gap-0.5">
-                <button className="w-10 h-10 bg-background border border-border rounded-t-lg flex items-center justify-center text-foreground text-lg font-medium hover:bg-muted transition-colors">+</button>
-                <button className="w-10 h-10 bg-background border border-border rounded-b-lg flex items-center justify-center text-foreground text-lg font-medium hover:bg-muted transition-colors">−</button>
-              </div>
+          {pickupCoords || dropoffCoords ? (
+            <div className="flex-1">
+              <BookingMap pickupCoords={pickupCoords} dropoffCoords={dropoffCoords} />
             </div>
           ) : (
             <div className="flex-1 overflow-y-auto">
@@ -353,6 +354,7 @@ const Book = () => {
         </div>
       </div>
     </div>
+    </LoadScript>
   );
 };
 
