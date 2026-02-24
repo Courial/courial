@@ -1,5 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
-import { GoogleMap } from "@react-google-maps/api";
+import React from "react";
 
 interface LatLng {
   lat: number;
@@ -11,127 +10,85 @@ interface BookingMapProps {
   dropoffCoords: LatLng | null;
 }
 
-const mapContainerStyle = { width: "100%", height: "100%" };
-const defaultCenter: LatLng = { lat: 40.7128, lng: -74.006 };
-
 const BookingMap: React.FC<BookingMapProps> = ({ pickupCoords, dropoffCoords }) => {
-  const mapRef = useRef<google.maps.Map | null>(null);
-  const markersRef = useRef<google.maps.Marker[]>([]);
-  const directionsRendererRef = useRef<google.maps.DirectionsRenderer | null>(null);
-
-  const onLoad = useCallback((map: google.maps.Map) => {
-    mapRef.current = map;
-  }, []);
-
-  // Update markers and route when coords change
-  useEffect(() => {
-    const map = mapRef.current;
-    if (!map) return;
-
-    // Clear old markers
-    markersRef.current.forEach((m) => m.setMap(null));
-    markersRef.current = [];
+  // Build a static Google Maps image URL with markers and a path
+  const buildStaticMapUrl = () => {
+    const base = "https://maps.googleapis.com/maps/api/staticmap";
+    const params = new URLSearchParams({
+      size: "800x600",
+      scale: "2",
+      maptype: "roadmap",
+      style: "feature:poi|visibility:off",
+      key: "AIzaSyABwhqI6wMVFEgPjyGTjB8XHUHTsVBiG4o",
+    });
 
     if (pickupCoords) {
-      const marker = new google.maps.Marker({
-        position: pickupCoords,
-        map,
-        icon: {
-          path: google.maps.SymbolPath.CIRCLE,
-          scale: 8,
-          fillColor: "#000000",
-          fillOpacity: 1,
-          strokeColor: "#ffffff",
-          strokeWeight: 2,
-        },
-        title: "Pickup",
-      });
-      markersRef.current.push(marker);
+      params.append("markers", `color:black|label:P|${pickupCoords.lat},${pickupCoords.lng}`);
     }
-
     if (dropoffCoords) {
-      const marker = new google.maps.Marker({
-        position: dropoffCoords,
-        map,
-        icon: {
-          path: google.maps.SymbolPath.BACKWARD_CLOSED_ARROW,
-          scale: 6,
-          fillColor: "#000000",
-          fillOpacity: 1,
-          strokeColor: "#ffffff",
-          strokeWeight: 2,
-        },
-        title: "Dropoff",
-      });
-      markersRef.current.push(marker);
+      params.append("markers", `color:gray|label:D|${dropoffCoords.lat},${dropoffCoords.lng}`);
     }
-
-    // Fit bounds
     if (pickupCoords && dropoffCoords) {
-      const bounds = new google.maps.LatLngBounds();
-      bounds.extend(pickupCoords);
-      bounds.extend(dropoffCoords);
-      map.fitBounds(bounds, 80);
-
-      // Draw route
-      if (!directionsRendererRef.current) {
-        directionsRendererRef.current = new google.maps.DirectionsRenderer({
-          suppressMarkers: true,
-          polylineOptions: {
-            strokeColor: "#000000",
-            strokeWeight: 4,
-            strokeOpacity: 0.8,
-          },
-        });
-      }
-      directionsRendererRef.current.setMap(map);
-
-      const directionsService = new google.maps.DirectionsService();
-      directionsService.route(
-        {
-          origin: pickupCoords,
-          destination: dropoffCoords,
-          travelMode: google.maps.TravelMode.DRIVING,
-        },
-        (result, status) => {
-          if (status === "OK" && result) {
-            directionsRendererRef.current?.setDirections(result);
-          }
-        }
+      params.append(
+        "path",
+        `color:0x000000ff|weight:4|${pickupCoords.lat},${pickupCoords.lng}|${dropoffCoords.lat},${dropoffCoords.lng}`
       );
-    } else {
-      // Clear route
-      directionsRendererRef.current?.setMap(null);
-      directionsRendererRef.current = null;
-
-      if (pickupCoords) {
-        map.panTo(pickupCoords);
-        map.setZoom(14);
-      } else if (dropoffCoords) {
-        map.panTo(dropoffCoords);
-        map.setZoom(14);
-      }
     }
-  }, [pickupCoords, dropoffCoords]);
+
+    return `${base}?${params.toString()}`;
+  };
+
+  // Use an embedded iframe with OpenStreetMap as fallback (no API key needed)
+  const center = pickupCoords || dropoffCoords || { lat: 34.0522, lng: -118.2437 };
+  const zoom = pickupCoords && dropoffCoords ? 12 : 13;
 
   return (
-    <GoogleMap
-      mapContainerStyle={mapContainerStyle}
-      center={defaultCenter}
-      zoom={12}
-      onLoad={onLoad}
-      options={{
-        disableDefaultUI: true,
-        zoomControl: true,
-        zoomControlOptions: {
-          position: google.maps.ControlPosition?.RIGHT_BOTTOM,
-        },
-        styles: [
-          { featureType: "poi", stylers: [{ visibility: "off" }] },
-          { featureType: "transit", stylers: [{ visibility: "off" }] },
-        ],
-      }}
-    />
+    <div className="w-full h-full relative bg-muted overflow-hidden">
+      {/* OSM tile-based map via iframe */}
+      <iframe
+        title="Booking Map"
+        className="w-full h-full border-0"
+        src={`https://www.openstreetmap.org/export/embed.html?bbox=${center.lng - 0.08},${center.lat - 0.05},${center.lng + 0.08},${center.lat + 0.05}&layer=mapnik`}
+      />
+
+      {/* Overlay with route info */}
+      <div className="absolute bottom-4 left-4 right-4 bg-background/90 backdrop-blur-sm rounded-xl p-4 border border-border shadow-lg">
+        <div className="flex items-center gap-3">
+          {pickupCoords && (
+            <div className="flex items-center gap-2">
+              <div className="w-3 h-3 rounded-full border-[2.5px] border-foreground flex-shrink-0" />
+              <span className="text-xs text-muted-foreground truncate">
+                {pickupCoords.lat.toFixed(4)}, {pickupCoords.lng.toFixed(4)}
+              </span>
+            </div>
+          )}
+          {pickupCoords && dropoffCoords && (
+            <div className="flex-1 border-t border-dashed border-muted-foreground/40 mx-1" />
+          )}
+          {dropoffCoords && (
+            <div className="flex items-center gap-2">
+              <div className="w-3 h-3 bg-foreground flex-shrink-0" />
+              <span className="text-xs text-muted-foreground truncate">
+                {dropoffCoords.lat.toFixed(4)}, {dropoffCoords.lng.toFixed(4)}
+              </span>
+            </div>
+          )}
+        </div>
+        {pickupCoords && dropoffCoords && (
+          <div className="mt-2 pt-2 border-t border-border flex items-center justify-between">
+            <span className="text-xs font-medium text-foreground">
+              ~{(
+                Math.sqrt(
+                  Math.pow((dropoffCoords.lat - pickupCoords.lat) * 69, 2) +
+                  Math.pow((dropoffCoords.lng - pickupCoords.lng) * 54.6, 2)
+                )
+              ).toFixed(1)} mi estimated
+            </span>
+            <span className="text-xs text-muted-foreground">Test Mode</span>
+          </div>
+        )}
+      </div>
+    </div>
   );
 };
 
