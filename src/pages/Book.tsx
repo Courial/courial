@@ -372,6 +372,42 @@ const Book = () => {
                 )}
               </AnimatePresence>
 
+              {/* Quick Options Pills — before vehicle selection */}
+              {selectedService === "deliver" && (
+                <div className="mb-4">
+                  <div className="flex flex-wrap items-center justify-center gap-1.5">
+                    {([
+                      { label: "Over 70 lbs", value: over70lbs, setter: setOver70lbs },
+                      { label: "Require 2 Courials", value: twoCourials, setter: setTwoCourials },
+                      { label: "Involves stairs", value: hasStairs, setter: setHasStairs },
+                    ] as const).map(({ label, value, setter }) => (
+                      <button
+                        key={label}
+                        type="button"
+                        onClick={() => {
+                          const newVal = value === true ? null : true;
+                          setter(newVal);
+                          // Reset vehicle if it becomes unavailable
+                          if (label === "Over 70 lbs" && newVal === true && (selectedVehicle === "walker" || selectedVehicle === "scooter")) {
+                            setSelectedVehicle(null);
+                          }
+                          if (label === "Require 2 Courials" && newVal === true && selectedVehicle !== "van" && selectedVehicle !== "truck") {
+                            setSelectedVehicle(null);
+                          }
+                        }}
+                        className={cn(
+                          "px-2.5 py-1 rounded-full text-[11px] font-normal transition-all border leading-none",
+                          value === true
+                            ? "bg-background text-foreground border-primary"
+                            : "bg-background text-foreground/75 border-border/60 hover:border-foreground/50"
+                        )}
+                      >
+                        {label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
 
               {/* Vehicle type icons for Deliver */}
               {selectedService === "deliver" && (
@@ -488,42 +524,6 @@ const Book = () => {
                       />
                     </div>
                   </div>
-
-                  {/* Quick Options Pills */}
-                  <div className="mt-3 mb-1">
-                    <div className="flex flex-wrap items-center justify-center gap-1.5">
-                      {([
-                        { label: "Over 70 lbs", value: over70lbs, setter: setOver70lbs },
-                        { label: "Require 2 Courials", value: twoCourials, setter: setTwoCourials },
-                        { label: "Involves stairs", value: hasStairs, setter: setHasStairs },
-                      ] as const).map(({ label, value, setter }) => (
-                        <button
-                          key={label}
-                          type="button"
-                          onClick={() => {
-                            const newVal = value === true ? null : true;
-                            setter(newVal);
-                            if (label === "Over 70 lbs" && newVal === true && (selectedVehicle === "walker" || selectedVehicle === "scooter")) {
-                              setSelectedVehicle(null);
-                            }
-                            if (label === "Require 2 Courials" && newVal === true && selectedVehicle !== "van" && selectedVehicle !== "truck") {
-                              setSelectedVehicle(null);
-                            }
-                          }}
-                          className={cn(
-                            "px-2.5 py-1 rounded-full text-[11px] font-normal transition-all border leading-none",
-                            value === true
-                              ? "bg-background text-foreground border-primary"
-                              : "bg-background text-foreground/75 border-border/60 hover:border-foreground/50"
-                          )}
-                        >
-                          {label}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-
-                  <div className="border-t border-border mt-3" />
 
                   {/* Delivery Requirements Notice */}
                   <Collapsible className="mt-3 text-xs text-foreground">
