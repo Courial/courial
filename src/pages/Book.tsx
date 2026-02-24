@@ -1,11 +1,11 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { Navbar } from "@/components/Navbar";
 import { Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { Helmet } from "react-helmet-async";
-import { MapPin, Search, CarFront, ParkingCircle, Leaf, Box, ConciergeBell, Clock, CalendarIcon, ChevronDown, Info, Plus, Trash2, CreditCard } from "lucide-react";
+import { MapPin, Search, CarFront, ParkingCircle, Leaf, Box, ConciergeBell, Clock, CalendarIcon, ChevronDown, Info, Plus, Trash2, CreditCard, Star, X } from "lucide-react";
 import visaIcon from "@/assets/card-icons/visa.svg";
 import mastercardIcon from "@/assets/card-icons/mastercard.svg";
 import amexIcon from "@/assets/card-icons/amex.svg";
@@ -80,6 +80,8 @@ const Book = () => {
   const [over70lbs, setOver70lbs] = useState<boolean | null>(null);
   const [twoCourials, setTwoCourials] = useState<boolean | null>(null);
   const [hasStairs, setHasStairs] = useState<boolean | null>(null);
+  const [bookingState, setBookingState] = useState<"input" | "loading" | "active">("input");
+  const [loadingProgress, setLoadingProgress] = useState(0);
 
   const paymentMethods = [
     { id: "visa-4242", type: "visa", label: "Visa", last4: "4242", icon: visaIcon },
@@ -89,6 +91,33 @@ const Book = () => {
   const activePayment = paymentMethods.find(p => p.id === selectedPaymentMethod) || paymentMethods[0];
 
   const isFormValid = pickup.trim().length > 0 && dropoff.trim().length > 0 && selectedVehicle !== null && notes.trim().length > 0;
+
+  const handleBookingSubmit = useCallback(() => {
+    if (!isFormValid) return;
+    setBookingState("loading");
+    setLoadingProgress(0);
+  }, [isFormValid]);
+
+  // Animate loading progress and transition to active
+  useEffect(() => {
+    if (bookingState !== "loading") return;
+    const interval = setInterval(() => {
+      setLoadingProgress((prev) => {
+        if (prev >= 100) {
+          clearInterval(interval);
+          setBookingState("active");
+          return 100;
+        }
+        return prev + (100 / 30); // 30 steps over 3s (100ms interval)
+      });
+    }, 100);
+    return () => clearInterval(interval);
+  }, [bookingState]);
+
+  const handleCancelBooking = useCallback(() => {
+    setBookingState("input");
+    setLoadingProgress(0);
+  }, []);
 
   const handlePickupSelect = useCallback((place: any) => {
     if (place.geometry?.location) {
@@ -121,6 +150,7 @@ const Book = () => {
       <div className="flex h-[calc(100vh-64px)] mt-16">
         {/* Left Column — Booking Card */}
         <div className="w-full max-w-[440px] flex-shrink-0 border-r border-border overflow-y-auto">
+          {bookingState === "input" && (
           <div className="p-8">
             {/* Service Bento Grid */}
             <motion.div
@@ -540,6 +570,7 @@ const Book = () => {
                       {/* Request Delivery Button */}
                       <Button
                         disabled={!isFormValid}
+                        onClick={handleBookingSubmit}
                         className="flex-1 rounded h-8 text-base font-semibold"
                         variant={isFormValid ? "hero" : "secondary"}
                       >
@@ -551,13 +582,145 @@ const Book = () => {
               )}
             </AnimatePresence>
           </div>
+          )}
+
+        {/* Loading State */}
+        {bookingState === "loading" && (
+          <div className="p-8 flex flex-col items-center justify-center h-full">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.3 }}
+              className="flex flex-col items-center gap-6"
+            >
+              {/* Circular Progress */}
+              <div className="relative w-24 h-24">
+                <svg className="w-24 h-24 -rotate-90" viewBox="0 0 96 96">
+                  <circle cx="48" cy="48" r="42" fill="none" stroke="hsl(var(--muted))" strokeWidth="4" />
+                  <circle
+                    cx="48" cy="48" r="42" fill="none"
+                    stroke="hsl(var(--primary))"
+                    strokeWidth="4"
+                    strokeLinecap="round"
+                    strokeDasharray={2 * Math.PI * 42}
+                    strokeDashoffset={2 * Math.PI * 42 * (1 - loadingProgress / 100)}
+                    className="transition-all duration-100"
+                  />
+                </svg>
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <img src={deliverBox} alt="" className="w-8 h-8" />
+                </div>
+              </div>
+              <div className="text-center">
+                <h2 className="text-xl font-bold text-foreground mb-1">Finding your courier...</h2>
+                <p className="text-sm text-muted-foreground">Matching you with the best available Courial nearby</p>
+              </div>
+              <button
+                onClick={handleCancelBooking}
+                className="mt-4 px-6 py-2 rounded-full text-sm font-medium text-muted-foreground hover:text-foreground border border-border hover:border-foreground/30 transition-all"
+              >
+                Cancel
+              </button>
+            </motion.div>
+          </div>
+        )}
+
+        {/* Active Tracking State */}
+        {bookingState === "active" && (
+          <div className="p-8 h-full">
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.4 }}
+              className="flex flex-col h-full"
+            >
+              {/* Active header */}
+              <div className="flex items-center gap-2 mb-6">
+                <div className="w-2 h-2 rounded-full bg-primary animate-pulse" />
+                <span className="text-xs font-semibold text-primary uppercase tracking-wider">Live</span>
+              </div>
+
+              {/* Driver Card */}
+              <div className="rounded-2xl border border-border bg-background p-5 mb-4">
+                <div className="flex items-center gap-4 mb-4">
+                  <div className="w-12 h-12 rounded-full bg-muted flex items-center justify-center text-lg font-bold text-foreground">
+                    M
+                  </div>
+                  <div className="flex-1">
+                    <h3 className="text-base font-bold text-foreground">Marcus D.</h3>
+                    <div className="flex items-center gap-1">
+                      <Star className="w-3.5 h-3.5 text-primary fill-primary" />
+                      <span className="text-sm text-muted-foreground">4.68</span>
+                    </div>
+                  </div>
+                  {selectedVehicle && (
+                    <img
+                      src={vehicleOptions.find(v => v.id === selectedVehicle)?.image}
+                      alt={selectedVehicle}
+                      className="h-10 object-contain opacity-60"
+                    />
+                  )}
+                </div>
+
+                {/* Status */}
+                <div className="rounded-xl bg-muted/60 px-4 py-3 mb-4">
+                  <p className="text-sm font-semibold text-foreground">Courier is on the way to pickup</p>
+                  <p className="text-xs text-muted-foreground mt-0.5">Estimated arrival: 4 mins</p>
+                </div>
+
+                {/* Trip Summary */}
+                <div className="space-y-3">
+                  <div className="flex items-start gap-3">
+                    <div className="flex-shrink-0 w-2.5 h-2.5 rounded-full bg-green-500 mt-[5px]" />
+                    <div className="min-w-0">
+                      {pickupPlaceName && <p className="text-sm font-semibold text-foreground leading-tight">{pickupPlaceName}</p>}
+                      <p className="text-xs text-muted-foreground truncate">{pickup}</p>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <div className="flex-shrink-0 w-2.5 h-2.5 bg-red-500 mt-[5px]" />
+                    <div className="min-w-0">
+                      {dropoffPlaceName && <p className="text-sm font-semibold text-foreground leading-tight">{dropoffPlaceName}</p>}
+                      <p className="text-xs text-muted-foreground truncate">{dropoff}</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Price */}
+              <div className="flex items-center justify-between px-1 mb-4">
+                <span className="text-sm text-muted-foreground">Estimated fare</span>
+                <span className="text-sm font-bold text-foreground">$21.59</span>
+              </div>
+
+              {/* Cancel Button */}
+              <div className="mt-auto">
+                <button
+                  onClick={handleCancelBooking}
+                  className="w-full py-3 rounded-full text-sm font-semibold text-muted-foreground bg-muted hover:bg-muted/80 transition-colors"
+                >
+                  Cancel Delivery
+                </button>
+              </div>
+            </motion.div>
+          </div>
+        )}
         </div>
 
         {/* Right Column — Map Placeholder */}
         <div className="hidden md:flex flex-1 relative overflow-hidden">
           {pickupCoords || dropoffCoords ? (
-            <div className="flex-1">
+            <div className="flex-1 relative">
               <BookingMap pickupCoords={pickupCoords} dropoffCoords={dropoffCoords} pickupAddress={pickup} dropoffAddress={dropoff} pickupPlaceName={pickupPlaceName} dropoffPlaceName={dropoffPlaceName} />
+              {/* Pulsing tracking marker when active */}
+              {bookingState === "active" && pickupCoords && (
+                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-10 pointer-events-none">
+                  <div className="relative">
+                    <div className="w-4 h-4 rounded-full bg-primary" />
+                    <div className="absolute inset-0 w-4 h-4 rounded-full bg-primary animate-ping opacity-75" />
+                  </div>
+                </div>
+              )}
             </div>
           ) : (
             <div className="flex-1 overflow-y-auto">
