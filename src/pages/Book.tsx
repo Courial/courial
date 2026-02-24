@@ -448,7 +448,7 @@ const Book = () => {
                       {/* Request Delivery Button */}
                       <Button
                         disabled={!isFormValid}
-                        className="flex-1 rounded-xl h-8 text-base font-semibold"
+                        className="flex-1 rounded h-8 text-base font-semibold"
                         variant={isFormValid ? "hero" : "secondary"}
                       >
                         Book Delivery
