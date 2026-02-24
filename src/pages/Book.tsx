@@ -321,11 +321,53 @@ const Book = () => {
                 )}
               </AnimatePresence>
 
+              {/* Quick Options Pills — before vehicle selection */}
+              {selectedService === "deliver" && (
+                <div className="mb-4">
+                  <p className="text-[11px] text-muted-foreground mb-1.5">My product is</p>
+                  <div className="flex flex-wrap gap-1.5">
+                    {([
+                      { label: "Over 70 lbs", value: over70lbs, setter: setOver70lbs },
+                      { label: "2 Courials", value: twoCourials, setter: setTwoCourials },
+                      { label: "Stairs", value: hasStairs, setter: setHasStairs },
+                    ] as const).map(({ label, value, setter }) => (
+                      <button
+                        key={label}
+                        type="button"
+                        onClick={() => {
+                          const newVal = value === true ? null : true;
+                          setter(newVal);
+                          // Reset vehicle if it becomes unavailable
+                          if (label === "Over 70 lbs" && newVal === true && (selectedVehicle === "walker" || selectedVehicle === "scooter")) {
+                            setSelectedVehicle(null);
+                          }
+                          if (label === "2 Courials" && newVal === true && selectedVehicle !== "van" && selectedVehicle !== "truck") {
+                            setSelectedVehicle(null);
+                          }
+                        }}
+                        className={cn(
+                          "px-2.5 py-1 rounded-full text-[11px] font-semibold transition-all border leading-none",
+                          value === true
+                            ? "bg-foreground text-background border-foreground"
+                            : "bg-background text-muted-foreground border-border/60"
+                        )}
+                      >
+                        {label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+
               {/* Vehicle type icons for Deliver */}
               {selectedService === "deliver" && (
                 <div className="mb-6">
                   <div className="flex items-end justify-center gap-4">
-                    {vehicleOptions.map((v) => {
+                    {vehicleOptions.filter((v) => {
+                      if (twoCourials === true && v.id !== "van" && v.id !== "truck") return false;
+                      if (over70lbs === true && (v.id === "walker" || v.id === "scooter")) return false;
+                      return true;
+                    }).map((v) => {
                       const isActive = selectedVehicle === v.id;
                       return (
                         <button
@@ -371,28 +413,7 @@ const Book = () => {
                   transition={{ duration: 0.2 }}
                   className="overflow-hidden"
                 >
-                {/* Quick Options Pills */}
-                  <div className="flex flex-wrap gap-1.5 mb-1">
-                    {([
-                      { label: "Over 70 lbs", value: over70lbs, setter: setOver70lbs },
-                      { label: "2 Courials", value: twoCourials, setter: setTwoCourials },
-                      { label: "Stairs", value: hasStairs, setter: setHasStairs },
-                    ] as const).map(({ label, value, setter }) => (
-                      <button
-                        key={label}
-                        type="button"
-                        onClick={() => setter(value === true ? null : true)}
-                        className={cn(
-                          "px-2.5 py-1 rounded-full text-[11px] font-semibold transition-all border leading-none",
-                          value === true
-                            ? "bg-foreground text-background border-foreground"
-                            : "bg-background text-muted-foreground border-border hover:border-foreground/40"
-                        )}
-                      >
-                        {label}
-                      </button>
-                    ))}
-                  </div>
+
 
                   {/* Input Fields */}
                   <div className="space-y-0">
