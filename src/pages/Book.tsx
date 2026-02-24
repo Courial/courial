@@ -363,8 +363,8 @@ const Book = () => {
                         />
                       </div>
                     </div>
-                    <div className="relative group">
-                      <div className="flex items-center gap-3 px-4 py-4 border border-border border-t-0 bg-background transition-colors focus-within:border-foreground">
+                    <div className="relative group mt-2">
+                      <div className="flex items-center gap-3 px-4 py-4 border border-border rounded-xl bg-background transition-colors focus-within:border-foreground">
                         <div className="flex-shrink-0 w-3 h-3 bg-foreground" />
                         <AddressAutocomplete
                           placeholder="Dropoff location"
