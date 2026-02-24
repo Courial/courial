@@ -530,15 +530,15 @@ const Book = () => {
             <h3 className="text-lg font-bold text-foreground mb-4">Rate Structure</h3>
             <div className="space-y-3">
               {[
-                { label: "Base Fee", value: "$0.09" },
-                { label: "Minimum Charge", value: "$5.40" },
-                { label: "Per Minute", value: "$0.25" },
-                { label: "Per Mile", value: "$0.93" },
+                { label: "Base Fee", value: "$0.09", muted: false },
+                { label: "Minimum Charge", value: "$5.40", muted: false },
+                { label: "Per Minute", value: "$0.25", muted: true },
+                { label: "Per Mile", value: "$0.93", muted: true },
               ].map((row) => (
                 <div key={row.label} className="flex items-center justify-between gap-2">
-                  <span className="text-sm font-semibold text-foreground">{row.label}</span>
+                  <span className={`text-sm ${row.muted ? 'text-foreground/50' : 'font-semibold text-foreground'}`}>{row.label}</span>
                   <div className="flex-1 border-b border-dotted border-muted-foreground/30 mx-2" />
-                  <span className="text-sm font-semibold text-foreground">{row.value}</span>
+                  <span className={`text-sm ${row.muted ? 'text-foreground/50' : 'font-semibold text-foreground'}`}>{row.value}</span>
                 </div>
               ))}
             </div>
@@ -551,14 +551,6 @@ const Book = () => {
             </div>
           </div>
           <div className="px-7 pb-7">
-
-          <div className="flex items-center justify-between">
-            <span className="text-sm font-semibold text-foreground">Payment method</span>
-            <div className="flex items-center gap-2">
-              <CreditCard className="w-4 h-4 text-muted-foreground" />
-              <span className="text-sm text-muted-foreground">Visa •••• 4242</span>
-            </div>
-          </div>
 
           <div className="mb-6">
             <h3 className="text-lg font-bold text-foreground mb-2">Wait Time Policy</h3>
