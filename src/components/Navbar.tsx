@@ -122,7 +122,7 @@ export const Navbar = () => {
               <div className="w-[70px]" />
             )}
             <Link to="/book">
-              <Button variant="hero" size="sm">
+              <Button variant={isActive("/book") ? "secondary" : "hero"} size="sm">
                 Book Now
               </Button>
             </Link>
@@ -195,7 +195,7 @@ export const Navbar = () => {
                   </Link>
                 )}
                 <Link to="/book" onClick={() => setIsOpen(false)}>
-                  <Button variant="hero" className="w-full">Book Now</Button>
+                  <Button variant={isActive("/book") ? "secondary" : "hero"} className="w-full">Book Now</Button>
                 </Link>
               </div>
             </div>
