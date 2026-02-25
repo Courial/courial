@@ -5,7 +5,8 @@ import { Navbar } from "@/components/Navbar";
 import { Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { Helmet } from "react-helmet-async";
-import { MapPin, Search, CarFront, ParkingCircle, Leaf, Box, ConciergeBell, Clock, CalendarIcon, ChevronDown, Info, Plus, Trash2, CreditCard, Star, X } from "lucide-react";
+import { MapPin, Search, CarFront, ParkingCircle, Leaf, Box, ConciergeBell, Clock, CalendarIcon, ChevronDown, Info, Plus, Trash2, CreditCard, Star, X, Weight } from "lucide-react";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import visaIcon from "@/assets/card-icons/visa.svg";
 import mastercardIcon from "@/assets/card-icons/mastercard.svg";
 import amexIcon from "@/assets/card-icons/amex.svg";
@@ -78,8 +79,23 @@ const Book = () => {
   const [showPaymentMethods, setShowPaymentMethods] = useState(false);
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState("visa-4242");
   const [over70lbs, setOver70lbs] = useState<boolean | null>(null);
+  const [heavyWeight, setHeavyWeight] = useState<string>("100");
+  const [heavyItems, setHeavyItems] = useState<string>("1");
   const [twoCourials, setTwoCourials] = useState<boolean | null>(null);
   const [hasStairs, setHasStairs] = useState<boolean | null>(null);
+
+  // Auto-select "Require 2 Courials" based on weight conditions
+  useEffect(() => {
+    if (over70lbs) {
+      const weight = parseInt(heavyWeight) || 0;
+      const items = parseInt(heavyItems) || 0;
+      const totalWeight = weight; // weight is total weight
+      const perItem = items > 0 ? weight / items : 0;
+      if (totalWeight > 150 || (perItem > 100 && items >= 5)) {
+        setTwoCourials(true);
+      }
+    }
+  }, [over70lbs, heavyWeight, heavyItems]);
   const [bookingState, setBookingState] = useState<"input" | "loading" | "active">("input");
   const [loadingProgress, setLoadingProgress] = useState(0);
   const [deliveryStep, setDeliveryStep] = useState(0);
@@ -399,37 +415,95 @@ const Book = () => {
               {/* Quick Options Pills — before vehicle selection */}
               {selectedService === "deliver" && (
                 <div className="mb-4">
-                  <div className="flex flex-wrap items-center justify-center gap-1.5">
-                    {([
-                      { label: "Over 70 lbs", value: over70lbs, setter: setOver70lbs },
-                      { label: "Require 2 Courials", value: twoCourials, setter: setTwoCourials },
-                      { label: "Involves stairs", value: hasStairs, setter: setHasStairs },
-                    ] as const).map(({ label, value, setter }) => (
-                      <button
-                        key={label}
-                        type="button"
-                        onClick={() => {
-                          const newVal = value === true ? null : true;
-                          setter(newVal);
-                          // Reset vehicle if it becomes unavailable
-                          if (label === "Over 70 lbs" && newVal === true && (selectedVehicle === "walker" || selectedVehicle === "scooter")) {
-                            setSelectedVehicle(null);
-                          }
-                          if (label === "Require 2 Courials" && newVal === true && selectedVehicle !== "van" && selectedVehicle !== "truck") {
-                            setSelectedVehicle(null);
-                          }
-                        }}
-                        className={cn(
-                          "px-2.5 py-1 rounded-full text-[11px] font-normal transition-all border leading-none",
-                          value === true
-                            ? "bg-background text-foreground border-primary"
-                            : "bg-background text-foreground/75 border-border/60 hover:border-foreground/50"
-                        )}
+                  <AnimatePresence mode="wait">
+                    {over70lbs ? (
+                      <motion.div
+                        key="heavy-details"
+                        initial={{ opacity: 0, height: 0 }}
+                        animate={{ opacity: 1, height: "auto" }}
+                        exit={{ opacity: 0, height: 0 }}
+                        transition={{ duration: 0.2 }}
+                        className="flex flex-col items-center gap-2"
                       >
-                        {label}
-                      </button>
-                    ))}
-                  </div>
+                        {/* Over 70 lbs button showing current data */}
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setOver70lbs(null);
+                            setHeavyWeight("100");
+                            setHeavyItems("1");
+                          }}
+                          className={cn(
+                            "px-2.5 py-1 rounded-full text-[11px] font-normal transition-all border leading-none",
+                            "bg-background text-foreground border-primary"
+                          )}
+                        >
+                          {heavyWeight}lbs / {heavyItems} {parseInt(heavyItems) === 1 ? "item" : "items"}
+                        </button>
+                        {/* Dropdowns row */}
+                        <div className="flex items-center gap-2">
+                          <Select value={heavyWeight} onValueChange={setHeavyWeight}>
+                            <SelectTrigger className="h-8 w-[120px] text-xs rounded-full">
+                              <SelectValue placeholder="Weight" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              {["70","80","90","100","125","150","175","200","250","300","400","500"].map(w => (
+                                <SelectItem key={w} value={w}>{w} lbs</SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                          <Select value={heavyItems} onValueChange={setHeavyItems}>
+                            <SelectTrigger className="h-8 w-[110px] text-xs rounded-full">
+                              <SelectValue placeholder="Items" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              {["1","2","3","4","5","6","7","8","9","10","15","20"].map(n => (
+                                <SelectItem key={n} value={n}>{n} {parseInt(n) === 1 ? "item" : "items"}</SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                        </div>
+                      </motion.div>
+                    ) : (
+                      <motion.div
+                        key="pills-row"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        transition={{ duration: 0.15 }}
+                        className="flex flex-wrap items-center justify-center gap-1.5"
+                      >
+                        {([
+                          { label: "Over 70 lbs", value: over70lbs, setter: setOver70lbs },
+                          { label: "Require 2 Courials", value: twoCourials, setter: setTwoCourials },
+                          { label: "Involves stairs", value: hasStairs, setter: setHasStairs },
+                        ] as const).map(({ label, value, setter }) => (
+                          <button
+                            key={label}
+                            type="button"
+                            onClick={() => {
+                              const newVal = value === true ? null : true;
+                              setter(newVal);
+                              if (label === "Over 70 lbs" && newVal === true && (selectedVehicle === "walker" || selectedVehicle === "scooter")) {
+                                setSelectedVehicle(null);
+                              }
+                              if (label === "Require 2 Courials" && newVal === true && selectedVehicle !== "van" && selectedVehicle !== "truck") {
+                                setSelectedVehicle(null);
+                              }
+                            }}
+                            className={cn(
+                              "px-2.5 py-1 rounded-full text-[11px] font-normal transition-all border leading-none",
+                              value === true
+                                ? "bg-background text-foreground border-primary"
+                                : "bg-background text-foreground/75 border-border/60 hover:border-foreground/50"
+                            )}
+                          >
+                            {label}
+                          </button>
+                        ))}
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
                 </div>
               )}
 
@@ -734,7 +808,7 @@ const Book = () => {
                   {(over70lbs || twoCourials || hasStairs) && (
                     <div className="py-2 border-b border-border">
                       <div className="flex flex-wrap gap-1.5">
-                        {over70lbs && <span className="text-xs text-muted-foreground bg-muted px-2 py-0.5 rounded-full">Over 70 lbs</span>}
+                        {over70lbs && <span className="text-xs text-muted-foreground bg-muted px-2 py-0.5 rounded-full">{heavyWeight}lbs / {heavyItems} {parseInt(heavyItems) === 1 ? "item" : "items"}</span>}
                         {twoCourials && <span className="text-xs text-muted-foreground bg-muted px-2 py-0.5 rounded-full">2 Courials</span>}
                         {hasStairs && <span className="text-xs text-muted-foreground bg-muted px-2 py-0.5 rounded-full">Involves stairs</span>}
                       </div>
