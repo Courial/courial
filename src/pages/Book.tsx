@@ -872,7 +872,7 @@ const Book = () => {
                       <span className="text-foreground">$4.50</span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-muted-foreground">Extra Weight fee (70 lbs +)</span>
+                      <span className="text-muted-foreground">Add'l Weight / Items</span>
                       <span className="text-foreground">$3.00</span>
                     </div>
                     <div className="flex justify-between">
@@ -880,11 +880,11 @@ const Book = () => {
                       <span className="text-foreground">$2.00</span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-muted-foreground">Add'l Courial fee</span>
+                      <span className="text-muted-foreground">Add'l Courial</span>
                       <span className="text-foreground">$8.00</span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-muted-foreground">Wait time fee (5 mins)</span>
+                      <span className="text-muted-foreground">Wait time</span>
                       <span className="text-foreground">$2.50</span>
                     </div>
                     <div className="border-t border-border pt-1.5 flex justify-between font-bold">
