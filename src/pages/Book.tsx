@@ -899,7 +899,7 @@ const Book = () => {
                         variant="outline"
                         size="lg"
                         onClick={handleCancelBooking}
-                        className="mt-2 rounded-full px-10 bg-black/80 text-white border-white/40 hover:bg-black hover:text-white"
+                        className="mt-2 rounded-full px-10 bg-black/75 text-white border-0 hover:bg-black/90 hover:text-white"
                       >
                         Cancel
                       </Button>
