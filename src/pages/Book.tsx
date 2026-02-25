@@ -844,21 +844,15 @@ const Book = () => {
                       </div>
                     </div>
 
+                    {/* ETA info — visible when both addresses set */}
+                    {pickupCoords && dropoffCoords && (
+                      <p className="text-[15px] font-medium text-muted-foreground text-center py-4 flex items-center justify-center gap-1.5">
+                        <img src={deliverBox} alt="" className="w-5 h-5" />
+                        4 mins away • 2:01 AM dropoff
+                      </p>
+                    )}
                   </div>
 
-                  {/* Notes Field */}
-                  <div className="relative group mt-3">
-                    <div className="flex items-start gap-3 px-4 py-4 border border-border rounded-xl bg-background transition-colors focus-within:border-foreground">
-                      <textarea
-                        placeholder="Provide all relevant pickup and drop-off details, including contact numbers, special instructions, access information, gate codes, and any other important notes."
-                        className="w-full bg-transparent text-sm text-foreground placeholder:text-foreground/35 outline-none resize-none overflow-hidden"
-                        rows={1}
-                        value={notes}
-                        onChange={(e) => setNotes(e.target.value)}
-                        onInput={(e) => { const t = e.currentTarget; t.style.height = 'auto'; t.style.height = t.scrollHeight + 'px'; }}
-                      />
-                    </div>
-                  </div>
 
                   {/* Delivery Requirements Notice */}
                   <Collapsible className="mt-3 text-xs text-foreground">
