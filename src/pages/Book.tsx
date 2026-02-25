@@ -80,7 +80,7 @@ const Book = () => {
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState("visa-4242");
   const [over70lbs, setOver70lbs] = useState<boolean | null>(null);
   const [heavyExpanded, setHeavyExpanded] = useState(false);
-  const [heavyWeight, setHeavyWeight] = useState<string>("100");
+  const [heavyWeight, setHeavyWeight] = useState<string>("30");
   const [heavyItems, setHeavyItems] = useState<string>("1");
   const [twoCourials, setTwoCourials] = useState<boolean | null>(null);
   const [hasStairs, setHasStairs] = useState<boolean | null>(null);
@@ -432,7 +432,7 @@ const Book = () => {
                               <SelectValue />
                             </SelectTrigger>
                             <SelectContent>
-                              {["70","80","90","100","125","150","175","200","250","300","400","500"].map(w => (
+                              {["30","40","50","60","70","80","90","100","125","150","175","200","250","300","350","400","450","500"].map(w => (
                                 <SelectItem key={w} value={w}>{w} lbs</SelectItem>
                               ))}
                             </SelectContent>
@@ -442,7 +442,7 @@ const Book = () => {
                               <SelectValue />
                             </SelectTrigger>
                             <SelectContent>
-                              {["1","2","3","4","5","6","7","8","9","10","15","20"].map(n => (
+                              {["1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24","25"].map(n => (
                                 <SelectItem key={n} value={n}>{n} {parseInt(n) === 1 ? "item" : "items"}</SelectItem>
                               ))}
                             </SelectContent>
