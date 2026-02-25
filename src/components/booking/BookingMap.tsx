@@ -283,12 +283,11 @@ const BookingMap: React.FC<BookingMapProps> = ({ pickupCoords, dropoffCoords, pi
     }
   }, [pickupCoords, dropoffCoords, pickupAddress, dropoffAddress, pickupPlaceName, dropoffPlaceName]);
 
-  // --- Loading phase: multiple cars converge toward pickup ---
+  // --- Loading phase: multiple cars converge toward pickup along real roads ---
   useEffect(() => {
     const map = mapInstanceRef.current;
     if (!map || !pickupCoords) return;
 
-    // Cleanup function
     const cleanup = () => {
       if (carAnimationRef.current) {
         cancelAnimationFrame(carAnimationRef.current);
@@ -303,25 +302,49 @@ const BookingMap: React.FC<BookingMapProps> = ({ pickupCoords, dropoffCoords, pi
       return;
     }
 
-    // Create several car markers scattered in a ~30 mile (48 km) radius, moving toward pickup
+    // Create several car markers scattered in a ~30 mile (48 km) radius, moving toward pickup along roads
     const startPositions = generateRandomPositions(pickupCoords, 7, 48);
     const iconUrl = getVehicleIconUrl(vehicleType);
     const iconMaxDim = getVehicleIconMaxDim(vehicleType);
     const canvasSize = Math.ceil(Math.sqrt(iconMaxDim * iconMaxDim * 2));
 
-    // Pre-create rotated icons for each car pointing toward pickup
-    const rotatedIconPromises = startPositions.map((pos) => {
-      const bearing = getBearing(pos, pickupCoords);
-      return createRotatedIcon(iconUrl, bearing, iconMaxDim);
-    });
+    // Assign each car a random speed factor (staggered pacing)
+    const speedFactors = startPositions.map(() => 0.5 + Math.random() * 0.7); // 0.5x to 1.2x
 
-    Promise.all(rotatedIconPromises).then((rotatedUrls) => {
+    const directionsService = new google.maps.DirectionsService();
+
+    // Fetch real road routes for each car
+    const routePromises = startPositions.map((pos) =>
+      new Promise<google.maps.LatLng[]>((resolve) => {
+        directionsService.route(
+          {
+            origin: pos,
+            destination: pickupCoords,
+            travelMode: google.maps.TravelMode.DRIVING,
+          },
+          (result, status) => {
+            if (status === "OK" && result) {
+              resolve(result.routes[0].overview_path);
+            } else {
+              // Fallback: straight line
+              resolve([
+                new google.maps.LatLng(pos.lat, pos.lng),
+                new google.maps.LatLng(pickupCoords.lat, pickupCoords.lng),
+              ]);
+            }
+          }
+        );
+      })
+    );
+
+    Promise.all(routePromises).then((routes) => {
+      // Create markers at start positions
       const cars = startPositions.map((pos, i) => {
         const marker = new google.maps.Marker({
           position: pos,
           map,
           icon: {
-            url: rotatedUrls[i],
+            url: iconUrl,
             scaledSize: new google.maps.Size(canvasSize, canvasSize),
             anchor: new google.maps.Point(canvasSize / 2, canvasSize / 2),
           },
@@ -331,23 +354,53 @@ const BookingMap: React.FC<BookingMapProps> = ({ pickupCoords, dropoffCoords, pi
       });
       carMarkersRef.current = cars;
 
-      // Animate cars moving toward pickup
+      // Animate cars along their routes — 30s duration, staggered speeds
+      const duration = 30000;
       const startTime = performance.now();
-      const duration = 50000;
+      const lastBearings = new Array(cars.length).fill(-999);
 
       const animate = (now: number) => {
         const elapsed = now - startTime;
-        const progress = Math.min(elapsed / duration, 1);
-        const eased = 1 - Math.pow(1 - progress, 3);
 
         cars.forEach((car, i) => {
-          const start = startPositions[i];
-          const lat = start.lat + (pickupCoords.lat - start.lat) * eased;
-          const lng = start.lng + (pickupCoords.lng - start.lng) * eased;
+          const path = routes[i];
+          // Each car has its own progress based on speed factor
+          const rawProgress = (elapsed / duration) * speedFactors[i];
+          const progress = Math.min(rawProgress, 1);
+          const eased = 1 - Math.pow(1 - progress, 2);
+
+          const totalPoints = path.length;
+          const exactIndex = eased * (totalPoints - 1);
+          const idx = Math.floor(exactIndex);
+          const frac = exactIndex - idx;
+
+          const from = path[Math.min(idx, totalPoints - 1)];
+          const to = path[Math.min(idx + 1, totalPoints - 1)];
+
+          const lat = from.lat() + (to.lat() - from.lat()) * frac;
+          const lng = from.lng() + (to.lng() - from.lng()) * frac;
+
           car.setPosition({ lat, lng });
+
+          // Rotate icon to match road bearing
+          const bearing = getBearing(
+            { lat: from.lat(), lng: from.lng() },
+            { lat: to.lat(), lng: to.lng() }
+          );
+          const roundedBearing = Math.round(bearing / 5) * 5;
+          if (roundedBearing !== lastBearings[i]) {
+            lastBearings[i] = roundedBearing;
+            createRotatedIcon(iconUrl, bearing, iconMaxDim).then((rotatedUrl) => {
+              car.setIcon({
+                url: rotatedUrl,
+                scaledSize: new google.maps.Size(canvasSize, canvasSize),
+                anchor: new google.maps.Point(canvasSize / 2, canvasSize / 2),
+              });
+            });
+          }
         });
 
-        if (progress < 1) {
+        if (elapsed < duration) {
           carAnimationRef.current = requestAnimationFrame(animate);
         }
       };
