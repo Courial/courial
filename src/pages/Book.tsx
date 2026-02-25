@@ -90,6 +90,35 @@ const Book = () => {
   const [twoCourials, setTwoCourials] = useState<boolean | null>(null);
   const [hasStairs, setHasStairs] = useState<boolean | null>(null);
 
+  // Concierge flow state
+  const [conciergeCategory, setConciergeCategory] = useState<string | null>(null);
+  const [conciergeDetails, setConciergeDetails] = useState("");
+  const [conciergeUrgency, setConciergeUrgency] = useState<string | null>(null);
+  const [conciergeServiceLevel, setConciergeServiceLevel] = useState<string | null>(null);
+
+  const conciergeCategories = [
+    { id: "shopping", label: "Shopping", icon: "🛍️" },
+    { id: "errands", label: "Errands", icon: "📋" },
+    { id: "waiting", label: "Wait in Line", icon: "⏳" },
+    { id: "returns", label: "Returns & Exchanges", icon: "🔄" },
+    { id: "pickup", label: "Pickup & Drop-off", icon: "📦" },
+    { id: "other", label: "Other", icon: "✨" },
+  ];
+
+  const conciergeUrgencies = [
+    { id: "flexible", label: "Flexible", desc: "Within 24 hours" },
+    { id: "today", label: "Today", desc: "Within a few hours" },
+    { id: "asap", label: "ASAP", desc: "As soon as possible" },
+  ];
+
+  const conciergeServiceLevels = [
+    { id: "standard", label: "Standard", desc: "Reliable & affordable" },
+    { id: "dedicated", label: "Dedicated", desc: "Priority matching" },
+    { id: "elite", label: "Elite", desc: "Top-rated Concierge" },
+  ];
+
+  const conciergeFlowComplete = !!(conciergeCategory && conciergeDetails.trim() && conciergeUrgency && conciergeServiceLevel);
+
   // Auto-select "Require 2 Courials" based on weight conditions
   useEffect(() => {
     if (over70lbs) {
@@ -138,7 +167,8 @@ const Book = () => {
   const activePayment = paymentMethods.find(p => p.id === selectedPaymentMethod) || paymentMethods[0];
 
   const needsVehicle = selectedService === "deliver";
-  const isFormValid = pickup.trim().length > 0 && dropoff.trim().length > 0 && (!needsVehicle || selectedVehicle !== null) && notes.trim().length > 0;
+  const needsConciergeFlow = selectedService === "concierge";
+  const isFormValid = pickup.trim().length > 0 && dropoff.trim().length > 0 && (!needsVehicle || selectedVehicle !== null) && notes.trim().length > 0 && (!needsConciergeFlow || conciergeFlowComplete);
 
   const handleBookingSubmit = useCallback(async () => {
     if (!isFormValid) return;
@@ -519,6 +549,125 @@ const Book = () => {
                 )}
               </AnimatePresence>
 
+              {/* Concierge Intake Flow */}
+              {selectedService === "concierge" && (
+                <div className="mb-4 space-y-4">
+                  {/* Step 1: Choose Category */}
+                  <div>
+                    <p className="text-xs font-semibold text-muted-foreground mb-2 uppercase tracking-wide">Choose category</p>
+                    <div className="grid grid-cols-3 gap-2">
+                      {conciergeCategories.map((cat) => (
+                        <button
+                          key={cat.id}
+                          type="button"
+                          onClick={() => setConciergeCategory(cat.id)}
+                          className={cn(
+                            "flex flex-col items-center gap-1 px-3 py-3 rounded-xl border text-xs font-medium transition-all",
+                            conciergeCategory === cat.id
+                              ? "border-primary bg-primary/5 text-foreground"
+                              : "border-border bg-background text-muted-foreground hover:border-foreground/30"
+                          )}
+                        >
+                          <span className="text-lg">{cat.icon}</span>
+                          {cat.label}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Step 2: Add Details */}
+                  <AnimatePresence>
+                    {conciergeCategory && (
+                      <motion.div
+                        initial={{ opacity: 0, height: 0 }}
+                        animate={{ opacity: 1, height: "auto" }}
+                        exit={{ opacity: 0, height: 0 }}
+                        transition={{ duration: 0.2 }}
+                        className="overflow-hidden"
+                      >
+                        <p className="text-xs font-semibold text-muted-foreground mb-2 uppercase tracking-wide">Add details</p>
+                        <div className="border border-border rounded-xl bg-background px-4 py-3 focus-within:border-foreground transition-colors">
+                          <textarea
+                            placeholder="Describe what you need — be as specific as possible."
+                            className="w-full bg-transparent text-sm text-foreground placeholder:text-foreground/35 outline-none resize-none overflow-hidden"
+                            rows={2}
+                            value={conciergeDetails}
+                            onChange={(e) => setConciergeDetails(e.target.value)}
+                            onInput={(e) => { const t = e.currentTarget; t.style.height = 'auto'; t.style.height = t.scrollHeight + 'px'; }}
+                          />
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+
+                  {/* Step 3: Select Urgency */}
+                  <AnimatePresence>
+                    {conciergeCategory && conciergeDetails.trim() && (
+                      <motion.div
+                        initial={{ opacity: 0, height: 0 }}
+                        animate={{ opacity: 1, height: "auto" }}
+                        exit={{ opacity: 0, height: 0 }}
+                        transition={{ duration: 0.2 }}
+                        className="overflow-hidden"
+                      >
+                        <p className="text-xs font-semibold text-muted-foreground mb-2 uppercase tracking-wide">Select urgency</p>
+                        <div className="flex gap-2">
+                          {conciergeUrgencies.map((u) => (
+                            <button
+                              key={u.id}
+                              type="button"
+                              onClick={() => setConciergeUrgency(u.id)}
+                              className={cn(
+                                "flex-1 flex flex-col items-center gap-0.5 px-3 py-3 rounded-xl border text-xs font-medium transition-all",
+                                conciergeUrgency === u.id
+                                  ? "border-primary bg-primary/5 text-foreground"
+                                  : "border-border bg-background text-muted-foreground hover:border-foreground/30"
+                              )}
+                            >
+                              <span className="font-semibold">{u.label}</span>
+                              <span className="text-[10px] text-muted-foreground">{u.desc}</span>
+                            </button>
+                          ))}
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+
+                  {/* Step 4: Choose Service Level */}
+                  <AnimatePresence>
+                    {conciergeCategory && conciergeDetails.trim() && conciergeUrgency && (
+                      <motion.div
+                        initial={{ opacity: 0, height: 0 }}
+                        animate={{ opacity: 1, height: "auto" }}
+                        exit={{ opacity: 0, height: 0 }}
+                        transition={{ duration: 0.2 }}
+                        className="overflow-hidden"
+                      >
+                        <p className="text-xs font-semibold text-muted-foreground mb-2 uppercase tracking-wide">Choose service level</p>
+                        <div className="flex gap-2">
+                          {conciergeServiceLevels.map((s) => (
+                            <button
+                              key={s.id}
+                              type="button"
+                              onClick={() => setConciergeServiceLevel(s.id)}
+                              className={cn(
+                                "flex-1 flex flex-col items-center gap-0.5 px-3 py-3 rounded-xl border text-xs font-medium transition-all",
+                                conciergeServiceLevel === s.id
+                                  ? "border-primary bg-primary/5 text-foreground"
+                                  : "border-border bg-background text-muted-foreground hover:border-foreground/30"
+                              )}
+                            >
+                              <span className="font-semibold">{s.label}</span>
+                              <span className="text-[10px] text-muted-foreground">{s.desc}</span>
+                            </button>
+                          ))}
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
+              )}
+
               {/* Quick Options Pills — before vehicle selection */}
               {selectedService === "deliver" && (
                 <div className="mb-4">
@@ -678,7 +827,7 @@ const Book = () => {
             )}
 
             <AnimatePresence>
-              {(selectedVehicle || selectedService === "concierge" || selectedService === "valet") && (
+              {(selectedVehicle || (selectedService === "concierge" && conciergeFlowComplete) || selectedService === "valet") && (
                 <motion.div
                   initial={{ opacity: 0, height: 0 }}
                   animate={{ opacity: 1, height: "auto" }}
