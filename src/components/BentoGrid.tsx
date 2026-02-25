@@ -31,11 +31,11 @@ const bentoItems: Array<{ title: string; description: string; icon: typeof Users
     image: "https://images.unsplash.com/photo-1593941707882-a5bba14938c7?w=600&q=80",
   },
   {
-    title: "Pharmacy",
-    description: "Prescriptions & medical supplies",
-    icon: Pill,
+    title: "Furniture Delivery",
+    description: "From small items to full room setups",
+    icon: Armchair,
     className: "md:col-span-1",
-    image: "https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=600&q=80",
+    image: "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=600&q=80",
   },
   {
     title: "Dry Cleaning",
@@ -66,11 +66,11 @@ const bentoItems: Array<{ title: string; description: string; icon: typeof Users
     image: chauffeurImage,
   },
   {
-    title: "Furniture Delivery",
-    description: "From small items to full room setups",
-    icon: Armchair,
+    title: "Pharmacy",
+    description: "Prescriptions & medical supplies",
+    icon: Pill,
     className: "md:col-span-1",
-    image: "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=600&q=80",
+    image: "https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=600&q=80",
   },
   {
     title: "Office Supplies",
