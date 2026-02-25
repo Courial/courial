@@ -799,13 +799,22 @@ const Book = () => {
                             <div className="text-sm font-semibold text-foreground leading-tight">{pickupPlaceName}</div>
                           )}
                           <AddressAutocomplete
-                            placeholder="Pickup location"
+                            placeholder="Pickup location (optional)"
                             value={pickup}
                             onChange={(v) => { setPickup(v); if (!v) setPickupPlaceName(null); }}
                             onPlaceSelect={handlePickupSelect}
                             className={`w-full bg-transparent text-foreground placeholder:text-muted-foreground outline-none ${pickupPlaceName && pickupCoords ? 'text-muted-foreground text-xs mt-0.5' : 'text-sm'}`}
                           />
                         </div>
+                        {pickup && (
+                          <button
+                            type="button"
+                            onClick={() => { setPickup(""); setPickupCoords(null); setPickupPlaceName(null); }}
+                            className="flex-shrink-0 mt-1 text-muted-foreground hover:text-foreground transition-colors"
+                          >
+                            <X className="w-4 h-4" />
+                          </button>
+                        )}
                       </div>
                     </div>
                     <div className="relative group mt-2">
@@ -816,23 +825,25 @@ const Book = () => {
                             <div className="text-sm font-semibold text-foreground leading-tight">{dropoffPlaceName}</div>
                           )}
                           <AddressAutocomplete
-                            placeholder="Dropoff location"
+                            placeholder="Dropoff location (optional)"
                             value={dropoff}
                             onChange={(v) => { setDropoff(v); if (!v) setDropoffPlaceName(null); }}
                             onPlaceSelect={handleDropoffSelect}
                             className={`w-full bg-transparent text-foreground placeholder:text-muted-foreground outline-none ${dropoffPlaceName && dropoffCoords ? 'text-muted-foreground text-xs mt-0.5' : 'text-sm'}`}
                           />
                         </div>
+                        {dropoff && (
+                          <button
+                            type="button"
+                            onClick={() => { setDropoff(""); setDropoffCoords(null); setDropoffPlaceName(null); }}
+                            className="flex-shrink-0 mt-1 text-muted-foreground hover:text-foreground transition-colors"
+                          >
+                            <X className="w-4 h-4" />
+                          </button>
+                        )}
                       </div>
                     </div>
 
-                    {/* ETA info — visible when both addresses set */}
-                    {pickupCoords && dropoffCoords && (
-                      <p className="text-[15px] font-medium text-muted-foreground text-center py-4 flex items-center justify-center gap-1.5">
-                        <img src={deliverBox} alt="" className="w-5 h-5" />
-                        4 mins away • 2:01 AM dropoff
-                      </p>
-                    )}
                   </div>
 
                   {/* Notes Field */}
@@ -852,7 +863,7 @@ const Book = () => {
                   {/* Delivery Requirements Notice */}
                   <Collapsible className="mt-3 text-xs text-foreground">
                     <CollapsibleTrigger className="flex items-center gap-1 font-semibold cursor-pointer hover:opacity-70 transition-opacity">
-                      Delivery Requirements
+                      Service Requirements
                       <ChevronDown className="w-3.5 h-3.5 transition-transform duration-200 [&[data-state=open]]:rotate-180" />
                     </CollapsibleTrigger>
                     <CollapsibleContent className="space-y-3 mt-2">
