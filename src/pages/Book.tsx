@@ -277,19 +277,26 @@ const Book = () => {
                             />
                             <div className="absolute inset-0 bg-gradient-to-t from-background via-background/70 to-background/30" />
                             <div className="relative z-10 flex items-center gap-5 h-full">
-                              <div className="flex gap-1.5">
-                                {item.icons.map((Icon, idx) => (
-                                  <div key={idx} className="w-14 h-14 rounded-xl bg-muted flex items-center justify-center group-hover:bg-muted/80 transition-colors flex-shrink-0">
-                                    <Icon className="w-7 h-7 text-foreground" />
-                                  </div>
-                                ))}
+                              <div className="flex gap-1.5 flex-shrink-0">
+                                <div className="w-14 h-14 rounded-xl bg-muted flex items-center justify-center group-hover:bg-muted/80 transition-colors">
+                                  {(() => { const FirstIcon = item.icons[0]; return <FirstIcon className="w-7 h-7 text-foreground" />; })()}
+                                </div>
                               </div>
-                              <div>
+                              <div className="flex-1 min-w-0">
                                 <h3 className="text-base font-bold text-foreground mb-1 group-hover:text-primary transition-colors">
                                   {item.label}
                                 </h3>
                                 <p className="text-sm text-muted-foreground leading-snug whitespace-pre-line">{item.desc}</p>
                               </div>
+                              {item.icons.length > 1 && (
+                                <div className="flex gap-1.5 flex-shrink-0">
+                                  {item.icons.slice(1).map((Icon, idx) => (
+                                    <div key={idx} className="w-14 h-14 rounded-xl bg-muted flex items-center justify-center group-hover:bg-muted/80 transition-colors">
+                                      <Icon className="w-7 h-7 text-foreground" />
+                                    </div>
+                                  ))}
+                                </div>
+                              )}
                             </div>
                           </>
                         );
