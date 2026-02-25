@@ -99,7 +99,7 @@ const Book = () => {
 
   const conciergeGroups = [
     {
-      label: "Errands & Pickups",
+      label: "Errands",
       items: [
         { id: "pick-up-buy", label: "Pick Up & Buy Something", icon: "🛍" },
         { id: "dry-cleaning", label: "Pick Up Dry Cleaning", icon: "👔" },
@@ -110,7 +110,7 @@ const Book = () => {
       ],
     },
     {
-      label: "Wait & Represent",
+      label: "Waiting",
       items: [
         { id: "wait-in-line", label: "Wait in Line", icon: "⏳" },
         { id: "wait-service", label: "Wait for Service Provider", icon: "🔧" },
@@ -120,7 +120,7 @@ const Book = () => {
       ],
     },
     {
-      label: "Home & Vehicle Services",
+      label: "Home Services",
       items: [
         { id: "housekeeping", label: "Book Housekeeping", icon: "🏠" },
         { id: "emergency-plumbing", label: "Emergency Plumbing", icon: "🚿" },
@@ -135,7 +135,7 @@ const Book = () => {
       ],
     },
     {
-      label: "Travel & Transportation",
+      label: "Travel",
       items: [
         { id: "custom-itinerary", label: "Plan Custom Itinerary", icon: "🗺️" },
         { id: "private-drivers", label: "Arrange Private Drivers", icon: "🚘" },
@@ -152,7 +152,7 @@ const Book = () => {
       ],
     },
     {
-      label: "VIP & Lifestyle",
+      label: "Lifestyle",
       items: [
         { id: "restaurant-reservations", label: "Hard-to-Get Restaurant Reservations", icon: "🍽️" },
         { id: "vip-tables", label: "Book VIP Club Tables", icon: "🥂" },
@@ -167,7 +167,7 @@ const Book = () => {
       ],
     },
     {
-      label: "Sourcing & Procurement",
+      label: "Sourcing",
       items: [
         { id: "watch-sourcing", label: "Luxury Watch Sourcing", icon: "⌚" },
         { id: "limited-edition", label: "Limited-edition Product Sourcing", icon: "🏷️" },
@@ -176,7 +176,7 @@ const Book = () => {
       ],
     },
     {
-      label: "Health & Wellness",
+      label: "Wellness",
       items: [
         { id: "private-trainer", label: "Book Private Trainers", icon: "💪" },
         { id: "mobile-iv", label: "Arrange Mobile IV Services", icon: "💉" },
@@ -185,7 +185,7 @@ const Book = () => {
       ],
     },
     {
-      label: "Real Estate & Relocation",
+      label: "Real Estate",
       items: [
         { id: "short-term-rentals", label: "Luxury Short-term Rentals", icon: "🏡" },
         { id: "relocation", label: "Relocation Assistance", icon: "📦" },
@@ -194,7 +194,7 @@ const Book = () => {
       ],
     },
     {
-      label: "General",
+      label: "Anything",
       items: [
         { id: "personal-assistant", label: "Personal Assistant", icon: "🤝" },
         { id: "half-day", label: "Half-day Support", icon: "🕐" },
@@ -672,7 +672,7 @@ const Book = () => {
                               : "border-border bg-background text-muted-foreground hover:border-foreground/30"
                           )}
                         >
-                          {group.items[0]?.icon} {group.label}
+                          {group.label}
                         </button>
                       ))}
                     </div>
