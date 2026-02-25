@@ -94,7 +94,7 @@ const Book = () => {
   const [conciergeCategory, setConciergeCategory] = useState<string | null>(null);
   const [conciergeGroupIndex, setConciergeGroupIndex] = useState<number | null>(null);
   const [conciergeDetails, setConciergeDetails] = useState("");
-  const [conciergeUrgency, setConciergeUrgency] = useState<string | null>(null);
+  
   const [conciergeServiceLevel, setConciergeServiceLevel] = useState<string | null>(null);
 
   const conciergeGroups = [
@@ -202,11 +202,6 @@ const Book = () => {
     },
   ];
 
-  const conciergeUrgencies = [
-    { id: "flexible", label: "Flexible", desc: "Within 24 hours" },
-    { id: "today", label: "Today", desc: "Within a few hours" },
-    { id: "asap", label: "ASAP", desc: "As soon as possible" },
-  ];
 
   const conciergeServiceLevels = [
     { id: "standard", label: "Standard", desc: "Reliable & affordable" },
@@ -214,7 +209,7 @@ const Book = () => {
     { id: "elite", label: "Elite", desc: "Top-rated Concierge" },
   ];
 
-  const conciergeFlowComplete = !!(conciergeCategory && conciergeDetails.trim() && conciergeUrgency && conciergeServiceLevel);
+  const conciergeFlowComplete = !!(conciergeCategory && conciergeDetails.trim() && conciergeServiceLevel);
 
   // Auto-select "Require 2 Courials" based on weight conditions
   useEffect(() => {
@@ -760,42 +755,9 @@ const Book = () => {
                     )}
                   </AnimatePresence>
 
-                  {/* Step 3: Select Urgency */}
+                  {/* Step 3: Choose Service Level */}
                   <AnimatePresence>
                     {conciergeCategory && conciergeDetails.trim() && (
-                      <motion.div
-                        initial={{ opacity: 0, height: 0 }}
-                        animate={{ opacity: 1, height: "auto" }}
-                        exit={{ opacity: 0, height: 0 }}
-                        transition={{ duration: 0.2 }}
-                        className="overflow-hidden"
-                      >
-                        <p className="text-xs font-semibold text-muted-foreground mb-2 uppercase tracking-wide">Select urgency</p>
-                        <div className="flex gap-2">
-                          {conciergeUrgencies.map((u) => (
-                            <button
-                              key={u.id}
-                              type="button"
-                              onClick={() => setConciergeUrgency(u.id)}
-                              className={cn(
-                                "flex-1 flex flex-col items-center gap-0.5 px-3 py-3 rounded-xl border text-xs font-medium transition-all",
-                                conciergeUrgency === u.id
-                                  ? "border-primary bg-primary/5 text-foreground"
-                                  : "border-border bg-background text-muted-foreground hover:border-foreground/30"
-                              )}
-                            >
-                              <span className="font-semibold">{u.label}</span>
-                              <span className="text-[10px] text-muted-foreground">{u.desc}</span>
-                            </button>
-                          ))}
-                        </div>
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-
-                  {/* Step 4: Choose Service Level */}
-                  <AnimatePresence>
-                    {conciergeCategory && conciergeDetails.trim() && conciergeUrgency && (
                       <motion.div
                         initial={{ opacity: 0, height: 0 }}
                         animate={{ opacity: 1, height: "auto" }}
@@ -825,176 +787,6 @@ const Book = () => {
                       </motion.div>
                     )}
                   </AnimatePresence>
-                </div>
-              )}
-
-              {/* Quick Options Pills — before vehicle selection */}
-              {selectedService === "deliver" && (
-                <div className="mb-4">
-                  <div className="flex flex-wrap items-center justify-center gap-1.5">
-                    <AnimatePresence mode="wait">
-                      {heavyExpanded ? (
-                        <motion.div
-                          key="selects"
-                          initial={{ opacity: 0, width: 0 }}
-                          animate={{ opacity: 1, width: "auto" }}
-                          exit={{ opacity: 0, width: 0 }}
-                          transition={{ duration: 0.15 }}
-                          className="flex items-center gap-1.5 overflow-hidden"
-                        >
-                          <Select value={heavyWeight} onValueChange={setHeavyWeight}>
-                            <SelectTrigger className="h-auto px-2.5 py-1 rounded-full text-[11px] font-normal border leading-none w-auto min-w-0 gap-1 bg-background text-foreground/75 border-border/60 focus:ring-0 focus:ring-offset-0">
-                              <SelectValue />
-                            </SelectTrigger>
-                            <SelectContent>
-                              {["70","75","80","90","100","125","150","175","200","250","300","350","400","450","500"].map(w => (
-                                <SelectItem key={w} value={w}>{w} lbs</SelectItem>
-                              ))}
-                            </SelectContent>
-                          </Select>
-                          <Select value={heavyItems} onValueChange={setHeavyItems}>
-                            <SelectTrigger className="h-auto px-2.5 py-1 rounded-full text-[11px] font-normal border leading-none w-auto min-w-0 gap-1 bg-background text-foreground/75 border-border/60 focus:ring-0 focus:ring-offset-0">
-                              <SelectValue />
-                            </SelectTrigger>
-                            <SelectContent>
-                              {["1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24","25"].map(n => (
-                                <SelectItem key={n} value={n}>{n} {parseInt(n) === 1 ? "item" : "items"}</SelectItem>
-                              ))}
-                            </SelectContent>
-                          </Select>
-                          <button
-                            type="button"
-                            onClick={() => setHeavyExpanded(false)}
-                            className="px-2.5 py-1 rounded-full text-[11px] font-normal transition-all border leading-none bg-background text-foreground/75 border-border/60 hover:border-foreground/50"
-                          >
-                            ✓
-                          </button>
-                        </motion.div>
-                      ) : (
-                        <motion.div
-                          key="pills"
-                          initial={{ opacity: 0 }}
-                          animate={{ opacity: 1 }}
-                          exit={{ opacity: 0 }}
-                          transition={{ duration: 0.15 }}
-                          className="flex items-center gap-1.5"
-                        >
-                          {/* Over 70 lbs / weight summary pill */}
-                          <button
-                            type="button"
-                            onClick={() => {
-                              if (over70lbs) {
-                                // Already set — tap to edit
-                                setHeavyExpanded(true);
-                              } else {
-                                // First tap — activate and expand
-                                setOver70lbs(true);
-                                setHeavyExpanded(true);
-                                if (selectedVehicle === "walker" || selectedVehicle === "scooter") {
-                                  setSelectedVehicle(null);
-                                }
-                              }
-                            }}
-                            className={cn(
-                              "px-2.5 py-1 rounded-full text-[11px] font-normal transition-all border leading-none",
-                              over70lbs
-                                ? "bg-background text-foreground border-primary"
-                                : "bg-background text-foreground/75 border-border/60 hover:border-foreground/50"
-                            )}
-                          >
-                            {over70lbs ? `${heavyWeight}lbs / ${heavyItems} ${parseInt(heavyItems) === 1 ? "item" : "items"}` : "Over 70 lbs"}
-                          </button>
-                          <button
-                            type="button"
-                            onClick={() => {
-                              const newVal = twoCourials === true ? null : true;
-                              setTwoCourials(newVal);
-                              if (newVal === true && selectedVehicle !== "van" && selectedVehicle !== "truck") {
-                                setSelectedVehicle(null);
-                              }
-                            }}
-                            className={cn(
-                              "px-2.5 py-1 rounded-full text-[11px] font-normal transition-all border leading-none",
-                              twoCourials === true
-                                ? "bg-background text-foreground border-primary"
-                                : "bg-background text-foreground/75 border-border/60 hover:border-foreground/50"
-                            )}
-                          >
-                            Require 2 Courials
-                          </button>
-                          <button
-                            type="button"
-                            onClick={() => setHasStairs(hasStairs === true ? null : true)}
-                            className={cn(
-                              "px-2.5 py-1 rounded-full text-[11px] font-normal transition-all border leading-none",
-                              hasStairs === true
-                                ? "bg-background text-foreground border-primary"
-                                : "bg-background text-foreground/75 border-border/60 hover:border-foreground/50"
-                            )}
-                          >
-                            Involves stairs
-                          </button>
-                        </motion.div>
-                      )}
-                    </AnimatePresence>
-                  </div>
-                </div>
-              )}
-
-              {/* Vehicle type icons for Deliver */}
-              {selectedService === "deliver" && (
-                <div className="mb-6">
-                  <div className="flex items-end justify-center gap-4">
-                    {vehicleOptions.filter((v) => {
-                      if (twoCourials === true && v.id !== "van" && v.id !== "truck") return false;
-                      if (over70lbs === true && (v.id === "walker" || v.id === "scooter")) return false;
-                      return true;
-                    }).map((v) => {
-                      const isActive = selectedVehicle === v.id;
-                      return (
-                        <button
-                          key={v.id}
-                          onClick={() => setSelectedVehicle(isActive ? null : v.id)}
-                          className="bg-transparent border-none outline-none cursor-pointer flex items-center"
-                        >
-                          <div className={cn(
-                            "h-[36px] flex items-end justify-center transition-all duration-300",
-                            isActive ? "grayscale-0 opacity-100 scale-110" : "grayscale opacity-30 scale-100"
-                          )}>
-                            <img src={v.image} alt={v.label} className={cn("object-contain", v.imgClass)} />
-                          </div>
-                        </button>
-                      );
-                    })}
-                  </div>
-                  <AnimatePresence mode="wait">
-                    {selectedVehicle && (
-                      <motion.p
-                        key={selectedVehicle}
-                        initial={{ opacity: 0, y: -4 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: -4 }}
-                        transition={{ duration: 0.15 }}
-                        className="text-xs text-muted-foreground text-center mt-2"
-                      >
-                        {vehicleCaptions[selectedVehicle]}
-                      </motion.p>
-                    )}
-                  </AnimatePresence>
-                </div>
-              )}
-            </motion.div>
-            )}
-
-            <AnimatePresence>
-              {(selectedVehicle || (selectedService === "concierge" && conciergeFlowComplete) || selectedService === "valet") && (
-                <motion.div
-                  initial={{ opacity: 0, height: 0 }}
-                  animate={{ opacity: 1, height: "auto" }}
-                  exit={{ opacity: 0, height: 0 }}
-                  transition={{ duration: 0.2 }}
-                  className="overflow-hidden"
-                >
 
 
                   {/* Input Fields */}
