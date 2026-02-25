@@ -311,102 +311,97 @@ const BookingMap: React.FC<BookingMapProps> = ({ pickupCoords, dropoffCoords, pi
     // Assign each car a random speed factor (staggered pacing)
     const speedFactors = startPositions.map(() => 0.5 + Math.random() * 0.7); // 0.5x to 1.2x
 
-    const directionsService = new google.maps.DirectionsService();
-
-    // Fetch real road routes for each car
-    const routePromises = startPositions.map((pos) =>
-      new Promise<google.maps.LatLng[]>((resolve) => {
-        directionsService.route(
-          {
-            origin: pos,
-            destination: pickupCoords,
-            travelMode: google.maps.TravelMode.DRIVING,
-          },
-          (result, status) => {
-            if (status === "OK" && result) {
-              resolve(result.routes[0].overview_path);
-            } else {
-              // Fallback: straight line
-              resolve([
-                new google.maps.LatLng(pos.lat, pos.lng),
-                new google.maps.LatLng(pickupCoords.lat, pickupCoords.lng),
-              ]);
-            }
-          }
-        );
-      })
-    );
-
-    Promise.all(routePromises).then((routes) => {
-      // Create markers at start positions
-      const cars = startPositions.map((pos, i) => {
-        const marker = new google.maps.Marker({
-          position: pos,
-          map,
-          icon: {
-            url: iconUrl,
-            scaledSize: new google.maps.Size(canvasSize, canvasSize),
-            anchor: new google.maps.Point(canvasSize / 2, canvasSize / 2),
-          },
-          zIndex: 5,
-        });
-        return marker;
+    // Create markers immediately so they appear instantly
+    const cars = startPositions.map((pos) => {
+      const marker = new google.maps.Marker({
+        position: pos,
+        map,
+        icon: {
+          url: iconUrl,
+          scaledSize: new google.maps.Size(canvasSize, canvasSize),
+          anchor: new google.maps.Point(canvasSize / 2, canvasSize / 2),
+        },
+        zIndex: 5,
       });
-      carMarkersRef.current = cars;
-
-      // Animate cars along their routes — 30s duration, staggered speeds
-      const duration = 30000;
-      const startTime = performance.now();
-      const lastBearings = new Array(cars.length).fill(-999);
-
-      const animate = (now: number) => {
-        const elapsed = now - startTime;
-
-        cars.forEach((car, i) => {
-          const path = routes[i];
-          // Each car has its own progress based on speed factor
-          const rawProgress = (elapsed / duration) * speedFactors[i];
-          const progress = Math.min(rawProgress, 1);
-          const eased = 1 - Math.pow(1 - progress, 2);
-
-          const totalPoints = path.length;
-          const exactIndex = eased * (totalPoints - 1);
-          const idx = Math.floor(exactIndex);
-          const frac = exactIndex - idx;
-
-          const from = path[Math.min(idx, totalPoints - 1)];
-          const to = path[Math.min(idx + 1, totalPoints - 1)];
-
-          const lat = from.lat() + (to.lat() - from.lat()) * frac;
-          const lng = from.lng() + (to.lng() - from.lng()) * frac;
-
-          car.setPosition({ lat, lng });
-
-          // Rotate icon to match road bearing
-          const bearing = getBearing(
-            { lat: from.lat(), lng: from.lng() },
-            { lat: to.lat(), lng: to.lng() }
-          );
-          const roundedBearing = Math.round(bearing / 5) * 5;
-          if (roundedBearing !== lastBearings[i]) {
-            lastBearings[i] = roundedBearing;
-            createRotatedIcon(iconUrl, bearing, iconMaxDim).then((rotatedUrl) => {
-              car.setIcon({
-                url: rotatedUrl,
-                scaledSize: new google.maps.Size(canvasSize, canvasSize),
-                anchor: new google.maps.Point(canvasSize / 2, canvasSize / 2),
-              });
-            });
-          }
-        });
-
-        if (elapsed < duration) {
-          carAnimationRef.current = requestAnimationFrame(animate);
-        }
-      };
-
-      carAnimationRef.current = requestAnimationFrame(animate);
+      return marker;
     });
+    carMarkersRef.current = cars;
+
+    // Start animation immediately with straight-line fallback, swap to road routes when ready
+    const straightLinePaths = startPositions.map((pos) => [
+      new google.maps.LatLng(pos.lat, pos.lng),
+      new google.maps.LatLng(pickupCoords.lat, pickupCoords.lng),
+    ]);
+    const resolvedRoutes: google.maps.LatLng[][] = [...straightLinePaths];
+
+    // Fetch real road routes in background
+    const directionsService = new google.maps.DirectionsService();
+    startPositions.forEach((pos, i) => {
+      directionsService.route(
+        {
+          origin: pos,
+          destination: pickupCoords,
+          travelMode: google.maps.TravelMode.DRIVING,
+        },
+        (result, status) => {
+          if (status === "OK" && result) {
+            resolvedRoutes[i] = result.routes[0].overview_path;
+          }
+        }
+      );
+    });
+
+    // Animate cars along their routes — 30s duration, staggered speeds
+    const duration = 30000;
+    const startTime = performance.now();
+    const lastBearings = new Array(cars.length).fill(-999);
+
+    const animate = (now: number) => {
+      const elapsed = now - startTime;
+
+      cars.forEach((car, i) => {
+        const path = resolvedRoutes[i];
+        const rawProgress = (elapsed / duration) * speedFactors[i];
+        const progress = Math.min(rawProgress, 1);
+        const eased = 1 - Math.pow(1 - progress, 2);
+
+        const totalPoints = path.length;
+        const exactIndex = eased * (totalPoints - 1);
+        const idx = Math.floor(exactIndex);
+        const frac = exactIndex - idx;
+
+        const from = path[Math.min(idx, totalPoints - 1)];
+        const to = path[Math.min(idx + 1, totalPoints - 1)];
+
+        const lat = from.lat() + (to.lat() - from.lat()) * frac;
+        const lng = from.lng() + (to.lng() - from.lng()) * frac;
+
+        car.setPosition({ lat, lng });
+
+        // Rotate icon to match road bearing
+        const bearing = getBearing(
+          { lat: from.lat(), lng: from.lng() },
+          { lat: to.lat(), lng: to.lng() }
+        );
+        const roundedBearing = Math.round(bearing / 5) * 5;
+        if (roundedBearing !== lastBearings[i]) {
+          lastBearings[i] = roundedBearing;
+          createRotatedIcon(iconUrl, bearing, iconMaxDim).then((rotatedUrl) => {
+            car.setIcon({
+              url: rotatedUrl,
+              scaledSize: new google.maps.Size(canvasSize, canvasSize),
+              anchor: new google.maps.Point(canvasSize / 2, canvasSize / 2),
+            });
+          });
+        }
+      });
+
+      if (elapsed < duration) {
+        carAnimationRef.current = requestAnimationFrame(animate);
+      }
+    };
+
+    carAnimationRef.current = requestAnimationFrame(animate);
 
     return cleanup;
   }, [bookingState, pickupCoords]);
