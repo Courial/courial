@@ -114,6 +114,7 @@ const Book = () => {
     { id: "handle-task", label: "Handle a Task for Me", icon: "🧾" },
     { id: "be-somewhere", label: "Be Somewhere for Me", icon: "📍" },
     { id: "custom-request", label: "Custom Request", icon: "🧠" },
+    { id: "notary-services", label: "Notary Services", icon: "📝" },
     { id: "other", label: "Something Else", icon: "✨" },
   ];
 
