@@ -20,7 +20,7 @@ interface BookingMapProps {
 }
 
 function buildInfoContent(address: string, placeName?: string | null): string {
-  const style = 'font-size:12.5px;font-weight:400;color:rgba(0,0,0,0.75);padding:6px 4px;line-height:1.4;';
+  const style = 'font-size:12.5px;font-weight:400;color:rgba(0,0,0,0.75);padding:6px 10px 6px 4px;line-height:1.4;';
   if (placeName) {
     // Remove country from address for second line
     let clean = address.replace(/,?\s*(USA|US|United States)\s*$/i, '').trim();
