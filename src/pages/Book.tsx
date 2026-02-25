@@ -190,7 +190,7 @@ const Book = () => {
       ],
     },
     {
-      label: "Anything",
+      label: "Something Else?",
       desc: "Custom & flexible requests",
       items: [
         { id: "personal-assistant", label: "Personal Assistant", icon: "🤝" },
