@@ -656,7 +656,7 @@ const Book = () => {
                   <div>
                     <p className="text-xs font-semibold text-muted-foreground mb-2 uppercase tracking-wide">Choose category</p>
                     {/* Group pills */}
-                    <div className="flex flex-wrap gap-2 mb-3">
+                    <div className="flex flex-wrap items-center justify-center gap-1.5 mb-3">
                       {conciergeGroups.map((group, idx) => (
                         <button
                           key={group.label}
@@ -666,10 +666,10 @@ const Book = () => {
                             setConciergeCategory(null);
                           }}
                           className={cn(
-                            "px-3 py-1.5 rounded-full border text-xs font-medium transition-all whitespace-nowrap",
+                            "px-2.5 py-1 rounded-full text-[11px] font-normal transition-all border leading-none",
                             conciergeGroupIndex === idx
-                              ? "border-primary bg-primary/10 text-foreground"
-                              : "border-border bg-background text-muted-foreground hover:border-foreground/30"
+                              ? "bg-background text-foreground border-primary"
+                              : "bg-background text-foreground/75 border-border/60 hover:border-foreground/50"
                           )}
                         >
                           {group.label}
@@ -686,20 +686,20 @@ const Book = () => {
                           transition={{ duration: 0.2 }}
                           className="overflow-hidden"
                         >
-                          <div className="flex flex-wrap gap-2">
+                          <div className="flex flex-wrap items-center justify-center gap-1.5">
                             {conciergeGroups[conciergeGroupIndex].items.map((cat) => (
                               <button
                                 key={cat.id}
                                 type="button"
                                 onClick={() => setConciergeCategory(cat.id)}
                                 className={cn(
-                                  "px-3 py-1.5 rounded-full border text-xs font-medium transition-all whitespace-nowrap",
+                                  "px-2.5 py-1 rounded-full text-[11px] font-normal transition-all border leading-none",
                                   conciergeCategory === cat.id
-                                    ? "border-primary bg-primary/10 text-foreground"
-                                    : "border-border bg-background text-muted-foreground hover:border-foreground/30"
+                                    ? "bg-background text-foreground border-primary"
+                                    : "bg-background text-foreground/75 border-border/60 hover:border-foreground/50"
                                 )}
                               >
-                                {cat.icon} {cat.label}
+                                {cat.label}
                               </button>
                             ))}
                           </div>
