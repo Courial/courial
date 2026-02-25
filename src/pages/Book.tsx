@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect, useMemo } from "react";
+import React, { useState, useCallback, useEffect, useMemo, useRef } from "react";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { Navbar } from "@/components/Navbar";
@@ -24,6 +24,9 @@ import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/hooks/useAuth";
+import { toast } from "sonner";
 import AddressAutocomplete from "@/components/booking/AddressAutocomplete";
 import BookingMap from "@/components/booking/BookingMap";
 import chauffeurImage from "@/assets/chauffeur-service.jpg";
@@ -62,6 +65,8 @@ const serviceCards: { id: ServiceId; label: string; desc: string; href: string; 
 
 
 const Book = () => {
+  const { user } = useAuth();
+  const deliveryIdRef = useRef<string | null>(null);
   const [selectedService, setSelectedService] = useState<ServiceId | null>(null);
   const [pickup, setPickup] = useState("");
   const [dropoff, setDropoff] = useState("");
@@ -134,11 +139,84 @@ const Book = () => {
 
   const isFormValid = pickup.trim().length > 0 && dropoff.trim().length > 0 && selectedVehicle !== null && notes.trim().length > 0;
 
-  const handleBookingSubmit = useCallback(() => {
+  const handleBookingSubmit = useCallback(async () => {
     if (!isFormValid) return;
+    if (!user) {
+      toast.error("Please sign in to book a delivery.");
+      return;
+    }
+
     setBookingState("loading");
     setLoadingProgress(0);
-  }, [isFormValid]);
+
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session?.access_token) {
+        toast.error("Session expired — please sign in again.");
+        setBookingState("input");
+        return;
+      }
+
+      const payload: Record<string, any> = {
+        scheduleType: timeMode === "now" ? "now" : "later",
+        vehicleType: selectedVehicle,
+        notes,
+        pickup: {
+          address: pickup,
+          lat: pickupCoords?.lat,
+          lng: pickupCoords?.lng,
+        },
+        dropoff: {
+          address: dropoff,
+          lat: dropoffCoords?.lat,
+          lng: dropoffCoords?.lng,
+        },
+        userId: user.id,
+      };
+
+      if (timeMode === "later" && selectedDate) {
+        payload.date = format(selectedDate, "yyyy-MM-dd");
+        payload.time = selectedTime;
+      }
+
+      if (over70lbs) {
+        payload.weightCategory = "over_70_lbs";
+      }
+      if (twoCourials) {
+        payload.requiresCourials = 2;
+      }
+      if (hasStairs) {
+        payload.involvesStairs = true;
+      }
+
+      const { data, error } = await supabase.functions.invoke("book-delivery", {
+        body: payload,
+        headers: {
+          Authorization: `Bearer ${session.access_token}`,
+        },
+      });
+
+      if (error) {
+        console.error("[book-delivery] invoke error:", error);
+        toast.error("Booking failed — please try again.");
+        setBookingState("input");
+        return;
+      }
+
+      if (data?.success === 1 && data?.data?.deliveryId) {
+        deliveryIdRef.current = data.data.deliveryId;
+        console.log("[book-delivery] Delivery created:", data.data.deliveryId);
+      } else {
+        console.error("[book-delivery] Unexpected response:", data);
+        toast.error(data?.msg || "Booking failed — unexpected response.");
+        setBookingState("input");
+      }
+    } catch (err) {
+      console.error("[book-delivery] Error:", err);
+      toast.error("Something went wrong — please try again.");
+      setBookingState("input");
+    }
+  }, [isFormValid, user, timeMode, selectedVehicle, notes, pickup, pickupCoords, dropoff, dropoffCoords, selectedDate, selectedTime, over70lbs, twoCourials, hasStairs]);
 
   // Animate loading progress and transition to active
   useEffect(() => {
