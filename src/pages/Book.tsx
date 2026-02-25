@@ -415,36 +415,44 @@ const Book = () => {
               {/* Quick Options Pills — before vehicle selection */}
               {selectedService === "deliver" && (
                 <div className="mb-4">
-                  <AnimatePresence mode="wait">
-                    {over70lbs ? (
-                      <motion.div
-                        key="heavy-details"
-                        initial={{ opacity: 0, height: 0 }}
-                        animate={{ opacity: 1, height: "auto" }}
-                        exit={{ opacity: 0, height: 0 }}
-                        transition={{ duration: 0.2 }}
-                        className="flex flex-col items-center gap-2"
-                      >
-                        {/* Over 70 lbs button showing current data */}
-                        <button
-                          type="button"
-                          onClick={() => {
-                            setOver70lbs(null);
-                            setHeavyWeight("100");
-                            setHeavyItems("1");
-                          }}
-                          className={cn(
-                            "px-2.5 py-1 rounded-full text-[11px] font-normal transition-all border leading-none",
-                            "bg-background text-foreground border-primary"
-                          )}
+                  <div className="flex flex-wrap items-center justify-center gap-1.5">
+                    {/* Over 70 lbs pill — shows weight/items summary when active */}
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const newVal = over70lbs ? null : true;
+                        setOver70lbs(newVal);
+                        if (newVal === null) {
+                          setHeavyWeight("100");
+                          setHeavyItems("1");
+                        }
+                        if (newVal === true && (selectedVehicle === "walker" || selectedVehicle === "scooter")) {
+                          setSelectedVehicle(null);
+                        }
+                      }}
+                      className={cn(
+                        "px-2.5 py-1 rounded-full text-[11px] font-normal transition-all border leading-none",
+                        over70lbs
+                          ? "bg-background text-foreground border-primary"
+                          : "bg-background text-foreground/75 border-border/60 hover:border-foreground/50"
+                      )}
+                    >
+                      {over70lbs ? `${heavyWeight}lbs / ${heavyItems} ${parseInt(heavyItems) === 1 ? "item" : "items"}` : "Over 70 lbs"}
+                    </button>
+
+                    <AnimatePresence mode="wait">
+                      {over70lbs ? (
+                        <motion.div
+                          key="selects"
+                          initial={{ opacity: 0, width: 0 }}
+                          animate={{ opacity: 1, width: "auto" }}
+                          exit={{ opacity: 0, width: 0 }}
+                          transition={{ duration: 0.15 }}
+                          className="flex items-center gap-1.5 overflow-hidden"
                         >
-                          {heavyWeight}lbs / {heavyItems} {parseInt(heavyItems) === 1 ? "item" : "items"}
-                        </button>
-                        {/* Dropdowns row */}
-                        <div className="flex items-center gap-2">
                           <Select value={heavyWeight} onValueChange={setHeavyWeight}>
-                            <SelectTrigger className="h-8 w-[120px] text-xs rounded-full">
-                              <SelectValue placeholder="Weight" />
+                            <SelectTrigger className="h-auto px-2.5 py-1 rounded-full text-[11px] font-normal border leading-none w-auto min-w-0 gap-1 bg-background text-foreground/75 border-border/60">
+                              <SelectValue />
                             </SelectTrigger>
                             <SelectContent>
                               {["70","80","90","100","125","150","175","200","250","300","400","500"].map(w => (
@@ -453,8 +461,8 @@ const Book = () => {
                             </SelectContent>
                           </Select>
                           <Select value={heavyItems} onValueChange={setHeavyItems}>
-                            <SelectTrigger className="h-8 w-[110px] text-xs rounded-full">
-                              <SelectValue placeholder="Items" />
+                            <SelectTrigger className="h-auto px-2.5 py-1 rounded-full text-[11px] font-normal border leading-none w-auto min-w-0 gap-1 bg-background text-foreground/75 border-border/60">
+                              <SelectValue />
                             </SelectTrigger>
                             <SelectContent>
                               {["1","2","3","4","5","6","7","8","9","10","15","20"].map(n => (
@@ -462,48 +470,50 @@ const Book = () => {
                               ))}
                             </SelectContent>
                           </Select>
-                        </div>
-                      </motion.div>
-                    ) : (
-                      <motion.div
-                        key="pills-row"
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        exit={{ opacity: 0 }}
-                        transition={{ duration: 0.15 }}
-                        className="flex flex-wrap items-center justify-center gap-1.5"
-                      >
-                        {([
-                          { label: "Over 70 lbs", value: over70lbs, setter: setOver70lbs },
-                          { label: "Require 2 Courials", value: twoCourials, setter: setTwoCourials },
-                          { label: "Involves stairs", value: hasStairs, setter: setHasStairs },
-                        ] as const).map(({ label, value, setter }) => (
+                        </motion.div>
+                      ) : (
+                        <motion.div
+                          key="pills"
+                          initial={{ opacity: 0, width: 0 }}
+                          animate={{ opacity: 1, width: "auto" }}
+                          exit={{ opacity: 0, width: 0 }}
+                          transition={{ duration: 0.15 }}
+                          className="flex items-center gap-1.5 overflow-hidden"
+                        >
                           <button
-                            key={label}
                             type="button"
                             onClick={() => {
-                              const newVal = value === true ? null : true;
-                              setter(newVal);
-                              if (label === "Over 70 lbs" && newVal === true && (selectedVehicle === "walker" || selectedVehicle === "scooter")) {
-                                setSelectedVehicle(null);
-                              }
-                              if (label === "Require 2 Courials" && newVal === true && selectedVehicle !== "van" && selectedVehicle !== "truck") {
+                              const newVal = twoCourials === true ? null : true;
+                              setTwoCourials(newVal);
+                              if (newVal === true && selectedVehicle !== "van" && selectedVehicle !== "truck") {
                                 setSelectedVehicle(null);
                               }
                             }}
                             className={cn(
                               "px-2.5 py-1 rounded-full text-[11px] font-normal transition-all border leading-none",
-                              value === true
+                              twoCourials === true
                                 ? "bg-background text-foreground border-primary"
                                 : "bg-background text-foreground/75 border-border/60 hover:border-foreground/50"
                             )}
                           >
-                            {label}
+                            Require 2 Courials
                           </button>
-                        ))}
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
+                          <button
+                            type="button"
+                            onClick={() => setHasStairs(hasStairs === true ? null : true)}
+                            className={cn(
+                              "px-2.5 py-1 rounded-full text-[11px] font-normal transition-all border leading-none",
+                              hasStairs === true
+                                ? "bg-background text-foreground border-primary"
+                                : "bg-background text-foreground/75 border-border/60 hover:border-foreground/50"
+                            )}
+                          >
+                            Involves stairs
+                          </button>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  </div>
                 </div>
               )}
 
