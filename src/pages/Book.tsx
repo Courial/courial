@@ -262,7 +262,7 @@ const Book = () => {
                     transition={{ duration: 0.25 }}
                     className="overflow-hidden"
                   >
-                    <div className="grid grid-cols-2 gap-3">
+                    <div className="grid grid-cols-1 gap-3">
                       {serviceCards.map((item) => {
                         const isSelected = selectedService === item.id;
                         const cardContent = (
@@ -276,10 +276,10 @@ const Book = () => {
                               }}
                             />
                             <div className="absolute inset-0 bg-gradient-to-t from-background via-background/70 to-background/30" />
-                            <div className="relative z-10 flex flex-col h-full">
-                              <div className="flex gap-1.5 mb-auto">
+                            <div className="relative z-10 flex items-center gap-4 h-full">
+                              <div className="flex gap-1.5">
                                 {item.icons.map((Icon, idx) => (
-                                  <div key={idx} className="w-10 h-10 rounded-xl bg-muted flex items-center justify-center group-hover:bg-muted/80 transition-colors">
+                                  <div key={idx} className="w-10 h-10 rounded-xl bg-muted flex items-center justify-center group-hover:bg-muted/80 transition-colors flex-shrink-0">
                                     <Icon className="w-5 h-5 text-foreground" />
                                   </div>
                                 ))}
@@ -293,7 +293,7 @@ const Book = () => {
                             </div>
                           </>
                         );
-                        const cardClass = `group relative rounded-2xl glass-card overflow-hidden h-[160px] p-4 flex flex-col transition-all duration-300 ${isSelected ? "border-primary border-2" : "hover:border-primary/50"}`;
+                        const cardClass = `group relative rounded-2xl glass-card overflow-hidden h-[100px] p-4 flex flex-col justify-center transition-all duration-300 ${isSelected ? "border-primary border-2" : "hover:border-primary/50"}`;
 
                         const handleClick = (e: React.MouseEvent) => {
                           if (!item.external) {
