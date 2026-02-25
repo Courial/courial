@@ -716,21 +716,31 @@ const Book = () => {
                             </span>
                           </div>
                           <div className="flex flex-wrap items-center gap-1.5">
-                            {conciergeGroups[conciergeGroupIndex].items.map((cat) => (
-                              <button
-                                key={cat.id}
-                                type="button"
-                                onClick={() => setConciergeCategory(cat.id)}
-                                className={cn(
-                                  "px-2.5 py-1 rounded-full text-[11px] font-normal transition-all border leading-none",
-                                  conciergeCategory === cat.id
-                                    ? "bg-background text-foreground border-primary"
-                                    : "bg-background text-foreground/75 border-border/60 hover:border-foreground/50"
-                                )}
-                              >
-                                {cat.label}
-                              </button>
-                            ))}
+                            {conciergeCategory ? (
+                              <>
+                                <button
+                                  type="button"
+                                  onClick={() => setConciergeCategory(null)}
+                                  className="text-muted-foreground hover:text-foreground transition-colors"
+                                >
+                                  <ChevronLeft className="w-4 h-4" />
+                                </button>
+                                <span className="px-2.5 py-1 rounded-full text-[11px] font-normal leading-none bg-muted text-foreground">
+                                  {conciergeGroups[conciergeGroupIndex].items.find(c => c.id === conciergeCategory)?.label}
+                                </span>
+                              </>
+                            ) : (
+                              conciergeGroups[conciergeGroupIndex].items.map((cat) => (
+                                <button
+                                  key={cat.id}
+                                  type="button"
+                                  onClick={() => setConciergeCategory(cat.id)}
+                                  className="px-2.5 py-1 rounded-full text-[11px] font-normal transition-all border leading-none bg-background text-foreground/75 border-border/60 hover:border-foreground/50"
+                                >
+                                  {cat.label}
+                                </button>
+                              ))
+                            )}
                           </div>
                         </motion.div>
                       )}
