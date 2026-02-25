@@ -50,3 +50,6 @@ verify_jwt = false
 
 [functions.manual-fulfill]
 verify_jwt = false
+
+[functions.book-delivery]
+verify_jwt = false
