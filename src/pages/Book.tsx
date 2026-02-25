@@ -96,26 +96,112 @@ const Book = () => {
   const [conciergeUrgency, setConciergeUrgency] = useState<string | null>(null);
   const [conciergeServiceLevel, setConciergeServiceLevel] = useState<string | null>(null);
 
-  const conciergeCategories = [
-    { id: "shopping", label: "Shopping", icon: "🛍️" },
-    { id: "quick-errand", label: "Quick Errand", icon: "📋" },
-    { id: "multi-stop", label: "Multi-stop Task", icon: "📍" },
-    { id: "half-day", label: "Half-day Support", icon: "🕐" },
-    { id: "full-day", label: "Full-day Support", icon: "🕛" },
-    { id: "wait-in-line", label: "Wait in Line", icon: "⏳" },
-    { id: "return-exchange", label: "Return/Exchange Item", icon: "🔄" },
-    { id: "drop-off-paperwork", label: "Drop off Paperwork", icon: "📄" },
-    { id: "get-docs-signed", label: "Get Documents Signed", icon: "✍️" },
-    { id: "event-setup", label: "Event Setup Support", icon: "🎪" },
-    { id: "personal-assistant", label: "Personal Assistant", icon: "🤝" },
-    { id: "booking-agent", label: "Booking Agent", icon: "📞" },
-    { id: "pick-up-buy", label: "Pick Up & Buy Something", icon: "🛍" },
-    { id: "deliver-something", label: "Deliver Something", icon: "📦" },
-    { id: "handle-task", label: "Handle a Task for Me", icon: "🧾" },
-    { id: "be-somewhere", label: "Be Somewhere for Me", icon: "📍" },
-    { id: "custom-request", label: "Custom Request", icon: "🧠" },
-    { id: "notary-services", label: "Notary Services", icon: "📝" },
-    { id: "other", label: "Something Else", icon: "✨" },
+  const conciergeGroups = [
+    {
+      label: "Errands & Pickups",
+      items: [
+        { id: "pick-up-buy", label: "Pick Up & Buy Something", icon: "🛍" },
+        { id: "dry-cleaning", label: "Pick Up Dry Cleaning", icon: "👔" },
+        { id: "drop-off-docs", label: "Drop Off / Collect Documents", icon: "📄" },
+        { id: "return-exchange", label: "Return or Exchange Items", icon: "🔄" },
+        { id: "multi-stop", label: "Multi-stop Errands", icon: "📍" },
+        { id: "deliver-something", label: "Deliver Something", icon: "📦" },
+      ],
+    },
+    {
+      label: "Wait & Represent",
+      items: [
+        { id: "wait-in-line", label: "Wait in Line", icon: "⏳" },
+        { id: "wait-service", label: "Wait for Service Provider", icon: "🔧" },
+        { id: "be-somewhere", label: "Be Somewhere for Me", icon: "📍" },
+        { id: "get-docs-signed", label: "Get Documents Signed", icon: "✍️" },
+        { id: "notary-services", label: "Notary Services", icon: "📝" },
+      ],
+    },
+    {
+      label: "Home & Vehicle Services",
+      items: [
+        { id: "housekeeping", label: "Book Housekeeping", icon: "🏠" },
+        { id: "emergency-plumbing", label: "Emergency Plumbing", icon: "🚿" },
+        { id: "appliance-repair", label: "Appliance Repair Coordination", icon: "🔌" },
+        { id: "vendor-sourcing", label: "Vendor Sourcing", icon: "🔍" },
+        { id: "car-detailing", label: "Mobile Car Detailing", icon: "🚗" },
+        { id: "fueling-ev", label: "Fueling or EV Charging", icon: "⛽" },
+        { id: "car-service", label: "Take Car for Service", icon: "🔩" },
+        { id: "vehicle-dropoff", label: "Vehicle Drop-off / Pick-up", icon: "🚙" },
+        { id: "find-mechanic", label: "Find Mechanic ASAP", icon: "🛠️" },
+        { id: "find-specialist", label: "Find Specialist Before Deadline", icon: "⏰" },
+      ],
+    },
+    {
+      label: "Travel & Transportation",
+      items: [
+        { id: "custom-itinerary", label: "Plan Custom Itinerary", icon: "🗺️" },
+        { id: "private-drivers", label: "Arrange Private Drivers", icon: "🚘" },
+        { id: "multi-city-travel", label: "Coordinate Multi-city Travel", icon: "✈️" },
+        { id: "book-activities", label: "Book Activities & Reservations", icon: "🎯" },
+        { id: "private-jet", label: "Private Jet Booking", icon: "🛩️" },
+        { id: "helicopter", label: "Helicopter Transfers", icon: "🚁" },
+        { id: "luxury-chauffeur", label: "Luxury Chauffeur", icon: "🎩" },
+        { id: "airport-fasttrack", label: "Airport Fast-track Services", icon: "🛂" },
+        { id: "visa-handling", label: "Visa Application Handling", icon: "📋" },
+        { id: "passport-renewal", label: "Passport Renewal Support", icon: "🛂" },
+        { id: "nomad-logistics", label: "Digital Nomad Logistics", icon: "💻" },
+        { id: "embassy-appointment", label: "Embassy Appointment Coordination", icon: "🏛️" },
+      ],
+    },
+    {
+      label: "VIP & Lifestyle",
+      items: [
+        { id: "restaurant-reservations", label: "Hard-to-Get Restaurant Reservations", icon: "🍽️" },
+        { id: "vip-tables", label: "Book VIP Club Tables", icon: "🥂" },
+        { id: "private-dining", label: "Arrange Private Dining Rooms", icon: "🍷" },
+        { id: "concert-tickets", label: "Sold-out Concert Tickets", icon: "🎵" },
+        { id: "sports-tickets", label: "Premium Sports Event Tickets", icon: "🏟️" },
+        { id: "f1-vip", label: "F1 / VIP Sporting Packages", icon: "🏎️" },
+        { id: "gallery-access", label: "Private Gallery Access", icon: "🎨" },
+        { id: "private-chef", label: "Private Chef at Home", icon: "👨‍🍳" },
+        { id: "luxury-experiences", label: "Curated Luxury Experiences", icon: "💎" },
+        { id: "event-coordination", label: "Custom Event Coordination", icon: "🎪" },
+      ],
+    },
+    {
+      label: "Sourcing & Procurement",
+      items: [
+        { id: "watch-sourcing", label: "Luxury Watch Sourcing", icon: "⌚" },
+        { id: "limited-edition", label: "Limited-edition Product Sourcing", icon: "🏷️" },
+        { id: "corporate-gifts", label: "Corporate Gift Procurement", icon: "🎁" },
+        { id: "hard-to-find", label: "Hard-to-find Item Sourcing", icon: "🔎" },
+      ],
+    },
+    {
+      label: "Health & Wellness",
+      items: [
+        { id: "private-trainer", label: "Book Private Trainers", icon: "💪" },
+        { id: "mobile-iv", label: "Arrange Mobile IV Services", icon: "💉" },
+        { id: "specialist-doctor", label: "Specialist Doctor Appointments", icon: "🩺" },
+        { id: "wellness-bookings", label: "High-end Wellness Bookings", icon: "🧘" },
+      ],
+    },
+    {
+      label: "Real Estate & Relocation",
+      items: [
+        { id: "short-term-rentals", label: "Luxury Short-term Rentals", icon: "🏡" },
+        { id: "relocation", label: "Relocation Assistance", icon: "📦" },
+        { id: "property-scouting", label: "Property Scouting", icon: "🏢" },
+        { id: "amenity-rentals", label: "Amenity-specific Rental Search", icon: "🏋️" },
+      ],
+    },
+    {
+      label: "General",
+      items: [
+        { id: "personal-assistant", label: "Personal Assistant", icon: "🤝" },
+        { id: "half-day", label: "Half-day Support", icon: "🕐" },
+        { id: "full-day", label: "Full-day Support", icon: "🕛" },
+        { id: "custom-request", label: "Custom Request", icon: "🧠" },
+        { id: "other", label: "Something Else", icon: "✨" },
+      ],
+    },
   ];
 
   const conciergeUrgencies = [
@@ -568,22 +654,29 @@ const Book = () => {
                   {/* Step 1: Choose Category */}
                   <div>
                     <p className="text-xs font-semibold text-muted-foreground mb-2 uppercase tracking-wide">Choose category</p>
-                    <div className="grid grid-cols-3 gap-2">
-                      {conciergeCategories.map((cat) => (
-                        <button
-                          key={cat.id}
-                          type="button"
-                          onClick={() => setConciergeCategory(cat.id)}
-                          className={cn(
-                            "flex flex-col items-center gap-1 px-3 py-3 rounded-xl border text-xs font-medium transition-all",
-                            conciergeCategory === cat.id
-                              ? "border-primary bg-primary/5 text-foreground"
-                              : "border-border bg-background text-muted-foreground hover:border-foreground/30"
-                          )}
-                        >
-                          <span className="text-lg">{cat.icon}</span>
-                          {cat.label}
-                        </button>
+                    <div className="max-h-[400px] overflow-y-auto space-y-4 pr-1">
+                      {conciergeGroups.map((group) => (
+                        <div key={group.label}>
+                          <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider mb-1.5">{group.label}</p>
+                          <div className="grid grid-cols-3 gap-1.5">
+                            {group.items.map((cat) => (
+                              <button
+                                key={cat.id}
+                                type="button"
+                                onClick={() => setConciergeCategory(cat.id)}
+                                className={cn(
+                                  "flex flex-col items-center gap-0.5 px-2 py-2 rounded-xl border text-[10px] font-medium transition-all leading-tight text-center",
+                                  conciergeCategory === cat.id
+                                    ? "border-primary bg-primary/5 text-foreground"
+                                    : "border-border bg-background text-muted-foreground hover:border-foreground/30"
+                                )}
+                              >
+                                <span className="text-base">{cat.icon}</span>
+                                {cat.label}
+                              </button>
+                            ))}
+                          </div>
+                        </div>
                       ))}
                     </div>
                   </div>
