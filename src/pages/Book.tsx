@@ -92,6 +92,7 @@ const Book = () => {
 
   // Concierge flow state
   const [conciergeCategory, setConciergeCategory] = useState<string | null>(null);
+  const [conciergeGroupIndex, setConciergeGroupIndex] = useState<number | null>(null);
   const [conciergeDetails, setConciergeDetails] = useState("");
   const [conciergeUrgency, setConciergeUrgency] = useState<string | null>(null);
   const [conciergeServiceLevel, setConciergeServiceLevel] = useState<string | null>(null);
@@ -654,31 +655,57 @@ const Book = () => {
                   {/* Step 1: Choose Category */}
                   <div>
                     <p className="text-xs font-semibold text-muted-foreground mb-2 uppercase tracking-wide">Choose category</p>
-                    <div className="max-h-[400px] overflow-y-auto space-y-4 pr-1">
-                      {conciergeGroups.map((group) => (
-                        <div key={group.label}>
-                          <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider mb-1.5">{group.label}</p>
-                          <div className="grid grid-cols-3 gap-1.5">
-                            {group.items.map((cat) => (
+                    {/* Group pills */}
+                    <div className="flex flex-wrap gap-2 mb-3">
+                      {conciergeGroups.map((group, idx) => (
+                        <button
+                          key={group.label}
+                          type="button"
+                          onClick={() => {
+                            setConciergeGroupIndex(conciergeGroupIndex === idx ? null : idx);
+                            setConciergeCategory(null);
+                          }}
+                          className={cn(
+                            "px-3 py-1.5 rounded-full border text-xs font-medium transition-all whitespace-nowrap",
+                            conciergeGroupIndex === idx
+                              ? "border-primary bg-primary/10 text-foreground"
+                              : "border-border bg-background text-muted-foreground hover:border-foreground/30"
+                          )}
+                        >
+                          {group.items[0]?.icon} {group.label}
+                        </button>
+                      ))}
+                    </div>
+                    {/* Sub-category pills */}
+                    <AnimatePresence>
+                      {conciergeGroupIndex !== null && (
+                        <motion.div
+                          initial={{ opacity: 0, height: 0 }}
+                          animate={{ opacity: 1, height: "auto" }}
+                          exit={{ opacity: 0, height: 0 }}
+                          transition={{ duration: 0.2 }}
+                          className="overflow-hidden"
+                        >
+                          <div className="flex flex-wrap gap-2">
+                            {conciergeGroups[conciergeGroupIndex].items.map((cat) => (
                               <button
                                 key={cat.id}
                                 type="button"
                                 onClick={() => setConciergeCategory(cat.id)}
                                 className={cn(
-                                  "flex flex-col items-center gap-0.5 px-2 py-2 rounded-xl border text-[10px] font-medium transition-all leading-tight text-center",
+                                  "px-3 py-1.5 rounded-full border text-xs font-medium transition-all whitespace-nowrap",
                                   conciergeCategory === cat.id
-                                    ? "border-primary bg-primary/5 text-foreground"
+                                    ? "border-primary bg-primary/10 text-foreground"
                                     : "border-border bg-background text-muted-foreground hover:border-foreground/30"
                                 )}
                               >
-                                <span className="text-base">{cat.icon}</span>
-                                {cat.label}
+                                {cat.icon} {cat.label}
                               </button>
                             ))}
                           </div>
-                        </div>
-                      ))}
-                    </div>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
                   </div>
 
                   {/* Step 2: Add Details */}
