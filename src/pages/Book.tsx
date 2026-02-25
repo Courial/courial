@@ -853,7 +853,7 @@ const Book = () => {
                     exit={{ opacity: 0 }}
                     transition={{ duration: 0.3 }}
                     className="absolute inset-0 z-20 flex items-center justify-center"
-                    style={{ backgroundColor: "hsla(var(--foreground) / 0.35)", backdropFilter: "blur(8px)" }}
+                    style={{ backgroundColor: "hsla(0, 0%, 0%, 0.5)", backdropFilter: "blur(8px)" }}
                   >
                     <motion.div
                       initial={{ opacity: 0, scale: 0.9 }}
@@ -887,20 +887,22 @@ const Book = () => {
                               animate={{ opacity: 1, scale: 1 }}
                               exit={{ opacity: 0, scale: 0.8 }}
                               transition={{ duration: 0.25 }}
-                              className="w-16 h-16 rounded-full object-cover"
+                              className="w-[92px] h-[92px] rounded-full object-cover"
                             />
                           </AnimatePresence>
                         </div>
                       </div>
                       <div className="text-center">
-                        <h2 className="text-xl font-bold text-foreground mb-1">Matching you with the best available Courial nearby</h2>
+                        <h2 className="text-xl font-bold text-foreground mb-1">Connecting you with the best available Courial—right now.</h2>
                       </div>
-                      <button
+                      <Button
+                        variant="destructive"
+                        size="lg"
                         onClick={handleCancelBooking}
-                        className="mt-2 px-6 py-2 rounded-full text-sm font-medium text-muted-foreground hover:text-foreground border border-border hover:border-foreground/30 transition-all"
+                        className="mt-2 rounded-full px-10"
                       >
                         Cancel
-                      </button>
+                      </Button>
                     </motion.div>
                   </motion.div>
                 )}
