@@ -685,7 +685,7 @@ const Book = () => {
                     <div className="border-t border-border my-4" />
 
                     {/* Payment Method + Request Button */}
-                    <div className="flex items-center gap-3">
+                    <div className="flex items-center justify-between">
                       {/* Payment Card Icon + Down Arrow */}
                       <button
                         onClick={() => setShowPaymentMethods(true)}
