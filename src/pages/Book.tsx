@@ -79,6 +79,7 @@ const Book = () => {
   const [showPaymentMethods, setShowPaymentMethods] = useState(false);
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState("visa-4242");
   const [over70lbs, setOver70lbs] = useState<boolean | null>(null);
+  const [heavyExpanded, setHeavyExpanded] = useState(false);
   const [heavyWeight, setHeavyWeight] = useState<string>("100");
   const [heavyItems, setHeavyItems] = useState<string>("1");
   const [twoCourials, setTwoCourials] = useState<boolean | null>(null);
@@ -416,32 +417,8 @@ const Book = () => {
               {selectedService === "deliver" && (
                 <div className="mb-4">
                   <div className="flex flex-wrap items-center justify-center gap-1.5">
-                    {/* Over 70 lbs pill — shows weight/items summary when active */}
-                    <button
-                      type="button"
-                      onClick={() => {
-                        const newVal = over70lbs ? null : true;
-                        setOver70lbs(newVal);
-                        if (newVal === null) {
-                          setHeavyWeight("100");
-                          setHeavyItems("1");
-                        }
-                        if (newVal === true && (selectedVehicle === "walker" || selectedVehicle === "scooter")) {
-                          setSelectedVehicle(null);
-                        }
-                      }}
-                      className={cn(
-                        "px-2.5 py-1 rounded-full text-[11px] font-normal transition-all border leading-none",
-                        over70lbs
-                          ? "bg-background text-foreground border-primary"
-                          : "bg-background text-foreground/75 border-border/60 hover:border-foreground/50"
-                      )}
-                    >
-                      {over70lbs ? `${heavyWeight}lbs / ${heavyItems} ${parseInt(heavyItems) === 1 ? "item" : "items"}` : "Over 70 lbs"}
-                    </button>
-
                     <AnimatePresence mode="wait">
-                      {over70lbs ? (
+                      {heavyExpanded ? (
                         <motion.div
                           key="selects"
                           initial={{ opacity: 0, width: 0 }}
@@ -470,16 +447,48 @@ const Book = () => {
                               ))}
                             </SelectContent>
                           </Select>
+                          <button
+                            type="button"
+                            onClick={() => setHeavyExpanded(false)}
+                            className="px-2.5 py-1 rounded-full text-[11px] font-normal transition-all border leading-none bg-background text-foreground/75 border-border/60 hover:border-foreground/50"
+                          >
+                            ✓
+                          </button>
                         </motion.div>
                       ) : (
                         <motion.div
                           key="pills"
-                          initial={{ opacity: 0, width: 0 }}
-                          animate={{ opacity: 1, width: "auto" }}
-                          exit={{ opacity: 0, width: 0 }}
+                          initial={{ opacity: 0 }}
+                          animate={{ opacity: 1 }}
+                          exit={{ opacity: 0 }}
                           transition={{ duration: 0.15 }}
-                          className="flex items-center gap-1.5 overflow-hidden"
+                          className="flex items-center gap-1.5"
                         >
+                          {/* Over 70 lbs / weight summary pill */}
+                          <button
+                            type="button"
+                            onClick={() => {
+                              if (over70lbs) {
+                                // Already set — tap to edit
+                                setHeavyExpanded(true);
+                              } else {
+                                // First tap — activate and expand
+                                setOver70lbs(true);
+                                setHeavyExpanded(true);
+                                if (selectedVehicle === "walker" || selectedVehicle === "scooter") {
+                                  setSelectedVehicle(null);
+                                }
+                              }
+                            }}
+                            className={cn(
+                              "px-2.5 py-1 rounded-full text-[11px] font-normal transition-all border leading-none",
+                              over70lbs
+                                ? "bg-background text-foreground border-primary"
+                                : "bg-background text-foreground/75 border-border/60 hover:border-foreground/50"
+                            )}
+                          >
+                            {over70lbs ? `${heavyWeight}lbs / ${heavyItems} ${parseInt(heavyItems) === 1 ? "item" : "items"}` : "Over 70 lbs"}
+                          </button>
                           <button
                             type="button"
                             onClick={() => {
