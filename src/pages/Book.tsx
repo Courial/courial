@@ -150,7 +150,7 @@ const Book = () => {
           setBookingState("active");
           return 100;
         }
-        return prev + (100 / 500); // 500 steps over 50s (100ms interval)
+        return prev + (100 / 150); // 150 steps over 15s (100ms interval)
       });
     }, 100);
     return () => clearInterval(interval);
