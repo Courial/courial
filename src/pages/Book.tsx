@@ -853,7 +853,7 @@ const Book = () => {
                     exit={{ opacity: 0 }}
                     transition={{ duration: 0.3 }}
                     className="absolute inset-0 z-20 flex items-center justify-center"
-                    style={{ backgroundColor: "hsla(0, 0%, 0%, 0.5)", backdropFilter: "blur(8px)" }}
+                    style={{ backgroundColor: "hsla(0, 0%, 0%, 0.7)", backdropFilter: "blur(6px)" }}
                   >
                     <motion.div
                       initial={{ opacity: 0, scale: 0.9 }}
@@ -861,12 +861,12 @@ const Book = () => {
                       exit={{ opacity: 0, scale: 0.9 }}
                       transition={{ duration: 0.3, delay: 0.1 }}
                       className="rounded-3xl p-10 flex flex-col items-center gap-6 max-w-sm mx-4"
-                      style={{ backgroundColor: "hsla(var(--background) / 0.85)", backdropFilter: "blur(16px)" }}
+                      style={{ backgroundColor: "hsla(0, 0%, 0%, 0.55)", backdropFilter: "blur(20px)" }}
                     >
                       {/* Circular Progress with flashing profile photos */}
                       <div className="relative w-28 h-28">
                         <svg className="w-28 h-28 -rotate-90" viewBox="0 0 112 112">
-                          <circle cx="56" cy="56" r="50" fill="none" stroke="hsl(var(--muted))" strokeWidth="4" />
+                          <circle cx="56" cy="56" r="50" fill="none" stroke="hsla(0,0%,100%,0.15)" strokeWidth="4" />
                           <circle
                             cx="56" cy="56" r="50" fill="none"
                             stroke="hsl(var(--primary))"
@@ -893,7 +893,7 @@ const Book = () => {
                         </div>
                       </div>
                       <div className="text-center">
-                        <h2 className="text-xl font-bold text-foreground mb-1">Connecting you with the best available Courial—right now.</h2>
+                        <h2 className="text-xl font-bold text-white mb-1">Connecting you with the best available Courial—right now.</h2>
                       </div>
                       <Button
                         variant="destructive"
