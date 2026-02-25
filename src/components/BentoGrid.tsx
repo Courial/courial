@@ -67,7 +67,7 @@ const bentoItems: Array<{ title: string; description: string; icon: typeof Users
   },
   {
     title: "Moving",
-    description: "Full-service local moving for studios and up to 1-bedroom apartments, handled with care.",
+    description: "Local moving for studios and 1-bedroom apartments, handled with care.",
     icon: Truck,
     className: "md:col-span-1",
     image: "https://images.unsplash.com/photo-1600518464441-9154a4dea21b?w=600&q=80",
