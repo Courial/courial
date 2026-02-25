@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect } from "react";
+import React, { useState, useCallback, useEffect, useMemo } from "react";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { Navbar } from "@/components/Navbar";
@@ -83,6 +83,30 @@ const Book = () => {
   const [bookingState, setBookingState] = useState<"input" | "loading" | "active">("input");
   const [loadingProgress, setLoadingProgress] = useState(0);
   const [deliveryStep, setDeliveryStep] = useState(0);
+  const [currentProfileIndex, setCurrentProfileIndex] = useState(0);
+
+  // Random profile photos for loading state
+  const courialProfiles = useMemo(() => [
+    "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop&crop=face",
+    "https://images.unsplash.com/photo-1494790108755-2616b612b786?w=200&h=200&fit=crop&crop=face",
+    "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=200&h=200&fit=crop&crop=face",
+    "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=200&h=200&fit=crop&crop=face",
+    "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=200&h=200&fit=crop&crop=face",
+    "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=200&h=200&fit=crop&crop=face",
+    "https://images.unsplash.com/photo-1552058544-f2b08422138a?w=200&h=200&fit=crop&crop=face",
+    "https://images.unsplash.com/photo-1499952127939-9bbf5af6c51c?w=200&h=200&fit=crop&crop=face",
+    "https://images.unsplash.com/photo-1566492031773-4f4e44671857?w=200&h=200&fit=crop&crop=face",
+    "https://images.unsplash.com/photo-1580489944761-15a19d654956?w=200&h=200&fit=crop&crop=face",
+  ], []);
+
+  // Cycle through profile photos during loading
+  useEffect(() => {
+    if (bookingState !== "loading") return;
+    const interval = setInterval(() => {
+      setCurrentProfileIndex((prev) => (prev + 1) % courialProfiles.length);
+    }, 600);
+    return () => clearInterval(interval);
+  }, [bookingState, courialProfiles.length]);
 
   const paymentMethods = [
     { id: "visa-4242", type: "visa", label: "Visa", last4: "4242", icon: visaIcon },
@@ -109,7 +133,7 @@ const Book = () => {
           setBookingState("active");
           return 100;
         }
-        return prev + (100 / 30); // 30 steps over 3s (100ms interval)
+        return prev + (100 / 60); // 60 steps over 6s (100ms interval)
       });
     }, 100);
     return () => clearInterval(interval);
@@ -595,43 +619,10 @@ const Book = () => {
           </div>
           )}
 
-        {/* Loading State */}
+        {/* Loading state moved to map overlay */}
         {bookingState === "loading" && (
           <div className="p-8 flex flex-col items-center justify-center h-full">
-            <motion.div
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.3 }}
-              className="flex flex-col items-center gap-6"
-            >
-              {/* Circular Progress */}
-              <div className="relative w-24 h-24">
-                <svg className="w-24 h-24 -rotate-90" viewBox="0 0 96 96">
-                  <circle cx="48" cy="48" r="42" fill="none" stroke="hsl(var(--muted))" strokeWidth="4" />
-                  <circle
-                    cx="48" cy="48" r="42" fill="none"
-                    stroke="hsl(var(--primary))"
-                    strokeWidth="4"
-                    strokeLinecap="round"
-                    strokeDasharray={2 * Math.PI * 42}
-                    strokeDashoffset={2 * Math.PI * 42 * (1 - loadingProgress / 100)}
-                    className="transition-all duration-100"
-                  />
-                </svg>
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <img src={deliverBox} alt="" className="w-8 h-8" />
-                </div>
-              </div>
-              <div className="text-center">
-                <h2 className="text-xl font-bold text-foreground mb-1">Matching you with the best available Courial nearby</h2>
-              </div>
-              <button
-                onClick={handleCancelBooking}
-                className="mt-4 px-6 py-2 rounded-full text-sm font-medium text-muted-foreground hover:text-foreground border border-border hover:border-foreground/30 transition-all"
-              >
-                Cancel
-              </button>
-            </motion.div>
+            <div className="text-center text-muted-foreground text-sm">Searching nearby Courials…</div>
           </div>
         )}
 
@@ -852,6 +843,68 @@ const Book = () => {
           {pickupCoords || dropoffCoords ? (
             <div className="flex-1 relative">
               <BookingMap pickupCoords={pickupCoords} dropoffCoords={dropoffCoords} pickupAddress={pickup} dropoffAddress={dropoff} pickupPlaceName={pickupPlaceName} dropoffPlaceName={dropoffPlaceName} bookingState={bookingState} vehicleType={selectedVehicle} />
+              
+              {/* Loading Overlay Popup */}
+              <AnimatePresence>
+                {bookingState === "loading" && (
+                  <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 0.3 }}
+                    className="absolute inset-0 z-20 flex items-center justify-center"
+                    style={{ backgroundColor: "hsla(var(--foreground) / 0.35)", backdropFilter: "blur(8px)" }}
+                  >
+                    <motion.div
+                      initial={{ opacity: 0, scale: 0.9 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      exit={{ opacity: 0, scale: 0.9 }}
+                      transition={{ duration: 0.3, delay: 0.1 }}
+                      className="rounded-3xl p-10 flex flex-col items-center gap-6 max-w-sm mx-4"
+                      style={{ backgroundColor: "hsla(var(--background) / 0.85)", backdropFilter: "blur(16px)" }}
+                    >
+                      {/* Circular Progress with flashing profile photos */}
+                      <div className="relative w-28 h-28">
+                        <svg className="w-28 h-28 -rotate-90" viewBox="0 0 112 112">
+                          <circle cx="56" cy="56" r="50" fill="none" stroke="hsl(var(--muted))" strokeWidth="4" />
+                          <circle
+                            cx="56" cy="56" r="50" fill="none"
+                            stroke="hsl(var(--primary))"
+                            strokeWidth="4"
+                            strokeLinecap="round"
+                            strokeDasharray={2 * Math.PI * 50}
+                            strokeDashoffset={2 * Math.PI * 50 * (1 - loadingProgress / 100)}
+                            className="transition-all duration-100"
+                          />
+                        </svg>
+                        <div className="absolute inset-0 flex items-center justify-center">
+                          <AnimatePresence mode="wait">
+                            <motion.img
+                              key={currentProfileIndex}
+                              src={courialProfiles[currentProfileIndex]}
+                              alt="Courial nearby"
+                              initial={{ opacity: 0, scale: 0.8 }}
+                              animate={{ opacity: 1, scale: 1 }}
+                              exit={{ opacity: 0, scale: 0.8 }}
+                              transition={{ duration: 0.25 }}
+                              className="w-16 h-16 rounded-full object-cover"
+                            />
+                          </AnimatePresence>
+                        </div>
+                      </div>
+                      <div className="text-center">
+                        <h2 className="text-xl font-bold text-foreground mb-1">Matching you with the best available Courial nearby</h2>
+                      </div>
+                      <button
+                        onClick={handleCancelBooking}
+                        className="mt-2 px-6 py-2 rounded-full text-sm font-medium text-muted-foreground hover:text-foreground border border-border hover:border-foreground/30 transition-all"
+                      >
+                        Cancel
+                      </button>
+                    </motion.div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </div>
           ) : (
             <div className="flex-1 overflow-y-auto">
