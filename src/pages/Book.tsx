@@ -97,7 +97,7 @@ const Book = () => {
   const [conciergeDetails, setConciergeDetails] = useState("");
   
   const [conciergeNeedsAddress, setConciergeNeedsAddress] = useState(false);
-  const [conciergeServiceLevel, setConciergeServiceLevel] = useState<string | null>(null);
+  
 
   const conciergeGroups = [
     {
@@ -205,13 +205,7 @@ const Book = () => {
   ];
 
 
-  const conciergeServiceLevels = [
-    { id: "standard", label: "Standard", desc: "Reliable & affordable" },
-    { id: "dedicated", label: "Dedicated", desc: "Priority matching" },
-    { id: "elite", label: "Elite", desc: "Top-rated Concierge" },
-  ];
-
-  const conciergeFlowComplete = !!(conciergeCategory && conciergeDetails.trim() && conciergeServiceLevel);
+  const conciergeFlowComplete = !!(conciergeCategory && conciergeDetails.trim());
 
   // Auto-select "Require 2 Courials" based on weight conditions
   useEffect(() => {
@@ -757,39 +751,6 @@ const Book = () => {
                     )}
                   </AnimatePresence>
 
-                  {/* Step 3: Choose Service Level */}
-                  <AnimatePresence>
-                    {conciergeCategory && conciergeDetails.trim() && (
-                      <motion.div
-                        initial={{ opacity: 0, height: 0 }}
-                        animate={{ opacity: 1, height: "auto" }}
-                        exit={{ opacity: 0, height: 0 }}
-                        transition={{ duration: 0.2 }}
-                        className="overflow-hidden"
-                      >
-                        <p className="text-xs font-semibold text-muted-foreground mb-2 uppercase tracking-wide">Choose service level</p>
-                        <div className="flex gap-2">
-                          {conciergeServiceLevels.map((s) => (
-                            <button
-                              key={s.id}
-                              type="button"
-                              onClick={() => setConciergeServiceLevel(s.id)}
-                              className={cn(
-                                "flex-1 flex flex-col items-center gap-0.5 px-3 py-3 rounded-xl border text-xs font-medium transition-all",
-                                conciergeServiceLevel === s.id
-                                  ? "border-primary bg-primary/5 text-foreground"
-                                  : "border-border bg-background text-muted-foreground hover:border-foreground/30"
-                              )}
-                            >
-                              <span className="font-semibold">{s.label}</span>
-                              <span className="text-[10px] text-muted-foreground">{s.desc}</span>
-                            </button>
-                          ))}
-                        </div>
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-
                   {/* Address toggle */}
                   <AnimatePresence>
                     {conciergeCategory && conciergeDetails.trim() && (
@@ -801,8 +762,33 @@ const Book = () => {
                         className="overflow-hidden"
                       >
                         <div className="flex items-center justify-between">
-                          <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Is a pickup or drop-off address required?</p>
-                          <Switch checked={conciergeNeedsAddress} onCheckedChange={setConciergeNeedsAddress} />
+                          <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Pickup / Drop-off address required?</p>
+                          <div className="flex items-center gap-1.5">
+                            <button
+                              type="button"
+                              onClick={() => setConciergeNeedsAddress(false)}
+                              className={cn(
+                                "px-2.5 py-0.5 rounded-full text-[10px] font-semibold transition-all",
+                                !conciergeNeedsAddress
+                                  ? "bg-foreground text-background"
+                                  : "text-muted-foreground hover:text-foreground"
+                              )}
+                            >
+                              No
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => setConciergeNeedsAddress(true)}
+                              className={cn(
+                                "px-2.5 py-0.5 rounded-full text-[10px] font-semibold transition-all",
+                                conciergeNeedsAddress
+                                  ? "bg-foreground text-background"
+                                  : "text-muted-foreground hover:text-foreground"
+                              )}
+                            >
+                              Yes
+                            </button>
+                          </div>
                         </div>
                       </motion.div>
                     )}
