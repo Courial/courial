@@ -738,11 +738,11 @@ const Book = () => {
                         transition={{ duration: 0.2 }}
                         className="overflow-hidden"
                       >
-                        <div className="relative">
+                        <div className="relative pb-5">
                           <div className="border border-border rounded-xl bg-background px-4 py-3 focus-within:border-foreground transition-colors">
                             <textarea
                               placeholder="Enter the details of your request. Be as specific as possible."
-                              className="w-full bg-transparent text-sm text-foreground placeholder:text-foreground/35 outline-none resize-none overflow-hidden"
+                              className="w-full bg-transparent text-sm text-foreground placeholder:text-foreground/35 outline-none resize-none overflow-hidden min-h-[3rem]"
                               rows={2}
                               value={conciergeDetails}
                               onChange={(e) => { setConciergeDetails(e.target.value); setConciergeDetailsEditing(true); setShowRedraftResult(false); }}
@@ -841,7 +841,7 @@ const Book = () => {
                         className="overflow-hidden"
                       >
                         <div className="flex items-center justify-between">
-                          <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Pickup / Drop-off address required?</p>
+                          <p className="text-xs font-semibold text-muted-foreground tracking-wide">Pickup / Drop-off address required?</p>
                           <div className="flex items-center rounded-full border border-border overflow-hidden h-6">
                             <button
                               type="button"
@@ -892,7 +892,7 @@ const Book = () => {
                             <div className="text-sm font-semibold text-foreground leading-tight">{pickupPlaceName}</div>
                           )}
                           <AddressAutocomplete
-                            placeholder="Pickup location (optional)"
+                            placeholder="Pickup location"
                             value={pickup}
                             onChange={(v) => { setPickup(v); if (!v) setPickupPlaceName(null); }}
                             onPlaceSelect={handlePickupSelect}
@@ -918,7 +918,7 @@ const Book = () => {
                             <div className="text-sm font-semibold text-foreground leading-tight">{dropoffPlaceName}</div>
                           )}
                           <AddressAutocomplete
-                            placeholder="Dropoff location (optional)"
+                            placeholder="Dropoff location"
                             value={dropoff}
                             onChange={(v) => { setDropoff(v); if (!v) setDropoffPlaceName(null); }}
                             onPlaceSelect={handleDropoffSelect}
