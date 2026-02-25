@@ -5,9 +5,8 @@ import { Navbar } from "@/components/Navbar";
 import { Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { Helmet } from "react-helmet-async";
-import { MapPin, Search, CarFront, ParkingCircle, Leaf, Box, ConciergeBell, Clock, CalendarIcon, ChevronDown, ChevronLeft, Info, Plus, Trash2, CreditCard, Star, X, Weight } from "lucide-react";
+import { MapPin, Search, CarFront, ParkingCircle, Leaf, Box, ConciergeBell, Clock, CalendarIcon, ChevronDown, ChevronLeft, Info, Plus, Trash2, CreditCard, Star, X, Weight, Sparkles, Loader2 } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Switch } from "@/components/ui/switch";
 import visaIcon from "@/assets/card-icons/visa.svg";
 import mastercardIcon from "@/assets/card-icons/mastercard.svg";
 import amexIcon from "@/assets/card-icons/amex.svg";
@@ -95,7 +94,10 @@ const Book = () => {
   const [conciergeCategory, setConciergeCategory] = useState<string | null>(null);
   const [conciergeGroupIndex, setConciergeGroupIndex] = useState<number | null>(null);
   const [conciergeDetails, setConciergeDetails] = useState("");
-  
+  const [conciergeDetailsEditing, setConciergeDetailsEditing] = useState(false);
+  const [isRedrafting, setIsRedrafting] = useState(false);
+  const [showRedraftResult, setShowRedraftResult] = useState(false);
+  const [redraftedText, setRedraftedText] = useState("");
   const [conciergeNeedsAddress, setConciergeNeedsAddress] = useState(false);
   
 
@@ -726,7 +728,7 @@ const Book = () => {
                     </AnimatePresence>
                   </div>
 
-                  {/* Step 2: Add Details */}
+                  {/* Step 2: Details */}
                   <AnimatePresence>
                     {conciergeCategory && (
                       <motion.div
@@ -736,17 +738,94 @@ const Book = () => {
                         transition={{ duration: 0.2 }}
                         className="overflow-hidden"
                       >
-                        <p className="text-xs font-semibold text-muted-foreground mb-2 uppercase tracking-wide">Add details</p>
-                        <div className="border border-border rounded-xl bg-background px-4 py-3 focus-within:border-foreground transition-colors">
-                          <textarea
-                            placeholder="Describe what you need — be as specific as possible."
-                            className="w-full bg-transparent text-sm text-foreground placeholder:text-foreground/35 outline-none resize-none overflow-hidden"
-                            rows={2}
-                            value={conciergeDetails}
-                            onChange={(e) => setConciergeDetails(e.target.value)}
-                            onInput={(e) => { const t = e.currentTarget; t.style.height = 'auto'; t.style.height = t.scrollHeight + 'px'; }}
-                          />
+                        <div className="relative">
+                          <div className="border border-border rounded-xl bg-background px-4 py-3 focus-within:border-foreground transition-colors">
+                            <textarea
+                              placeholder="Enter the details of your request. Be as specific as possible."
+                              className="w-full bg-transparent text-sm text-foreground placeholder:text-foreground/35 outline-none resize-none overflow-hidden"
+                              rows={2}
+                              value={conciergeDetails}
+                              onChange={(e) => { setConciergeDetails(e.target.value); setConciergeDetailsEditing(true); setShowRedraftResult(false); }}
+                              onFocus={() => setConciergeDetailsEditing(true)}
+                              onInput={(e) => { const t = e.currentTarget; t.style.height = 'auto'; t.style.height = t.scrollHeight + 'px'; }}
+                            />
+                          </div>
+                          {/* Redraft with AI button */}
+                          <AnimatePresence>
+                            {conciergeDetails.trim().length > 10 && !showRedraftResult && (
+                              <motion.div
+                                initial={{ opacity: 0, scale: 0.9 }}
+                                animate={{ opacity: 1, scale: 1 }}
+                                exit={{ opacity: 0, scale: 0.9 }}
+                                className="absolute -bottom-3 right-3"
+                              >
+                                <button
+                                  type="button"
+                                  disabled={isRedrafting}
+                                  onClick={async () => {
+                                    setIsRedrafting(true);
+                                    try {
+                                      const categoryLabel = conciergeGroups.flatMap(g => g.items).find(i => i.id === conciergeCategory)?.label || "general";
+                                      const { data, error } = await supabase.functions.invoke("redraft-concierge", {
+                                        body: { message: conciergeDetails, category: categoryLabel },
+                                      });
+                                      if (error) throw error;
+                                      if (data?.redrafted) {
+                                        setRedraftedText(data.redrafted);
+                                        setShowRedraftResult(true);
+                                      }
+                                    } catch (err) {
+                                      console.error("Redraft failed:", err);
+                                      toast.error("Could not redraft. Please try again.");
+                                    } finally {
+                                      setIsRedrafting(false);
+                                    }
+                                  }}
+                                  className="flex items-center gap-1 px-3 py-1 rounded-full bg-foreground text-background text-[10px] font-semibold shadow-sm hover:opacity-90 transition-opacity"
+                                >
+                                  {isRedrafting ? <Loader2 className="w-3 h-3 animate-spin" /> : <Sparkles className="w-3 h-3" />}
+                                  Redraft with AI
+                                </button>
+                              </motion.div>
+                            )}
+                          </AnimatePresence>
                         </div>
+
+                        {/* Redraft result */}
+                        <AnimatePresence>
+                          {showRedraftResult && redraftedText && (
+                            <motion.div
+                              initial={{ opacity: 0, height: 0 }}
+                              animate={{ opacity: 1, height: "auto" }}
+                              exit={{ opacity: 0, height: 0 }}
+                              transition={{ duration: 0.2 }}
+                              className="overflow-hidden mt-3"
+                            >
+                              <div className="border border-primary/30 rounded-xl bg-primary/5 px-4 py-3">
+                                <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wide mb-1 flex items-center gap-1">
+                                  <Sparkles className="w-3 h-3" /> AI Suggestion
+                                </p>
+                                <p className="text-sm text-foreground leading-relaxed">{redraftedText}</p>
+                                <div className="flex gap-2 mt-2">
+                                  <button
+                                    type="button"
+                                    onClick={() => { setConciergeDetails(redraftedText); setShowRedraftResult(false); setRedraftedText(""); }}
+                                    className="px-3 py-1 rounded-full bg-foreground text-background text-[10px] font-semibold hover:opacity-90 transition-opacity"
+                                  >
+                                    Accept
+                                  </button>
+                                  <button
+                                    type="button"
+                                    onClick={() => { setShowRedraftResult(false); setRedraftedText(""); }}
+                                    className="px-3 py-1 rounded-full border border-border text-foreground text-[10px] font-semibold hover:bg-muted transition-colors"
+                                  >
+                                    Ignore
+                                  </button>
+                                </div>
+                              </div>
+                            </motion.div>
+                          )}
+                        </AnimatePresence>
                       </motion.div>
                     )}
                   </AnimatePresence>
@@ -763,15 +842,15 @@ const Book = () => {
                       >
                         <div className="flex items-center justify-between">
                           <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Pickup / Drop-off address required?</p>
-                          <div className="flex items-center gap-1.5">
+                          <div className="flex items-center rounded-full border border-border overflow-hidden h-6">
                             <button
                               type="button"
                               onClick={() => setConciergeNeedsAddress(false)}
                               className={cn(
-                                "px-2.5 py-0.5 rounded-full text-[10px] font-semibold transition-all",
+                                "px-3 h-full text-[10px] font-semibold transition-all",
                                 !conciergeNeedsAddress
                                   ? "bg-foreground text-background"
-                                  : "text-muted-foreground hover:text-foreground"
+                                  : "bg-background text-muted-foreground hover:text-foreground"
                               )}
                             >
                               No
@@ -780,10 +859,10 @@ const Book = () => {
                               type="button"
                               onClick={() => setConciergeNeedsAddress(true)}
                               className={cn(
-                                "px-2.5 py-0.5 rounded-full text-[10px] font-semibold transition-all",
+                                "px-3 h-full text-[10px] font-semibold transition-all",
                                 conciergeNeedsAddress
                                   ? "bg-foreground text-background"
-                                  : "text-muted-foreground hover:text-foreground"
+                                  : "bg-background text-muted-foreground hover:text-foreground"
                               )}
                             >
                               Yes
