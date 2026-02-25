@@ -46,7 +46,7 @@ const VEHICLE_ICON_MAP: Record<string, string> = {
   walker: "/map-icons/walker-top.png",
   scooter: "/map-icons/bike-top.png",
   car: "/map-icons/car-top.png",
-  van: "/map-icons/car-top.png",
+  van: "/map-icons/van-top.png",
   truck: "/map-icons/truck-top.png",
 };
 
