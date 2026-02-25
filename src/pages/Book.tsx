@@ -276,24 +276,24 @@ const Book = () => {
                               }}
                             />
                             <div className="absolute inset-0 bg-gradient-to-t from-background via-background/70 to-background/30" />
-                            <div className="relative z-10 flex items-center gap-4 h-full">
+                            <div className="relative z-10 flex items-center gap-5 h-full">
                               <div className="flex gap-1.5">
                                 {item.icons.map((Icon, idx) => (
-                                  <div key={idx} className="w-10 h-10 rounded-xl bg-muted flex items-center justify-center group-hover:bg-muted/80 transition-colors flex-shrink-0">
-                                    <Icon className="w-5 h-5 text-foreground" />
+                                  <div key={idx} className="w-14 h-14 rounded-xl bg-muted flex items-center justify-center group-hover:bg-muted/80 transition-colors flex-shrink-0">
+                                    <Icon className="w-7 h-7 text-foreground" />
                                   </div>
                                 ))}
                               </div>
                               <div>
-                                <h3 className="text-sm font-bold text-foreground mb-0.5 group-hover:text-primary transition-colors">
+                                <h3 className="text-base font-bold text-foreground mb-1 group-hover:text-primary transition-colors">
                                   {item.label}
                                 </h3>
-                                <p className="text-xs text-muted-foreground leading-snug whitespace-pre-line">{item.desc}</p>
+                                <p className="text-sm text-muted-foreground leading-snug whitespace-pre-line">{item.desc}</p>
                               </div>
                             </div>
                           </>
                         );
-                        const cardClass = `group relative rounded-2xl glass-card overflow-hidden h-[100px] p-4 flex flex-col justify-center transition-all duration-300 ${isSelected ? "border-primary border-2" : "hover:border-primary/50"}`;
+                        const cardClass = `group relative rounded-2xl glass-card overflow-hidden h-[150px] p-6 flex flex-col justify-center transition-all duration-300 ${isSelected ? "border-primary border-2" : "hover:border-primary/50"}`;
 
                         const handleClick = (e: React.MouseEvent) => {
                           if (!item.external) {
