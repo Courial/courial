@@ -692,7 +692,7 @@ const Book = () => {
                         className="flex items-center gap-1.5 flex-shrink-0 hover:opacity-80 transition-opacity"
                       >
                         <img src={activePayment.icon} alt={activePayment.label} className="w-12 h-auto rounded" />
-                        <span className="text-xs text-muted-foreground tracking-wide">••••&nbsp;{activePayment.last4}</span>
+                        <span className="text-sm text-muted-foreground tracking-wide">••••&nbsp;{activePayment.last4}</span>
                         <ChevronDown className="w-3 h-3 text-muted-foreground" />
                       </button>
 
@@ -703,7 +703,7 @@ const Book = () => {
                         className="rounded h-8 text-base font-semibold px-5"
                         variant={isFormValid ? "hero" : "secondary"}
                       >
-                        Book
+                        Book {selectedService ? serviceCards.find(s => s.id === selectedService)?.label : "Delivery"}
                       </Button>
                     </div>
                   </div>
