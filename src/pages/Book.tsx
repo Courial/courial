@@ -853,7 +853,7 @@ const Book = () => {
                     exit={{ opacity: 0 }}
                     transition={{ duration: 0.3 }}
                     className="absolute inset-0 z-20 flex items-center justify-center"
-                    style={{ backgroundColor: "hsla(0, 0%, 0%, 0.5)", backdropFilter: "blur(6px)" }}
+                    style={{ backgroundColor: "hsla(0, 0%, 0%, 0.35)", backdropFilter: "blur(6px)" }}
                   >
                     <motion.div
                       initial={{ opacity: 0, scale: 0.9 }}
@@ -861,7 +861,7 @@ const Book = () => {
                       exit={{ opacity: 0, scale: 0.9 }}
                       transition={{ duration: 0.3, delay: 0.1 }}
                       className="rounded-3xl p-10 flex flex-col items-center gap-6 max-w-sm mx-4"
-                      style={{ backgroundColor: "hsla(0, 0%, 0%, 0.4)", backdropFilter: "blur(20px)" }}
+                      style={{ backgroundColor: "hsla(0, 0%, 0%, 0.3)", backdropFilter: "blur(20px)" }}
                     >
                       {/* Circular Progress with flashing profile photos */}
                       <div className="relative w-28 h-28">
@@ -896,10 +896,10 @@ const Book = () => {
                         <h2 className="text-xl font-bold text-white mb-1">Connecting you with the best available Courial—right now.</h2>
                       </div>
                       <Button
-                        variant="destructive"
+                        variant="outline"
                         size="lg"
                         onClick={handleCancelBooking}
-                        className="mt-2 rounded-full px-10"
+                        className="mt-2 rounded-full px-10 bg-black/80 text-white border-white/40 hover:bg-black hover:text-white"
                       >
                         Cancel
                       </Button>
