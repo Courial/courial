@@ -451,7 +451,7 @@ const Book = () => {
                           className="flex items-center gap-1.5 overflow-hidden"
                         >
                           <Select value={heavyWeight} onValueChange={setHeavyWeight}>
-                            <SelectTrigger className="h-auto px-2.5 py-1 rounded-full text-[11px] font-normal border leading-none w-auto min-w-0 gap-1 bg-background text-foreground/75 border-border/60">
+                            <SelectTrigger className="h-auto px-2.5 py-1 rounded-full text-[11px] font-normal border leading-none w-auto min-w-0 gap-1 bg-background text-foreground/75 border-border/60 focus:ring-0 focus:ring-offset-0">
                               <SelectValue />
                             </SelectTrigger>
                             <SelectContent>
@@ -461,7 +461,7 @@ const Book = () => {
                             </SelectContent>
                           </Select>
                           <Select value={heavyItems} onValueChange={setHeavyItems}>
-                            <SelectTrigger className="h-auto px-2.5 py-1 rounded-full text-[11px] font-normal border leading-none w-auto min-w-0 gap-1 bg-background text-foreground/75 border-border/60">
+                            <SelectTrigger className="h-auto px-2.5 py-1 rounded-full text-[11px] font-normal border leading-none w-auto min-w-0 gap-1 bg-background text-foreground/75 border-border/60 focus:ring-0 focus:ring-offset-0">
                               <SelectValue />
                             </SelectTrigger>
                             <SelectContent>
