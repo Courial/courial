@@ -2,7 +2,7 @@ import { motion } from "framer-motion";
 import {
   Package,
   Armchair,
-  Pill,
+  Truck,
   Shirt,
   ShoppingBag,
   FileText,
@@ -66,11 +66,11 @@ const bentoItems: Array<{ title: string; description: string; icon: typeof Users
     image: chauffeurImage,
   },
   {
-    title: "Pharmacy",
-    description: "Prescriptions & medical supplies",
-    icon: Pill,
+    title: "Moving",
+    description: "Full-service moving, handled with care",
+    icon: Truck,
     className: "md:col-span-1",
-    image: "https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=600&q=80",
+    image: "https://images.unsplash.com/photo-1600518464441-9154a4dea21b?w=600&q=80",
   },
   {
     title: "Office Supplies",
