@@ -137,7 +137,8 @@ const Book = () => {
 
   const activePayment = paymentMethods.find(p => p.id === selectedPaymentMethod) || paymentMethods[0];
 
-  const isFormValid = pickup.trim().length > 0 && dropoff.trim().length > 0 && selectedVehicle !== null && notes.trim().length > 0;
+  const needsVehicle = selectedService === "deliver";
+  const isFormValid = pickup.trim().length > 0 && dropoff.trim().length > 0 && (!needsVehicle || selectedVehicle !== null) && notes.trim().length > 0;
 
   const handleBookingSubmit = useCallback(async () => {
     if (!isFormValid) return;
@@ -159,7 +160,8 @@ const Book = () => {
 
       const payload: Record<string, any> = {
         scheduleType: timeMode === "now" ? "now" : "later",
-        vehicleType: selectedVehicle,
+        serviceType: selectedService || "deliver",
+        vehicleType: selectedVehicle || undefined,
         notes,
         pickup: {
           address: pickup,
@@ -240,14 +242,33 @@ const Book = () => {
     setDeliveryStep(0);
   }, []);
 
-  const deliverySteps = [
-    { label: "Order Accepted", desc: "Your delivery request has been confirmed" },
-    { label: "Courial at Pickup", desc: "Your courier has arrived at the pickup location" },
-    { label: "Courial Picked Up", desc: "Package has been collected" },
-    { label: "Courial at Drop-off", desc: "Your courier has arrived at the destination" },
-    { label: "Courial Dropped Off", desc: "Package has been delivered" },
-    { label: "Order Complete", desc: "Invoice sent — thank you!" },
-  ];
+  const deliveryStepsMap: Record<string, { label: string; desc: string }[]> = {
+    deliver: [
+      { label: "Order Accepted", desc: "Your delivery request has been confirmed" },
+      { label: "Courial at Pickup", desc: "Your courier has arrived at the pickup location" },
+      { label: "Courial Picked Up", desc: "Package has been collected" },
+      { label: "Courial at Drop-off", desc: "Your courier has arrived at the destination" },
+      { label: "Courial Dropped Off", desc: "Package has been delivered" },
+      { label: "Order Complete", desc: "Invoice sent — thank you!" },
+    ],
+    concierge: [
+      { label: "Request Accepted", desc: "Your concierge request has been confirmed" },
+      { label: "Concierge En Route", desc: "Your concierge is on the way" },
+      { label: "Concierge Arrived", desc: "Your concierge has arrived" },
+      { label: "Task In Progress", desc: "Your concierge is working on your request" },
+      { label: "Task Completed", desc: "Your request has been fulfilled" },
+      { label: "Order Complete", desc: "Invoice sent — thank you!" },
+    ],
+    valet: [
+      { label: "Request Accepted", desc: "Your valet request has been confirmed" },
+      { label: "Valet En Route", desc: "Your valet is on the way" },
+      { label: "Valet Arrived", desc: "Your valet has arrived at the location" },
+      { label: "Vehicle In Transit", desc: "Your vehicle is being handled" },
+      { label: "Vehicle Parked", desc: "Your vehicle has been parked" },
+      { label: "Order Complete", desc: "Invoice sent — thank you!" },
+    ],
+  };
+  const deliverySteps = deliveryStepsMap[selectedService || "deliver"] || deliveryStepsMap.deliver;
 
   const handlePickupSelect = useCallback((place: any) => {
     if (place.geometry?.location) {
@@ -657,7 +678,7 @@ const Book = () => {
             )}
 
             <AnimatePresence>
-              {selectedVehicle && (
+              {(selectedVehicle || selectedService === "concierge" || selectedService === "valet") && (
                 <motion.div
                   initial={{ opacity: 0, height: 0 }}
                   animate={{ opacity: 1, height: "auto" }}
@@ -801,7 +822,9 @@ const Book = () => {
         {/* Loading state moved to map overlay */}
         {bookingState === "loading" && (
           <div className="p-8 flex flex-col items-center justify-center h-full">
-            <div className="text-center text-muted-foreground text-sm">Searching nearby Courials…</div>
+            <div className="text-center text-muted-foreground text-sm">
+              {selectedService === "concierge" ? "Finding your Concierge…" : selectedService === "valet" ? "Connecting with a Valet…" : "Searching nearby Courials…"}
+            </div>
           </div>
         )}
 
@@ -993,7 +1016,11 @@ const Book = () => {
                     onClick={() => setDeliveryStep((s) => Math.min(s + 1, 5))}
                     className="w-full py-3 rounded-full text-sm font-semibold text-primary-foreground bg-primary hover:bg-primary/90 transition-colors"
                   >
-                    {["Arrive at Pickup", "Pick Up Package", "Arrive at Drop-off", "Drop Off Package", "Complete Order"][deliveryStep]}
+                    {selectedService === "concierge"
+                      ? ["En Route", "Arrive", "Begin Task", "Complete Task", "Finish"][deliveryStep]
+                      : selectedService === "valet"
+                      ? ["En Route", "Arrive", "Take Vehicle", "Park Vehicle", "Finish"][deliveryStep]
+                      : ["Arrive at Pickup", "Pick Up Package", "Arrive at Drop-off", "Drop Off Package", "Complete Order"][deliveryStep]}
                   </button>
                 )}
                 {deliveryStep >= 5 ? (
@@ -1008,7 +1035,7 @@ const Book = () => {
                     onClick={handleCancelBooking}
                     className="w-full py-3 rounded-full text-sm font-semibold text-muted-foreground bg-muted hover:bg-muted/80 transition-colors"
                   >
-                    Cancel Delivery
+                    Cancel {selectedService === "concierge" ? "Concierge" : selectedService === "valet" ? "Valet" : "Delivery"}
                   </button>
                 )}
               </div>
@@ -1072,7 +1099,13 @@ const Book = () => {
                         </div>
                       </div>
                       <div className="text-center">
-                        <h2 className="text-xl font-bold text-white mb-1">Connecting you with the best available Courial—right now.</h2>
+                        <h2 className="text-xl font-bold text-white mb-1">
+                          {selectedService === "concierge"
+                            ? "Finding the perfect Concierge for your request."
+                            : selectedService === "valet"
+                            ? "Connecting you with a nearby Valet—right now."
+                            : "Connecting you with the best available Courial—right now."}
+                        </h2>
                       </div>
                       <Button
                         variant="outline"
