@@ -98,13 +98,18 @@ const Book = () => {
 
   const conciergeCategories = [
     { id: "shopping", label: "Shopping", icon: "🛍️" },
-    { id: "errands", label: "Quick Errand", icon: "📋" },
-    { id: "waiting", label: "Wait in Line", icon: "⏳" },
-    { id: "returns", label: "Returns & Exchanges", icon: "🔄" },
+    { id: "quick-errand", label: "Quick Errand", icon: "📋" },
     { id: "multi-stop", label: "Multi-stop Task", icon: "📍" },
     { id: "half-day", label: "Half-day Support", icon: "🕐" },
     { id: "full-day", label: "Full-day Support", icon: "🕛" },
-    { id: "other", label: "Other", icon: "✨" },
+    { id: "wait-in-line", label: "Wait in Line", icon: "⏳" },
+    { id: "return-exchange", label: "Return/Exchange Item", icon: "🔄" },
+    { id: "drop-off-paperwork", label: "Drop off Paperwork", icon: "📄" },
+    { id: "get-docs-signed", label: "Get Documents Signed", icon: "✍️" },
+    { id: "event-setup", label: "Event Setup Support", icon: "🎪" },
+    { id: "personal-assistant", label: "Personal Assistant", icon: "🤝" },
+    { id: "booking-agent", label: "Booking Agent", icon: "📞" },
+    { id: "other", label: "Something Else", icon: "✨" },
   ];
 
   const conciergeUrgencies = [
