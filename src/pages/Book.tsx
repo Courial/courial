@@ -109,6 +109,11 @@ const Book = () => {
     { id: "event-setup", label: "Event Setup Support", icon: "🎪" },
     { id: "personal-assistant", label: "Personal Assistant", icon: "🤝" },
     { id: "booking-agent", label: "Booking Agent", icon: "📞" },
+    { id: "pick-up-buy", label: "Pick Up & Buy Something", icon: "🛍" },
+    { id: "deliver-something", label: "Deliver Something", icon: "📦" },
+    { id: "handle-task", label: "Handle a Task for Me", icon: "🧾" },
+    { id: "be-somewhere", label: "Be Somewhere for Me", icon: "📍" },
+    { id: "custom-request", label: "Custom Request", icon: "🧠" },
     { id: "other", label: "Something Else", icon: "✨" },
   ];
 
