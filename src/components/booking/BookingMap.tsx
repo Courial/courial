@@ -333,7 +333,7 @@ const BookingMap: React.FC<BookingMapProps> = ({ pickupCoords, dropoffCoords, pi
 
       // Animate cars moving toward pickup
       const startTime = performance.now();
-      const duration = 3000;
+      const duration = 50000;
 
       const animate = (now: number) => {
         const elapsed = now - startTime;
