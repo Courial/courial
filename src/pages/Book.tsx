@@ -914,9 +914,10 @@ const Book = () => {
                       </Button>
                     </div>
                   </div>
-                </motion.div>
+                </div>
               )}
-            </AnimatePresence>
+            </motion.div>
+            )}
           </div>
           )}
 
