@@ -673,7 +673,7 @@ const Book = () => {
                           transition={{ duration: 0.15 }}
                         >
                           <p className="text-xs font-semibold text-muted-foreground mb-2 uppercase tracking-wide">Choose category</p>
-                          <div className="flex flex-wrap items-center justify-center gap-1.5">
+                          <div className="flex flex-wrap items-center gap-1.5">
                             {conciergeGroups.map((group, idx) => (
                               <button
                                 key={group.label}
