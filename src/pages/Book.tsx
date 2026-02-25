@@ -80,7 +80,7 @@ const Book = () => {
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState("visa-4242");
   const [over70lbs, setOver70lbs] = useState<boolean | null>(null);
   const [heavyExpanded, setHeavyExpanded] = useState(false);
-  const [heavyWeight, setHeavyWeight] = useState<string>("30");
+  const [heavyWeight, setHeavyWeight] = useState<string>("<30");
   const [heavyItems, setHeavyItems] = useState<string>("1");
   const [twoCourials, setTwoCourials] = useState<boolean | null>(null);
   const [hasStairs, setHasStairs] = useState<boolean | null>(null);
@@ -432,6 +432,7 @@ const Book = () => {
                               <SelectValue />
                             </SelectTrigger>
                             <SelectContent>
+                              <SelectItem value="<30">&lt;30 lbs</SelectItem>
                               {["30","40","50","60","70","80","90","100","125","150","175","200","250","300","350","400","450","500"].map(w => (
                                 <SelectItem key={w} value={w}>{w} lbs</SelectItem>
                               ))}
