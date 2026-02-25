@@ -34,7 +34,7 @@ serve(async (req) => {
     const payload = await req.json();
 
     // Validate required fields
-    const { pickup, dropoff, vehicleType, userId } = payload;
+    const { pickup, dropoff, vehicleType, userId, serviceType } = payload;
     if (!pickup?.address || !pickup?.lat || !pickup?.lng) {
       return new Response(
         JSON.stringify({ error: "Missing pickup address or coordinates" }),
@@ -47,7 +47,8 @@ serve(async (req) => {
         { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
-    if (!vehicleType) {
+    // vehicleType is required only for deliver service
+    if ((!serviceType || serviceType === "deliver") && !vehicleType) {
       return new Response(
         JSON.stringify({ error: "Missing vehicleType" }),
         { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
