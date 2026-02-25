@@ -5,7 +5,7 @@ import { Navbar } from "@/components/Navbar";
 import { Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { Helmet } from "react-helmet-async";
-import { MapPin, Search, CarFront, ParkingCircle, Leaf, Box, ConciergeBell, Clock, CalendarIcon, ChevronDown, Info, Plus, Trash2, CreditCard, Star, X, Weight } from "lucide-react";
+import { MapPin, Search, CarFront, ParkingCircle, Leaf, Box, ConciergeBell, Clock, CalendarIcon, ChevronDown, ChevronLeft, Info, Plus, Trash2, CreditCard, Star, X, Weight } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import visaIcon from "@/assets/card-icons/visa.svg";
 import mastercardIcon from "@/assets/card-icons/mastercard.svg";
@@ -100,6 +100,7 @@ const Book = () => {
   const conciergeGroups = [
     {
       label: "Errands",
+      desc: "Pickups, drop-offs & returns",
       items: [
         { id: "pick-up-buy", label: "Pick Up & Buy Something", icon: "🛍" },
         { id: "dry-cleaning", label: "Pick Up Dry Cleaning", icon: "👔" },
@@ -111,6 +112,7 @@ const Book = () => {
     },
     {
       label: "Waiting",
+      desc: "We wait so you don't",
       items: [
         { id: "wait-in-line", label: "Wait in Line", icon: "⏳" },
         { id: "wait-service", label: "Wait for Service Provider", icon: "🔧" },
@@ -121,6 +123,7 @@ const Book = () => {
     },
     {
       label: "Home Services",
+      desc: "Home & vehicle care tasks",
       items: [
         { id: "housekeeping", label: "Book Housekeeping", icon: "🏠" },
         { id: "emergency-plumbing", label: "Emergency Plumbing", icon: "🚿" },
@@ -136,6 +139,7 @@ const Book = () => {
     },
     {
       label: "Travel",
+      desc: "Trips, flights & logistics",
       items: [
         { id: "custom-itinerary", label: "Plan Custom Itinerary", icon: "🗺️" },
         { id: "private-drivers", label: "Arrange Private Drivers", icon: "🚘" },
@@ -153,6 +157,7 @@ const Book = () => {
     },
     {
       label: "Lifestyle",
+      desc: "VIP access & experiences",
       items: [
         { id: "restaurant-reservations", label: "Hard-to-Get Restaurant Reservations", icon: "🍽️" },
         { id: "vip-tables", label: "Book VIP Club Tables", icon: "🥂" },
@@ -168,6 +173,7 @@ const Book = () => {
     },
     {
       label: "Sourcing",
+      desc: "Find rare & luxury items",
       items: [
         { id: "watch-sourcing", label: "Luxury Watch Sourcing", icon: "⌚" },
         { id: "limited-edition", label: "Limited-edition Product Sourcing", icon: "🏷️" },
@@ -177,6 +183,7 @@ const Book = () => {
     },
     {
       label: "Wellness",
+      desc: "Health & wellness bookings",
       items: [
         { id: "private-trainer", label: "Book Private Trainers", icon: "💪" },
         { id: "mobile-iv", label: "Arrange Mobile IV Services", icon: "💉" },
@@ -186,6 +193,7 @@ const Book = () => {
     },
     {
       label: "Real Estate",
+      desc: "Rentals & relocation help",
       items: [
         { id: "short-term-rentals", label: "Luxury Short-term Rentals", icon: "🏡" },
         { id: "relocation", label: "Relocation Assistance", icon: "📦" },
@@ -195,6 +203,7 @@ const Book = () => {
     },
     {
       label: "Anything",
+      desc: "Custom & flexible requests",
       items: [
         { id: "personal-assistant", label: "Personal Assistant", icon: "🤝" },
         { id: "half-day", label: "Half-day Support", icon: "🕐" },
@@ -654,39 +663,59 @@ const Book = () => {
                 <div className="mb-4 space-y-4">
                   {/* Step 1: Choose Category */}
                   <div>
-                    <p className="text-xs font-semibold text-muted-foreground mb-2 uppercase tracking-wide">Choose category</p>
-                    {/* Group pills */}
-                    <div className="flex flex-wrap items-center justify-center gap-1.5 mb-3">
-                      {conciergeGroups.map((group, idx) => (
-                        <button
-                          key={group.label}
-                          type="button"
-                          onClick={() => {
-                            setConciergeGroupIndex(conciergeGroupIndex === idx ? null : idx);
-                            setConciergeCategory(null);
-                          }}
-                          className={cn(
-                            "px-2.5 py-1 rounded-full text-[11px] font-normal transition-all border leading-none",
-                            conciergeGroupIndex === idx
-                              ? "bg-background text-foreground border-primary"
-                              : "bg-background text-foreground/75 border-border/60 hover:border-foreground/50"
-                          )}
-                        >
-                          {group.label}
-                        </button>
-                      ))}
-                    </div>
-                    {/* Sub-category pills */}
-                    <AnimatePresence>
-                      {conciergeGroupIndex !== null && (
+                    <AnimatePresence mode="wait">
+                      {conciergeGroupIndex === null ? (
                         <motion.div
-                          initial={{ opacity: 0, height: 0 }}
-                          animate={{ opacity: 1, height: "auto" }}
-                          exit={{ opacity: 0, height: 0 }}
-                          transition={{ duration: 0.2 }}
-                          className="overflow-hidden"
+                          key="group-list"
+                          initial={{ opacity: 0 }}
+                          animate={{ opacity: 1 }}
+                          exit={{ opacity: 0 }}
+                          transition={{ duration: 0.15 }}
                         >
+                          <p className="text-xs font-semibold text-muted-foreground mb-2 uppercase tracking-wide">Choose category</p>
                           <div className="flex flex-wrap items-center justify-center gap-1.5">
+                            {conciergeGroups.map((group, idx) => (
+                              <button
+                                key={group.label}
+                                type="button"
+                                onClick={() => {
+                                  setConciergeGroupIndex(idx);
+                                  setConciergeCategory(null);
+                                }}
+                                className="px-2.5 py-1 rounded-full text-[11px] font-normal transition-all border leading-none bg-background text-foreground/75 border-border/60 hover:border-foreground/50"
+                              >
+                                {group.label}
+                              </button>
+                            ))}
+                          </div>
+                        </motion.div>
+                      ) : (
+                        <motion.div
+                          key="sub-list"
+                          initial={{ opacity: 0 }}
+                          animate={{ opacity: 1 }}
+                          exit={{ opacity: 0 }}
+                          transition={{ duration: 0.15 }}
+                        >
+                          <div className="flex items-center gap-2 mb-2">
+                            <button
+                              type="button"
+                              onClick={() => {
+                                setConciergeGroupIndex(null);
+                                setConciergeCategory(null);
+                              }}
+                              className="text-muted-foreground hover:text-foreground transition-colors"
+                            >
+                              <ChevronLeft className="w-4 h-4" />
+                            </button>
+                            <span className="px-2.5 py-1 rounded-full text-[11px] font-normal border leading-none bg-background text-foreground border-primary">
+                              {conciergeGroups[conciergeGroupIndex].label}
+                            </span>
+                            <span className="text-[11px] text-muted-foreground">
+                              {conciergeGroups[conciergeGroupIndex].desc}
+                            </span>
+                          </div>
+                          <div className="flex flex-wrap items-center gap-1.5">
                             {conciergeGroups[conciergeGroupIndex].items.map((cat) => (
                               <button
                                 key={cat.id}
