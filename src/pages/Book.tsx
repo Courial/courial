@@ -853,7 +853,7 @@ const Book = () => {
                     exit={{ opacity: 0 }}
                     transition={{ duration: 0.3 }}
                     className="absolute inset-0 z-20 flex items-center justify-center"
-                    style={{ backgroundColor: "hsla(0, 0%, 0%, 0.7)", backdropFilter: "blur(6px)" }}
+                    style={{ backgroundColor: "hsla(0, 0%, 0%, 0.5)", backdropFilter: "blur(6px)" }}
                   >
                     <motion.div
                       initial={{ opacity: 0, scale: 0.9 }}
@@ -861,7 +861,7 @@ const Book = () => {
                       exit={{ opacity: 0, scale: 0.9 }}
                       transition={{ duration: 0.3, delay: 0.1 }}
                       className="rounded-3xl p-10 flex flex-col items-center gap-6 max-w-sm mx-4"
-                      style={{ backgroundColor: "hsla(0, 0%, 0%, 0.55)", backdropFilter: "blur(20px)" }}
+                      style={{ backgroundColor: "hsla(0, 0%, 0%, 0.4)", backdropFilter: "blur(20px)" }}
                     >
                       {/* Circular Progress with flashing profile photos */}
                       <div className="relative w-28 h-28">
