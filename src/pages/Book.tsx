@@ -150,9 +150,9 @@ const Book = () => {
     setLoadingProgress(0);
 
     try {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (!session?.access_token) {
-        toast.error("Session expired — please sign in again.");
+      const courialToken = localStorage.getItem("courial_api_token");
+      if (!courialToken) {
+        toast.error("Please sign in with your phone number to book a delivery.");
         setBookingState("input");
         return;
       }
@@ -192,7 +192,7 @@ const Book = () => {
       const { data, error } = await supabase.functions.invoke("book-delivery", {
         body: payload,
         headers: {
-          Authorization: `Bearer ${session.access_token}`,
+          Authorization: `Bearer ${courialToken}`,
         },
       });
 

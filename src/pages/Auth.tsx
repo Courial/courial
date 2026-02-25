@@ -244,6 +244,11 @@ const Auth = () => {
       const projectRef = SUPABASE_URL.match(/\/\/([^.]+)\./)?.[1] || "";
       localStorage.setItem(`sb-${projectRef}-auth-token`, JSON.stringify(session));
 
+      // Step 2b: Store Courial API token for booking calls
+      if (data.courial_data?.data?.token) {
+        localStorage.setItem("courial_api_token", data.courial_data.data.token);
+      }
+
       // Step 3: Sync new user to Couriol backend (only for signups where we have user data)
       if (mode === "signup" && name && email) {
         setSuccessMessage("Finalizing...");
