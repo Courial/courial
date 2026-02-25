@@ -303,8 +303,8 @@ const BookingMap: React.FC<BookingMapProps> = ({ pickupCoords, dropoffCoords, pi
       return;
     }
 
-    // Create 4 car markers at random positions around pickup, rotated toward pickup
-    const startPositions = generateRandomPositions(pickupCoords, 4, 3);
+    // Create several car markers scattered in a ~30 mile (48 km) radius, moving toward pickup
+    const startPositions = generateRandomPositions(pickupCoords, 7, 48);
     const iconUrl = getVehicleIconUrl(vehicleType);
     const iconMaxDim = getVehicleIconMaxDim(vehicleType);
     const canvasSize = Math.ceil(Math.sqrt(iconMaxDim * iconMaxDim * 2));
