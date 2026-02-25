@@ -98,10 +98,12 @@ const Book = () => {
 
   const conciergeCategories = [
     { id: "shopping", label: "Shopping", icon: "🛍️" },
-    { id: "errands", label: "Errands", icon: "📋" },
+    { id: "errands", label: "Quick Errand", icon: "📋" },
     { id: "waiting", label: "Wait in Line", icon: "⏳" },
     { id: "returns", label: "Returns & Exchanges", icon: "🔄" },
-    { id: "pickup", label: "Pickup & Drop-off", icon: "📦" },
+    { id: "multi-stop", label: "Multi-stop Task", icon: "📍" },
+    { id: "half-day", label: "Half-day Support", icon: "🕐" },
+    { id: "full-day", label: "Full-day Support", icon: "🕛" },
     { id: "other", label: "Other", icon: "✨" },
   ];
 
