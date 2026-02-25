@@ -728,6 +728,49 @@ const Book = () => {
                     </AnimatePresence>
                   </div>
 
+                  {/* Address toggle — above info field */}
+                  <AnimatePresence>
+                    {conciergeCategory && (
+                      <motion.div
+                        initial={{ opacity: 0, height: 0 }}
+                        animate={{ opacity: 1, height: "auto" }}
+                        exit={{ opacity: 0, height: 0 }}
+                        transition={{ duration: 0.2 }}
+                        className="overflow-hidden"
+                      >
+                        <div className="flex items-center justify-between">
+                          <p className="text-xs font-semibold text-muted-foreground tracking-wide">Pickup / drop-off address required?</p>
+                          <div className="flex bg-muted rounded-full p-0.5 gap-0.5">
+                            <button
+                              type="button"
+                              onClick={() => setConciergeNeedsAddress(false)}
+                              className={cn(
+                                "px-3 py-1 rounded-full text-[10px] font-semibold transition-all duration-200",
+                                !conciergeNeedsAddress
+                                  ? "bg-foreground text-background shadow-sm"
+                                  : "text-muted-foreground hover:text-foreground"
+                              )}
+                            >
+                              No
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => setConciergeNeedsAddress(true)}
+                              className={cn(
+                                "px-3 py-1 rounded-full text-[10px] font-semibold transition-all duration-200",
+                                conciergeNeedsAddress
+                                  ? "bg-foreground text-background shadow-sm"
+                                  : "text-muted-foreground hover:text-foreground"
+                              )}
+                            >
+                              Yes
+                            </button>
+                          </div>
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+
                   {/* Step 2: Details */}
                   <AnimatePresence>
                     {conciergeCategory && (
@@ -737,9 +780,15 @@ const Book = () => {
                         exit={{ opacity: 0, height: 0, overflow: "hidden" }}
                         transition={{ duration: 0.2 }}
                       >
-                        <div className="relative pb-5">
+                        <div className="relative">
                           <div className="border border-border rounded-xl bg-background px-4 py-3 focus-within:border-foreground transition-colors">
                             <textarea
+                              ref={(el) => {
+                                if (el) {
+                                  el.style.height = 'auto';
+                                  el.style.height = el.scrollHeight + 'px';
+                                }
+                              }}
                               placeholder="Enter the details of your request. Be as specific as possible."
                               className="w-full bg-transparent text-sm text-foreground placeholder:text-foreground/35 outline-none resize-none overflow-hidden min-h-[3rem]"
                               rows={2}
@@ -749,14 +798,14 @@ const Book = () => {
                               onInput={(e) => { const t = e.currentTarget; t.style.height = 'auto'; t.style.height = t.scrollHeight + 'px'; }}
                             />
                           </div>
-                          {/* Redraft with AI button */}
+                          {/* Redraft with AI button — on bottom border */}
                           <AnimatePresence>
                             {conciergeDetails.trim().length > 10 && !showRedraftResult && (
                               <motion.div
                                 initial={{ opacity: 0, scale: 0.9 }}
                                 animate={{ opacity: 1, scale: 1 }}
                                 exit={{ opacity: 0, scale: 0.9 }}
-                                className="absolute -bottom-3 right-3"
+                                className="absolute -bottom-3 left-1/2 -translate-x-1/2"
                               >
                                 <button
                                   type="button"
@@ -780,7 +829,7 @@ const Book = () => {
                                       setIsRedrafting(false);
                                     }
                                   }}
-                                  className="flex items-center gap-1 px-3 py-1 rounded-full bg-foreground text-background text-[10px] font-semibold shadow-sm hover:opacity-90 transition-opacity"
+                                  className="flex items-center gap-1 px-3 py-1 rounded-full bg-primary text-primary-foreground text-[10px] font-semibold shadow-sm hover:bg-primary/90 transition-colors"
                                 >
                                   {isRedrafting ? <Loader2 className="w-3 h-3 animate-spin" /> : <Sparkles className="w-3 h-3" />}
                                   Redraft with AI
@@ -825,49 +874,6 @@ const Book = () => {
                             </motion.div>
                           )}
                         </AnimatePresence>
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-
-                  {/* Address toggle */}
-                  <AnimatePresence>
-                    {conciergeCategory && conciergeDetails.trim() && (
-                      <motion.div
-                        initial={{ opacity: 0, height: 0 }}
-                        animate={{ opacity: 1, height: "auto" }}
-                        exit={{ opacity: 0, height: 0 }}
-                        transition={{ duration: 0.2 }}
-                        className="overflow-hidden"
-                      >
-                        <div className="flex items-center justify-between">
-                          <p className="text-xs font-semibold text-muted-foreground tracking-wide">Pickup / Drop-off address required?</p>
-                          <div className="flex items-center rounded-full border border-border overflow-hidden h-6">
-                            <button
-                              type="button"
-                              onClick={() => setConciergeNeedsAddress(false)}
-                              className={cn(
-                                "px-3 h-full text-[10px] font-semibold transition-all",
-                                !conciergeNeedsAddress
-                                  ? "bg-foreground text-background"
-                                  : "bg-background text-muted-foreground hover:text-foreground"
-                              )}
-                            >
-                              No
-                            </button>
-                            <button
-                              type="button"
-                              onClick={() => setConciergeNeedsAddress(true)}
-                              className={cn(
-                                "px-3 h-full text-[10px] font-semibold transition-all",
-                                conciergeNeedsAddress
-                                  ? "bg-foreground text-background"
-                                  : "bg-background text-muted-foreground hover:text-foreground"
-                              )}
-                            >
-                              Yes
-                            </button>
-                          </div>
-                        </div>
                       </motion.div>
                     )}
                   </AnimatePresence>
