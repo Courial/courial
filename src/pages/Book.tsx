@@ -689,9 +689,10 @@ const Book = () => {
                       {/* Payment Card Icon + Down Arrow */}
                       <button
                         onClick={() => setShowPaymentMethods(true)}
-                        className="flex items-center gap-1 flex-shrink-0 hover:opacity-80 transition-opacity"
+                        className="flex items-center gap-1.5 flex-shrink-0 hover:opacity-80 transition-opacity"
                       >
                         <img src={activePayment.icon} alt={activePayment.label} className="w-12 h-auto rounded" />
+                        <span className="text-xs text-muted-foreground tracking-wide">••••&nbsp;{activePayment.last4}</span>
                         <ChevronDown className="w-3 h-3 text-muted-foreground" />
                       </button>
 
@@ -699,10 +700,10 @@ const Book = () => {
                       <Button
                         disabled={!isFormValid}
                         onClick={handleBookingSubmit}
-                        className="flex-1 rounded h-8 text-base font-semibold"
+                        className="rounded h-8 text-base font-semibold px-5"
                         variant={isFormValid ? "hero" : "secondary"}
                       >
-                        Book Delivery
+                        Book
                       </Button>
                     </div>
                   </div>
