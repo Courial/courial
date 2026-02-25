@@ -99,18 +99,6 @@ const Book = () => {
 
   const conciergeGroups = [
     {
-      label: "Errands",
-      desc: "Pickups, drop-offs & returns",
-      items: [
-        { id: "pick-up-buy", label: "Pick Up & Buy Something", icon: "🛍" },
-        { id: "dry-cleaning", label: "Pick Up Dry Cleaning", icon: "👔" },
-        { id: "drop-off-docs", label: "Drop Off / Collect Documents", icon: "📄" },
-        { id: "return-exchange", label: "Return or Exchange Items", icon: "🔄" },
-        { id: "multi-stop", label: "Multi-stop Errands", icon: "📍" },
-        { id: "deliver-something", label: "Deliver Something", icon: "📦" },
-      ],
-    },
-    {
       label: "Waiting",
       desc: "We wait so you don't",
       items: [
