@@ -7,6 +7,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Helmet } from "react-helmet-async";
 import { MapPin, Search, CarFront, ParkingCircle, Leaf, Box, ConciergeBell, Clock, CalendarIcon, ChevronDown, ChevronLeft, Info, Plus, Trash2, CreditCard, Star, X, Weight } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Switch } from "@/components/ui/switch";
 import visaIcon from "@/assets/card-icons/visa.svg";
 import mastercardIcon from "@/assets/card-icons/mastercard.svg";
 import amexIcon from "@/assets/card-icons/amex.svg";
@@ -95,6 +96,7 @@ const Book = () => {
   const [conciergeGroupIndex, setConciergeGroupIndex] = useState<number | null>(null);
   const [conciergeDetails, setConciergeDetails] = useState("");
   
+  const [conciergeNeedsAddress, setConciergeNeedsAddress] = useState(false);
   const [conciergeServiceLevel, setConciergeServiceLevel] = useState<string | null>(null);
 
   const conciergeGroups = [
@@ -788,8 +790,34 @@ const Book = () => {
                     )}
                   </AnimatePresence>
 
+                  {/* Address toggle */}
+                  <AnimatePresence>
+                    {conciergeCategory && conciergeDetails.trim() && (
+                      <motion.div
+                        initial={{ opacity: 0, height: 0 }}
+                        animate={{ opacity: 1, height: "auto" }}
+                        exit={{ opacity: 0, height: 0 }}
+                        transition={{ duration: 0.2 }}
+                        className="overflow-hidden"
+                      >
+                        <div className="flex items-center justify-between">
+                          <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Is a pickup or drop-off address required?</p>
+                          <Switch checked={conciergeNeedsAddress} onCheckedChange={setConciergeNeedsAddress} />
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
 
                   {/* Input Fields */}
+                  <AnimatePresence>
+                  {conciergeNeedsAddress && (
+                  <motion.div
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: "auto" }}
+                    exit={{ opacity: 0, height: 0 }}
+                    transition={{ duration: 0.2 }}
+                    className="overflow-hidden"
+                  >
                   <div className="space-y-0">
                     <div className="relative group">
                       <div className="flex items-start gap-3 px-4 py-3 border border-border rounded-xl bg-background transition-colors focus-within:border-foreground mb-2">
@@ -852,7 +880,9 @@ const Book = () => {
                       </p>
                     )}
                   </div>
-
+                  </motion.div>
+                  )}
+                  </AnimatePresence>
 
                   {/* Delivery Requirements Notice */}
                   <Collapsible className="mt-3 text-xs text-foreground">
