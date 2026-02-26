@@ -648,7 +648,7 @@ const Book = () => {
                           type="time"
                           value={selectedTime}
                           onChange={(e) => setSelectedTime(e.target.value)}
-                          className="h-11 px-3 rounded-xl border border-border bg-background text-sm text-foreground outline-none focus:border-foreground transition-colors w-[110px]"
+                          className="h-11 px-3 rounded-xl border border-border bg-background text-sm text-foreground outline-none focus:border-border transition-colors w-[110px]"
                         />
                       </div>
                     </div>
