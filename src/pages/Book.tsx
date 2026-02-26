@@ -114,6 +114,12 @@ const Book = () => {
   const [conciergeStartAddress, setConciergeStartAddress] = useState("");
   const [conciergeStopAddress, setConciergeStopAddress] = useState("");
   const [conciergeFinalAddress, setConciergeFinalAddress] = useState("");
+  const [conciergeStartPlaceName, setConciergeStartPlaceName] = useState<string | null>(null);
+  const [conciergeStopPlaceName, setConciergeStopPlaceName] = useState<string | null>(null);
+  const [conciergeFinalPlaceName, setConciergeFinalPlaceName] = useState<string | null>(null);
+  const [conciergeStartCoords, setConciergeStartCoords] = useState<{ lat: number; lng: number } | null>(null);
+  const [conciergeStopCoords, setConciergeStopCoords] = useState<{ lat: number; lng: number } | null>(null);
+  const [conciergeFinalCoords, setConciergeFinalCoords] = useState<{ lat: number; lng: number } | null>(null);
   const [conciergeDescription, setConciergeDescription] = useState("");
   const [conciergeLanguage, setConciergeLanguage] = useState<string | null>(null);
   const [conciergeServiceMode, setConciergeServiceMode] = useState<"hourly" | "daily" | null>(null);
@@ -383,6 +389,36 @@ const Book = () => {
       const addr = place.formatted_address || "";
       const isEstablishment = name && !addr.startsWith(name);
       setDropoffPlaceName(isEstablishment ? name : null);
+    }
+  }, []);
+
+  const handleConciergeStartSelect = useCallback((place: any) => {
+    if (place.geometry?.location) {
+      setConciergeStartCoords({ lat: place.geometry.location.lat(), lng: place.geometry.location.lng() });
+      const name = place.name || null;
+      const addr = place.formatted_address || "";
+      const isEstablishment = name && !addr.startsWith(name);
+      setConciergeStartPlaceName(isEstablishment ? name : null);
+    }
+  }, []);
+
+  const handleConciergeStopSelect = useCallback((place: any) => {
+    if (place.geometry?.location) {
+      setConciergeStopCoords({ lat: place.geometry.location.lat(), lng: place.geometry.location.lng() });
+      const name = place.name || null;
+      const addr = place.formatted_address || "";
+      const isEstablishment = name && !addr.startsWith(name);
+      setConciergeStopPlaceName(isEstablishment ? name : null);
+    }
+  }, []);
+
+  const handleConciergeFinalSelect = useCallback((place: any) => {
+    if (place.geometry?.location) {
+      setConciergeFinalCoords({ lat: place.geometry.location.lat(), lng: place.geometry.location.lng() });
+      const name = place.name || null;
+      const addr = place.formatted_address || "";
+      const isEstablishment = name && !addr.startsWith(name);
+      setConciergeFinalPlaceName(isEstablishment ? name : null);
     }
   }, []);
 
@@ -1009,46 +1045,61 @@ const Book = () => {
                       className="space-y-2 mb-3 overflow-visible"
                     >
                       {conciergeAddressToggles.start && (
-                        <div className="flex items-center gap-3 px-4 py-3 border border-border rounded-xl bg-background focus-within:border-foreground">
-                          <div className="flex-shrink-0 w-2.5 h-2.5 rounded-full bg-green-500" />
-                          <AddressAutocomplete
-                            placeholder="Start address"
-                            value={conciergeStartAddress}
-                            onChange={setConciergeStartAddress}
-                            onPlaceSelect={() => {}}
-                            className="w-full bg-transparent text-sm text-foreground placeholder:text-muted-foreground outline-none"
-                          />
-                          <button onClick={() => setConciergeStartAddress("")} className="flex-shrink-0 ml-auto hover:opacity-70 transition-opacity">
+                        <div className="flex items-start gap-3 px-4 py-3 border border-border rounded-xl bg-background focus-within:border-foreground">
+                          <div className="flex-shrink-0 w-2.5 h-2.5 rounded-full bg-green-500 mt-[7px]" />
+                          <div className="flex-1 min-w-0">
+                            {conciergeStartPlaceName && conciergeStartCoords && (
+                              <div className="text-sm font-semibold text-foreground leading-tight">{conciergeStartPlaceName}</div>
+                            )}
+                            <AddressAutocomplete
+                              placeholder="Start address"
+                              value={conciergeStartAddress}
+                              onChange={(v) => { setConciergeStartAddress(v); if (!v) { setConciergeStartPlaceName(null); setConciergeStartCoords(null); } }}
+                              onPlaceSelect={handleConciergeStartSelect}
+                              className={`w-full bg-transparent text-foreground placeholder:text-muted-foreground outline-none ${conciergeStartPlaceName && conciergeStartCoords ? 'text-muted-foreground text-xs mt-0.5' : 'text-sm'}`}
+                            />
+                          </div>
+                          <button onClick={() => { setConciergeStartAddress(""); setConciergeStartPlaceName(null); setConciergeStartCoords(null); }} className="flex-shrink-0 ml-auto hover:opacity-70 transition-opacity">
                             <X className="w-2.5 h-2.5 text-muted-foreground/50" />
                           </button>
                         </div>
                       )}
                       {conciergeAddressToggles.stop && (
-                        <div className="flex items-center gap-3 px-4 py-3 border border-border rounded-xl bg-background focus-within:border-foreground">
-                          <div className="flex-shrink-0 w-2.5 h-2.5 rounded-none bg-blue-500" />
-                          <AddressAutocomplete
-                            placeholder="Stop address"
-                            value={conciergeStopAddress}
-                            onChange={setConciergeStopAddress}
-                            onPlaceSelect={() => {}}
-                            className="w-full bg-transparent text-sm text-foreground placeholder:text-muted-foreground outline-none"
-                          />
-                          <button onClick={() => setConciergeStopAddress("")} className="flex-shrink-0 ml-auto hover:opacity-70 transition-opacity">
+                        <div className="flex items-start gap-3 px-4 py-3 border border-border rounded-xl bg-background focus-within:border-foreground">
+                          <div className="flex-shrink-0 w-2.5 h-2.5 rounded-none bg-blue-500 mt-[7px]" />
+                          <div className="flex-1 min-w-0">
+                            {conciergeStopPlaceName && conciergeStopCoords && (
+                              <div className="text-sm font-semibold text-foreground leading-tight">{conciergeStopPlaceName}</div>
+                            )}
+                            <AddressAutocomplete
+                              placeholder="Stop address"
+                              value={conciergeStopAddress}
+                              onChange={(v) => { setConciergeStopAddress(v); if (!v) { setConciergeStopPlaceName(null); setConciergeStopCoords(null); } }}
+                              onPlaceSelect={handleConciergeStopSelect}
+                              className={`w-full bg-transparent text-foreground placeholder:text-muted-foreground outline-none ${conciergeStopPlaceName && conciergeStopCoords ? 'text-muted-foreground text-xs mt-0.5' : 'text-sm'}`}
+                            />
+                          </div>
+                          <button onClick={() => { setConciergeStopAddress(""); setConciergeStopPlaceName(null); setConciergeStopCoords(null); }} className="flex-shrink-0 ml-auto hover:opacity-70 transition-opacity">
                             <X className="w-2.5 h-2.5 text-muted-foreground/50" />
                           </button>
                         </div>
                       )}
                       {conciergeAddressToggles.final && (
-                        <div className="flex items-center gap-3 px-4 py-3 border border-border rounded-xl bg-background focus-within:border-foreground">
-                          <div className="flex-shrink-0 w-2.5 h-2.5 rounded-none bg-destructive" />
-                          <AddressAutocomplete
-                            placeholder="Final address"
-                            value={conciergeFinalAddress}
-                            onChange={setConciergeFinalAddress}
-                            onPlaceSelect={() => {}}
-                            className="w-full bg-transparent text-sm text-foreground placeholder:text-muted-foreground outline-none"
-                          />
-                          <button onClick={() => setConciergeFinalAddress("")} className="flex-shrink-0 ml-auto hover:opacity-70 transition-opacity">
+                        <div className="flex items-start gap-3 px-4 py-3 border border-border rounded-xl bg-background focus-within:border-foreground">
+                          <div className="flex-shrink-0 w-2.5 h-2.5 rounded-none bg-destructive mt-[7px]" />
+                          <div className="flex-1 min-w-0">
+                            {conciergeFinalPlaceName && conciergeFinalCoords && (
+                              <div className="text-sm font-semibold text-foreground leading-tight">{conciergeFinalPlaceName}</div>
+                            )}
+                            <AddressAutocomplete
+                              placeholder="Final address"
+                              value={conciergeFinalAddress}
+                              onChange={(v) => { setConciergeFinalAddress(v); if (!v) { setConciergeFinalPlaceName(null); setConciergeFinalCoords(null); } }}
+                              onPlaceSelect={handleConciergeFinalSelect}
+                              className={`w-full bg-transparent text-foreground placeholder:text-muted-foreground outline-none ${conciergeFinalPlaceName && conciergeFinalCoords ? 'text-muted-foreground text-xs mt-0.5' : 'text-sm'}`}
+                            />
+                          </div>
+                          <button onClick={() => { setConciergeFinalAddress(""); setConciergeFinalPlaceName(null); setConciergeFinalCoords(null); }} className="flex-shrink-0 ml-auto hover:opacity-70 transition-opacity">
                             <X className="w-2.5 h-2.5 text-muted-foreground/50" />
                           </button>
                         </div>
