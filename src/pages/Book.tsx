@@ -756,7 +756,7 @@ const Book = () => {
                                 setConciergeSubCategory("__direct__");
                               }
                             }}
-                            className="px-3 py-1.5 rounded-full text-sm font-normal border border-border bg-background text-foreground hover:border-foreground/50 transition-all"
+                            className="px-2.5 py-1 rounded-full text-[11px] font-normal border border-border/60 bg-background text-foreground/75 hover:border-foreground/50 transition-all leading-none"
                           >
                             {cat.label}
                           </button>
@@ -782,20 +782,20 @@ const Book = () => {
                                 >
                                   <ChevronLeft className="w-4 h-4 text-foreground" />
                                 </button>
-                                <span className="px-3 py-1 rounded-full text-sm font-normal border border-primary text-foreground">
-                                  {cat.label}
-                                </span>
-                                {cat.desc && (
-                                  <span className="text-sm text-muted-foreground">{cat.desc}</span>
+                                 <span className="px-2.5 py-1 rounded-full text-[11px] font-normal border border-primary text-foreground leading-none">
+                                   {cat.label}
+                                 </span>
+                                 {cat.desc && (
+                                   <span className="text-[11px] text-muted-foreground">{cat.desc}</span>
                                 )}
                               </div>
                               {cat.subs.length > 0 && (
                                 <div className="flex flex-wrap gap-2">
                                   {cat.subs.map((sub) => (
-                                    <button
+                                     <button
                                       key={sub}
                                       onClick={() => setConciergeSubCategory(sub)}
-                                      className="px-3 py-1.5 rounded-full text-sm font-normal border border-border bg-background text-foreground hover:border-foreground/50 transition-all"
+                                      className="px-2.5 py-1 rounded-full text-[11px] font-normal border border-border/60 bg-background text-foreground/75 hover:border-foreground/50 transition-all leading-none"
                                     >
                                       {sub}
                                     </button>
@@ -826,24 +826,24 @@ const Book = () => {
                                 >
                                   <ChevronLeft className="w-4 h-4 text-foreground" />
                                 </button>
-                                <span className="px-3 py-1 rounded-full text-sm font-normal border border-primary text-foreground">
-                                  {cat.label}
-                                </span>
-                                {cat.desc && (
-                                  <span className="text-sm text-muted-foreground">{cat.desc}</span>
-                                )}
-                              </div>
-                              {conciergeSubCategory !== "__direct__" && (
-                                <div className="flex items-center gap-2">
-                                  <button
-                                    onClick={() => setConciergeSubCategory(null)}
-                                    className="p-0.5 hover:opacity-70 transition-opacity"
-                                  >
-                                    <ChevronLeft className="w-4 h-4 text-foreground" />
-                                  </button>
-                                  <span className="px-3 py-1 rounded-full text-sm font-normal border border-border text-foreground">
-                                    {conciergeSubCategory}
-                                  </span>
+                                 <span className="px-2.5 py-1 rounded-full text-[11px] font-normal border border-primary text-foreground leading-none">
+                                   {cat.label}
+                                 </span>
+                                 {cat.desc && (
+                                   <span className="text-[11px] text-muted-foreground">{cat.desc}</span>
+                                 )}
+                               </div>
+                               {conciergeSubCategory !== "__direct__" && (
+                                 <div className="flex items-center gap-2">
+                                   <button
+                                     onClick={() => setConciergeSubCategory(null)}
+                                     className="p-0.5 hover:opacity-70 transition-opacity"
+                                   >
+                                     <ChevronLeft className="w-4 h-4 text-foreground" />
+                                   </button>
+                                   <span className="px-2.5 py-1 rounded-full text-[11px] font-normal border border-border/60 text-foreground leading-none">
+                                     {conciergeSubCategory}
+                                   </span>
                                 </div>
                               )}
                             </>
@@ -873,10 +873,10 @@ const Book = () => {
                       key={type}
                       onClick={() => setConciergeAddressToggles(prev => ({ ...prev, [type]: !prev[type] }))}
                       className={cn(
-                        "px-3 py-1.5 rounded-full text-sm font-normal border transition-all",
+                        "px-2.5 py-1 rounded-full text-[11px] font-normal border transition-all leading-none",
                         conciergeAddressToggles[type]
                           ? "border-primary text-foreground"
-                          : "border-border text-foreground hover:border-foreground/50"
+                          : "border-border/60 text-foreground/75 hover:border-foreground/50"
                       )}
                     >
                       + {type.charAt(0).toUpperCase() + type.slice(1)} address
