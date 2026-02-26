@@ -1554,7 +1554,7 @@ const Book = () => {
                   </div>
 
                   {/* Notes Field with Redraft */}
-                  <div className="relative mb-1 -mt-1">
+                   <div className="relative mb-1 mt-2">
                     <div className="px-4 py-4 border border-border rounded-xl bg-background focus-within:border-border">
                       <textarea
                         placeholder="Provide all relevant pickup and drop-off details, including contact numbers, special instructions, access information, gate codes, and any other important notes. You may choose to have AI professionally refine your message."
