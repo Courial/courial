@@ -795,7 +795,7 @@ const Book = () => {
                                      <button
                                       key={sub}
                                       onClick={() => setConciergeSubCategory(sub)}
-                                      className="px-2.5 py-1 rounded-full text-[11px] font-normal border border-border/60 bg-background text-foreground/75 hover:border-foreground/50 transition-all leading-none"
+                                      className="px-2.5 py-1 rounded-full text-[11px] font-normal bg-muted text-foreground border-none hover:bg-muted/70 transition-all leading-none"
                                     >
                                       {sub}
                                     </button>
