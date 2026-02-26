@@ -165,16 +165,6 @@ const Book = () => {
       ],
     },
     {
-      label: "Wellness",
-      desc: "Health & wellness bookings",
-      items: [
-        { id: "private-trainer", label: "Book Private Trainers", icon: "💪" },
-        { id: "mobile-iv", label: "Arrange Mobile IV Services", icon: "💉" },
-        { id: "specialist-doctor", label: "Specialist Doctor Appointments", icon: "🩺" },
-        { id: "wellness-bookings", label: "High-end Wellness Bookings", icon: "🧘" },
-      ],
-    },
-    {
       label: "Real Estate",
       desc: "Rentals & relocation help",
       items: [
