@@ -1109,7 +1109,7 @@ const Book = () => {
                 {/* Additional Expenses */}
                 <div className="mb-3">
                   <div className="flex items-center gap-2">
-                    <h4 className="text-xs font-semibold text-foreground">Additional Expenses</h4>
+                    <h4 className="text-xs font-medium text-foreground">Additional Expenses</h4>
                     <input
                       type="checkbox"
                       id="concierge-expenses"
@@ -1136,7 +1136,7 @@ const Book = () => {
                       {/* Expense Items */}
                       {conciergeExpenseItems.map((item, index) => (
                         <div key={index} className="rounded-lg border border-border/60 bg-background p-3 space-y-2">
-                          <p className="text-[11px] font-semibold text-foreground">Expense Item</p>
+                          <p className="text-[11px] font-medium text-foreground">Expense Item</p>
                           <div>
                             <label className="text-[10px] text-muted-foreground/80 mb-0.5 block">Description</label>
                             <input
@@ -1196,7 +1196,7 @@ const Book = () => {
                             type="checkbox"
                             checked={conciergeAllowOverage}
                             onChange={(e) => setConciergeAllowOverage(e.target.checked)}
-                            className="h-3.5 w-3.5 rounded border-border accent-primary cursor-pointer"
+                            className="h-3 w-3 rounded border-border/60 accent-foreground cursor-pointer"
                           />
                           <span className="text-[10px] text-foreground">
                             Allow minor overages up to:
@@ -1209,11 +1209,11 @@ const Book = () => {
                               onChange={(e) => setConciergeOverageLimit(e.target.value)}
                               placeholder="25.00"
                               disabled={!conciergeAllowOverage}
-                              className="w-16 rounded border border-border/60 bg-background pl-5 pr-1.5 py-1 text-[10px] text-foreground text-center focus:outline-none focus:ring-1 focus:ring-ring disabled:opacity-40"
+                              className="w-8 rounded border border-border/60 bg-background pl-4 pr-1 py-1 text-[10px] text-foreground text-center focus:outline-none focus:ring-1 focus:ring-ring disabled:opacity-40"
                             />
                           </div>
                         </label>
-                        <p className="text-[9px] text-muted-foreground italic mt-1 ml-5">
+                        <p className="text-[9px] text-muted-foreground italic mt-0.5 ml-5">
                           If actual costs exceed your estimate, we may request approval before proceeding.
                         </p>
                       </div>
