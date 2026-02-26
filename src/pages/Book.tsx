@@ -1160,12 +1160,12 @@ const Book = () => {
                               <input
                                 type="text"
                                 inputMode="decimal"
-                                value={item.amount}
+                              value={item.amount ? Number(item.amount.replace(/,/g, '')).toLocaleString('en-US', { minimumFractionDigits: item.amount.includes('.') ? Math.min((item.amount.split('.')[1] || '').length, 2) : 0, maximumFractionDigits: 2 }) : ''}
                                 onChange={(e) => {
-                                  const val = e.target.value;
-                                  if (val === '' || /^\d*\.?\d{0,2}$/.test(val)) {
+                                  const raw = e.target.value.replace(/,/g, '');
+                                  if (raw === '' || /^\d*\.?\d{0,2}$/.test(raw)) {
                                     const updated = [...conciergeExpenseItems];
-                                    updated[index].amount = val;
+                                    updated[index].amount = raw;
                                     setConciergeExpenseItems(updated);
                                   }
                                 }}
@@ -1208,20 +1208,23 @@ const Book = () => {
                             Allow minor overages up to:
                           </span>
                           <div className="relative inline-flex items-center">
-                            <span className="absolute left-2 text-[10px] text-muted-foreground">$</span>
+                            <span className="absolute left-2 top-1/2 -translate-y-1/2 text-[10px] text-muted-foreground">$</span>
                             <input
                               type="text"
-                              inputMode="decimal"
+                              inputMode="numeric"
                               value={conciergeOverageLimit}
                               onChange={(e) => {
                                 const val = e.target.value;
-                                if (val === '' || /^\d*\.?\d{0,2}$/.test(val)) {
-                                  setConciergeOverageLimit(val);
+                                if (val === '' || /^\d+$/.test(val)) {
+                                  const num = Number(val);
+                                  if (val === '' || num <= 100) {
+                                    setConciergeOverageLimit(val);
+                                  }
                                 }
                               }}
-                              placeholder="25.00"
+                              placeholder="25"
                               disabled={!conciergeAllowOverage}
-                              className="w-8 rounded border border-border/60 bg-background pl-4 pr-1 py-1 text-[10px] text-foreground text-center focus:outline-none focus:ring-1 focus:ring-ring disabled:opacity-40"
+                              className="w-12 rounded-lg border border-border/60 bg-background pl-5 pr-2 py-0.5 text-xs text-foreground placeholder:text-muted-foreground/60 focus:outline-none focus:ring-1 focus:ring-ring disabled:opacity-40"
                             />
                           </div>
                         </label>
