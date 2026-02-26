@@ -121,6 +121,8 @@ const Book = () => {
   const [conciergeExpenseItems, setConciergeExpenseItems] = useState<Array<{ description: string; amount: string }>>([{ description: "", amount: "0" }]);
   const [conciergeAllowOverage, setConciergeAllowOverage] = useState(false);
   const [conciergeOverageLimit, setConciergeOverageLimit] = useState("0");
+  const [expenseCapWarning, setExpenseCapWarning] = useState<number | null>(null);
+  const [overageCapWarning, setOverageCapWarning] = useState(false);
   const [redraftSuggestion, setRedraftSuggestion] = useState<string | null>(null);
   const [isRedrafting, setIsRedrafting] = useState(false);
 
@@ -1173,6 +1175,10 @@ const Book = () => {
                                       const updated = [...conciergeExpenseItems];
                                       updated[index].amount = raw;
                                       setConciergeExpenseItems(updated);
+                                      setExpenseCapWarning(null);
+                                    } else {
+                                      setExpenseCapWarning(index);
+                                      setTimeout(() => setExpenseCapWarning(prev => prev === index ? null : prev), 2500);
                                     }
                                   }
                                 }}
@@ -1180,6 +1186,9 @@ const Book = () => {
                                 className="w-20 rounded-lg border border-border/60 bg-background pl-5 pr-2 py-0.5 text-xs text-foreground placeholder:text-muted-foreground/60 focus:outline-none focus:ring-1 focus:ring-ring"
                               />
                             </div>
+                            {expenseCapWarning === index && (
+                              <span className="text-[9px] text-destructive font-medium whitespace-nowrap">Sorry, capped at $500</span>
+                            )}
                           </div>
                           {conciergeExpenseItems.length > 1 && (
                             <button
@@ -1226,6 +1235,10 @@ const Book = () => {
                                   const num = Number(val);
                                   if (val === '' || num <= 100) {
                                     setConciergeOverageLimit(val);
+                                    setOverageCapWarning(false);
+                                  } else {
+                                    setOverageCapWarning(true);
+                                    setTimeout(() => setOverageCapWarning(false), 2500);
                                   }
                                 }
                               }}
@@ -1234,6 +1247,9 @@ const Book = () => {
                               className="w-14 rounded-lg border border-border/60 bg-background pl-4 pr-1 py-0 text-[10px] text-foreground placeholder:text-muted-foreground/60 focus:outline-none focus:ring-1 focus:ring-ring disabled:opacity-40"
                             />
                           </div>
+                          {overageCapWarning && (
+                            <span className="text-[9px] text-destructive font-medium whitespace-nowrap">Sorry, capped at $100</span>
+                          )}
                         </label>
                         <p className="text-[9px] text-muted-foreground italic mt-0.5 ml-5">
                           If actual costs exceed your estimate, we may request approval before proceeding.
