@@ -165,32 +165,6 @@ const Book = () => {
       ],
     },
     {
-      label: "Lifestyle",
-      desc: "VIP access & experiences",
-      items: [
-        { id: "restaurant-reservations", label: "Hard-to-Get Restaurant Reservations", icon: "🍽️" },
-        { id: "vip-tables", label: "Book VIP Club Tables", icon: "🥂" },
-        { id: "private-dining", label: "Arrange Private Dining Rooms", icon: "🍷" },
-        { id: "concert-tickets", label: "Sold-out Concert Tickets", icon: "🎵" },
-        { id: "sports-tickets", label: "Premium Sports Event Tickets", icon: "🏟️" },
-        { id: "f1-vip", label: "F1 / VIP Sporting Packages", icon: "🏎️" },
-        { id: "gallery-access", label: "Private Gallery Access", icon: "🎨" },
-        { id: "private-chef", label: "Private Chef at Home", icon: "👨‍🍳" },
-        { id: "luxury-experiences", label: "Curated Luxury Experiences", icon: "💎" },
-        { id: "event-coordination", label: "Custom Event Coordination", icon: "🎪" },
-      ],
-    },
-    {
-      label: "Sourcing",
-      desc: "Find rare & luxury items",
-      items: [
-        { id: "watch-sourcing", label: "Luxury Watch Sourcing", icon: "⌚" },
-        { id: "limited-edition", label: "Limited-edition Product Sourcing", icon: "🏷️" },
-        { id: "corporate-gifts", label: "Corporate Gift Procurement", icon: "🎁" },
-        { id: "hard-to-find", label: "Hard-to-find Item Sourcing", icon: "🔎" },
-      ],
-    },
-    {
       label: "Wellness",
       desc: "Health & wellness bookings",
       items: [
