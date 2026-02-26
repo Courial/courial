@@ -1138,7 +1138,6 @@ const Book = () => {
                         <div key={index} className="rounded-lg border border-border/60 bg-background p-3 space-y-2">
                           <p className="text-[11px] font-medium text-foreground">Expense Item</p>
                           <div>
-                            <label className="text-[10px] text-muted-foreground/80 mb-0.5 block">Description</label>
                             <textarea
                               value={item.description}
                               onChange={(e) => {
@@ -1148,7 +1147,7 @@ const Book = () => {
                                 e.target.style.height = 'auto';
                                 e.target.style.height = e.target.scrollHeight + 'px';
                               }}
-                              placeholder="Postage for overnight documents"
+                              placeholder="Describe any expected purchases such as event tickets, specialty retail items, postage, shipping, or required supplies here."
                               rows={1}
                               className="w-full rounded-lg border border-border/60 bg-background px-3 py-1.5 text-xs text-foreground placeholder:text-muted-foreground/60 focus:outline-none focus:ring-1 focus:ring-ring resize-none overflow-hidden"
                             />
@@ -1208,7 +1207,7 @@ const Book = () => {
                             Allow minor overages up to:
                           </span>
                           <div className="relative inline-flex items-center">
-                            <span className="absolute left-2 top-1/2 -translate-y-1/2 text-[10px] text-muted-foreground">$</span>
+                            <span className="absolute left-1.5 top-1/2 -translate-y-1/2 text-[8px] text-muted-foreground">$</span>
                             <input
                               type="text"
                               inputMode="numeric"
@@ -1224,7 +1223,7 @@ const Book = () => {
                               }}
                               placeholder="25"
                               disabled={!conciergeAllowOverage}
-                              className="w-12 rounded-lg border border-border/60 bg-background pl-5 pr-2 py-0.5 text-xs text-foreground placeholder:text-muted-foreground/60 focus:outline-none focus:ring-1 focus:ring-ring disabled:opacity-40"
+                              className="w-14 rounded-lg border border-border/60 bg-background pl-4 pr-1 py-0 text-[10px] text-foreground placeholder:text-muted-foreground/60 focus:outline-none focus:ring-1 focus:ring-ring disabled:opacity-40"
                             />
                           </div>
                         </label>
