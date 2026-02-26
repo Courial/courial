@@ -907,11 +907,11 @@ const Book = () => {
                   <div className="flex items-center gap-2">
                     <button
                       onClick={() => setConciergeLanguage(null)}
-                      className="text-[11px] text-muted-foreground flex items-center gap-1"
+                      className="p-0.5 hover:opacity-70 transition-opacity"
                     >
-                      <span className="text-[10px]">←</span>
-                      Preferred Language
+                      <ChevronLeft className="w-4 h-4 text-foreground" />
                     </button>
+                    <span className="text-[11px] text-muted-foreground">Preferred Language</span>
                     <span className="px-2.5 py-1 rounded-full text-[11px] font-normal leading-none bg-muted text-foreground">
                       {conciergeLanguage}
                     </span>
