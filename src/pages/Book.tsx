@@ -1070,7 +1070,7 @@ const Book = () => {
                         {conciergeLanguage}
                       </span>
                     </div>
-                    <p className="text-[10px] text-muted-foreground mt-1.5 leading-snug">We will make our best efforts to match you with your preferred language; however, this is subject to availability.</p>
+                    <p className="text-[10px] text-muted-foreground mt-1.5 leading-snug italic">We will make our best efforts to match you with your preferred language; however, this is subject to availability.</p>
                   </>
                 ) : (
                   <>
