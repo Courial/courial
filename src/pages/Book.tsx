@@ -589,6 +589,34 @@ const Book = () => {
                 )}
               </AnimatePresence>
 
+              {/* Vehicle Selection for Deliver */}
+              {selectedService === "deliver" && (
+                <div className="mb-4">
+                  <p className="text-xs font-semibold text-muted-foreground mb-2 uppercase tracking-wide">Choose vehicle</p>
+                  <div className="flex items-center gap-2">
+                    {vehicleOptions.map((v) => (
+                      <button
+                        key={v.id}
+                        type="button"
+                        onClick={() => setSelectedVehicle(v.id)}
+                        className={cn(
+                          "flex flex-col items-center gap-1 px-3 py-2 rounded-xl border transition-all min-w-[60px]",
+                          selectedVehicle === v.id
+                            ? "border-primary bg-primary/5"
+                            : "border-border/60 hover:border-foreground/50"
+                        )}
+                      >
+                        <img src={v.image} alt={v.label} className={cn("object-contain", v.imgClass || "max-h-[32px]")} />
+                        <span className="text-[10px] font-medium text-foreground">{v.label}</span>
+                      </button>
+                    ))}
+                  </div>
+                  {selectedVehicle && (
+                    <p className="text-[10px] text-muted-foreground mt-1">{vehicleCaptions[selectedVehicle]}</p>
+                  )}
+                </div>
+              )}
+
               {/* Concierge Intake Flow */}
               {selectedService === "concierge" && (
                 <div className="mb-4 space-y-4">
