@@ -114,6 +114,12 @@ const Book = () => {
   const [conciergeStartAddress, setConciergeStartAddress] = useState("");
   const [conciergeStopAddress, setConciergeStopAddress] = useState("");
   const [conciergeFinalAddress, setConciergeFinalAddress] = useState("");
+  const [conciergeStartPlaceName, setConciergeStartPlaceName] = useState<string | null>(null);
+  const [conciergeStopPlaceName, setConciergeStopPlaceName] = useState<string | null>(null);
+  const [conciergeFinalPlaceName, setConciergeFinalPlaceName] = useState<string | null>(null);
+  const [conciergeStartCoords, setConciergeStartCoords] = useState<{ lat: number; lng: number } | null>(null);
+  const [conciergeStopCoords, setConciergeStopCoords] = useState<{ lat: number; lng: number } | null>(null);
+  const [conciergeFinalCoords, setConciergeFinalCoords] = useState<{ lat: number; lng: number } | null>(null);
   const [conciergeDescription, setConciergeDescription] = useState("");
   const [conciergeLanguage, setConciergeLanguage] = useState<string | null>(null);
   const [conciergeServiceMode, setConciergeServiceMode] = useState<"hourly" | "daily" | null>(null);
