@@ -452,7 +452,7 @@ const Book = () => {
                   {(() => {
                     const item = serviceCards.find(s => s.id === selectedService)!;
                     return (
-                      <div className="group relative rounded-2xl glass-card overflow-hidden h-[80px] p-4 flex items-center gap-4 border-primary border-2 transition-all duration-300">
+                      <div className="group relative rounded-2xl glass-card overflow-hidden h-[80px] p-4 flex items-center gap-4 border-primary border transition-all duration-300">
                         <div
                           className="absolute inset-0 opacity-30"
                           style={{
