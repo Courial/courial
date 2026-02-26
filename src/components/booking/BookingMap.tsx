@@ -12,6 +12,7 @@ interface BookingMapProps {
   pickupCoords: LatLng | null;
   dropoffCoords: LatLng | null;
   stopCoords?: LatLng | null;
+  extraStops?: Array<{ coords: LatLng | null; address?: string; placeName?: string | null }>;
   pickupAddress?: string;
   dropoffAddress?: string;
   stopAddress?: string;
