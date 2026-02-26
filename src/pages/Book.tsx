@@ -1626,7 +1626,7 @@ const Book = () => {
                           animate={{ opacity: 1, height: "auto" }}
                           exit={{ opacity: 0, height: 0 }}
                           transition={{ duration: 0.15 }}
-                          className="relative group mt-2"
+                          className="relative group pt-2"
                         >
                           <div className="flex items-center gap-3 px-4 py-3 border border-border rounded-xl bg-background transition-colors focus-within:border-border">
                             <div className="flex-shrink-0 w-2.5 h-2.5 bg-red-500" />
@@ -1660,14 +1660,14 @@ const Book = () => {
                     </AnimatePresence>
 
                     {/* Add Stop button */}
-                    {deliverMultiStop && deliverExtraStops.length < 4 && (
+                    {deliverMultiStop && deliverExtraStops.length < 19 && (
                       <button
                         type="button"
                         onClick={() => setDeliverExtraStops(prev => [...prev, { address: "", placeName: null, coords: null }])}
-                        className="w-full mt-2 rounded-xl border border-dashed border-border/60 bg-background py-2.5 text-xs font-medium text-foreground hover:bg-muted/50 transition-colors flex items-center justify-center gap-1.5"
+                        className="w-full pt-2 mt-1 rounded-xl border border-dashed border-border/60 bg-background py-2.5 text-xs font-medium text-foreground hover:bg-muted/50 transition-colors flex items-center justify-center gap-1.5"
                       >
                         <Plus className="w-3 h-3" />
-                        Add Stop ({deliverExtraStops.length + 1}/5 dropoffs)
+                        Add Stop ({deliverExtraStops.length + 1}/20 dropoffs)
                       </button>
                     )}
 
