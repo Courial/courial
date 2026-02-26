@@ -745,25 +745,25 @@ const Book = () => {
                         transition={{ duration: 0.2 }}
                         className="overflow-hidden space-y-2"
                       >
-                        <div className="flex items-center gap-2">
+                        <div className="flex items-center justify-center gap-2">
                           <button
                             type="button"
                             onClick={() => setConciergeStartAddress(!conciergeStartAddress)}
-                            className={`px-2.5 py-1 rounded-full text-[11px] font-normal transition-all border leading-none ${conciergeStartAddress ? 'bg-foreground text-background border-foreground' : 'bg-background text-foreground/75 border-border/60 hover:border-foreground/50'}`}
+                            className={`px-2.5 py-1 rounded-full text-[11px] font-normal transition-all border leading-none ${conciergeStartAddress ? 'bg-muted text-foreground border-border' : 'bg-background text-foreground/75 border-border/60 hover:border-foreground/50'}`}
                           >
                             + Start address
                           </button>
                           <button
                             type="button"
                             onClick={() => setConciergeStopAddress(!conciergeStopAddress)}
-                            className={`px-2.5 py-1 rounded-full text-[11px] font-normal transition-all border leading-none ${conciergeStopAddress ? 'bg-foreground text-background border-foreground' : 'bg-background text-foreground/75 border-border/60 hover:border-foreground/50'}`}
+                            className={`px-2.5 py-1 rounded-full text-[11px] font-normal transition-all border leading-none ${conciergeStopAddress ? 'bg-muted text-foreground border-border' : 'bg-background text-foreground/75 border-border/60 hover:border-foreground/50'}`}
                           >
                             + Stop address
                           </button>
                           <button
                             type="button"
                             onClick={() => setConciergeFinalAddress(!conciergeFinalAddress)}
-                            className={`px-2.5 py-1 rounded-full text-[11px] font-normal transition-all border leading-none ${conciergeFinalAddress ? 'bg-foreground text-background border-foreground' : 'bg-background text-foreground/75 border-border/60 hover:border-foreground/50'}`}
+                            className={`px-2.5 py-1 rounded-full text-[11px] font-normal transition-all border leading-none ${conciergeFinalAddress ? 'bg-muted text-foreground border-border' : 'bg-background text-foreground/75 border-border/60 hover:border-foreground/50'}`}
                           >
                             + Final address
                           </button>
