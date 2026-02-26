@@ -1139,32 +1139,38 @@ const Book = () => {
                           <p className="text-[11px] font-medium text-foreground">Expense Item</p>
                           <div>
                             <label className="text-[10px] text-muted-foreground/80 mb-0.5 block">Description</label>
-                            <input
-                              type="text"
+                            <textarea
                               value={item.description}
                               onChange={(e) => {
                                 const updated = [...conciergeExpenseItems];
                                 updated[index].description = e.target.value;
                                 setConciergeExpenseItems(updated);
+                                e.target.style.height = 'auto';
+                                e.target.style.height = e.target.scrollHeight + 'px';
                               }}
                               placeholder="Postage for overnight documents"
-                              className="w-full rounded-lg border border-border/60 bg-background px-3 py-1.5 text-xs text-foreground placeholder:text-muted-foreground/60 focus:outline-none focus:ring-1 focus:ring-ring"
+                              rows={1}
+                              className="w-full rounded-lg border border-border/60 bg-background px-3 py-1.5 text-xs text-foreground placeholder:text-muted-foreground/60 focus:outline-none focus:ring-1 focus:ring-ring resize-none overflow-hidden"
                             />
                           </div>
-                          <div>
-                            <label className="text-[10px] text-muted-foreground/80 mb-0.5 block">Estimated Amount</label>
+                          <div className="flex items-end gap-2">
+                            <label className="text-[10px] text-muted-foreground/80 mb-0.5">Estimated Amount</label>
                             <div className="relative">
-                              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-xs text-muted-foreground">$</span>
+                              <span className="absolute left-2 top-1/2 -translate-y-1/2 text-xs text-muted-foreground">$</span>
                               <input
-                                type="number"
+                                type="text"
+                                inputMode="decimal"
                                 value={item.amount}
                                 onChange={(e) => {
-                                  const updated = [...conciergeExpenseItems];
-                                  updated[index].amount = e.target.value;
-                                  setConciergeExpenseItems(updated);
+                                  const val = e.target.value;
+                                  if (val === '' || /^\d*\.?\d{0,2}$/.test(val)) {
+                                    const updated = [...conciergeExpenseItems];
+                                    updated[index].amount = val;
+                                    setConciergeExpenseItems(updated);
+                                  }
                                 }}
                                 placeholder="0.00"
-                                className="w-full rounded-lg border border-border/60 bg-background pl-6 pr-3 py-1.5 text-xs text-foreground placeholder:text-muted-foreground/60 focus:outline-none focus:ring-1 focus:ring-ring"
+                                className="w-20 rounded-lg border border-border/60 bg-background pl-5 pr-2 py-1.5 text-xs text-foreground placeholder:text-muted-foreground/60 focus:outline-none focus:ring-1 focus:ring-ring"
                               />
                             </div>
                           </div>
@@ -1204,9 +1210,15 @@ const Book = () => {
                           <div className="relative inline-flex items-center">
                             <span className="absolute left-2 text-[10px] text-muted-foreground">$</span>
                             <input
-                              type="number"
+                              type="text"
+                              inputMode="decimal"
                               value={conciergeOverageLimit}
-                              onChange={(e) => setConciergeOverageLimit(e.target.value)}
+                              onChange={(e) => {
+                                const val = e.target.value;
+                                if (val === '' || /^\d*\.?\d{0,2}$/.test(val)) {
+                                  setConciergeOverageLimit(val);
+                                }
+                              }}
                               placeholder="25.00"
                               disabled={!conciergeAllowOverage}
                               className="w-8 rounded border border-border/60 bg-background pl-4 pr-1 py-1 text-[10px] text-foreground text-center focus:outline-none focus:ring-1 focus:ring-ring disabled:opacity-40"
