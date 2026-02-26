@@ -873,10 +873,10 @@ const Book = () => {
                       key={type}
                       onClick={() => setConciergeAddressToggles(prev => ({ ...prev, [type]: !prev[type] }))}
                       className={cn(
-                        "px-2.5 py-1 rounded-full text-[11px] font-normal border transition-all leading-none",
+                        "px-2.5 py-1 rounded-full text-[11px] font-normal transition-all leading-none",
                         conciergeAddressToggles[type]
-                          ? "border-primary text-foreground"
-                          : "border-border/60 text-foreground/75 hover:border-foreground/50"
+                          ? "bg-muted text-foreground border-none"
+                          : "border border-border/60 bg-background text-foreground hover:border-foreground/50"
                       )}
                     >
                       + {type.charAt(0).toUpperCase() + type.slice(1)} address
