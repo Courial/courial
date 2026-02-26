@@ -110,6 +110,16 @@ const Book = () => {
 
   const conciergeGroups = [
     {
+      label: "Personal Assistant",
+      desc: "Dedicated PA support",
+      items: [
+        { id: "pa-film-tv", label: "Film and TV", icon: "🎬" },
+        { id: "pa-fashion", label: "Fashion", icon: "👗" },
+        { id: "pa-executive", label: "Executive", icon: "💼" },
+        { id: "pa-other", label: "Other", icon: "📋" },
+      ],
+    },
+    {
       label: "Waiting",
       desc: "We wait so you don't",
       items: [
