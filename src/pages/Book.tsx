@@ -1685,7 +1685,7 @@ const Book = () => {
                         type="checkbox"
                         checked={deliverHasExpenses === true}
                         onChange={(e) => setDeliverHasExpenses(e.target.checked)}
-                        className="h-3 w-3 rounded border border-border/40 accent-foreground cursor-pointer appearance-none checked:appearance-auto bg-background"
+                        className="h-3 w-3 rounded border border-border accent-foreground cursor-pointer appearance-none checked:appearance-auto bg-background"
                       />
                     </div>
                     <p className="text-[10px] text-muted-foreground mt-0.5 leading-relaxed">
