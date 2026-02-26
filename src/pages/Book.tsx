@@ -1665,7 +1665,7 @@ const Book = () => {
 
                     {/* Add Stop button */}
                     {deliverMultiStop && (
-                      <div className="pt-2 mt-1 flex items-center gap-3">
+                      <div className="pt-2 mt-1 flex items-center justify-center gap-3">
                         <Button
                           type="button"
                           variant="hero"
@@ -1680,8 +1680,8 @@ const Book = () => {
                         >
                           Add Stop
                         </Button>
-                        <p className="text-[10px] text-muted-foreground leading-tight">
-                          Double tap <span className="inline-block w-2 h-2 bg-red-500 align-middle mx-0.5" /> to<br />remove stop
+                        <p className="text-[13px] text-muted-foreground leading-tight">
+                          Double tap <span className="inline-block w-2.5 h-2.5 bg-red-500 align-middle mx-0.5" /> to<br />remove stop
                         </p>
                       </div>
                     )}
