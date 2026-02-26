@@ -1822,24 +1822,28 @@ const Book = () => {
         {/* Right Column — Map Placeholder */}
         <div className="hidden md:flex flex-1 relative overflow-hidden">
            {(() => {
-              const isConcierge = selectedService === "concierge";
-              const mapPickup = isConcierge ? (conciergeStartCoords || conciergeStopCoords || conciergeFinalCoords) : pickupCoords;
-              const mapDropoff = isConcierge
-                ? (conciergeStartCoords ? (conciergeFinalCoords || conciergeStopCoords) : (conciergeStopCoords && conciergeFinalCoords ? conciergeFinalCoords : null))
-                : dropoffCoords;
-              const mapPickupAddr = isConcierge ? (conciergeStartAddress || conciergeStopAddress || conciergeFinalAddress) : pickup;
-              const mapDropoffAddr = isConcierge
-                ? (conciergeStartCoords ? (conciergeFinalAddress || conciergeStopAddress) : (conciergeStopCoords && conciergeFinalCoords ? conciergeFinalAddress : ""))
-                : dropoff;
-              const mapPickupName = isConcierge ? (conciergeStartCoords ? conciergeStartPlaceName : (conciergeStopCoords ? conciergeStopPlaceName : conciergeFinalPlaceName)) : pickupPlaceName;
-              const mapDropoffName = isConcierge
-                ? (conciergeStartCoords ? (conciergeFinalCoords ? conciergeFinalPlaceName : conciergeStopPlaceName) : (conciergeStopCoords && conciergeFinalCoords ? conciergeFinalPlaceName : null))
-                : dropoffPlaceName;
-              const mapVehicle = isConcierge ? conciergeVehicle : selectedVehicle;
-              const hasCoords = mapPickup || mapDropoff;
-              return hasCoords ? (
-            <div className="flex-1 relative">
-              <BookingMap pickupCoords={mapPickup} dropoffCoords={mapPickup !== mapDropoff ? mapDropoff : null} pickupAddress={mapPickupAddr} dropoffAddress={mapDropoffAddr} pickupPlaceName={mapPickupName} dropoffPlaceName={mapDropoffName} bookingState={bookingState} vehicleType={mapVehicle} />
+               const isConcierge = selectedService === "concierge";
+               const mapPickup = isConcierge ? (conciergeStartCoords || conciergeStopCoords || conciergeFinalCoords) : pickupCoords;
+               const mapDropoff = isConcierge
+                 ? (conciergeStartCoords ? (conciergeFinalCoords || conciergeStopCoords) : (conciergeStopCoords && conciergeFinalCoords ? conciergeFinalCoords : null))
+                 : dropoffCoords;
+               // Stop marker only when all 3 concierge addresses exist
+               const mapStop = isConcierge && conciergeStartCoords && conciergeStopCoords && conciergeFinalCoords ? conciergeStopCoords : null;
+               const mapStopAddr = mapStop ? conciergeStopAddress : "";
+               const mapStopName = mapStop ? conciergeStopPlaceName : null;
+               const mapPickupAddr = isConcierge ? (conciergeStartAddress || conciergeStopAddress || conciergeFinalAddress) : pickup;
+               const mapDropoffAddr = isConcierge
+                 ? (conciergeStartCoords ? (conciergeFinalAddress || conciergeStopAddress) : (conciergeStopCoords && conciergeFinalCoords ? conciergeFinalAddress : ""))
+                 : dropoff;
+               const mapPickupName = isConcierge ? (conciergeStartCoords ? conciergeStartPlaceName : (conciergeStopCoords ? conciergeStopPlaceName : conciergeFinalPlaceName)) : pickupPlaceName;
+               const mapDropoffName = isConcierge
+                 ? (conciergeStartCoords ? (conciergeFinalCoords ? conciergeFinalPlaceName : conciergeStopPlaceName) : (conciergeStopCoords && conciergeFinalCoords ? conciergeFinalPlaceName : null))
+                 : dropoffPlaceName;
+               const mapVehicle = isConcierge ? conciergeVehicle : selectedVehicle;
+               const hasCoords = mapPickup || mapDropoff;
+               return hasCoords ? (
+             <div className="flex-1 relative">
+               <BookingMap pickupCoords={mapPickup} dropoffCoords={mapPickup !== mapDropoff ? mapDropoff : null} stopCoords={mapStop} pickupAddress={mapPickupAddr} dropoffAddress={mapDropoffAddr} stopAddress={mapStopAddr} pickupPlaceName={mapPickupName} dropoffPlaceName={mapDropoffName} stopPlaceName={mapStopName} bookingState={bookingState} vehicleType={mapVehicle} />
               
               {/* Loading Overlay Popup */}
               <AnimatePresence>

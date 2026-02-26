@@ -250,6 +250,35 @@ const BookingMap: React.FC<BookingMapProps> = ({ pickupCoords, dropoffCoords, st
       }
     }
 
+    // Add stop marker (blue octagon) if stopCoords provided
+    if (stopCoords) {
+      // Octagon path for stop sign shape
+      const octPath = "M -4 -10 L 4 -10 L 10 -4 L 10 4 L 4 10 L -4 10 L -10 4 L -10 -4 Z";
+      const stopMarker = new google.maps.Marker({
+        position: stopCoords,
+        map,
+        icon: {
+          path: octPath,
+          scale: 0.85,
+          fillColor: "#3b82f6",
+          fillOpacity: 1,
+          strokeColor: "#ffffff",
+          strokeWeight: 1,
+        },
+        title: stopAddress || "Stop",
+      });
+      markersRef.current.push(stopMarker);
+      bounds.extend(stopCoords);
+
+      if (stopAddress) {
+        const infoWindow = new google.maps.InfoWindow({
+          content: buildInfoContent(stopAddress, stopPlaceName),
+        });
+        infoWindow.open(map, stopMarker);
+        infoWindowsRef.current.push(infoWindow);
+      }
+    }
+
     // Fit bounds
     if (pickupCoords && dropoffCoords) {
       map.fitBounds(bounds, { top: 80, bottom: 40, left: 40, right: 40 });
@@ -267,10 +296,13 @@ const BookingMap: React.FC<BookingMapProps> = ({ pickupCoords, dropoffCoords, st
       });
       directionsRendererRef.current = directionsRenderer;
 
+      const waypoints = stopCoords ? [{ location: stopCoords, stopover: true }] : [];
+
       directionsService.route(
         {
           origin: pickupCoords,
           destination: dropoffCoords,
+          waypoints,
           travelMode: google.maps.TravelMode.DRIVING,
         },
         (result, status) => {
@@ -284,7 +316,7 @@ const BookingMap: React.FC<BookingMapProps> = ({ pickupCoords, dropoffCoords, st
       map.setCenter(coords);
       map.setZoom(14);
     }
-  }, [pickupCoords, dropoffCoords, pickupAddress, dropoffAddress, pickupPlaceName, dropoffPlaceName]);
+  }, [pickupCoords, dropoffCoords, stopCoords, pickupAddress, dropoffAddress, stopAddress, pickupPlaceName, dropoffPlaceName, stopPlaceName]);
 
   // --- Loading phase: multiple cars converge toward pickup along real roads ---
   useEffect(() => {
