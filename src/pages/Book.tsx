@@ -1629,7 +1629,11 @@ const Book = () => {
                           className="relative group pt-2"
                         >
                           <div className="flex items-center gap-3 px-4 py-3 border border-border rounded-xl bg-background transition-colors focus-within:border-border">
-                            <div className="flex-shrink-0 w-2.5 h-2.5 bg-red-500" />
+                            <div
+                              className="flex-shrink-0 w-2.5 h-2.5 bg-red-500 cursor-pointer"
+                              onDoubleClick={() => setDeliverExtraStops(prev => prev.filter((_, idx) => idx !== i))}
+                              title="Double-tap to remove"
+                            />
                             <div className="flex-1 min-w-0">
                               {stop.placeName && stop.coords && (
                                 <div className="text-sm font-semibold text-foreground leading-tight">{stop.placeName}</div>
@@ -1649,7 +1653,7 @@ const Book = () => {
                               />
                             </div>
                             <button
-                              onClick={() => setDeliverExtraStops(prev => prev.filter((_, idx) => idx !== i))}
+                              onClick={() => { setDeliverExtraStops(prev => { const u = [...prev]; u[i] = { address: "", placeName: null, coords: null }; return u; }); }}
                               className="flex-shrink-0 ml-auto hover:opacity-70 transition-opacity"
                             >
                               <X className="w-2.5 h-2.5 text-muted-foreground/50" />
