@@ -960,7 +960,7 @@ const Book = () => {
                                    >
                                      <ChevronLeft className="w-4 h-4 text-foreground" />
                                    </button>
-                                   <span className="px-2.5 py-1 rounded-full text-[11px] font-normal bg-muted text-foreground border-none leading-none">
+                                   <span className="px-2.5 py-1 rounded-full text-[11px] font-normal border border-primary text-foreground leading-none">
                                      {conciergeSubCategory}
                                    </span>
                                 </div>
