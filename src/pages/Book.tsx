@@ -562,7 +562,7 @@ const Book = () => {
                         : "text-muted-foreground hover:text-foreground"
                     )}
                   >
-                    <Clock className="w-2.5 h-2.5" />
+                    <Clock className="w-3 h-3" />
                     Later
                   </button>
                 </div>
