@@ -2189,16 +2189,17 @@ const Book = () => {
                     <button onClick={() => setShowAddCard(false)} className="p-1 -ml-1 rounded-lg hover:bg-muted transition-colors">
                       <ArrowLeft className="w-5 h-5 text-foreground" />
                     </button>
-                    <span className="text-[1.65rem] font-bold text-foreground">Add Card</span>
+                    <CreditCard className="w-7 h-7 text-foreground" />
+                    <span className="text-[1.65rem] font-bold text-foreground">Payment</span>
                   </div>
                 </div>
 
-                <div className="px-7 pt-5 pb-2">
-                  <DialogTitle className="sr-only">Add Card</DialogTitle>
+                <div className="px-7 pb-2">
+                  <DialogTitle className="text-2xl font-bold text-foreground mb-4">Add Card</DialogTitle>
 
                   {/* Card Number */}
                   <div className="mb-4">
-                    <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-1.5 block">Card number</label>
+                    <label className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-2 block">Card number</label>
                     <Input
                       placeholder="0000 0000 0000 0000"
                       value={newCard.number}
@@ -2215,7 +2216,7 @@ const Book = () => {
                   {/* Expiry + CVV */}
                   <div className="grid grid-cols-2 gap-3 mb-4">
                     <div>
-                      <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-1.5 block">Expiry date</label>
+                      <label className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-2 block">Expiry date</label>
                       <Input
                         placeholder="MM / YY"
                         value={newCard.expiry}
@@ -2229,7 +2230,7 @@ const Book = () => {
                       />
                     </div>
                     <div>
-                      <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-1.5 block">CVV</label>
+                      <label className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-2 block">CVV</label>
                       <div className="relative">
                         <Input
                           type={showCvv ? "text" : "password"}
@@ -2283,13 +2284,12 @@ const Book = () => {
                 <div className="px-7 pb-7">
                   <Button
                     onClick={() => {
-                      // Reset form and go back
                       setNewCard({ number: "", expiry: "", cvv: "", isDefault: false });
                       setShowCvv(false);
                       setShowAddCard(false);
                     }}
                     disabled={newCard.number.replace(/\s/g, "").length < 15 || newCard.expiry.length < 7 || newCard.cvv.length < 3}
-                    className="w-full rounded-xl h-11 text-sm font-semibold"
+                    className="w-full rounded-xl h-9 px-8 text-sm font-semibold"
                     variant="hero"
                   >
                     Continue
