@@ -48,7 +48,7 @@ const vehicleCaptions: Record<VehicleId, string> = {
   truck: "Best for moves, palletized freight, commercial loads",
 };
 const vehicleOptions: { id: VehicleId; label: string; image: string; imgClass?: string }[] = [
-  { id: "walker", label: "Walker", image: vehicleWalker, imgClass: "max-h-[38px]" },
+  { id: "walker", label: "Walker", image: vehicleWalker, imgClass: "max-h-[30px]" },
   { id: "scooter", label: "Scooter", image: vehicleScooter, imgClass: "max-h-[24px]" },
   { id: "car", label: "Car", image: vehicleCar, imgClass: "max-h-[24px]" },
   { id: "van", label: "Van", image: vehicleVan, imgClass: "max-h-[24px]" },
