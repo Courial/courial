@@ -1036,13 +1036,13 @@ const Book = () => {
                   </div>
                   {/* Redraft with AI button — centered on bottom border */}
                   {conciergeDescription.trim().length > 10 && (
-                    <div className="flex justify-center -mt-3.5 relative z-10">
+                    <div className="flex justify-end -mt-3 relative z-10 pr-2">
                       <button
                         onClick={handleRedraft}
                         disabled={isRedrafting}
-                        className="flex items-center gap-1.5 px-4 py-1.5 rounded-full text-sm font-semibold bg-primary text-primary-foreground hover:bg-primary/90 transition-colors disabled:opacity-50"
+                        className="flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-[hsl(210,100%,50%)] text-white hover:bg-[hsl(210,100%,45%)] transition-colors disabled:opacity-50"
                       >
-                        <Sparkles className="w-3.5 h-3.5" />
+                        <Sparkles className="w-2.5 h-2.5" />
                         {isRedrafting ? "Redrafting…" : "Redraft with AI"}
                       </button>
                     </div>
