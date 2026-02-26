@@ -347,4 +347,17 @@
 /* Ensure Google Places autocomplete dropdown appears above all UI */
 .pac-container {
   z-index: 10000 !important;
+  border-radius: 12px !important;
+  border: 1px solid hsl(var(--border)) !important;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08) !important;
+  margin-top: 4px !important;
+}
+
+.pac-container::after {
+  display: none !important;
+}
+
+.pac-container .pac-item {
+  border-top: none !important;
+  padding: 8px 12px !important;
 }
