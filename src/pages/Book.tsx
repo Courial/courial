@@ -535,7 +535,7 @@ const Book = () => {
                             </div>
                           </>
                         );
-                        const cardClass = `group relative rounded-2xl glass-card overflow-hidden h-[150px] p-6 flex flex-col justify-center transition-all duration-300 ${isSelected ? "border-primary border-2" : "hover:border-primary/50"}`;
+                        const cardClass = `group relative rounded-2xl glass-card overflow-hidden h-[150px] p-6 flex flex-col justify-center transition-all duration-300 border border-foreground/10 ${isSelected ? "!border-primary !border-2" : "hover:border-primary/50"}`;
 
                         const handleClick = (e: React.MouseEvent) => {
                           if (!item.external) {
