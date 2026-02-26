@@ -243,6 +243,27 @@ const Book = () => {
     }
   }, [conciergeExpenseItems, conciergeCategory, conciergeSubCategory, isExpenseRedrafting]);
 
+  // Redraft with AI handler for Deliver/Valet notes
+  const handleDeliverRedraft = useCallback(async () => {
+    if (notes.trim().length < 10 || isDeliverRedrafting) return;
+    setIsDeliverRedrafting(true);
+    setDeliverRedraftSuggestion(null);
+    try {
+      const { data, error } = await supabase.functions.invoke("redraft-concierge", {
+        body: { description: notes, category: `${selectedService === "valet" ? "Valet" : "Delivery"} Notes` },
+      });
+      if (error || !data?.redrafted) {
+        toast.error("Couldn't redraft — please try again.");
+      } else {
+        setDeliverRedraftSuggestion(data.redrafted);
+      }
+    } catch {
+      toast.error("Redraft failed.");
+    } finally {
+      setIsDeliverRedrafting(false);
+    }
+  }, [notes, selectedService, isDeliverRedrafting]);
+
   const handleBookingSubmit = useCallback(async () => {
     if (!isFormValid) return;
     if (!user) {
