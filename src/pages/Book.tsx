@@ -5,7 +5,7 @@ import { Navbar } from "@/components/Navbar";
 import { Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { Helmet } from "react-helmet-async";
-import { MapPin, Search, CarFront, ParkingCircle, Leaf, Box, ConciergeBell, Clock, CalendarIcon, ChevronDown, ChevronLeft, Info, Plus, Trash2, CreditCard, Star, X, Weight, Sparkles } from "lucide-react";
+import { MapPin, Search, CarFront, ParkingCircle, Leaf, Box, ConciergeBell, Clock, CalendarIcon, ChevronDown, ChevronLeft, Info, Plus, Trash2, CreditCard, Star, X, Weight, Sparkles, Zap } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import visaIcon from "@/assets/card-icons/visa.svg";
 import mastercardIcon from "@/assets/card-icons/mastercard.svg";
@@ -540,28 +540,29 @@ const Book = () => {
                 </div>
 
                 {/* Now / Later pill toggle */}
-                <div className="flex bg-muted rounded-full p-1 gap-0.5">
+                <div className="flex bg-muted rounded-full p-0.5 gap-0.5">
                   <button
                     onClick={() => setTimeMode("now")}
                     className={cn(
-                      "px-4 py-1.5 rounded-full text-xs font-semibold transition-all duration-200",
+                      "px-3 py-1 rounded-full text-[10px] font-semibold transition-all duration-200 flex items-center gap-1",
                       timeMode === "now"
                         ? "bg-foreground text-background shadow-sm"
                         : "text-muted-foreground hover:text-foreground"
                     )}
                   >
+                    <Zap className="w-2.5 h-2.5" />
                     Now
                   </button>
                   <button
                     onClick={() => setTimeMode("later")}
                     className={cn(
-                      "px-4 py-1.5 rounded-full text-xs font-semibold transition-all duration-200 flex items-center gap-1.5",
+                      "px-3 py-1 rounded-full text-[10px] font-semibold transition-all duration-200 flex items-center gap-1",
                       timeMode === "later"
                         ? "bg-foreground text-background shadow-sm"
                         : "text-muted-foreground hover:text-foreground"
                     )}
                   >
-                    <Clock className="w-3 h-3" />
+                    <Clock className="w-2.5 h-2.5" />
                     Later
                   </button>
                 </div>
