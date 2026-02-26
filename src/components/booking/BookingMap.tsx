@@ -40,8 +40,8 @@ function buildInfoContent(address: string, placeName?: string | null): string {
   let line1 = parts[0] || '';
   let line2 = parts.slice(1).join(', ');
   return line2
-    ? `<div style="${style}">${line1}<br/>${line2}</div>`
-    : `<div style="${style}">${line1}</div>`;
+    ? `<div style="${style}"><strong>${line1}</strong><br/>${line2}</div>`
+    : `<div style="${style}"><strong>${line1}</strong></div>`;
 }
 
 // Vehicle top-down icon URLs mapped by type
