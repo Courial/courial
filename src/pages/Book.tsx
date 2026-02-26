@@ -118,9 +118,9 @@ const Book = () => {
   const [conciergeLanguage, setConciergeLanguage] = useState<string | null>(null);
   const [conciergeServiceMode, setConciergeServiceMode] = useState<"hourly" | "daily" | null>(null);
   const [conciergeHasExpenses, setConciergeHasExpenses] = useState<boolean | null>(null);
-  const [conciergeExpenseItems, setConciergeExpenseItems] = useState<Array<{ description: string; amount: string }>>([{ description: "", amount: "" }]);
+  const [conciergeExpenseItems, setConciergeExpenseItems] = useState<Array<{ description: string; amount: string }>>([{ description: "", amount: "0" }]);
   const [conciergeAllowOverage, setConciergeAllowOverage] = useState(false);
-  const [conciergeOverageLimit, setConciergeOverageLimit] = useState("");
+  const [conciergeOverageLimit, setConciergeOverageLimit] = useState("0");
   const [redraftSuggestion, setRedraftSuggestion] = useState<string | null>(null);
   const [isRedrafting, setIsRedrafting] = useState(false);
 
@@ -1154,7 +1154,7 @@ const Book = () => {
                                 e.target.style.height = e.target.scrollHeight + 'px';
                               }}
                               placeholder="Describe any expected purchases such as event tickets, specialty retail items, postage, shipping, or required supplies here."
-                              rows={3}
+                              rows={1}
                               className="w-full rounded-lg border border-border/60 bg-background px-3 py-1.5 text-xs text-foreground placeholder:text-muted-foreground/60 focus:outline-none focus:ring-1 focus:ring-ring resize-none overflow-hidden"
                             />
                           </div>
@@ -1196,7 +1196,7 @@ const Book = () => {
                       {/* Add Another Expense */}
                       <button
                         type="button"
-                        onClick={() => setConciergeExpenseItems([...conciergeExpenseItems, { description: "", amount: "" }])}
+                        onClick={() => setConciergeExpenseItems([...conciergeExpenseItems, { description: "", amount: "0" }])}
                         className="w-full rounded-lg border border-dashed border-border/60 bg-background py-2 text-[11px] font-medium text-foreground hover:bg-muted/50 transition-colors"
                       >
                         + Add Another Expense
