@@ -1021,7 +1021,18 @@ const Book = () => {
                   {(["start", "stop", "final"] as const).map((type) => (
                     <button
                       key={type}
-                      onClick={() => setConciergeAddressToggles(prev => ({ ...prev, [type]: !prev[type] }))}
+                      onClick={() => {
+                        setConciergeAddressToggles(prev => {
+                          const newVal = !prev[type];
+                          if (!newVal) {
+                            // Clear address data when toggle is turned off
+                            if (type === "start") { setConciergeStartAddress(""); setConciergeStartPlaceName(null); setConciergeStartCoords(null); }
+                            if (type === "stop") { setConciergeStopAddress(""); setConciergeStopPlaceName(null); setConciergeStopCoords(null); }
+                            if (type === "final") { setConciergeFinalAddress(""); setConciergeFinalPlaceName(null); setConciergeFinalCoords(null); }
+                          }
+                          return { ...prev, [type]: newVal };
+                        });
+                      }}
                       className={cn(
                         "px-2.5 py-1 rounded-full text-[11px] font-normal transition-all leading-none",
                         conciergeAddressToggles[type]
