@@ -106,6 +106,7 @@ const Book = () => {
   const [hasStairs, setHasStairs] = useState<boolean | null>(null);
 
   // Concierge-specific state
+  const [conciergeVehicle, setConciergeVehicle] = useState<VehicleId | null>(null);
   const [conciergeCategory, setConciergeCategory] = useState<string | null>(null);
   const [conciergeSubCategory, setConciergeSubCategory] = useState<string | null>(null);
   const [conciergeAddressToggles, setConciergeAddressToggles] = useState({ start: false, stop: false, final: false });
@@ -727,6 +728,46 @@ const Book = () => {
                         className="text-xs text-muted-foreground text-center mt-2"
                       >
                         {vehicleCaptions[selectedVehicle]}
+                      </motion.p>
+                    )}
+                  </AnimatePresence>
+                </div>
+              )}
+
+              {/* Concierge Category Drill-Down */}
+              {/* Vehicle type icons for Concierge */}
+              {selectedService === "concierge" && (
+                <div className="mb-6">
+                  <div className="flex items-end justify-center gap-4">
+                    {vehicleOptions.map((v) => {
+                      const isActive = conciergeVehicle === v.id;
+                      return (
+                        <button
+                          key={v.id}
+                          onClick={() => setConciergeVehicle(isActive ? null : v.id)}
+                          className="bg-transparent border-none outline-none cursor-pointer flex items-center"
+                        >
+                          <div className={cn(
+                            "h-[36px] flex items-end justify-center transition-all duration-300",
+                            isActive ? "grayscale-0 opacity-100 scale-110" : "grayscale opacity-30 scale-100"
+                          )}>
+                            <img src={v.image} alt={v.label} className={cn("object-contain", v.imgClass)} />
+                          </div>
+                        </button>
+                      );
+                    })}
+                  </div>
+                  <AnimatePresence mode="wait">
+                    {conciergeVehicle && (
+                      <motion.p
+                        key={conciergeVehicle}
+                        initial={{ opacity: 0, y: -4 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -4 }}
+                        transition={{ duration: 0.15 }}
+                        className="text-xs text-muted-foreground text-center mt-2"
+                      >
+                        {vehicleCaptions[conciergeVehicle]}
                       </motion.p>
                     )}
                   </AnimatePresence>
