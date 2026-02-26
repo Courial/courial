@@ -1660,15 +1660,28 @@ const Book = () => {
                     </AnimatePresence>
 
                     {/* Add Stop button */}
-                    {deliverMultiStop && deliverExtraStops.length < 19 && (
-                      <button
-                        type="button"
-                        onClick={() => setDeliverExtraStops(prev => [...prev, { address: "", placeName: null, coords: null }])}
-                        className="w-full pt-2 mt-1 rounded-xl border border-dashed border-border/60 bg-background py-2.5 text-xs font-medium text-foreground hover:bg-muted/50 transition-colors flex items-center justify-center gap-1.5"
-                      >
-                        <Plus className="w-3 h-3" />
-                        Add Stop ({deliverExtraStops.length + 1}/20 dropoffs)
-                      </button>
+                    {deliverMultiStop && (
+                      <div className="flex items-center gap-2 pt-2 mt-1">
+                        {deliverExtraStops.length < 19 && (
+                          <button
+                            type="button"
+                            onClick={() => setDeliverExtraStops(prev => [...prev, { address: "", placeName: null, coords: null }])}
+                            className="flex-1 rounded-xl border border-dashed border-border/60 bg-background py-2.5 text-xs font-medium text-foreground hover:bg-muted/50 transition-colors flex items-center justify-center gap-1.5"
+                          >
+                            <Plus className="w-3 h-3" />
+                            Add Stop ({deliverExtraStops.length + 1}/20 dropoffs)
+                          </button>
+                        )}
+                        {deliverExtraStops.length > 0 && (
+                          <button
+                            type="button"
+                            onClick={() => setDeliverExtraStops(prev => prev.slice(0, -1))}
+                            className="w-9 h-9 rounded-xl border border-dashed border-destructive/40 bg-background text-destructive hover:bg-destructive/10 transition-colors flex items-center justify-center flex-shrink-0"
+                          >
+                            <span className="text-base font-bold leading-none">−</span>
+                          </button>
+                        )}
+                      </div>
                     )}
 
                     {/* ETA info — visible when both addresses set */}
