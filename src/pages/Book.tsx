@@ -114,6 +114,7 @@ const Book = () => {
   const [conciergeStopAddress, setConciergeStopAddress] = useState("");
   const [conciergeFinalAddress, setConciergeFinalAddress] = useState("");
   const [conciergeDescription, setConciergeDescription] = useState("");
+  const [conciergeLanguage, setConciergeLanguage] = useState<string | null>(null);
   const [redraftSuggestion, setRedraftSuggestion] = useState<string | null>(null);
   const [isRedrafting, setIsRedrafting] = useState(false);
 
@@ -233,6 +234,7 @@ const Book = () => {
         payload.conciergeCategory = cat?.label || conciergeCategory;
         payload.conciergeSubCategory = conciergeSubCategory === "__direct__" ? cat?.label : conciergeSubCategory;
         if (conciergeStopAddress) payload.stopAddress = conciergeStopAddress;
+        if (conciergeLanguage) payload.preferredLanguage = conciergeLanguage;
       }
 
       if (timeMode === "later" && selectedDate) {
@@ -896,6 +898,29 @@ const Book = () => {
                 </div>
               )}
             </motion.div>
+            )}
+
+            {/* Preferred Language for Concierge */}
+            {selectedService === "concierge" && conciergeSubCategory && (
+              <div className="mb-4">
+                <p className="text-[11px] text-muted-foreground mb-2 text-center">Preferred Language</p>
+                <div className="flex flex-wrap justify-center gap-2">
+                  {["English", "Spanish", "Arabic", "Chinese", "Hindi", "Japanese", "Korean", "Thai"].map((lang) => (
+                    <button
+                      key={lang}
+                      onClick={() => setConciergeLanguage(conciergeLanguage === lang ? null : lang)}
+                      className={cn(
+                        "px-2.5 py-1 rounded-full text-[11px] font-normal transition-all leading-none",
+                        conciergeLanguage === lang
+                          ? "bg-muted text-foreground border-none"
+                          : "border border-border/60 bg-background text-foreground/75 hover:border-foreground/50"
+                      )}
+                    >
+                      {lang}
+                    </button>
+                  ))}
+                </div>
+              </div>
             )}
 
             {/* Concierge Task Details Form */}
