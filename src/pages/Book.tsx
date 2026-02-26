@@ -1678,14 +1678,14 @@ const Book = () => {
                   </AnimatePresence>
 
                   {/* Additional Expenses for Deliver/Valet */}
-                  <div className="mb-3">
+                  <div className="mb-3 mt-4">
                     <div className="flex items-center gap-2">
                       <h4 className="text-xs font-medium text-foreground">Additional Expenses</h4>
                       <input
                         type="checkbox"
                         checked={deliverHasExpenses === true}
                         onChange={(e) => setDeliverHasExpenses(e.target.checked)}
-                        className="h-3 w-3 rounded border-border/60 accent-foreground cursor-pointer"
+                        className="h-3 w-3 rounded border border-border/40 accent-foreground cursor-pointer appearance-none checked:appearance-auto bg-background"
                       />
                     </div>
                     <p className="text-[10px] text-muted-foreground mt-0.5 leading-relaxed">
