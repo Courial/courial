@@ -988,7 +988,7 @@ const Book = () => {
                       <ChevronLeft className="w-4 h-4 text-foreground" />
                     </button>
                     <span className="text-xs font-medium text-muted-foreground">Preferred Language</span>
-                    <span className="px-2.5 py-1 rounded-full text-[11px] font-normal leading-none bg-muted text-foreground">
+                    <span className="px-2.5 py-1 rounded-full text-[11px] font-normal leading-none border border-primary text-foreground">
                       {conciergeLanguage}
                     </span>
                   </div>
