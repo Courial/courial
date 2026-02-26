@@ -912,14 +912,14 @@ const Book = () => {
                     >
                       <ChevronLeft className="w-4 h-4 text-foreground" />
                     </button>
-                    <span className="text-[11px] text-muted-foreground">Preferred Language</span>
+                    <span className="text-xs font-medium text-muted-foreground">Preferred Language</span>
                     <span className="px-2.5 py-1 rounded-full text-[11px] font-normal leading-none bg-muted text-foreground">
                       {conciergeLanguage}
                     </span>
                   </div>
                 ) : (
                   <>
-                    <p className="text-[11px] text-muted-foreground mb-2">Select Preferred Language</p>
+                    <p className="text-xs font-medium text-muted-foreground mb-2">Select Preferred Language</p>
                     <div className="flex flex-wrap gap-2">
                       {["English", "Spanish", "French", "Portuguese", "Arabic", "Chinese", "Hindi", "Japanese", "Korean", "Thai"].map((lang) => (
                         <button
@@ -1081,7 +1081,7 @@ const Book = () => {
 
                 {/* Service Mode Toggle */}
                 <div className="flex items-center gap-2 mb-3 pt-2">
-                  <span className="text-[11px] text-muted-foreground">Service Type</span>
+                  <span className="text-xs font-medium text-muted-foreground">Service Type</span>
                   {[
                     { value: "hourly" as const, label: "Hourly" },
                     { value: "daily" as const, label: "Daily (8 Hrs)" },
