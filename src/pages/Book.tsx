@@ -31,6 +31,7 @@ import AddressAutocomplete from "@/components/booking/AddressAutocomplete";
 import BookingMap from "@/components/booking/BookingMap";
 import chauffeurImage from "@/assets/chauffeur-service.jpg";
 import deliverBox from "@/assets/deliver-box.png";
+import conciergeIcon from "@/assets/concierge-icon.png";
 import vehicleWalker from "@/assets/vehicle-walker.png";
 import vehicleScooter from "@/assets/vehicle-scooter.png";
 import vehicleCar from "@/assets/vehicle-car.png";
@@ -1620,83 +1621,148 @@ const Book = () => {
       {/* Price Breakdown Dialog */}
       <Dialog open={showPriceBreakdown} onOpenChange={setShowPriceBreakdown}>
         <DialogContent className="sm:max-w-md bg-background border-border !rounded-[25px] p-0 overflow-y-auto max-h-[90vh] [&>button]:hidden">
-          <div className="bg-muted/80 rounded-t-[25px] px-7 pt-7 pb-5">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <img src={deliverBox} alt="Deliver" className="w-8 h-8" />
-                <span className="text-[1.65rem] font-bold text-foreground">Deliver</span>
-                {selectedVehicle && (
-                  <img src={vehicleOptions.find(v => v.id === selectedVehicle)!.image} alt={selectedVehicle} className="h-6 object-contain" />
-                )}
-              </div>
-            </div>
-          </div>
-          <div className="px-7">
-          <div className="mb-4">
-            <DialogTitle className="text-2xl font-bold text-foreground">Fare Summary</DialogTitle>
-          </div>
-
-          <div className="space-y-4 mb-3">
-            <p className="text-sm text-muted-foreground leading-relaxed">
-              Your delivery rate is calculated in advance using distance, estimated time, and the selected vehicle type. The price shown before checkout reflects the projected cost of completing your delivery efficiently and on time.
-            </p>
-            
-            <p className="text-sm text-muted-foreground leading-relaxed">
-              By confirming your request, you authorize Courial to charge the estimated amount, along with any applicable wait time or route-related adjustments.
-            </p>
-
-            <p className="text-sm text-muted-foreground leading-relaxed">
-              Final pricing may vary if the completed route includes tolls or surcharges not reflected in the initial estimate, if the delivery distance or duration differs from the original request, if pickup or drop-off conditions require additional time, or if real-time demand necessitates dynamic pricing adjustments.
-            </p>
-
-            <p className="text-sm text-muted-foreground leading-relaxed">
-              Our pricing model is designed to ensure reliability, availability, and fair compensation across the network.
-            </p>
-          </div>
-
-          <div>
-            <h3 className="text-lg font-bold text-foreground mb-4">Rate Structure</h3>
-            <div className="space-y-3">
-              {[
-                { label: "Base Fee", value: "$0.09", muted: false },
-                { label: "Minimum Charge", value: "$5.40", muted: false },
-                { label: "Per Minute", value: "$0.25", muted: true },
-                { label: "Per Mile", value: "$0.93", muted: true },
-              ].map((row) => (
-                <div key={row.label} className="flex items-center justify-between gap-2">
-                  <span className={`text-sm ${row.muted ? 'text-foreground/50' : 'font-semibold text-foreground'}`}>{row.label}</span>
-                  <div className="flex-1 border-b border-dotted border-muted-foreground/30 mx-2" />
-                  <span className={`text-sm ${row.muted ? 'text-foreground/50' : 'font-semibold text-foreground'}`}>{row.value}</span>
+          {selectedService === "concierge" ? (
+            <>
+              <div className="bg-muted/80 rounded-t-[25px] px-7 pt-7 pb-5">
+                <div className="flex items-center gap-3">
+                  <img src={conciergeIcon} alt="Concierge" className="w-8 h-8" />
+                  <span className="text-[1.65rem] font-bold text-foreground">Concierge</span>
                 </div>
-              ))}
-            </div>
-          </div>
-          </div>
-          <div className="bg-muted/80 px-7 py-2">
-            <div className="flex items-center justify-between">
-              <span className="text-base text-foreground">Fare Estimate</span>
-              <span className="text-base font-bold text-foreground">$21.59</span>
-            </div>
-          </div>
-          <div className="px-7 pb-7">
-
-          <div className="mb-6">
-            <h3 className="text-xs font-bold text-foreground mb-1">Wait Time Policy</h3>
-            <p className="text-[0.625rem] text-muted-foreground leading-relaxed">
-              Courials are scheduled to begin service promptly upon arrival.
-              After a 2-minute grace period, wait time is billed at:
-            </p>
-            <p className="text-[0.625rem] font-bold text-foreground mt-1">$0.50 per additional minute</p>
-          </div>
-
-          <Button
-            onClick={() => setShowPriceBreakdown(false)}
-            className="w-auto mx-auto rounded-xl h-9 px-8 text-sm font-semibold"
-            variant="hero"
-          >
-            Close
-          </Button>
-          </div>
+              </div>
+              <div className="px-7">
+                <div className="mb-4">
+                  <DialogTitle className="text-2xl font-bold text-foreground">Fare Summary</DialogTitle>
+                </div>
+                <div className="space-y-4 mb-3">
+                  <p className="text-sm text-muted-foreground leading-relaxed">
+                    Your Concierge rate is calculated in advance based on the selected service option (Hourly or 8-Hour Daily), estimated service time, and any required travel. The price shown before checkout reflects the projected cost of completing your request efficiently and professionally.
+                  </p>
+                  <p className="text-sm text-muted-foreground leading-relaxed">
+                    By confirming your request, you authorize Courial to charge the estimated amount, along with any applicable overtime, mileage, expense processing fees, or scope-related adjustments.
+                  </p>
+                  <p className="text-sm text-muted-foreground leading-relaxed">
+                    Final pricing may vary if service time exceeds the original booking, if travel is added or modified, if third-party expenses differ from the estimate, or if real-time demand requires dynamic pricing adjustments.
+                  </p>
+                  <p className="text-sm text-muted-foreground leading-relaxed">
+                    Our pricing model is designed to ensure discretion, responsiveness, and dependable execution across every Concierge engagement.
+                  </p>
+                </div>
+                <div>
+                  <h3 className="text-lg font-bold text-foreground mb-4">Rate Structure</h3>
+                  <div className="space-y-3">
+                    {[
+                      { label: "Hourly Service (1-Hour Minimum)", value: "$65 / hr", muted: false },
+                      { label: "Daily Service (8 Hours)", value: "$480 flat", muted: false },
+                      { label: "Overtime – Hourly Bookings", value: "1.25× rate, per 15 min", muted: true },
+                      { label: "Overtime – Daily (After 8 Hrs)", value: "1.5× rate, per 30 min", muted: true },
+                      { label: "Per Mile (Travel Added)", value: "$1.10 / mi", muted: true },
+                      { label: "Expense Processing Fee", value: "10% ($10 min)", muted: true },
+                    ].map((row) => (
+                      <div key={row.label} className="flex items-center justify-between gap-2">
+                        <span className={`text-sm ${row.muted ? 'text-foreground/50' : 'font-semibold text-foreground'}`}>{row.label}</span>
+                        <div className="flex-1 border-b border-dotted border-muted-foreground/30 mx-2" />
+                        <span className={`text-sm whitespace-nowrap ${row.muted ? 'text-foreground/50' : 'font-semibold text-foreground'}`}>{row.value}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+              <div className="bg-muted/80 px-7 py-2">
+                <div className="flex items-center justify-between">
+                  <span className="text-base text-foreground">Estimated Total</span>
+                  <span className="text-base font-bold text-foreground">Varies</span>
+                </div>
+              </div>
+              <div className="px-7 pb-7">
+                <div className="mb-6">
+                  <h3 className="text-xs font-bold text-foreground mb-1">Wait Time Policy</h3>
+                  <p className="text-[0.625rem] text-muted-foreground leading-relaxed">
+                    Concierges begin active service at the scheduled start time or upon arrival. A 5-minute grace period is provided. Additional time beyond the reserved service window is billed according to the applicable overtime rate.
+                  </p>
+                </div>
+                <Button
+                  onClick={() => setShowPriceBreakdown(false)}
+                  className="w-auto mx-auto rounded-xl h-9 px-8 text-sm font-semibold"
+                  variant="hero"
+                >
+                  Close
+                </Button>
+              </div>
+            </>
+          ) : (
+            <>
+              <div className="bg-muted/80 rounded-t-[25px] px-7 pt-7 pb-5">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <img src={deliverBox} alt="Deliver" className="w-8 h-8" />
+                    <span className="text-[1.65rem] font-bold text-foreground">Deliver</span>
+                    {selectedVehicle && (
+                      <img src={vehicleOptions.find(v => v.id === selectedVehicle)!.image} alt={selectedVehicle} className="h-6 object-contain" />
+                    )}
+                  </div>
+                </div>
+              </div>
+              <div className="px-7">
+                <div className="mb-4">
+                  <DialogTitle className="text-2xl font-bold text-foreground">Fare Summary</DialogTitle>
+                </div>
+                <div className="space-y-4 mb-3">
+                  <p className="text-sm text-muted-foreground leading-relaxed">
+                    Your delivery rate is calculated in advance using distance, estimated time, and the selected vehicle type. The price shown before checkout reflects the projected cost of completing your delivery efficiently and on time.
+                  </p>
+                  <p className="text-sm text-muted-foreground leading-relaxed">
+                    By confirming your request, you authorize Courial to charge the estimated amount, along with any applicable wait time or route-related adjustments.
+                  </p>
+                  <p className="text-sm text-muted-foreground leading-relaxed">
+                    Final pricing may vary if the completed route includes tolls or surcharges not reflected in the initial estimate, if the delivery distance or duration differs from the original request, if pickup or drop-off conditions require additional time, or if real-time demand necessitates dynamic pricing adjustments.
+                  </p>
+                  <p className="text-sm text-muted-foreground leading-relaxed">
+                    Our pricing model is designed to ensure reliability, availability, and fair compensation across the network.
+                  </p>
+                </div>
+                <div>
+                  <h3 className="text-lg font-bold text-foreground mb-4">Rate Structure</h3>
+                  <div className="space-y-3">
+                    {[
+                      { label: "Base Fee", value: "$0.09", muted: false },
+                      { label: "Minimum Charge", value: "$5.40", muted: false },
+                      { label: "Per Minute", value: "$0.25", muted: true },
+                      { label: "Per Mile", value: "$0.93", muted: true },
+                    ].map((row) => (
+                      <div key={row.label} className="flex items-center justify-between gap-2">
+                        <span className={`text-sm ${row.muted ? 'text-foreground/50' : 'font-semibold text-foreground'}`}>{row.label}</span>
+                        <div className="flex-1 border-b border-dotted border-muted-foreground/30 mx-2" />
+                        <span className={`text-sm ${row.muted ? 'text-foreground/50' : 'font-semibold text-foreground'}`}>{row.value}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+              <div className="bg-muted/80 px-7 py-2">
+                <div className="flex items-center justify-between">
+                  <span className="text-base text-foreground">Fare Estimate</span>
+                  <span className="text-base font-bold text-foreground">$21.59</span>
+                </div>
+              </div>
+              <div className="px-7 pb-7">
+                <div className="mb-6">
+                  <h3 className="text-xs font-bold text-foreground mb-1">Wait Time Policy</h3>
+                  <p className="text-[0.625rem] text-muted-foreground leading-relaxed">
+                    Courials are scheduled to begin service promptly upon arrival.
+                    After a 2-minute grace period, wait time is billed at:
+                  </p>
+                  <p className="text-[0.625rem] font-bold text-foreground mt-1">$0.50 per additional minute</p>
+                </div>
+                <Button
+                  onClick={() => setShowPriceBreakdown(false)}
+                  className="w-auto mx-auto rounded-xl h-9 px-8 text-sm font-semibold"
+                  variant="hero"
+                >
+                  Close
+                </Button>
+              </div>
+            </>
+          )}
         </DialogContent>
       </Dialog>
 
