@@ -1165,10 +1165,10 @@ const Book = () => {
                               <input
                                 type="text"
                                 inputMode="decimal"
-                              value={item.amount ? Number(item.amount.replace(/,/g, '')).toLocaleString('en-US', { minimumFractionDigits: item.amount.includes('.') ? Math.min((item.amount.split('.')[1] || '').length, 2) : 0, maximumFractionDigits: 2 }) : ''}
+                              value={item.amount ? Number(item.amount.replace(/,/g, '')).toLocaleString('en-US') : ''}
                                 onChange={(e) => {
                                   const raw = e.target.value.replace(/,/g, '');
-                                  if (raw === '' || /^\d*\.?\d{0,2}$/.test(raw)) {
+                                  if (raw === '' || /^\d+$/.test(raw)) {
                                     if (raw === '' || Number(raw) <= 500) {
                                       const updated = [...conciergeExpenseItems];
                                       updated[index].amount = raw;
@@ -1176,7 +1176,7 @@ const Book = () => {
                                     }
                                   }
                                 }}
-                                placeholder="0.00"
+                                placeholder="0"
                                 className="w-20 rounded-lg border border-border/60 bg-background pl-5 pr-2 py-0.5 text-xs text-foreground placeholder:text-muted-foreground/60 focus:outline-none focus:ring-1 focus:ring-ring"
                               />
                             </div>
