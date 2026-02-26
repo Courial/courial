@@ -98,6 +98,9 @@ const Book = () => {
   const [notes, setNotes] = useState("");
   const [showPriceBreakdown, setShowPriceBreakdown] = useState(false);
   const [showPaymentMethods, setShowPaymentMethods] = useState(false);
+  const [showAddCard, setShowAddCard] = useState(false);
+  const [newCard, setNewCard] = useState({ number: "", expiry: "", cvv: "", isDefault: false });
+  const [showCvv, setShowCvv] = useState(false);
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState("visa-4242");
   const [over70lbs, setOver70lbs] = useState<boolean | null>(null);
   const [heavyExpanded, setHeavyExpanded] = useState(false);
