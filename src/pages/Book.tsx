@@ -456,6 +456,23 @@ const Book = () => {
     }
   }, []);
 
+  const handleExtraStopSelect = useCallback((index: number, place: any) => {
+    if (place.geometry?.location) {
+      const name = place.name || null;
+      const addr = place.formatted_address || "";
+      const isEstablishment = name && !addr.startsWith(name);
+      setDeliverExtraStops(prev => {
+        const updated = [...prev];
+        updated[index] = {
+          ...updated[index],
+          placeName: isEstablishment ? name : null,
+          coords: { lat: place.geometry.location.lat(), lng: place.geometry.location.lng() },
+        };
+        return updated;
+      });
+    }
+  }, []);
+
   const handleConciergeStartSelect = useCallback((place: any) => {
     if (place.geometry?.location) {
       setConciergeStartCoords({ lat: place.geometry.location.lat(), lng: place.geometry.location.lng() });
