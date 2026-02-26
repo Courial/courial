@@ -11,10 +11,13 @@ interface LatLng {
 interface BookingMapProps {
   pickupCoords: LatLng | null;
   dropoffCoords: LatLng | null;
+  stopCoords?: LatLng | null;
   pickupAddress?: string;
   dropoffAddress?: string;
+  stopAddress?: string;
   pickupPlaceName?: string | null;
   dropoffPlaceName?: string | null;
+  stopPlaceName?: string | null;
   bookingState?: "input" | "loading" | "active";
   vehicleType?: string | null;
 }
