@@ -1108,7 +1108,7 @@ const Book = () => {
                 </div>
 
                 {/* Additional Expenses */}
-                <div className="flex items-center justify-center gap-2 mb-3">
+                <div className="flex items-center justify-center gap-2 mb-3 flex-row-reverse">
                   <input
                     type="checkbox"
                     id="concierge-expenses"
