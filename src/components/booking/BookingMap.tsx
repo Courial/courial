@@ -327,16 +327,24 @@ const BookingMap: React.FC<BookingMapProps> = ({ pickupCoords, dropoffCoords, st
       });
       directionsRendererRef.current = directionsRenderer;
 
-      // Build waypoints: concierge stop + extra delivery stops
+      // Build ordered destinations: pickup → dropoff → extraStops (in order)
+      // All intermediate points are waypoints, last point is destination
+      const allDropoffs: LatLng[] = [dropoffCoords];
+      validExtraStops.forEach(s => allDropoffs.push(s.coords!));
+      
       const waypoints: google.maps.DirectionsWaypoint[] = [];
       if (stopCoords) waypoints.push({ location: stopCoords, stopover: true });
-      validExtraStops.forEach(s => waypoints.push({ location: s.coords!, stopover: true }));
+      // All dropoffs except the last become waypoints
+      for (let i = 0; i < allDropoffs.length - 1; i++) {
+        waypoints.push({ location: allDropoffs[i], stopover: true });
+      }
+      const finalDestination = allDropoffs[allDropoffs.length - 1];
 
       directionsService.route(
         {
           origin: pickupCoords,
-          destination: validExtraStops.length > 0 ? validExtraStops[validExtraStops.length - 1].coords! : dropoffCoords,
-          waypoints: validExtraStops.length > 0 ? [{ location: dropoffCoords, stopover: true }, ...waypoints.slice(0, -0)] : waypoints,
+          destination: finalDestination,
+          waypoints,
           travelMode: google.maps.TravelMode.DRIVING,
         },
         (result, status) => {
