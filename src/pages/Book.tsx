@@ -95,6 +95,7 @@ const Book = () => {
   const [conciergeCategory, setConciergeCategory] = useState<string | null>(null);
   const [conciergeGroupIndex, setConciergeGroupIndex] = useState<number | null>(null);
   const [conciergeDetails, setConciergeDetails] = useState("");
+  const [conciergeServiceType, setConciergeServiceType] = useState<"hourly" | "daily" | null>(null);
   const [conciergeDetailsEditing, setConciergeDetailsEditing] = useState(false);
   const [isRedrafting, setIsRedrafting] = useState(false);
   const [showRedraftResult, setShowRedraftResult] = useState(false);
@@ -156,7 +157,7 @@ const Book = () => {
   ];
 
 
-  const conciergeFlowComplete = !!(conciergeCategory && conciergeDetails.trim());
+  const conciergeFlowComplete = !!(conciergeCategory && conciergeDetails.trim() && conciergeServiceType && selectedVehicle);
 
   // Auto-select "Require 2 Courials" based on weight conditions
   useEffect(() => {
@@ -591,6 +592,32 @@ const Book = () => {
               {/* Concierge Intake Flow */}
               {selectedService === "concierge" && (
                 <div className="mb-4 space-y-4">
+                  {/* Vehicle Selection for Concierge */}
+                  <div>
+                    <p className="text-xs font-semibold text-muted-foreground mb-2 uppercase tracking-wide">Choose vehicle</p>
+                    <div className="flex items-center gap-2">
+                      {vehicleOptions.map((v) => (
+                        <button
+                          key={v.id}
+                          type="button"
+                          onClick={() => setSelectedVehicle(v.id)}
+                          className={cn(
+                            "flex flex-col items-center gap-1 px-3 py-2 rounded-xl border transition-all min-w-[60px]",
+                            selectedVehicle === v.id
+                              ? "border-primary bg-primary/5"
+                              : "border-border/60 hover:border-foreground/50"
+                          )}
+                        >
+                          <img src={v.image} alt={v.label} className={cn("object-contain", v.imgClass || "max-h-[32px]")} />
+                          <span className="text-[10px] font-medium text-foreground">{v.label}</span>
+                        </button>
+                      ))}
+                    </div>
+                    {selectedVehicle && (
+                      <p className="text-[10px] text-muted-foreground mt-1">{vehicleCaptions[selectedVehicle]}</p>
+                    )}
+                  </div>
+
                   {/* Step 1: Choose Category */}
                   <div>
                     <AnimatePresence mode="wait">
@@ -954,7 +981,47 @@ const Book = () => {
                     )}
                   </AnimatePresence>
 
-                  {/* (address fields now inline with toggles above) */}
+                  {/* Choose Service Type */}
+                  <AnimatePresence>
+                    {conciergeCategory && (
+                      <motion.div
+                        initial={{ opacity: 0, height: 0 }}
+                        animate={{ opacity: 1, height: "auto" }}
+                        exit={{ opacity: 0, height: 0 }}
+                        transition={{ duration: 0.2 }}
+                        className="overflow-hidden"
+                      >
+                        <p className="text-xs font-semibold text-muted-foreground mb-2 uppercase tracking-wide">Choose service</p>
+                        <div className="flex items-center gap-2">
+                          <button
+                            type="button"
+                            onClick={() => setConciergeServiceType("hourly")}
+                            className={cn(
+                              "flex-1 px-4 py-2.5 rounded-xl border text-sm font-semibold transition-all",
+                              conciergeServiceType === "hourly"
+                                ? "border-primary bg-primary/5 text-foreground"
+                                : "border-border/60 text-foreground/75 hover:border-foreground/50"
+                            )}
+                          >
+                            Hourly
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => setConciergeServiceType("daily")}
+                            className={cn(
+                              "flex-1 px-4 py-2.5 rounded-xl border text-sm font-semibold transition-all",
+                              conciergeServiceType === "daily"
+                                ? "border-primary bg-primary/5 text-foreground"
+                                : "border-border/60 text-foreground/75 hover:border-foreground/50"
+                            )}
+                          >
+                            Daily
+                            <span className="text-[10px] font-normal text-muted-foreground ml-1">(8 hr day)</span>
+                          </button>
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
 
                   {/* Delivery Requirements Notice */}
                   <Collapsible className="mt-3 text-xs text-foreground">
@@ -1016,7 +1083,8 @@ const Book = () => {
                     </CollapsibleContent>
                   </Collapsible>
 
-                  {/* Pricing & Payment Section */}
+                  {/* Pricing & Payment Section — hidden for concierge until flow complete */}
+                  {(selectedService !== "concierge" || conciergeFlowComplete) && (
                   <div className="mt-3 rounded-2xl border border-border bg-background p-5">
                     {/* Total Row */}
                     <div className="flex items-center justify-between">
@@ -1054,6 +1122,7 @@ const Book = () => {
                       </Button>
                     </div>
                   </div>
+                  )}
                 </div>
               )}
             </motion.div>
