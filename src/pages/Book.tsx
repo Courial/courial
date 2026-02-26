@@ -1028,10 +1028,11 @@ const Book = () => {
                     <textarea
                       placeholder="Outline the scope of work, preferences, timing requirements, special instructions, and any relevant contact names and phone numbers. Before confirming your booking, you may choose to have AI professionally refine your message for clarity, completeness, and precision."
                       className="w-full bg-transparent text-sm text-foreground placeholder:text-foreground/35 outline-none resize-none overflow-hidden"
-                      rows={7}
+                      rows={1}
                       value={conciergeDescription}
                       onChange={(e) => { setConciergeDescription(e.target.value); setRedraftSuggestion(null); }}
-                      onInput={(e) => { const t = e.currentTarget; t.style.height = 'auto'; t.style.height = Math.max(t.scrollHeight, 7 * 20) + 'px'; }}
+                      onInput={(e) => { const t = e.currentTarget; t.style.height = 'auto'; t.style.height = t.scrollHeight + 'px'; }}
+                      ref={(el) => { if (el) { el.style.height = 'auto'; el.style.height = el.scrollHeight + 'px'; } }}
                     />
                   </div>
                   {/* Redraft with AI button — centered on bottom border */}
