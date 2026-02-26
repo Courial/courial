@@ -594,7 +594,7 @@ const Book = () => {
                   {/* Step 1: Choose Category */}
                   <div>
                     <AnimatePresence mode="wait">
-                      {conciergeGroupIndex === null ? (
+                      {conciergeGroupIndex === null || (conciergeGroupIndex !== null && conciergeGroups[conciergeGroupIndex].items.length === 0) ? (
                         <motion.div
                           key="group-list"
                           initial={{ opacity: 0 }}
@@ -604,24 +604,44 @@ const Book = () => {
                         >
                           <p className="text-xs font-semibold text-muted-foreground mb-2 uppercase tracking-wide">Choose category</p>
                           <div className="flex flex-wrap items-center gap-1.5">
-                            {conciergeGroups.map((group, idx) => (
-                              <button
-                                key={group.label}
-                                type="button"
-                                onClick={() => {
-                                  setConciergeGroupIndex(idx);
-                                  // If group has no sub-items, auto-select with group label
-                                  if (group.items.length === 0) {
-                                    setConciergeCategory(group.label);
-                                  } else {
+                            {conciergeGroupIndex !== null && conciergeGroups[conciergeGroupIndex].items.length === 0 ? (
+                              <>
+                                <button
+                                  type="button"
+                                  onClick={() => {
+                                    setConciergeGroupIndex(null);
                                     setConciergeCategory(null);
-                                  }
-                                }}
-                                className="px-2.5 py-1 rounded-full text-[11px] font-normal transition-all border leading-none bg-background text-foreground/75 border-border/60 hover:border-foreground/50"
-                              >
-                                {group.label}
-                              </button>
-                            ))}
+                                  }}
+                                  className="text-muted-foreground hover:text-foreground transition-colors"
+                                >
+                                  <ChevronLeft className="w-4 h-4" />
+                                </button>
+                                <span className="px-2.5 py-1 rounded-full text-[11px] font-normal border leading-none bg-background text-foreground border-primary">
+                                  {conciergeGroups[conciergeGroupIndex].label}
+                                </span>
+                                <span className="text-[11px] text-muted-foreground">
+                                  {conciergeGroups[conciergeGroupIndex].desc}
+                                </span>
+                              </>
+                            ) : (
+                              conciergeGroups.map((group, idx) => (
+                                <button
+                                  key={group.label}
+                                  type="button"
+                                  onClick={() => {
+                                    setConciergeGroupIndex(idx);
+                                    if (group.items.length === 0) {
+                                      setConciergeCategory(group.label);
+                                    } else {
+                                      setConciergeCategory(null);
+                                    }
+                                  }}
+                                  className="px-2.5 py-1 rounded-full text-[11px] font-normal transition-all border leading-none bg-background text-foreground/75 border-border/60 hover:border-foreground/50"
+                                >
+                                  {group.label}
+                                </button>
+                              ))
+                            )}
                           </div>
                         </motion.div>
                       ) : (
