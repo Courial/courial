@@ -392,6 +392,36 @@ const Book = () => {
     }
   }, []);
 
+  const handleConciergeStartSelect = useCallback((place: any) => {
+    if (place.geometry?.location) {
+      setConciergeStartCoords({ lat: place.geometry.location.lat(), lng: place.geometry.location.lng() });
+      const name = place.name || null;
+      const addr = place.formatted_address || "";
+      const isEstablishment = name && !addr.startsWith(name);
+      setConciergeStartPlaceName(isEstablishment ? name : null);
+    }
+  }, []);
+
+  const handleConciergeStopSelect = useCallback((place: any) => {
+    if (place.geometry?.location) {
+      setConciergeStopCoords({ lat: place.geometry.location.lat(), lng: place.geometry.location.lng() });
+      const name = place.name || null;
+      const addr = place.formatted_address || "";
+      const isEstablishment = name && !addr.startsWith(name);
+      setConciergeStopPlaceName(isEstablishment ? name : null);
+    }
+  }, []);
+
+  const handleConciergeFinalSelect = useCallback((place: any) => {
+    if (place.geometry?.location) {
+      setConciergeFinalCoords({ lat: place.geometry.location.lat(), lng: place.geometry.location.lng() });
+      const name = place.name || null;
+      const addr = place.formatted_address || "";
+      const isEstablishment = name && !addr.startsWith(name);
+      setConciergeFinalPlaceName(isEstablishment ? name : null);
+    }
+  }, []);
+
   return (
     <div className="min-h-screen bg-background">
       <Helmet>
