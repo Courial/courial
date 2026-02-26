@@ -1504,8 +1504,8 @@ const Book = () => {
                   {/* Input Fields */}
                   <div className="space-y-0">
                     <div className="relative group">
-                      <div className="flex items-start gap-3 px-4 py-3 border border-border rounded-xl bg-background transition-colors focus-within:border-border mb-2">
-                        <div className="flex-shrink-0 w-2.5 h-2.5 rounded-full bg-green-500 mt-[7px]" />
+                      <div className="flex items-center gap-3 px-4 py-3 border border-border rounded-xl bg-background transition-colors focus-within:border-border mb-2">
+                        <div className="flex-shrink-0 w-2.5 h-2.5 rounded-full bg-green-500" />
                         <div className="flex-1 min-w-0">
                           {pickupPlaceName && pickupCoords && (
                             <div className="text-sm font-semibold text-foreground leading-tight">{pickupPlaceName}</div>
@@ -1513,16 +1513,19 @@ const Book = () => {
                           <AddressAutocomplete
                             placeholder="Pickup location"
                             value={pickup}
-                            onChange={(v) => { setPickup(v); if (!v) setPickupPlaceName(null); }}
+                            onChange={(v) => { setPickup(v); if (!v) { setPickupPlaceName(null); setPickupCoords(null); } }}
                             onPlaceSelect={handlePickupSelect}
                             className={`w-full bg-transparent text-foreground placeholder:text-muted-foreground outline-none ${pickupPlaceName && pickupCoords ? 'text-muted-foreground text-xs mt-0.5' : 'text-sm'}`}
                           />
                         </div>
+                        <button onClick={() => { setPickup(""); setPickupPlaceName(null); setPickupCoords(null); }} className="flex-shrink-0 ml-auto hover:opacity-70 transition-opacity">
+                          <X className="w-2.5 h-2.5 text-muted-foreground/50" />
+                        </button>
                       </div>
                     </div>
                     <div className="relative group mt-2">
-                      <div className="flex items-start gap-3 px-4 py-3 border border-border rounded-xl bg-background transition-colors focus-within:border-border">
-                        <div className="flex-shrink-0 w-2.5 h-2.5 bg-red-500 mt-[7px]" />
+                      <div className="flex items-center gap-3 px-4 py-3 border border-border rounded-xl bg-background transition-colors focus-within:border-border">
+                        <div className="flex-shrink-0 w-2.5 h-2.5 bg-red-500" />
                         <div className="flex-1 min-w-0">
                           {dropoffPlaceName && dropoffCoords && (
                             <div className="text-sm font-semibold text-foreground leading-tight">{dropoffPlaceName}</div>
@@ -1530,11 +1533,14 @@ const Book = () => {
                           <AddressAutocomplete
                             placeholder="Dropoff location"
                             value={dropoff}
-                            onChange={(v) => { setDropoff(v); if (!v) setDropoffPlaceName(null); }}
+                            onChange={(v) => { setDropoff(v); if (!v) { setDropoffPlaceName(null); setDropoffCoords(null); } }}
                             onPlaceSelect={handleDropoffSelect}
                             className={`w-full bg-transparent text-foreground placeholder:text-muted-foreground outline-none ${dropoffPlaceName && dropoffCoords ? 'text-muted-foreground text-xs mt-0.5' : 'text-sm'}`}
                           />
                         </div>
+                        <button onClick={() => { setDropoff(""); setDropoffPlaceName(null); setDropoffCoords(null); }} className="flex-shrink-0 ml-auto hover:opacity-70 transition-opacity">
+                          <X className="w-2.5 h-2.5 text-muted-foreground/50" />
+                        </button>
                       </div>
                     </div>
 
@@ -1547,19 +1553,63 @@ const Book = () => {
                     )}
                   </div>
 
-                  {/* Notes Field */}
-                  <div className="relative group -mt-1">
-                    <div className="flex items-start gap-3 px-4 py-4 border border-border rounded-xl bg-background transition-colors focus-within:border-border">
+                  {/* Notes Field with Redraft */}
+                  <div className="relative mb-1 -mt-1">
+                    <div className="px-4 py-4 border border-border rounded-xl bg-background focus-within:border-border">
                       <textarea
-                        placeholder="Provide all relevant pickup and drop-off details, including contact numbers, special instructions, access information, gate codes, and any other important notes."
+                        placeholder="Provide all relevant pickup and drop-off details, including contact numbers, special instructions, access information, gate codes, and any other important notes. You may choose to have AI professionally refine your message."
                         className="w-full bg-transparent text-sm text-foreground placeholder:text-foreground/35 outline-none resize-none overflow-hidden"
                         rows={1}
                         value={notes}
-                        onChange={(e) => setNotes(e.target.value)}
+                        onChange={(e) => { setNotes(e.target.value); setDeliverRedraftSuggestion(null); }}
                         onInput={(e) => { const t = e.currentTarget; t.style.height = 'auto'; t.style.height = t.scrollHeight + 'px'; }}
+                        ref={(el) => { if (el) { el.style.height = 'auto'; el.style.height = el.scrollHeight + 'px'; } }}
                       />
                     </div>
+                    {/* Redraft with AI button */}
+                    {notes.trim().length > 10 && (
+                      <div className="flex justify-end -mt-3 relative z-10 pr-2">
+                        <button
+                          onClick={handleDeliverRedraft}
+                          disabled={isDeliverRedrafting}
+                          className="flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-[hsl(210,100%,50%)] text-white hover:bg-[hsl(210,100%,45%)] transition-colors disabled:opacity-50"
+                        >
+                          <Sparkles className="w-2.5 h-2.5" />
+                          {isDeliverRedrafting ? "Redrafting…" : "Redraft with AI"}
+                        </button>
+                      </div>
+                    )}
                   </div>
+
+                  {/* Deliver Redraft Suggestion */}
+                  <AnimatePresence>
+                    {deliverRedraftSuggestion && (
+                      <motion.div
+                        initial={{ opacity: 0, height: 0 }}
+                        animate={{ opacity: 1, height: "auto" }}
+                        exit={{ opacity: 0, height: 0 }}
+                        className="overflow-hidden mb-3"
+                      >
+                        <div className="p-3 rounded-xl border border-primary/30 bg-primary/5">
+                          <p className="text-sm text-foreground mb-2">{deliverRedraftSuggestion}</p>
+                          <div className="flex gap-2">
+                            <button
+                              onClick={() => { setNotes(deliverRedraftSuggestion); setDeliverRedraftSuggestion(null); }}
+                              className="px-3 py-1 rounded-full text-xs font-semibold bg-primary text-primary-foreground hover:bg-primary/90"
+                            >
+                              Accept
+                            </button>
+                            <button
+                              onClick={() => setDeliverRedraftSuggestion(null)}
+                              className="px-3 py-1 rounded-full text-xs font-semibold border border-border text-foreground hover:bg-muted"
+                            >
+                              Ignore
+                            </button>
+                          </div>
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
 
                   {/* Delivery Requirements Notice */}
                   <Collapsible className="mt-3 text-xs text-foreground">
