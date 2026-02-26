@@ -23,7 +23,7 @@ interface BookingMapProps {
 }
 
 function buildInfoContent(address: string, placeName?: string | null): string {
-  const style = 'font-size:12.5px;font-weight:400;color:rgba(0,0,0,0.75);padding:6px 10px 6px 4px;line-height:1.4;';
+  const style = "font-family:'Avenir','Avenir Next','Nunito Sans',system-ui,sans-serif;font-size:12.5px;font-weight:400;color:rgba(0,0,0,0.75);padding:6px 10px 6px 4px;line-height:1.4;";
   if (placeName) {
     // Remove country from address for second line
     let clean = address.replace(/,?\s*(USA|US|United States)\s*$/i, '').trim();
@@ -555,11 +555,19 @@ const BookingMap: React.FC<BookingMapProps> = ({ pickupCoords, dropoffCoords, st
   return (
     <>
       <style>{`
-        .gm-style-iw { background: white !important; box-shadow: 0 2px 8px rgba(0,0,0,0.15) !important; border: none !important; border-radius: 8px !important; }
+        .gm-style-iw { background: white !important; box-shadow: 0 2px 8px rgba(0,0,0,0.15) !important; border: none !important; border-radius: 8px !important; font-family: 'Avenir', 'Avenir Next', 'Nunito Sans', system-ui, sans-serif !important; }
         .gm-style-iw-d { overflow: hidden !important; }
         button.gm-ui-hover-effect { display: none !important; }
         .gm-style-iw-chr { display: none !important; }
         .gm-style-iw-tc { display: none !important; }
+        .pac-container { font-family: 'Avenir', 'Avenir Next', 'Nunito Sans', system-ui, sans-serif !important; border-radius: 8px !important; border: none !important; box-shadow: 0 4px 16px rgba(0,0,0,0.12) !important; margin-top: 4px !important; overflow: hidden !important; }
+        .pac-item { font-family: 'Avenir', 'Avenir Next', 'Nunito Sans', system-ui, sans-serif !important; font-size: 13px !important; padding: 8px 12px !important; border-top: 1px solid rgba(0,0,0,0.06) !important; color: rgba(0,0,0,0.7) !important; cursor: pointer !important; }
+        .pac-item:first-child { border-top: none !important; }
+        .pac-item:hover { background: rgba(0,0,0,0.04) !important; }
+        .pac-item-query { font-family: 'Avenir', 'Avenir Next', 'Nunito Sans', system-ui, sans-serif !important; font-size: 13px !important; font-weight: 500 !important; color: rgba(0,0,0,0.85) !important; }
+        .pac-matched { font-weight: 600 !important; }
+        .pac-icon { display: none !important; }
+        .pac-logo::after { display: none !important; }
       `}</style>
       <div ref={mapRef} className="w-full h-full" />
     </>
