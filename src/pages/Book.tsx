@@ -436,7 +436,7 @@ const Book = () => {
 
       <div className="flex h-[calc(100vh-64px)] mt-16">
         {/* Left Column — Booking Card */}
-        <div className="w-full max-w-[440px] flex-shrink-0 border-r border-border overflow-y-auto bg-black/5">
+        <div className="w-full max-w-[440px] flex-shrink-0 border-r border-border overflow-y-auto bg-black/[0.025]">
           {bookingState === "input" && (
           <div className="p-8">
             {/* Service Bento Grid */}
