@@ -1139,6 +1139,12 @@ const Book = () => {
                           <p className="text-[11px] font-medium text-foreground">Expense Item</p>
                           <div>
                             <textarea
+                              ref={(el) => {
+                                if (el) {
+                                  el.style.height = 'auto';
+                                  el.style.height = el.scrollHeight + 'px';
+                                }
+                              }}
                               value={item.description}
                               onChange={(e) => {
                                 const updated = [...conciergeExpenseItems];
@@ -1148,7 +1154,7 @@ const Book = () => {
                                 e.target.style.height = e.target.scrollHeight + 'px';
                               }}
                               placeholder="Describe any expected purchases such as event tickets, specialty retail items, postage, shipping, or required supplies here."
-                              rows={1}
+                              rows={3}
                               className="w-full rounded-lg border border-border/60 bg-background px-3 py-1.5 text-xs text-foreground placeholder:text-muted-foreground/60 focus:outline-none focus:ring-1 focus:ring-ring resize-none overflow-hidden"
                             />
                           </div>
@@ -1163,9 +1169,11 @@ const Book = () => {
                                 onChange={(e) => {
                                   const raw = e.target.value.replace(/,/g, '');
                                   if (raw === '' || /^\d*\.?\d{0,2}$/.test(raw)) {
-                                    const updated = [...conciergeExpenseItems];
-                                    updated[index].amount = raw;
-                                    setConciergeExpenseItems(updated);
+                                    if (raw === '' || Number(raw) <= 500) {
+                                      const updated = [...conciergeExpenseItems];
+                                      updated[index].amount = raw;
+                                      setConciergeExpenseItems(updated);
+                                    }
                                   }
                                 }}
                                 placeholder="0.00"
