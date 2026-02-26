@@ -1481,7 +1481,7 @@ const Book = () => {
                   {/* Input Fields */}
                   <div className="space-y-0">
                     <div className="relative group">
-                      <div className="flex items-start gap-3 px-4 py-3 border border-border rounded-xl bg-background transition-colors focus-within:border-foreground mb-2">
+                      <div className="flex items-start gap-3 px-4 py-3 border border-border rounded-xl bg-background transition-colors focus-within:border-border mb-2">
                         <div className="flex-shrink-0 w-2.5 h-2.5 rounded-full bg-green-500 mt-[7px]" />
                         <div className="flex-1 min-w-0">
                           {pickupPlaceName && pickupCoords && (
