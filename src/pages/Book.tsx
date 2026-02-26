@@ -140,6 +140,17 @@ const Book = () => {
   const [deliverRedraftSuggestion, setDeliverRedraftSuggestion] = useState<string | null>(null);
   const [isDeliverRedrafting, setIsDeliverRedrafting] = useState(false);
 
+  // Deliver-specific: language + expenses
+  const [deliverLanguage, setDeliverLanguage] = useState<string | null>(null);
+  const [deliverHasExpenses, setDeliverHasExpenses] = useState<boolean | null>(null);
+  const [deliverExpenseItems, setDeliverExpenseItems] = useState<Array<{ description: string; amount: string }>>([{ description: "", amount: "0" }]);
+  const [deliverAllowOverage, setDeliverAllowOverage] = useState(false);
+  const [deliverOverageLimit, setDeliverOverageLimit] = useState("0");
+  const [deliverExpenseCapWarning, setDeliverExpenseCapWarning] = useState<number | null>(null);
+  const [deliverOverageCapWarning, setDeliverOverageCapWarning] = useState(false);
+  const [deliverExpenseRedraftSuggestion, setDeliverExpenseRedraftSuggestion] = useState<{ index: number; text: string } | null>(null);
+  const [isDeliverExpenseRedrafting, setIsDeliverExpenseRedrafting] = useState<number | null>(null);
+
   // Auto-select "Require 2 Courials" based on weight conditions
   useEffect(() => {
     if (over70lbs) {
