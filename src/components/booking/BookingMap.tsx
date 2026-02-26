@@ -280,8 +280,36 @@ const BookingMap: React.FC<BookingMapProps> = ({ pickupCoords, dropoffCoords, st
       }
     }
 
+    // Add extra stop markers (red squares, like dropoff)
+    const validExtraStops = (extraStops || []).filter(s => s.coords);
+    validExtraStops.forEach((stop) => {
+      const marker = new google.maps.Marker({
+        position: stop.coords!,
+        map,
+        icon: {
+          path: "M -6 -6 L 6 -6 L 6 6 L -6 6 Z",
+          scale: 1.24,
+          fillColor: "#ef4444",
+          fillOpacity: 1,
+          strokeColor: "#ffffff",
+          strokeWeight: 1,
+        },
+        title: stop.address || "Dropoff",
+      });
+      markersRef.current.push(marker);
+      bounds.extend(stop.coords!);
+
+      if (stop.address) {
+        const infoWindow = new google.maps.InfoWindow({
+          content: buildInfoContent(stop.address, stop.placeName),
+        });
+        infoWindow.open(map, marker);
+        infoWindowsRef.current.push(infoWindow);
+      }
+    });
+
     // Fit bounds and draw route
-    const markerCount = [pickupCoords, dropoffCoords, stopCoords].filter(Boolean).length;
+    const markerCount = [pickupCoords, dropoffCoords, stopCoords].filter(Boolean).length + validExtraStops.length;
 
     if (pickupCoords && dropoffCoords) {
       map.fitBounds(bounds, { top: 80, bottom: 40, left: 40, right: 40 });
@@ -299,13 +327,16 @@ const BookingMap: React.FC<BookingMapProps> = ({ pickupCoords, dropoffCoords, st
       });
       directionsRendererRef.current = directionsRenderer;
 
-      const waypoints = stopCoords ? [{ location: stopCoords, stopover: true }] : [];
+      // Build waypoints: concierge stop + extra delivery stops
+      const waypoints: google.maps.DirectionsWaypoint[] = [];
+      if (stopCoords) waypoints.push({ location: stopCoords, stopover: true });
+      validExtraStops.forEach(s => waypoints.push({ location: s.coords!, stopover: true }));
 
       directionsService.route(
         {
           origin: pickupCoords,
-          destination: dropoffCoords,
-          waypoints,
+          destination: validExtraStops.length > 0 ? validExtraStops[validExtraStops.length - 1].coords! : dropoffCoords,
+          waypoints: validExtraStops.length > 0 ? [{ location: dropoffCoords, stopover: true }, ...waypoints.slice(0, -0)] : waypoints,
           travelMode: google.maps.TravelMode.DRIVING,
         },
         (result, status) => {
@@ -315,14 +346,13 @@ const BookingMap: React.FC<BookingMapProps> = ({ pickupCoords, dropoffCoords, st
         }
       );
     } else if (markerCount > 1) {
-      // Multiple markers but no pickup+dropoff pair (e.g. pickup + stop only)
       map.fitBounds(bounds, { top: 80, bottom: 40, left: 40, right: 40 });
     } else if (markerCount === 1) {
       const coords = pickupCoords || dropoffCoords || stopCoords!;
       map.setCenter(coords);
       map.setZoom(14);
     }
-  }, [pickupCoords, dropoffCoords, stopCoords, pickupAddress, dropoffAddress, stopAddress, pickupPlaceName, dropoffPlaceName, stopPlaceName]);
+  }, [pickupCoords, dropoffCoords, stopCoords, extraStops, pickupAddress, dropoffAddress, stopAddress, pickupPlaceName, dropoffPlaceName, stopPlaceName]);
 
   // --- Loading phase: multiple cars converge toward pickup along real roads ---
   useEffect(() => {
