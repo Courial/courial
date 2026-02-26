@@ -80,27 +80,6 @@ const serviceCards: { id: ServiceId; label: string; desc: string; href: string; 
   { id: "valet", label: "Valet", desc: "More than parking. We park it, charge it, or drive it—whatever you need.", href: "/book", image: "https://images.unsplash.com/photo-1617788138017-80ad40651399?w=600&q=80", icons: [ParkingCircle, Leaf] },
 ];
 
-  // Redraft with AI handler for Deliver/Valet notes
-  const handleDeliverRedraft = useCallback(async () => {
-    if (notes.trim().length < 10 || isDeliverRedrafting) return;
-    setIsDeliverRedrafting(true);
-    setDeliverRedraftSuggestion(null);
-    try {
-      const { data, error } = await supabase.functions.invoke("redraft-concierge", {
-        body: { description: notes, category: `${selectedService === "valet" ? "Valet" : "Delivery"} Notes` },
-      });
-      if (error || !data?.redrafted) {
-        toast.error("Couldn't redraft — please try again.");
-      } else {
-        setDeliverRedraftSuggestion(data.redrafted);
-      }
-    } catch {
-      toast.error("Redraft failed.");
-    } finally {
-      setIsDeliverRedrafting(false);
-    }
-  }, [notes, selectedService, isDeliverRedrafting]);
-
 
 const Book = () => {
   const { user } = useAuth();
