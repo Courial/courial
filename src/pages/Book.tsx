@@ -617,6 +617,169 @@ const Book = () => {
                 </div>
               )}
 
+              {/* Deliver/Valet Form Fields */}
+              {selectedService && selectedService !== "concierge" && (selectedService !== "deliver" || selectedVehicle) && (
+                <div className="space-y-3 mb-4">
+                  {/* Address Inputs */}
+                  <div className="space-y-2">
+                    <div className="flex items-start gap-3 px-4 py-3 border border-border rounded-xl bg-background transition-colors focus-within:border-foreground">
+                      <div className="flex-shrink-0 w-2.5 h-2.5 rounded-full bg-green-500 mt-[7px]" />
+                      <div className="flex-1 min-w-0">
+                        {pickupPlaceName && pickupCoords && (
+                          <div className="text-sm font-semibold text-foreground leading-tight">{pickupPlaceName}</div>
+                        )}
+                        <AddressAutocomplete
+                          placeholder="Pickup location"
+                          value={pickup}
+                          onChange={(v) => { setPickup(v); if (!v) setPickupPlaceName(null); }}
+                          onPlaceSelect={handlePickupSelect}
+                          className={`w-full bg-transparent text-foreground placeholder:text-muted-foreground outline-none ${pickupPlaceName && pickupCoords ? 'text-muted-foreground text-xs mt-0.5' : 'text-sm'}`}
+                        />
+                      </div>
+                      {pickup && (
+                        <button type="button" onClick={() => { setPickup(""); setPickupCoords(null); setPickupPlaceName(null); }} className="flex-shrink-0 mt-1 text-muted-foreground hover:text-foreground transition-colors">
+                          <X className="w-4 h-4" />
+                        </button>
+                      )}
+                    </div>
+
+                    <div className="flex items-start gap-3 px-4 py-3 border border-border rounded-xl bg-background transition-colors focus-within:border-foreground">
+                      <div className="flex-shrink-0 w-2.5 h-2.5 rounded-full bg-red-500 mt-[7px]" />
+                      <div className="flex-1 min-w-0">
+                        {dropoffPlaceName && dropoffCoords && (
+                          <div className="text-sm font-semibold text-foreground leading-tight">{dropoffPlaceName}</div>
+                        )}
+                        <AddressAutocomplete
+                          placeholder="Drop-off location"
+                          value={dropoff}
+                          onChange={(v) => { setDropoff(v); if (!v) setDropoffPlaceName(null); }}
+                          onPlaceSelect={handleDropoffSelect}
+                          className={`w-full bg-transparent text-foreground placeholder:text-muted-foreground outline-none ${dropoffPlaceName && dropoffCoords ? 'text-muted-foreground text-xs mt-0.5' : 'text-sm'}`}
+                        />
+                      </div>
+                      {dropoff && (
+                        <button type="button" onClick={() => { setDropoff(""); setDropoffCoords(null); setDropoffPlaceName(null); }} className="flex-shrink-0 mt-1 text-muted-foreground hover:text-foreground transition-colors">
+                          <X className="w-4 h-4" />
+                        </button>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Attribute Toggles — Deliver only */}
+                  {selectedService === "deliver" && (
+                    <div className="flex flex-wrap gap-2">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          if (over70lbs) {
+                            setOver70lbs(null);
+                            setHeavyExpanded(false);
+                          } else {
+                            setOver70lbs(true);
+                            setHeavyExpanded(true);
+                          }
+                        }}
+                        className={cn(
+                          "px-3 py-1.5 rounded-full text-xs font-semibold border transition-all flex items-center gap-1.5",
+                          over70lbs
+                            ? "border-primary bg-primary/10 text-foreground"
+                            : "border-border text-muted-foreground hover:border-foreground/50"
+                        )}
+                      >
+                        <Weight className="w-3 h-3" />
+                        Over 70 lbs
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setTwoCourials(twoCourials ? null : true)}
+                        className={cn(
+                          "px-3 py-1.5 rounded-full text-xs font-semibold border transition-all",
+                          twoCourials
+                            ? "border-primary bg-primary/10 text-foreground"
+                            : "border-border text-muted-foreground hover:border-foreground/50"
+                        )}
+                      >
+                        Require 2 Courials
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setHasStairs(hasStairs ? null : true)}
+                        className={cn(
+                          "px-3 py-1.5 rounded-full text-xs font-semibold border transition-all",
+                          hasStairs
+                            ? "border-primary bg-primary/10 text-foreground"
+                            : "border-border text-muted-foreground hover:border-foreground/50"
+                        )}
+                      >
+                        Involves stairs
+                      </button>
+                    </div>
+                  )}
+
+                  {/* Heavy Item Details */}
+                  <AnimatePresence>
+                    {over70lbs && heavyExpanded && (
+                      <motion.div
+                        initial={{ opacity: 0, height: 0 }}
+                        animate={{ opacity: 1, height: "auto" }}
+                        exit={{ opacity: 0, height: 0 }}
+                        transition={{ duration: 0.2 }}
+                        className="overflow-hidden"
+                      >
+                        <div className="flex gap-2">
+                          <div className="flex-1">
+                            <label className="text-[10px] font-medium text-muted-foreground mb-1 block">Total weight (lbs)</label>
+                            <Select value={heavyWeight} onValueChange={setHeavyWeight}>
+                              <SelectTrigger className="h-9 rounded-xl text-xs">
+                                <SelectValue />
+                              </SelectTrigger>
+                              <SelectContent>
+                                {["70", "100", "150", "200", "250", "300+"].map(w => (
+                                  <SelectItem key={w} value={w}>{w} lbs</SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                          </div>
+                          <div className="flex-1">
+                            <label className="text-[10px] font-medium text-muted-foreground mb-1 block">Number of items</label>
+                            <Select value={heavyItems} onValueChange={setHeavyItems}>
+                              <SelectTrigger className="h-9 rounded-xl text-xs">
+                                <SelectValue />
+                              </SelectTrigger>
+                              <SelectContent>
+                                {["1", "2", "3", "4", "5", "6+"].map(n => (
+                                  <SelectItem key={n} value={n}>{n}</SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                          </div>
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+
+                  {/* Notes */}
+                  <div className="mt-3">
+                    <div className="border border-border rounded-xl bg-background px-4 py-3 focus-within:border-foreground transition-colors">
+                      <textarea
+                        ref={(el) => {
+                          if (el) {
+                            el.style.height = 'auto';
+                            el.style.height = el.scrollHeight + 'px';
+                          }
+                        }}
+                        placeholder="Logistics notes (e.g. apt #, gate code, leave at door)"
+                        className="w-full bg-transparent text-sm text-foreground placeholder:text-foreground/35 outline-none resize-none overflow-hidden min-h-[3rem]"
+                        rows={2}
+                        value={notes}
+                        onChange={(e) => setNotes(e.target.value)}
+                        onInput={(e) => { const t = e.currentTarget; t.style.height = 'auto'; t.style.height = t.scrollHeight + 'px'; }}
+                      />
+                    </div>
+                  </div>
+                </div>
+              )}
+
               {/* Concierge Intake Flow */}
               {selectedService === "concierge" && (
                 <div className="mb-4 space-y-4">
