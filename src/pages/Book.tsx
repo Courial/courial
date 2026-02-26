@@ -117,6 +117,11 @@ const Book = () => {
   const [conciergeDescription, setConciergeDescription] = useState("");
   const [conciergeLanguage, setConciergeLanguage] = useState<string | null>(null);
   const [conciergeServiceMode, setConciergeServiceMode] = useState<"hourly" | "daily">("hourly");
+  const [conciergeHasExpenses, setConciergeHasExpenses] = useState<boolean | null>(null);
+  const [conciergeExpensePurpose, setConciergeExpensePurpose] = useState("");
+  const [conciergeExpenseCost, setConciergeExpenseCost] = useState("");
+  const [conciergeAllowOverage, setConciergeAllowOverage] = useState(false);
+  const [conciergeOverageLimit, setConciergeOverageLimit] = useState("");
   const [redraftSuggestion, setRedraftSuggestion] = useState<string | null>(null);
   const [isRedrafting, setIsRedrafting] = useState(false);
 
@@ -1101,6 +1106,85 @@ const Book = () => {
                     </button>
                   ))}
                 </div>
+
+                {/* Additional Expenses */}
+                <div className="flex items-center gap-2 mb-1">
+                  <span className="text-xs font-medium text-muted-foreground">Will this task require additional expenses?</span>
+                </div>
+                <div className="flex items-center gap-1.5 mb-3">
+                  {[
+                    { value: true, label: "Yes" },
+                    { value: false, label: "No" },
+                  ].map((opt) => (
+                    <button
+                      key={String(opt.value)}
+                      onClick={() => setConciergeHasExpenses(opt.value)}
+                      className={`px-2 py-0.5 rounded-full text-[10px] font-normal transition-all leading-none ${
+                        conciergeHasExpenses === opt.value
+                          ? "bg-muted text-foreground"
+                          : "border border-border/60 bg-background text-foreground/75 hover:border-foreground/50"
+                      }`}
+                    >
+                      {opt.label}
+                    </button>
+                  ))}
+                </div>
+
+                <AnimatePresence>
+                  {conciergeHasExpenses === true && (
+                    <motion.div
+                      initial={{ opacity: 0, height: 0 }}
+                      animate={{ opacity: 1, height: "auto" }}
+                      exit={{ opacity: 0, height: 0 }}
+                      transition={{ duration: 0.2 }}
+                      className="space-y-2 mb-3 overflow-hidden"
+                    >
+                      <div>
+                        <label className="text-[10px] text-muted-foreground mb-0.5 block">Purpose of additional expenses</label>
+                        <input
+                          type="text"
+                          value={conciergeExpensePurpose}
+                          onChange={(e) => setConciergeExpensePurpose(e.target.value)}
+                          placeholder="e.g. Purchase supplies, parking fees, entrance tickets"
+                          className="w-full rounded-lg border border-border/60 bg-background px-3 py-1.5 text-xs text-foreground placeholder:text-muted-foreground/60 focus:outline-none focus:ring-1 focus:ring-ring"
+                        />
+                      </div>
+                      <div>
+                        <label className="text-[10px] text-muted-foreground mb-0.5 block">Estimated cost</label>
+                        <div className="relative">
+                          <span className="absolute left-3 top-1/2 -translate-y-1/2 text-xs text-muted-foreground">$</span>
+                          <input
+                            type="number"
+                            value={conciergeExpenseCost}
+                            onChange={(e) => setConciergeExpenseCost(e.target.value)}
+                            placeholder="0.00"
+                            className="w-full rounded-lg border border-border/60 bg-background pl-6 pr-3 py-1.5 text-xs text-foreground placeholder:text-muted-foreground/60 focus:outline-none focus:ring-1 focus:ring-ring"
+                          />
+                        </div>
+                      </div>
+                      <label className="flex items-start gap-2 cursor-pointer mt-1">
+                        <input
+                          type="checkbox"
+                          checked={conciergeAllowOverage}
+                          onChange={(e) => setConciergeAllowOverage(e.target.checked)}
+                          className="mt-0.5 h-3 w-3 rounded border-border accent-primary"
+                        />
+                        <span className="text-[9px] text-muted-foreground leading-tight">
+                          Allow Concierge to approve minor expense overages up to $
+                          <input
+                            type="number"
+                            value={conciergeOverageLimit}
+                            onChange={(e) => setConciergeOverageLimit(e.target.value)}
+                            placeholder="___"
+                            disabled={!conciergeAllowOverage}
+                            className="inline-block w-10 border-b border-border/60 bg-transparent text-[9px] text-foreground text-center mx-0.5 focus:outline-none disabled:opacity-40"
+                          />
+                          without additional authorization. This avoids delays if something costs slightly more than expected.
+                        </span>
+                      </label>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
 
                 {/* Concierge Service Requirements */}
                 <Collapsible className="mt-5 text-xs text-foreground">
