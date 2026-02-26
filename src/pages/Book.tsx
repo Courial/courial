@@ -1193,7 +1193,7 @@ const Book = () => {
                       onClick={() => setConciergeServiceMode(mode.value)}
                       className={`px-2.5 py-1 rounded-full text-[11px] font-normal transition-all leading-none ${
                         conciergeServiceMode === mode.value
-                          ? "bg-muted text-foreground"
+                          ? "border border-primary text-foreground"
                           : "border border-border/60 bg-background text-foreground/75 hover:border-foreground/50"
                       }`}
                     >
