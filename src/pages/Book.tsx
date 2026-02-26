@@ -137,6 +137,8 @@ const Book = () => {
   const [isRedrafting, setIsRedrafting] = useState(false);
   const [expenseRedraftSuggestion, setExpenseRedraftSuggestion] = useState<{ index: number; text: string } | null>(null);
   const [isExpenseRedrafting, setIsExpenseRedrafting] = useState<number | null>(null);
+  const [deliverRedraftSuggestion, setDeliverRedraftSuggestion] = useState<string | null>(null);
+  const [isDeliverRedrafting, setIsDeliverRedrafting] = useState(false);
 
   // Auto-select "Require 2 Courials" based on weight conditions
   useEffect(() => {
