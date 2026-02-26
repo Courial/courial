@@ -150,7 +150,7 @@ const Book = () => {
     },
     {
       label: "Something Else?",
-      desc: "Tell us about it",
+      desc: "Whatever the task, consider it handled.",
       items: [],
     },
   ];
