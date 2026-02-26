@@ -140,6 +140,10 @@ const Book = () => {
   const [deliverRedraftSuggestion, setDeliverRedraftSuggestion] = useState<string | null>(null);
   const [isDeliverRedrafting, setIsDeliverRedrafting] = useState(false);
 
+  // Deliver-specific: multi-stop
+  const [deliverMultiStop, setDeliverMultiStop] = useState(false);
+  const [deliverExtraStops, setDeliverExtraStops] = useState<Array<{ address: string; placeName: string | null; coords: { lat: number; lng: number } | null }>>([]);
+
   // Deliver-specific: language + expenses
   const [deliverLanguage, setDeliverLanguage] = useState<string | null>(null);
   const [deliverHasExpenses, setDeliverHasExpenses] = useState<boolean | null>(null);
