@@ -115,6 +115,7 @@ const Book = () => {
   const [conciergeFinalAddress, setConciergeFinalAddress] = useState("");
   const [conciergeDescription, setConciergeDescription] = useState("");
   const [conciergeLanguage, setConciergeLanguage] = useState<string | null>(null);
+  const [conciergeServiceMode, setConciergeServiceMode] = useState<"hourly" | "daily">("hourly");
   const [redraftSuggestion, setRedraftSuggestion] = useState<string | null>(null);
   const [isRedrafting, setIsRedrafting] = useState(false);
 
@@ -1077,6 +1078,29 @@ const Book = () => {
                     </motion.div>
                   )}
                 </AnimatePresence>
+
+                {/* Service Mode Toggle */}
+                <div className="mb-3">
+                  <p className="text-[11px] text-muted-foreground mb-2">Service Type</p>
+                  <div className="flex gap-2">
+                    {[
+                      { value: "hourly" as const, label: "Hourly" },
+                      { value: "daily" as const, label: "Daily (8 Hrs)" },
+                    ].map((mode) => (
+                      <button
+                        key={mode.value}
+                        onClick={() => setConciergeServiceMode(mode.value)}
+                        className={`px-3 py-1.5 rounded-full text-[11px] font-normal transition-all leading-none ${
+                          conciergeServiceMode === mode.value
+                            ? "bg-muted text-foreground"
+                            : "border border-border/60 bg-background text-foreground/75 hover:border-foreground/50"
+                        }`}
+                      >
+                        {mode.label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
 
                 {/* Concierge Service Requirements */}
                 <Collapsible className="mt-3 text-xs text-foreground">
