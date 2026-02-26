@@ -1252,7 +1252,7 @@ const Book = () => {
                               }}
                               placeholder="Describe any expected purchases such as event tickets, specialty retail items, postage, shipping, or required supplies here."
                               rows={1}
-                              className="w-full rounded-lg border border-border/60 bg-background px-3 py-1.5 text-xs text-foreground placeholder:text-muted-foreground/60 focus:outline-none focus:ring-1 focus:ring-ring resize-none overflow-hidden"
+                              className="w-full rounded-lg border border-border/60 bg-background px-3 py-1.5 text-xs text-foreground placeholder:text-muted-foreground/60 focus:outline-none focus:ring-0 resize-none overflow-hidden"
                             />
                             {/* Redraft with AI button for expense description */}
                             {item.description.trim().length > 10 && (
