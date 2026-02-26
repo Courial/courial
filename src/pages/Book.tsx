@@ -1738,7 +1738,7 @@ const Book = () => {
                    <div className="relative mb-1 mt-2">
                     <div className="px-4 py-4 border border-border rounded-xl bg-background focus-within:border-border">
                       <textarea
-                        placeholder="Provide all relevant pickup and drop-off details, including contact numbers, special instructions, access information, gate codes, and any other important notes. You may choose to have AI professionally refine your message."
+                        placeholder="Please provide all relevant pickup and drop-off details, including contact numbers, special instructions, access information, gate codes, and any other important notes, as well as any external links the Courial will need access to."
                         className="w-full bg-transparent text-sm text-foreground placeholder:text-foreground/35 outline-none resize-none overflow-hidden"
                         rows={1}
                         value={notes}
