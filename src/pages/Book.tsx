@@ -139,22 +139,6 @@ const Book = () => {
       ],
     },
     {
-      label: "Home Services",
-      desc: "Home & vehicle care tasks",
-      items: [
-        { id: "housekeeping", label: "Book Housekeeping", icon: "🏠" },
-        { id: "emergency-plumbing", label: "Emergency Plumbing", icon: "🚿" },
-        { id: "appliance-repair", label: "Appliance Repair Coordination", icon: "🔌" },
-        { id: "vendor-sourcing", label: "Vendor Sourcing", icon: "🔍" },
-        { id: "car-detailing", label: "Mobile Car Detailing", icon: "🚗" },
-        { id: "fueling-ev", label: "Fueling or EV Charging", icon: "⛽" },
-        { id: "car-service", label: "Take Car for Service", icon: "🔩" },
-        { id: "vehicle-dropoff", label: "Vehicle Drop-off / Pick-up", icon: "🚙" },
-        { id: "find-mechanic", label: "Find Mechanic ASAP", icon: "🛠️" },
-        { id: "find-specialist", label: "Find Specialist Before Deadline", icon: "⏰" },
-      ],
-    },
-    {
       label: "Travel",
       desc: "Trips, flights & logistics",
       items: [
