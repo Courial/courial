@@ -2285,10 +2285,11 @@ const Book = () => {
                  ? (conciergeStartCoords ? (conciergeFinalCoords ? conciergeFinalPlaceName : conciergeStopPlaceName) : (conciergeStopCoords && conciergeFinalCoords ? conciergeFinalPlaceName : null))
                  : dropoffPlaceName;
                const mapVehicle = isConcierge ? conciergeVehicle : selectedVehicle;
+               const mapExtraStops = !isConcierge ? deliverExtraStops.filter(s => s.coords).map(s => ({ coords: s.coords, address: s.address, placeName: s.placeName })) : [];
                const hasCoords = mapPickup || mapDropoff;
                return hasCoords ? (
              <div className="flex-1 relative">
-               <BookingMap pickupCoords={mapPickup} dropoffCoords={mapPickup !== mapDropoff ? mapDropoff : null} stopCoords={mapStop} pickupAddress={mapPickupAddr} dropoffAddress={mapDropoffAddr} stopAddress={mapStopAddr} pickupPlaceName={mapPickupName} dropoffPlaceName={mapDropoffName} stopPlaceName={mapStopName} bookingState={bookingState} vehicleType={mapVehicle} />
+               <BookingMap pickupCoords={mapPickup} dropoffCoords={mapPickup !== mapDropoff ? mapDropoff : null} stopCoords={mapStop} extraStops={mapExtraStops} pickupAddress={mapPickupAddr} dropoffAddress={mapDropoffAddr} stopAddress={mapStopAddr} pickupPlaceName={mapPickupName} dropoffPlaceName={mapDropoffName} stopPlaceName={mapStopName} bookingState={bookingState} vehicleType={mapVehicle} />
               
               {/* Loading Overlay Popup */}
               <AnimatePresence>

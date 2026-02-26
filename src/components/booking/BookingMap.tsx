@@ -12,6 +12,7 @@ interface BookingMapProps {
   pickupCoords: LatLng | null;
   dropoffCoords: LatLng | null;
   stopCoords?: LatLng | null;
+  extraStops?: Array<{ coords: LatLng | null; address?: string; placeName?: string | null }>;
   pickupAddress?: string;
   dropoffAddress?: string;
   stopAddress?: string;
@@ -140,7 +141,7 @@ function generateRandomPositions(center: LatLng, count: number, radiusKm: number
   return positions;
 }
 
-const BookingMap: React.FC<BookingMapProps> = ({ pickupCoords, dropoffCoords, stopCoords, pickupAddress, dropoffAddress, stopAddress, pickupPlaceName, dropoffPlaceName, stopPlaceName, bookingState = "input", vehicleType }) => {
+const BookingMap: React.FC<BookingMapProps> = ({ pickupCoords, dropoffCoords, stopCoords, extraStops, pickupAddress, dropoffAddress, stopAddress, pickupPlaceName, dropoffPlaceName, stopPlaceName, bookingState = "input", vehicleType }) => {
   const mapRef = useRef<HTMLDivElement>(null);
   const mapInstanceRef = useRef<google.maps.Map | null>(null);
   const markersRef = useRef<google.maps.Marker[]>([]);
@@ -279,8 +280,36 @@ const BookingMap: React.FC<BookingMapProps> = ({ pickupCoords, dropoffCoords, st
       }
     }
 
+    // Add extra stop markers (red squares, like dropoff)
+    const validExtraStops = (extraStops || []).filter(s => s.coords);
+    validExtraStops.forEach((stop) => {
+      const marker = new google.maps.Marker({
+        position: stop.coords!,
+        map,
+        icon: {
+          path: "M -6 -6 L 6 -6 L 6 6 L -6 6 Z",
+          scale: 1.24,
+          fillColor: "#ef4444",
+          fillOpacity: 1,
+          strokeColor: "#ffffff",
+          strokeWeight: 1,
+        },
+        title: stop.address || "Dropoff",
+      });
+      markersRef.current.push(marker);
+      bounds.extend(stop.coords!);
+
+      if (stop.address) {
+        const infoWindow = new google.maps.InfoWindow({
+          content: buildInfoContent(stop.address, stop.placeName),
+        });
+        infoWindow.open(map, marker);
+        infoWindowsRef.current.push(infoWindow);
+      }
+    });
+
     // Fit bounds and draw route
-    const markerCount = [pickupCoords, dropoffCoords, stopCoords].filter(Boolean).length;
+    const markerCount = [pickupCoords, dropoffCoords, stopCoords].filter(Boolean).length + validExtraStops.length;
 
     if (pickupCoords && dropoffCoords) {
       map.fitBounds(bounds, { top: 80, bottom: 40, left: 40, right: 40 });
@@ -298,12 +327,23 @@ const BookingMap: React.FC<BookingMapProps> = ({ pickupCoords, dropoffCoords, st
       });
       directionsRendererRef.current = directionsRenderer;
 
-      const waypoints = stopCoords ? [{ location: stopCoords, stopover: true }] : [];
+      // Build ordered destinations: pickup → dropoff → extraStops (in order)
+      // All intermediate points are waypoints, last point is destination
+      const allDropoffs: LatLng[] = [dropoffCoords];
+      validExtraStops.forEach(s => allDropoffs.push(s.coords!));
+      
+      const waypoints: google.maps.DirectionsWaypoint[] = [];
+      if (stopCoords) waypoints.push({ location: stopCoords, stopover: true });
+      // All dropoffs except the last become waypoints
+      for (let i = 0; i < allDropoffs.length - 1; i++) {
+        waypoints.push({ location: allDropoffs[i], stopover: true });
+      }
+      const finalDestination = allDropoffs[allDropoffs.length - 1];
 
       directionsService.route(
         {
           origin: pickupCoords,
-          destination: dropoffCoords,
+          destination: finalDestination,
           waypoints,
           travelMode: google.maps.TravelMode.DRIVING,
         },
@@ -314,14 +354,13 @@ const BookingMap: React.FC<BookingMapProps> = ({ pickupCoords, dropoffCoords, st
         }
       );
     } else if (markerCount > 1) {
-      // Multiple markers but no pickup+dropoff pair (e.g. pickup + stop only)
       map.fitBounds(bounds, { top: 80, bottom: 40, left: 40, right: 40 });
     } else if (markerCount === 1) {
       const coords = pickupCoords || dropoffCoords || stopCoords!;
       map.setCenter(coords);
       map.setZoom(14);
     }
-  }, [pickupCoords, dropoffCoords, stopCoords, pickupAddress, dropoffAddress, stopAddress, pickupPlaceName, dropoffPlaceName, stopPlaceName]);
+  }, [pickupCoords, dropoffCoords, stopCoords, extraStops, pickupAddress, dropoffAddress, stopAddress, pickupPlaceName, dropoffPlaceName, stopPlaceName]);
 
   // --- Loading phase: multiple cars converge toward pickup along real roads ---
   useEffect(() => {
