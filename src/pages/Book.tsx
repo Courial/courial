@@ -1006,7 +1006,7 @@ const Book = () => {
                       animate={{ opacity: 1, height: "auto" }}
                       exit={{ opacity: 0, height: 0 }}
                       transition={{ duration: 0.15 }}
-                      className="space-y-2 mb-3 overflow-hidden"
+                      className="space-y-2 mb-3 overflow-visible"
                     >
                       {conciergeAddressToggles.start && (
                         <div className="flex items-center gap-3 px-4 py-3 border border-border rounded-xl bg-background focus-within:border-foreground">
