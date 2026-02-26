@@ -1189,7 +1189,7 @@ const Book = () => {
                             />
                             {/* Redraft with AI button for expense description */}
                             {item.description.trim().length > 10 && (
-                              <div className="flex justify-end -mt-1 relative z-10">
+                              <div className="flex justify-end -mt-3 relative z-10 pr-2">
                                 <button
                                   type="button"
                                   onClick={() => handleExpenseRedraft(index)}
