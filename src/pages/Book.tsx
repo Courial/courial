@@ -116,6 +116,7 @@ const Book = () => {
         { id: "pa-film-tv", label: "Film and TV", icon: "🎬" },
         { id: "pa-fashion", label: "Fashion", icon: "👗" },
         { id: "pa-executive", label: "Executive", icon: "💼" },
+        { id: "pa-real-estate", label: "Real Estate", icon: "🏡" },
         { id: "pa-other", label: "Other", icon: "📋" },
       ],
     },
