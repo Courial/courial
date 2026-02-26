@@ -960,7 +960,7 @@ const Book = () => {
                                    >
                                      <ChevronLeft className="w-4 h-4 text-foreground" />
                                    </button>
-                                   <span className="px-2.5 py-1 rounded-full text-[11px] font-normal bg-muted text-foreground border-none leading-none">
+                                   <span className="px-2.5 py-1 rounded-full text-[11px] font-normal border border-primary text-foreground leading-none">
                                      {conciergeSubCategory}
                                    </span>
                                 </div>
@@ -988,7 +988,7 @@ const Book = () => {
                       <ChevronLeft className="w-4 h-4 text-foreground" />
                     </button>
                     <span className="text-xs font-medium text-muted-foreground">Preferred Language</span>
-                    <span className="px-2.5 py-1 rounded-full text-[11px] font-normal leading-none bg-muted text-foreground">
+                    <span className="px-2.5 py-1 rounded-full text-[11px] font-normal leading-none border border-primary text-foreground">
                       {conciergeLanguage}
                     </span>
                   </div>
@@ -1040,7 +1040,7 @@ const Book = () => {
                       className={cn(
                         "px-2.5 py-1 rounded-full text-[11px] font-normal transition-all leading-none",
                         conciergeAddressToggles[type]
-                          ? "bg-muted text-foreground border-none"
+                          ? "border border-primary text-foreground"
                           : "border border-border/60 bg-background text-foreground hover:border-foreground/50"
                       )}
                     >
@@ -1193,7 +1193,7 @@ const Book = () => {
                       onClick={() => setConciergeServiceMode(mode.value)}
                       className={`px-2.5 py-1 rounded-full text-[11px] font-normal transition-all leading-none ${
                         conciergeServiceMode === mode.value
-                          ? "bg-muted text-foreground"
+                          ? "border border-primary text-foreground"
                           : "border border-border/60 bg-background text-foreground/75 hover:border-foreground/50"
                       }`}
                     >
