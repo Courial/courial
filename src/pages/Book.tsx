@@ -1469,7 +1469,7 @@ const Book = () => {
 
             {/* Deliver / Valet Form */}
             <AnimatePresence>
-              {selectedService !== "concierge" && (selectedVehicle || selectedService === "valet") && (
+              {!showAllServices && selectedService !== "concierge" && (selectedVehicle || selectedService === "valet") && (
                 <motion.div
                   initial={{ opacity: 0, height: 0 }}
                   animate={{ opacity: 1, height: "auto" }}
