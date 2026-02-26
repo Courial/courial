@@ -28,6 +28,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { toast } from "sonner";
 import AddressAutocomplete from "@/components/booking/AddressAutocomplete";
+import { Switch } from "@/components/ui/switch";
 import BookingMap from "@/components/booking/BookingMap";
 import chauffeurImage from "@/assets/chauffeur-service.jpg";
 import deliverBox from "@/assets/deliver-box.png";
@@ -99,6 +100,8 @@ const Book = () => {
   const [showRedraftResult, setShowRedraftResult] = useState(false);
   const [redraftedText, setRedraftedText] = useState("");
   const [conciergeNeedsAddress, setConciergeNeedsAddress] = useState(false);
+  const [conciergeStartAddress, setConciergeStartAddress] = useState(false);
+  const [conciergeStopAddress, setConciergeStopAddress] = useState(false);
   
 
   const conciergeGroups = [
@@ -728,7 +731,7 @@ const Book = () => {
                     </AnimatePresence>
                   </div>
 
-                  {/* Address toggle — above info field */}
+                  {/* Address toggles — above info field */}
                   <AnimatePresence>
                     {conciergeCategory && (
                       <motion.div
@@ -736,37 +739,83 @@ const Book = () => {
                         animate={{ opacity: 1, height: "auto" }}
                         exit={{ opacity: 0, height: 0 }}
                         transition={{ duration: 0.2 }}
-                        className="overflow-hidden"
+                        className="overflow-hidden space-y-2"
                       >
+                        {/* Add start address toggle */}
                         <div className="flex items-center justify-between">
-                          <p className="text-xs font-semibold text-muted-foreground tracking-wide">Pickup / drop-off address required?</p>
-                          <div className="flex bg-muted rounded-full p-0.5 gap-0.5">
-                            <button
-                              type="button"
-                              onClick={() => setConciergeNeedsAddress(false)}
-                              className={cn(
-                                "px-3 py-1 rounded-full text-[10px] font-semibold transition-all duration-200",
-                                !conciergeNeedsAddress
-                                  ? "bg-foreground text-background shadow-sm"
-                                  : "text-muted-foreground hover:text-foreground"
-                              )}
-                            >
-                              No
-                            </button>
-                            <button
-                              type="button"
-                              onClick={() => setConciergeNeedsAddress(true)}
-                              className={cn(
-                                "px-3 py-1 rounded-full text-[10px] font-semibold transition-all duration-200",
-                                conciergeNeedsAddress
-                                  ? "bg-foreground text-background shadow-sm"
-                                  : "text-muted-foreground hover:text-foreground"
-                              )}
-                            >
-                              Yes
-                            </button>
-                          </div>
+                          <p className="text-xs font-semibold text-muted-foreground tracking-wide">Add start address</p>
+                          <Switch checked={conciergeStartAddress} onCheckedChange={setConciergeStartAddress} />
                         </div>
+                        <AnimatePresence>
+                          {conciergeStartAddress && (
+                            <motion.div
+                              initial={{ opacity: 0, height: 0 }}
+                              animate={{ opacity: 1, height: "auto" }}
+                              exit={{ opacity: 0, height: 0 }}
+                              transition={{ duration: 0.15 }}
+                              className="overflow-hidden"
+                            >
+                              <div className="flex items-start gap-3 px-4 py-3 border border-border rounded-xl bg-background transition-colors focus-within:border-foreground">
+                                <div className="flex-shrink-0 w-2.5 h-2.5 rounded-full bg-green-500 mt-[7px]" />
+                                <div className="flex-1 min-w-0">
+                                  {pickupPlaceName && pickupCoords && (
+                                    <div className="text-sm font-semibold text-foreground leading-tight">{pickupPlaceName}</div>
+                                  )}
+                                  <AddressAutocomplete
+                                    placeholder="Pickup location"
+                                    value={pickup}
+                                    onChange={(v) => { setPickup(v); if (!v) setPickupPlaceName(null); }}
+                                    onPlaceSelect={handlePickupSelect}
+                                    className={`w-full bg-transparent text-foreground placeholder:text-muted-foreground outline-none ${pickupPlaceName && pickupCoords ? 'text-muted-foreground text-xs mt-0.5' : 'text-sm'}`}
+                                  />
+                                </div>
+                                {pickup && (
+                                  <button type="button" onClick={() => { setPickup(""); setPickupCoords(null); setPickupPlaceName(null); }} className="flex-shrink-0 mt-1 text-muted-foreground hover:text-foreground transition-colors">
+                                    <X className="w-4 h-4" />
+                                  </button>
+                                )}
+                              </div>
+                            </motion.div>
+                          )}
+                        </AnimatePresence>
+
+                        {/* Add stop address toggle */}
+                        <div className="flex items-center justify-between">
+                          <p className="text-xs font-semibold text-muted-foreground tracking-wide">Add stop address</p>
+                          <Switch checked={conciergeStopAddress} onCheckedChange={setConciergeStopAddress} />
+                        </div>
+                        <AnimatePresence>
+                          {conciergeStopAddress && (
+                            <motion.div
+                              initial={{ opacity: 0, height: 0 }}
+                              animate={{ opacity: 1, height: "auto" }}
+                              exit={{ opacity: 0, height: 0 }}
+                              transition={{ duration: 0.15 }}
+                              className="overflow-hidden"
+                            >
+                              <div className="flex items-start gap-3 px-4 py-3 border border-border rounded-xl bg-background transition-colors focus-within:border-foreground">
+                                <div className="flex-shrink-0 w-2.5 h-2.5 bg-red-500 mt-[7px]" />
+                                <div className="flex-1 min-w-0">
+                                  {dropoffPlaceName && dropoffCoords && (
+                                    <div className="text-sm font-semibold text-foreground leading-tight">{dropoffPlaceName}</div>
+                                  )}
+                                  <AddressAutocomplete
+                                    placeholder="Drop-off location"
+                                    value={dropoff}
+                                    onChange={(v) => { setDropoff(v); if (!v) setDropoffPlaceName(null); }}
+                                    onPlaceSelect={handleDropoffSelect}
+                                    className={`w-full bg-transparent text-foreground placeholder:text-muted-foreground outline-none ${dropoffPlaceName && dropoffCoords ? 'text-muted-foreground text-xs mt-0.5' : 'text-sm'}`}
+                                  />
+                                </div>
+                                {dropoff && (
+                                  <button type="button" onClick={() => { setDropoff(""); setDropoffCoords(null); setDropoffPlaceName(null); }} className="flex-shrink-0 mt-1 text-muted-foreground hover:text-foreground transition-colors">
+                                    <X className="w-4 h-4" />
+                                  </button>
+                                )}
+                              </div>
+                            </motion.div>
+                          )}
+                        </AnimatePresence>
                       </motion.div>
                     )}
                   </AnimatePresence>
@@ -878,81 +927,7 @@ const Book = () => {
                     )}
                   </AnimatePresence>
 
-                  {/* Input Fields */}
-                  <AnimatePresence>
-                  {conciergeNeedsAddress && (
-                  <motion.div
-                    initial={{ opacity: 0, height: 0 }}
-                    animate={{ opacity: 1, height: "auto" }}
-                    exit={{ opacity: 0, height: 0 }}
-                    transition={{ duration: 0.2 }}
-                    className="overflow-hidden"
-                  >
-                  <div className="space-y-0">
-                    <div className="relative group">
-                      <div className="flex items-start gap-3 px-4 py-3 border border-border rounded-xl bg-background transition-colors focus-within:border-foreground mb-2">
-                        <div className="flex-shrink-0 w-2.5 h-2.5 rounded-full bg-green-500 mt-[7px]" />
-                        <div className="flex-1 min-w-0">
-                          {pickupPlaceName && pickupCoords && (
-                            <div className="text-sm font-semibold text-foreground leading-tight">{pickupPlaceName}</div>
-                          )}
-                          <AddressAutocomplete
-                            placeholder="Pickup location"
-                            value={pickup}
-                            onChange={(v) => { setPickup(v); if (!v) setPickupPlaceName(null); }}
-                            onPlaceSelect={handlePickupSelect}
-                            className={`w-full bg-transparent text-foreground placeholder:text-muted-foreground outline-none ${pickupPlaceName && pickupCoords ? 'text-muted-foreground text-xs mt-0.5' : 'text-sm'}`}
-                          />
-                        </div>
-                        {pickup && (
-                          <button
-                            type="button"
-                            onClick={() => { setPickup(""); setPickupCoords(null); setPickupPlaceName(null); }}
-                            className="flex-shrink-0 mt-1 text-muted-foreground hover:text-foreground transition-colors"
-                          >
-                            <X className="w-4 h-4" />
-                          </button>
-                        )}
-                      </div>
-                    </div>
-                    <div className="relative group mt-2">
-                      <div className="flex items-start gap-3 px-4 py-3 border border-border rounded-xl bg-background transition-colors focus-within:border-foreground">
-                        <div className="flex-shrink-0 w-2.5 h-2.5 bg-red-500 mt-[7px]" />
-                        <div className="flex-1 min-w-0">
-                          {dropoffPlaceName && dropoffCoords && (
-                            <div className="text-sm font-semibold text-foreground leading-tight">{dropoffPlaceName}</div>
-                          )}
-                          <AddressAutocomplete
-                            placeholder="Dropoff location"
-                            value={dropoff}
-                            onChange={(v) => { setDropoff(v); if (!v) setDropoffPlaceName(null); }}
-                            onPlaceSelect={handleDropoffSelect}
-                            className={`w-full bg-transparent text-foreground placeholder:text-muted-foreground outline-none ${dropoffPlaceName && dropoffCoords ? 'text-muted-foreground text-xs mt-0.5' : 'text-sm'}`}
-                          />
-                        </div>
-                        {dropoff && (
-                          <button
-                            type="button"
-                            onClick={() => { setDropoff(""); setDropoffCoords(null); setDropoffPlaceName(null); }}
-                            className="flex-shrink-0 mt-1 text-muted-foreground hover:text-foreground transition-colors"
-                          >
-                            <X className="w-4 h-4" />
-                          </button>
-                        )}
-                      </div>
-                    </div>
-
-                    {/* ETA info — visible when both addresses set */}
-                    {pickupCoords && dropoffCoords && (
-                      <p className="text-[15px] font-medium text-muted-foreground text-center py-4 flex items-center justify-center gap-1.5">
-                        <img src={deliverBox} alt="" className="w-5 h-5" />
-                        4 mins away • 2:01 AM dropoff
-                      </p>
-                    )}
-                  </div>
-                  </motion.div>
-                  )}
-                  </AnimatePresence>
+                  {/* (address fields now inline with toggles above) */}
 
                   {/* Delivery Requirements Notice */}
                   <Collapsible className="mt-3 text-xs text-foreground">
