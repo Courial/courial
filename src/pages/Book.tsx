@@ -648,7 +648,7 @@ const Book = () => {
                           type="time"
                           value={selectedTime}
                           onChange={(e) => setSelectedTime(e.target.value)}
-                          className="h-11 px-3 rounded-xl border border-border bg-background text-sm text-foreground outline-none focus:border-foreground transition-colors w-[110px]"
+                          className="h-11 px-3 rounded-xl border border-border bg-background text-sm text-foreground outline-none focus:border-border transition-colors w-[110px]"
                         />
                       </div>
                     </div>
@@ -1060,7 +1060,7 @@ const Book = () => {
                       className="space-y-2 mb-3 overflow-visible"
                     >
                       {conciergeAddressToggles.start && (
-                        <div className="flex items-center gap-3 px-4 py-3 border border-border rounded-xl bg-background focus-within:border-foreground">
+                        <div className="flex items-center gap-3 px-4 py-3 border border-border rounded-xl bg-background focus-within:border-border">
                           <div className="flex-shrink-0 w-2.5 h-2.5 rounded-full bg-green-500" />
                           <div className="flex-1 min-w-0">
                             {conciergeStartPlaceName && conciergeStartCoords && (
@@ -1080,7 +1080,7 @@ const Book = () => {
                         </div>
                       )}
                       {conciergeAddressToggles.stop && (
-                        <div className="flex items-center gap-3 px-4 py-3 border border-border rounded-xl bg-background focus-within:border-foreground">
+                        <div className="flex items-center gap-3 px-4 py-3 border border-border rounded-xl bg-background focus-within:border-border">
                           <div className="flex-shrink-0 w-2.5 h-2.5 rounded-none bg-blue-500" />
                           <div className="flex-1 min-w-0">
                             {conciergeStopPlaceName && conciergeStopCoords && (
@@ -1100,7 +1100,7 @@ const Book = () => {
                         </div>
                       )}
                       {conciergeAddressToggles.final && (
-                        <div className="flex items-center gap-3 px-4 py-3 border border-border rounded-xl bg-background focus-within:border-foreground">
+                        <div className="flex items-center gap-3 px-4 py-3 border border-border rounded-xl bg-background focus-within:border-border">
                           <div className="flex-shrink-0 w-2.5 h-2.5 rounded-none bg-destructive" />
                           <div className="flex-1 min-w-0">
                             {conciergeFinalPlaceName && conciergeFinalCoords && (
@@ -1125,7 +1125,7 @@ const Book = () => {
 
                 {/* Task Description Textarea with Redraft */}
                 <div className="relative mb-1">
-                  <div className="px-4 py-4 border border-border rounded-xl bg-background focus-within:border-foreground">
+                  <div className="px-4 py-4 border border-border rounded-xl bg-background focus-within:border-border">
                     <textarea
                       placeholder="Outline the scope of work, preferences, timing requirements, special instructions, and any relevant contact names and phone numbers. Before confirming your booking, you may choose to have AI professionally refine your message for clarity, completeness, and precision."
                       className="w-full bg-transparent text-sm text-foreground placeholder:text-foreground/35 outline-none resize-none overflow-hidden"
@@ -1252,7 +1252,7 @@ const Book = () => {
                               }}
                               placeholder="Describe any expected purchases such as event tickets, specialty retail items, postage, shipping, or required supplies here."
                               rows={1}
-                              className="w-full rounded-lg border border-border/60 bg-background px-3 py-1.5 text-xs text-foreground placeholder:text-muted-foreground/60 focus:outline-none focus:ring-1 focus:ring-ring resize-none overflow-hidden"
+                              className="w-full rounded-lg border border-border/60 bg-background px-3 py-1.5 text-xs text-foreground placeholder:text-muted-foreground/60 focus:outline-none focus:ring-0 resize-none overflow-hidden"
                             />
                             {/* Redraft with AI button for expense description */}
                             {item.description.trim().length > 10 && (
@@ -1329,7 +1329,7 @@ const Book = () => {
                                 }}
                                 placeholder="0"
                                 onFocus={(e) => e.target.select()}
-                                className="w-20 rounded-lg border border-border/60 bg-background pl-5 pr-2 py-0.5 text-xs text-foreground placeholder:text-muted-foreground/60 focus:outline-none focus:ring-1 focus:ring-ring"
+                                className="w-20 rounded-lg border border-border/60 bg-background pl-5 pr-2 py-0.5 text-xs text-foreground placeholder:text-muted-foreground/60 focus:outline-none focus:ring-0"
                               />
                             </div>
                             {expenseCapWarning === index && (
@@ -1391,7 +1391,7 @@ const Book = () => {
                               placeholder="25"
                               disabled={!conciergeAllowOverage}
                               onFocus={(e) => e.target.select()}
-                              className="w-14 rounded-lg border border-border/60 bg-background pl-4 pr-1 py-0 text-[10px] text-foreground placeholder:text-muted-foreground/60 focus:outline-none focus:ring-1 focus:ring-ring disabled:opacity-40"
+                              className="w-14 rounded-lg border border-border/60 bg-background pl-4 pr-1 py-0 text-[10px] text-foreground placeholder:text-muted-foreground/60 focus:outline-none focus:ring-0 disabled:opacity-40"
                             />
                           </div>
                           {overageCapWarning && (
@@ -1481,7 +1481,7 @@ const Book = () => {
                   {/* Input Fields */}
                   <div className="space-y-0">
                     <div className="relative group">
-                      <div className="flex items-start gap-3 px-4 py-3 border border-border rounded-xl bg-background transition-colors focus-within:border-foreground mb-2">
+                      <div className="flex items-start gap-3 px-4 py-3 border border-border rounded-xl bg-background transition-colors focus-within:border-border mb-2">
                         <div className="flex-shrink-0 w-2.5 h-2.5 rounded-full bg-green-500 mt-[7px]" />
                         <div className="flex-1 min-w-0">
                           {pickupPlaceName && pickupCoords && (
@@ -1498,7 +1498,7 @@ const Book = () => {
                       </div>
                     </div>
                     <div className="relative group mt-2">
-                      <div className="flex items-start gap-3 px-4 py-3 border border-border rounded-xl bg-background transition-colors focus-within:border-foreground">
+                      <div className="flex items-start gap-3 px-4 py-3 border border-border rounded-xl bg-background transition-colors focus-within:border-border">
                         <div className="flex-shrink-0 w-2.5 h-2.5 bg-red-500 mt-[7px]" />
                         <div className="flex-1 min-w-0">
                           {dropoffPlaceName && dropoffCoords && (
@@ -1526,7 +1526,7 @@ const Book = () => {
 
                   {/* Notes Field */}
                   <div className="relative group -mt-1">
-                    <div className="flex items-start gap-3 px-4 py-4 border border-border rounded-xl bg-background transition-colors focus-within:border-foreground">
+                    <div className="flex items-start gap-3 px-4 py-4 border border-border rounded-xl bg-background transition-colors focus-within:border-border">
                       <textarea
                         placeholder="Provide all relevant pickup and drop-off details, including contact numbers, special instructions, access information, gate codes, and any other important notes."
                         className="w-full bg-transparent text-sm text-foreground placeholder:text-foreground/35 outline-none resize-none overflow-hidden"
