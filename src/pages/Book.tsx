@@ -1555,6 +1555,25 @@ const Book = () => {
                   className="overflow-hidden"
                 >
 
+                  {/* Multiple Stops */}
+                  <div className="mb-3">
+                    <div className="flex items-center gap-2">
+                      <h4 className="text-xs font-medium text-foreground">Multiple Stops</h4>
+                      <input
+                        type="checkbox"
+                        checked={deliverMultiStop}
+                        onChange={(e) => {
+                          setDeliverMultiStop(e.target.checked);
+                          if (!e.target.checked) setDeliverExtraStops([]);
+                        }}
+                        className="h-3 w-3 rounded border border-border/60 accent-foreground cursor-pointer appearance-none checked:appearance-auto bg-background"
+                      />
+                    </div>
+                    <p className="text-[10px] text-muted-foreground mt-0.5 leading-relaxed">
+                      Check box if the Courial is required to make multiple stops.
+                    </p>
+                  </div>
+
                   {/* Input Fields */}
                   <div className="space-y-0">
                     <div className="relative group">
@@ -1585,7 +1604,7 @@ const Book = () => {
                             <div className="text-sm font-semibold text-foreground leading-tight">{dropoffPlaceName}</div>
                           )}
                           <AddressAutocomplete
-                            placeholder="Dropoff location"
+                            placeholder={deliverMultiStop ? "Dropoff #1" : "Dropoff location"}
                             value={dropoff}
                             onChange={(v) => { setDropoff(v); if (!v) { setDropoffPlaceName(null); setDropoffCoords(null); } }}
                             onPlaceSelect={handleDropoffSelect}
@@ -1597,6 +1616,60 @@ const Book = () => {
                         </button>
                       </div>
                     </div>
+
+                    {/* Extra stop fields when multi-stop enabled */}
+                    <AnimatePresence>
+                      {deliverMultiStop && deliverExtraStops.map((stop, i) => (
+                        <motion.div
+                          key={i}
+                          initial={{ opacity: 0, height: 0 }}
+                          animate={{ opacity: 1, height: "auto" }}
+                          exit={{ opacity: 0, height: 0 }}
+                          transition={{ duration: 0.15 }}
+                          className="relative group mt-2"
+                        >
+                          <div className="flex items-center gap-3 px-4 py-3 border border-border rounded-xl bg-background transition-colors focus-within:border-border">
+                            <div className="flex-shrink-0 w-2.5 h-2.5 bg-red-500" />
+                            <div className="flex-1 min-w-0">
+                              {stop.placeName && stop.coords && (
+                                <div className="text-sm font-semibold text-foreground leading-tight">{stop.placeName}</div>
+                              )}
+                              <AddressAutocomplete
+                                placeholder={`Dropoff #${i + 2}`}
+                                value={stop.address}
+                                onChange={(v) => {
+                                  setDeliverExtraStops(prev => {
+                                    const updated = [...prev];
+                                    updated[i] = { ...updated[i], address: v, ...(v ? {} : { placeName: null, coords: null }) };
+                                    return updated;
+                                  });
+                                }}
+                                onPlaceSelect={(place) => handleExtraStopSelect(i, place)}
+                                className={`w-full bg-transparent text-foreground placeholder:text-muted-foreground outline-none ${stop.placeName && stop.coords ? 'text-muted-foreground text-xs mt-0.5' : 'text-sm'}`}
+                              />
+                            </div>
+                            <button
+                              onClick={() => setDeliverExtraStops(prev => prev.filter((_, idx) => idx !== i))}
+                              className="flex-shrink-0 ml-auto hover:opacity-70 transition-opacity"
+                            >
+                              <X className="w-2.5 h-2.5 text-muted-foreground/50" />
+                            </button>
+                          </div>
+                        </motion.div>
+                      ))}
+                    </AnimatePresence>
+
+                    {/* Add Stop button */}
+                    {deliverMultiStop && deliverExtraStops.length < 4 && (
+                      <button
+                        type="button"
+                        onClick={() => setDeliverExtraStops(prev => [...prev, { address: "", placeName: null, coords: null }])}
+                        className="w-full mt-2 rounded-xl border border-dashed border-border/60 bg-background py-2.5 text-xs font-medium text-foreground hover:bg-muted/50 transition-colors flex items-center justify-center gap-1.5"
+                      >
+                        <Plus className="w-3 h-3" />
+                        Add Stop ({deliverExtraStops.length + 1}/5 dropoffs)
+                      </button>
+                    )}
 
                     {/* ETA info — visible when both addresses set */}
                     {pickupCoords && dropoffCoords && (
