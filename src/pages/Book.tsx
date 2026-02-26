@@ -1108,26 +1108,17 @@ const Book = () => {
                 </div>
 
                 {/* Additional Expenses */}
-                <div className="flex items-center gap-2 mb-1">
-                  <span className="text-xs font-medium text-muted-foreground">Will this task require additional expenses?</span>
-                </div>
-                <div className="flex items-center gap-1.5 mb-3">
-                  {[
-                    { value: true, label: "Yes" },
-                    { value: false, label: "No" },
-                  ].map((opt) => (
-                    <button
-                      key={String(opt.value)}
-                      onClick={() => setConciergeHasExpenses(opt.value)}
-                      className={`px-2 py-0.5 rounded-full text-[10px] font-normal transition-all leading-none ${
-                        conciergeHasExpenses === opt.value
-                          ? "bg-muted text-foreground"
-                          : "border border-border/60 bg-background text-foreground/75 hover:border-foreground/50"
-                      }`}
-                    >
-                      {opt.label}
-                    </button>
-                  ))}
+                <div className="flex items-center justify-center gap-2 mb-3">
+                  <input
+                    type="checkbox"
+                    id="concierge-expenses"
+                    checked={conciergeHasExpenses === true}
+                    onChange={(e) => setConciergeHasExpenses(e.target.checked)}
+                    className="h-3 w-3 rounded border-border/60 accent-foreground cursor-pointer"
+                  />
+                  <label htmlFor="concierge-expenses" className="text-[11px] font-medium text-muted-foreground cursor-pointer select-none">
+                    Add'l Expenses Required?
+                  </label>
                 </div>
 
                 <AnimatePresence>
