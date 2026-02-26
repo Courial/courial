@@ -920,7 +920,7 @@ const Book = () => {
                   <>
                     <p className="text-[11px] text-muted-foreground mb-2">Select Preferred Language</p>
                     <div className="flex flex-wrap gap-2">
-                      {["English", "Spanish", "Arabic", "Chinese", "Hindi", "Japanese", "Korean", "Thai"].map((lang) => (
+                      {["English", "Spanish", "French", "Portuguese", "Arabic", "Chinese", "Hindi", "Indonesian", "Japanese", "Korean", "Thai"].map((lang) => (
                         <button
                           key={lang}
                           onClick={() => setConciergeLanguage(lang)}
