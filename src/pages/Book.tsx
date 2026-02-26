@@ -1644,6 +1644,236 @@ const Book = () => {
                     )}
                   </AnimatePresence>
 
+                  {/* Preferred Language for Deliver/Valet */}
+                  <div className="mb-4 mt-3">
+                    {deliverLanguage ? (
+                      <div className="flex items-center gap-2">
+                        <button
+                          onClick={() => setDeliverLanguage(null)}
+                          className="p-0.5 hover:opacity-70 transition-opacity"
+                        >
+                          <ChevronLeft className="w-4 h-4 text-foreground" />
+                        </button>
+                        <span className="text-xs font-medium text-muted-foreground">Preferred Language</span>
+                        <span className="px-2.5 py-1 rounded-full text-[11px] font-normal leading-none border border-primary text-foreground">
+                          {deliverLanguage}
+                        </span>
+                      </div>
+                    ) : (
+                      <>
+                        <p className="text-xs font-medium text-muted-foreground mb-2">Select Preferred Language</p>
+                        <div className="flex flex-wrap gap-2">
+                          {["English", "Spanish", "French", "Portuguese", "Arabic", "Chinese", "Hindi", "Japanese", "Korean", "Thai"].map((lang) => (
+                            <button
+                              key={lang}
+                              onClick={() => setDeliverLanguage(lang)}
+                              className="px-2.5 py-1 rounded-full text-[11px] font-normal transition-all leading-none border border-border/60 bg-background text-foreground/75 hover:border-foreground/50"
+                            >
+                              {lang}
+                            </button>
+                          ))}
+                        </div>
+                      </>
+                    )}
+                  </div>
+
+                  {/* Additional Expenses for Deliver/Valet */}
+                  <div className="mb-3">
+                    <div className="flex items-center gap-2">
+                      <h4 className="text-xs font-medium text-foreground">Additional Expenses</h4>
+                      <input
+                        type="checkbox"
+                        checked={deliverHasExpenses === true}
+                        onChange={(e) => setDeliverHasExpenses(e.target.checked)}
+                        className="h-3 w-3 rounded border-border/60 accent-foreground cursor-pointer"
+                      />
+                    </div>
+                    <p className="text-[10px] text-muted-foreground mt-0.5 leading-relaxed">
+                      If the Courial needs to make purchases on your behalf, add estimated costs below.
+                    </p>
+                  </div>
+
+                  <AnimatePresence>
+                    {deliverHasExpenses === true && (
+                      <motion.div
+                        initial={{ opacity: 0, height: 0 }}
+                        animate={{ opacity: 1, height: "auto" }}
+                        exit={{ opacity: 0, height: 0 }}
+                        transition={{ duration: 0.2 }}
+                        className="space-y-3 mb-3 overflow-hidden"
+                      >
+                        {deliverExpenseItems.map((item, index) => (
+                          <div key={index} className="rounded-lg border border-border/60 bg-background p-3 space-y-2">
+                            <p className="text-[11px] font-medium text-foreground">Expense Item</p>
+                            <div>
+                              <textarea
+                                ref={(el) => {
+                                  if (el) {
+                                    el.style.height = 'auto';
+                                    el.style.height = el.scrollHeight + 'px';
+                                  }
+                                }}
+                                value={item.description}
+                                onChange={(e) => {
+                                  const updated = [...deliverExpenseItems];
+                                  updated[index].description = e.target.value;
+                                  setDeliverExpenseItems(updated);
+                                  setDeliverExpenseRedraftSuggestion(prev => prev?.index === index ? null : prev);
+                                  e.target.style.height = 'auto';
+                                  e.target.style.height = e.target.scrollHeight + 'px';
+                                }}
+                                placeholder="Describe any expected purchases such as packaging, supplies, or other items here."
+                                rows={1}
+                                className="w-full rounded-lg border border-border/60 bg-background px-3 py-1.5 text-xs text-foreground placeholder:text-muted-foreground/60 focus:outline-none focus:ring-0 resize-none overflow-hidden"
+                              />
+                              {item.description.trim().length > 10 && (
+                                <div className="flex justify-end -mt-3 relative z-10 pr-2">
+                                  <button
+                                    type="button"
+                                    onClick={() => handleDeliverExpenseRedraft(index)}
+                                    disabled={isDeliverExpenseRedrafting !== null}
+                                    className="flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-[hsl(210,100%,50%)] text-white hover:bg-[hsl(210,100%,45%)] transition-colors disabled:opacity-50"
+                                  >
+                                    <Sparkles className="w-2.5 h-2.5" />
+                                    {isDeliverExpenseRedrafting === index ? "Redrafting…" : "Redraft with AI"}
+                                  </button>
+                                </div>
+                              )}
+                              <AnimatePresence>
+                                {deliverExpenseRedraftSuggestion?.index === index && (
+                                  <motion.div
+                                    initial={{ opacity: 0, height: 0 }}
+                                    animate={{ opacity: 1, height: "auto" }}
+                                    exit={{ opacity: 0, height: 0 }}
+                                    transition={{ duration: 0.2 }}
+                                  >
+                                    <div className="p-2 rounded-lg border border-primary/30 bg-primary/5">
+                                      <p className="text-xs text-foreground mb-1.5">{deliverExpenseRedraftSuggestion.text}</p>
+                                      <div className="flex gap-2">
+                                        <button
+                                          type="button"
+                                          onClick={() => {
+                                            const updated = [...deliverExpenseItems];
+                                            updated[index].description = deliverExpenseRedraftSuggestion.text;
+                                            setDeliverExpenseItems(updated);
+                                            setDeliverExpenseRedraftSuggestion(null);
+                                          }}
+                                          className="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-primary text-primary-foreground hover:bg-primary/90"
+                                        >
+                                          Accept
+                                        </button>
+                                        <button
+                                          type="button"
+                                          onClick={() => setDeliverExpenseRedraftSuggestion(null)}
+                                          className="px-2 py-0.5 rounded-full text-[10px] font-semibold border border-border text-foreground hover:bg-muted"
+                                        >
+                                          Ignore
+                                        </button>
+                                      </div>
+                                    </div>
+                                  </motion.div>
+                                )}
+                              </AnimatePresence>
+                            </div>
+                            <div className="flex items-center gap-2">
+                              <label className="text-[10px] text-muted-foreground/80 leading-tight">Estimated<br />Amount</label>
+                              <div className="relative">
+                                <span className="absolute left-2 top-1/2 -translate-y-1/2 text-xs text-muted-foreground">$</span>
+                                <input
+                                  type="text"
+                                  inputMode="decimal"
+                                  value={item.amount ? Number(item.amount.replace(/,/g, '')).toLocaleString('en-US') : ''}
+                                  onChange={(e) => {
+                                    const raw = e.target.value.replace(/,/g, '');
+                                    if (raw === '' || /^\d+$/.test(raw)) {
+                                      if (raw === '' || Number(raw) <= 500) {
+                                        const updated = [...deliverExpenseItems];
+                                        updated[index].amount = raw;
+                                        setDeliverExpenseItems(updated);
+                                        setDeliverExpenseCapWarning(null);
+                                      } else {
+                                        setDeliverExpenseCapWarning(index);
+                                        setTimeout(() => setDeliverExpenseCapWarning(prev => prev === index ? null : prev), 2500);
+                                      }
+                                    }
+                                  }}
+                                  placeholder="0"
+                                  onFocus={(e) => e.target.select()}
+                                  className="w-20 rounded-lg border border-border/60 bg-background pl-5 pr-2 py-0.5 text-xs text-foreground placeholder:text-muted-foreground/60 focus:outline-none focus:ring-0"
+                                />
+                              </div>
+                              {deliverExpenseCapWarning === index && (
+                                <span className="text-[9px] text-destructive font-medium whitespace-nowrap">Sorry, capped at $500</span>
+                              )}
+                            </div>
+                            {deliverExpenseItems.length > 1 && (
+                              <button
+                                type="button"
+                                onClick={() => setDeliverExpenseItems(deliverExpenseItems.filter((_, i) => i !== index))}
+                                className="text-[10px] text-primary font-medium underline underline-offset-2 hover:opacity-70"
+                              >
+                                Remove
+                              </button>
+                            )}
+                          </div>
+                        ))}
+
+                        <button
+                          type="button"
+                          onClick={() => setDeliverExpenseItems([...deliverExpenseItems, { description: "", amount: "0" }])}
+                          className="w-full rounded-lg border border-dashed border-border/60 bg-background py-2 text-[11px] font-medium text-foreground hover:bg-muted/50 transition-colors"
+                        >
+                          + Add Another Expense
+                        </button>
+
+                        <div className="pt-1">
+                          <label className="flex items-center gap-2 cursor-pointer">
+                            <input
+                              type="checkbox"
+                              checked={deliverAllowOverage}
+                              onChange={(e) => setDeliverAllowOverage(e.target.checked)}
+                              className="h-3 w-3 rounded border-border/60 accent-foreground cursor-pointer"
+                            />
+                            <span className="text-[10px] text-foreground">
+                              Allow minor overages up to:
+                            </span>
+                            <div className="relative inline-flex items-center">
+                              <span className="absolute left-1.5 top-1/2 -translate-y-1/2 text-[8px] text-muted-foreground">$</span>
+                              <input
+                                type="text"
+                                inputMode="numeric"
+                                value={deliverOverageLimit}
+                                onChange={(e) => {
+                                  const val = e.target.value;
+                                  if (val === '' || /^\d+$/.test(val)) {
+                                    const num = Number(val);
+                                    if (val === '' || num <= 100) {
+                                      setDeliverOverageLimit(val);
+                                      setDeliverOverageCapWarning(false);
+                                    } else {
+                                      setDeliverOverageCapWarning(true);
+                                      setTimeout(() => setDeliverOverageCapWarning(false), 2500);
+                                    }
+                                  }
+                                }}
+                                placeholder="25"
+                                disabled={!deliverAllowOverage}
+                                onFocus={(e) => e.target.select()}
+                                className="w-14 rounded-lg border border-border/60 bg-background pl-4 pr-1 py-0 text-[10px] text-foreground placeholder:text-muted-foreground/60 focus:outline-none focus:ring-0 disabled:opacity-40"
+                              />
+                            </div>
+                            {deliverOverageCapWarning && (
+                              <span className="text-[9px] text-destructive font-medium whitespace-nowrap">Sorry, capped at $100</span>
+                            )}
+                          </label>
+                          <p className="text-[9px] text-muted-foreground italic mt-0.5 ml-5">
+                            If actual costs exceed your estimate, we may request approval before proceeding.
+                          </p>
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+
                   {/* Delivery Requirements Notice */}
                   <Collapsible className="mt-3 text-xs text-foreground">
                     <CollapsibleTrigger className="flex items-center gap-1 font-semibold cursor-pointer hover:opacity-70 transition-opacity">
