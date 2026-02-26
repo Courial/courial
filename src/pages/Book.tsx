@@ -128,7 +128,14 @@ const Book = () => {
         { id: "wait-service", label: "Wait for Service Provider", icon: "🔧" },
         { id: "be-somewhere", label: "Be Somewhere for Me", icon: "📍" },
         { id: "get-docs-signed", label: "Get Documents Signed", icon: "✍️" },
-        { id: "notary-services", label: "Notary Services", icon: "📝" },
+      ],
+    },
+    {
+      label: "Notary Services",
+      desc: "Official notary support",
+      items: [
+        { id: "certified-notary", label: "Certified Notary", icon: "📜" },
+        { id: "notary-assistance", label: "Notary Assistance", icon: "📝" },
       ],
     },
     {
