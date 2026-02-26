@@ -1107,17 +1107,20 @@ const Book = () => {
                 </div>
 
                 {/* Additional Expenses */}
-                <div className="flex items-center justify-center gap-2 mb-3 flex-row-reverse">
-                  <input
-                    type="checkbox"
-                    id="concierge-expenses"
-                    checked={conciergeHasExpenses === true}
-                    onChange={(e) => setConciergeHasExpenses(e.target.checked)}
-                    className="h-3 w-3 rounded border-border/60 accent-foreground cursor-pointer"
-                  />
-                  <label htmlFor="concierge-expenses" className="text-[11px] font-medium text-muted-foreground cursor-pointer select-none">
-                    Add'l Expenses Required?
-                  </label>
+                <div className="mb-3">
+                  <div className="flex items-center gap-2">
+                    <h4 className="text-xs font-semibold text-foreground">Additional Expenses</h4>
+                    <input
+                      type="checkbox"
+                      id="concierge-expenses"
+                      checked={conciergeHasExpenses === true}
+                      onChange={(e) => setConciergeHasExpenses(e.target.checked)}
+                      className="h-3 w-3 rounded border-border/60 accent-foreground cursor-pointer"
+                    />
+                  </div>
+                  <p className="text-[10px] text-muted-foreground mt-0.5 leading-relaxed">
+                    If the Concierge needs to make purchases on your behalf, add estimated costs below.
+                  </p>
                 </div>
 
                 <AnimatePresence>
@@ -1129,13 +1132,6 @@ const Book = () => {
                       transition={{ duration: 0.2 }}
                       className="space-y-3 mb-3 overflow-hidden"
                     >
-                      {/* Header */}
-                      <div>
-                        <h4 className="text-xs font-semibold text-foreground">Additional Expenses <span className="font-normal text-muted-foreground">(Optional)</span></h4>
-                        <p className="text-[10px] text-muted-foreground mt-0.5 leading-relaxed">
-                          If the Concierge needs to make purchases on your behalf, add estimated costs below.
-                        </p>
-                      </div>
 
                       {/* Expense Items */}
                       {conciergeExpenseItems.map((item, index) => (
