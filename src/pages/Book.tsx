@@ -5,7 +5,7 @@ import { Navbar } from "@/components/Navbar";
 import { Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { Helmet } from "react-helmet-async";
-import { MapPin, Search, CarFront, ParkingCircle, Leaf, Box, ConciergeBell, Clock, CalendarIcon, ChevronDown, Info, Plus, Trash2, CreditCard, Star, X, Weight } from "lucide-react";
+import { MapPin, Search, CarFront, ParkingCircle, Leaf, Box, ConciergeBell, Clock, CalendarIcon, ChevronDown, ChevronLeft, Info, Plus, Trash2, CreditCard, Star, X, Weight, Sparkles } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import visaIcon from "@/assets/card-icons/visa.svg";
 import mastercardIcon from "@/assets/card-icons/mastercard.svg";
@@ -56,6 +56,21 @@ const vehicleOptions: { id: VehicleId; label: string; image: string; imgClass?: 
 
 type ServiceId = "deliver" | "concierge" | "chauffeur" | "valet";
 
+interface ConciergeCategory {
+  id: string;
+  label: string;
+  desc: string;
+  subs: string[];
+}
+
+const conciergeCategories: ConciergeCategory[] = [
+  { id: "personal-assistant", label: "Personal Assistant", desc: "Dedicated PA support", subs: ["Film and TV", "Fashion", "Executive", "Real Estate", "Other"] },
+  { id: "waiting", label: "Waiting", desc: "We wait so you don't", subs: ["Wait in Line", "Wait for Service Provider", "Be Somewhere for Me", "Get Documents Signed"] },
+  { id: "notary", label: "Notary Services", desc: "Official notary support", subs: ["Certified Notary", "Notary Assistance"] },
+  { id: "travel", label: "Travel", desc: "Trips, flights & logistics", subs: ["Plan Custom Itinerary", "Arrange Private Drivers", "Coordinate Multi-city Travel", "Book Activities & Reservations"] },
+  { id: "something-else", label: "Something Else?", desc: "", subs: [] },
+];
+
 const serviceCards: { id: ServiceId; label: string; desc: string; href: string; external?: boolean; image: string; icons: LucideIcon[] }[] = [
   { id: "deliver", label: "Deliver", desc: "Your products deserve more than just a driver. They deserve Courial.", href: "/book", image: "https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=400&q=80", icons: [Box] },
   { id: "concierge", label: "Concierge", desc: "Whatever. Whenever.\nIf it's possible, we'll get it done.", href: "/book", image: "https://images.unsplash.com/photo-1521791136064-7986c2920216?w=400&q=80", icons: [ConciergeBell] },
@@ -89,6 +104,17 @@ const Book = () => {
   const [heavyItems, setHeavyItems] = useState<string>("1");
   const [twoCourials, setTwoCourials] = useState<boolean | null>(null);
   const [hasStairs, setHasStairs] = useState<boolean | null>(null);
+
+  // Concierge-specific state
+  const [conciergeCategory, setConciergeCategory] = useState<string | null>(null);
+  const [conciergeSubCategory, setConciergeSubCategory] = useState<string | null>(null);
+  const [conciergeAddressToggles, setConciergeAddressToggles] = useState({ start: false, stop: false, final: false });
+  const [conciergeStartAddress, setConciergeStartAddress] = useState("");
+  const [conciergeStopAddress, setConciergeStopAddress] = useState("");
+  const [conciergeFinalAddress, setConciergeFinalAddress] = useState("");
+  const [conciergeDescription, setConciergeDescription] = useState("");
+  const [redraftSuggestion, setRedraftSuggestion] = useState<string | null>(null);
+  const [isRedrafting, setIsRedrafting] = useState(false);
 
   // Auto-select "Require 2 Courials" based on weight conditions
   useEffect(() => {
@@ -138,7 +164,35 @@ const Book = () => {
   const activePayment = paymentMethods.find(p => p.id === selectedPaymentMethod) || paymentMethods[0];
 
   const needsVehicle = selectedService === "deliver";
-  const isFormValid = pickup.trim().length > 0 && dropoff.trim().length > 0 && (!needsVehicle || selectedVehicle !== null) && notes.trim().length > 0;
+  const conciergeReady = selectedService === "concierge" && (conciergeSubCategory !== null || conciergeCategory === "something-else") && conciergeDescription.trim().length > 0;
+  const isFormValid = selectedService === "concierge"
+    ? conciergeReady
+    : pickup.trim().length > 0 && dropoff.trim().length > 0 && (!needsVehicle || selectedVehicle !== null) && notes.trim().length > 0;
+
+  // Redraft with AI handler
+  const handleRedraft = useCallback(async () => {
+    if (conciergeDescription.trim().length < 10 || isRedrafting) return;
+    setIsRedrafting(true);
+    setRedraftSuggestion(null);
+    try {
+      const selectedCat = conciergeCategories.find(c => c.id === conciergeCategory);
+      const categoryLabel = conciergeSubCategory
+        ? `${selectedCat?.label} > ${conciergeSubCategory}`
+        : selectedCat?.label || "General";
+      const { data, error } = await supabase.functions.invoke("redraft-concierge", {
+        body: { description: conciergeDescription, category: categoryLabel },
+      });
+      if (error || !data?.redrafted) {
+        toast.error("Couldn't redraft — please try again.");
+      } else {
+        setRedraftSuggestion(data.redrafted);
+      }
+    } catch {
+      toast.error("Redraft failed.");
+    } finally {
+      setIsRedrafting(false);
+    }
+  }, [conciergeDescription, conciergeCategory, conciergeSubCategory, isRedrafting]);
 
   const handleBookingSubmit = useCallback(async () => {
     if (!isFormValid) return;
@@ -158,23 +212,27 @@ const Book = () => {
         return;
       }
 
+      const isConcierge = selectedService === "concierge";
       const payload: Record<string, any> = {
         scheduleType: timeMode === "now" ? "now" : "later",
         serviceType: selectedService || "deliver",
         vehicleType: selectedVehicle || undefined,
-        notes,
-        pickup: {
-          address: pickup,
-          lat: pickupCoords?.lat,
-          lng: pickupCoords?.lng,
-        },
-        dropoff: {
-          address: dropoff,
-          lat: dropoffCoords?.lat,
-          lng: dropoffCoords?.lng,
-        },
+        notes: isConcierge ? conciergeDescription : notes,
+        pickup: isConcierge
+          ? { address: conciergeStartAddress || "N/A", lat: 0, lng: 0 }
+          : { address: pickup, lat: pickupCoords?.lat, lng: pickupCoords?.lng },
+        dropoff: isConcierge
+          ? { address: conciergeFinalAddress || "N/A", lat: 0, lng: 0 }
+          : { address: dropoff, lat: dropoffCoords?.lat, lng: dropoffCoords?.lng },
         userId: user.id,
       };
+
+      if (isConcierge) {
+        const cat = conciergeCategories.find(c => c.id === conciergeCategory);
+        payload.conciergeCategory = cat?.label || conciergeCategory;
+        payload.conciergeSubCategory = conciergeSubCategory === "__direct__" ? cat?.label : conciergeSubCategory;
+        if (conciergeStopAddress) payload.stopAddress = conciergeStopAddress;
+      }
 
       if (timeMode === "later" && selectedDate) {
         payload.date = format(selectedDate, "yyyy-MM-dd");
@@ -218,7 +276,7 @@ const Book = () => {
       toast.error("Something went wrong — please try again.");
       setBookingState("input");
     }
-  }, [isFormValid, user, timeMode, selectedVehicle, notes, pickup, pickupCoords, dropoff, dropoffCoords, selectedDate, selectedTime, over70lbs, twoCourials, hasStairs]);
+  }, [isFormValid, user, timeMode, selectedService, selectedVehicle, notes, pickup, pickupCoords, dropoff, dropoffCoords, selectedDate, selectedTime, over70lbs, twoCourials, hasStairs, conciergeDescription, conciergeCategory, conciergeSubCategory, conciergeStartAddress, conciergeStopAddress, conciergeFinalAddress]);
 
   // Animate loading progress and transition to active
   useEffect(() => {
@@ -674,11 +732,329 @@ const Book = () => {
                   </AnimatePresence>
                 </div>
               )}
+
+              {/* Concierge Category Drill-Down */}
+              {selectedService === "concierge" && (
+                <div className="mb-4">
+                  <AnimatePresence mode="wait">
+                    {!conciergeCategory ? (
+                      /* Level 1: Top-level categories */
+                      <motion.div
+                        key="categories"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        transition={{ duration: 0.15 }}
+                        className="flex flex-wrap gap-2"
+                      >
+                        {conciergeCategories.map((cat) => (
+                          <button
+                            key={cat.id}
+                            onClick={() => {
+                              setConciergeCategory(cat.id);
+                              if (cat.subs.length === 0) {
+                                setConciergeSubCategory("__direct__");
+                              }
+                            }}
+                            className="px-3 py-1.5 rounded-full text-sm font-normal border border-border bg-background text-foreground hover:border-foreground/50 transition-all"
+                          >
+                            {cat.label}
+                          </button>
+                        ))}
+                      </motion.div>
+                    ) : !conciergeSubCategory || conciergeSubCategory === "__direct__" ? (
+                      /* Level 2: Sub-categories (or direct for "Something Else?") */
+                      <motion.div
+                        key="subcategories"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        transition={{ duration: 0.15 }}
+                      >
+                        {(() => {
+                          const cat = conciergeCategories.find(c => c.id === conciergeCategory)!;
+                          return (
+                            <>
+                              <div className="flex items-center gap-2 mb-2">
+                                <button
+                                  onClick={() => { setConciergeCategory(null); setConciergeSubCategory(null); }}
+                                  className="p-0.5 hover:opacity-70 transition-opacity"
+                                >
+                                  <ChevronLeft className="w-4 h-4 text-foreground" />
+                                </button>
+                                <span className="px-3 py-1 rounded-full text-sm font-normal border border-primary text-foreground">
+                                  {cat.label}
+                                </span>
+                                {cat.desc && (
+                                  <span className="text-sm text-muted-foreground">{cat.desc}</span>
+                                )}
+                              </div>
+                              {cat.subs.length > 0 && (
+                                <div className="flex flex-wrap gap-2">
+                                  {cat.subs.map((sub) => (
+                                    <button
+                                      key={sub}
+                                      onClick={() => setConciergeSubCategory(sub)}
+                                      className="px-3 py-1.5 rounded-full text-sm font-normal border border-border bg-background text-foreground hover:border-foreground/50 transition-all"
+                                    >
+                                      {sub}
+                                    </button>
+                                  ))}
+                                </div>
+                              )}
+                            </>
+                          );
+                        })()}
+                      </motion.div>
+                    ) : (
+                      /* Level 3: Selected — show breadcrumbs */
+                      <motion.div
+                        key="selected"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        transition={{ duration: 0.15 }}
+                      >
+                        {(() => {
+                          const cat = conciergeCategories.find(c => c.id === conciergeCategory)!;
+                          return (
+                            <>
+                              <div className="flex items-center gap-2 mb-1">
+                                <button
+                                  onClick={() => { setConciergeCategory(null); setConciergeSubCategory(null); }}
+                                  className="p-0.5 hover:opacity-70 transition-opacity"
+                                >
+                                  <ChevronLeft className="w-4 h-4 text-foreground" />
+                                </button>
+                                <span className="px-3 py-1 rounded-full text-sm font-normal border border-primary text-foreground">
+                                  {cat.label}
+                                </span>
+                                {cat.desc && (
+                                  <span className="text-sm text-muted-foreground">{cat.desc}</span>
+                                )}
+                              </div>
+                              {conciergeSubCategory !== "__direct__" && (
+                                <div className="flex items-center gap-2">
+                                  <button
+                                    onClick={() => setConciergeSubCategory(null)}
+                                    className="p-0.5 hover:opacity-70 transition-opacity"
+                                  >
+                                    <ChevronLeft className="w-4 h-4 text-foreground" />
+                                  </button>
+                                  <span className="px-3 py-1 rounded-full text-sm font-normal border border-border text-foreground">
+                                    {conciergeSubCategory}
+                                  </span>
+                                </div>
+                              )}
+                            </>
+                          );
+                        })()}
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
+              )}
             </motion.div>
             )}
 
+            {/* Concierge Task Details Form */}
+            {selectedService === "concierge" && conciergeSubCategory && (
+              <motion.div
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: "auto" }}
+                exit={{ opacity: 0, height: 0 }}
+                transition={{ duration: 0.2 }}
+                className="overflow-hidden"
+              >
+                {/* Address Toggle Pills */}
+                <div className="flex items-center justify-center gap-2 mb-3">
+                  {(["start", "stop", "final"] as const).map((type) => (
+                    <button
+                      key={type}
+                      onClick={() => setConciergeAddressToggles(prev => ({ ...prev, [type]: !prev[type] }))}
+                      className={cn(
+                        "px-3 py-1.5 rounded-full text-sm font-normal border transition-all",
+                        conciergeAddressToggles[type]
+                          ? "border-primary text-foreground"
+                          : "border-border text-foreground hover:border-foreground/50"
+                      )}
+                    >
+                      + {type.charAt(0).toUpperCase() + type.slice(1)} address
+                    </button>
+                  ))}
+                </div>
+
+                {/* Address Inputs for enabled toggles */}
+                <AnimatePresence>
+                  {(conciergeAddressToggles.start || conciergeAddressToggles.stop || conciergeAddressToggles.final) && (
+                    <motion.div
+                      initial={{ opacity: 0, height: 0 }}
+                      animate={{ opacity: 1, height: "auto" }}
+                      exit={{ opacity: 0, height: 0 }}
+                      transition={{ duration: 0.15 }}
+                      className="space-y-2 mb-3 overflow-hidden"
+                    >
+                      {conciergeAddressToggles.start && (
+                        <div className="flex items-center gap-3 px-4 py-3 border border-border rounded-xl bg-background focus-within:border-foreground">
+                          <div className="flex-shrink-0 w-2.5 h-2.5 rounded-full bg-green-500" />
+                          <AddressAutocomplete
+                            placeholder="Start address"
+                            value={conciergeStartAddress}
+                            onChange={setConciergeStartAddress}
+                            onPlaceSelect={() => {}}
+                            className="w-full bg-transparent text-sm text-foreground placeholder:text-muted-foreground outline-none"
+                          />
+                        </div>
+                      )}
+                      {conciergeAddressToggles.stop && (
+                        <div className="flex items-center gap-3 px-4 py-3 border border-border rounded-xl bg-background focus-within:border-foreground">
+                          <div className="flex-shrink-0 w-2.5 h-2.5 rounded-full bg-yellow-500" />
+                          <AddressAutocomplete
+                            placeholder="Stop address"
+                            value={conciergeStopAddress}
+                            onChange={setConciergeStopAddress}
+                            onPlaceSelect={() => {}}
+                            className="w-full bg-transparent text-sm text-foreground placeholder:text-muted-foreground outline-none"
+                          />
+                        </div>
+                      )}
+                      {conciergeAddressToggles.final && (
+                        <div className="flex items-center gap-3 px-4 py-3 border border-border rounded-xl bg-background focus-within:border-foreground">
+                          <div className="flex-shrink-0 w-2.5 h-2.5 rounded-full bg-blue-500" />
+                          <AddressAutocomplete
+                            placeholder="Final address"
+                            value={conciergeFinalAddress}
+                            onChange={setConciergeFinalAddress}
+                            onPlaceSelect={() => {}}
+                            className="w-full bg-transparent text-sm text-foreground placeholder:text-muted-foreground outline-none"
+                          />
+                        </div>
+                      )}
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+
+                {/* Task Description Textarea with Redraft */}
+                <div className="relative mb-1">
+                  <div className="px-4 py-4 border border-border rounded-xl bg-background focus-within:border-foreground">
+                    <textarea
+                      placeholder="Describe your task in detail — what needs to be done, any preferences, timing constraints, or special instructions."
+                      className="w-full bg-transparent text-sm text-foreground placeholder:text-foreground/35 outline-none resize-none overflow-hidden"
+                      rows={3}
+                      value={conciergeDescription}
+                      onChange={(e) => { setConciergeDescription(e.target.value); setRedraftSuggestion(null); }}
+                      onInput={(e) => { const t = e.currentTarget; t.style.height = 'auto'; t.style.height = t.scrollHeight + 'px'; }}
+                    />
+                  </div>
+                  {/* Redraft with AI button — centered on bottom border */}
+                  {conciergeDescription.trim().length > 10 && (
+                    <div className="flex justify-center -mt-3.5 relative z-10">
+                      <button
+                        onClick={handleRedraft}
+                        disabled={isRedrafting}
+                        className="flex items-center gap-1.5 px-4 py-1.5 rounded-full text-sm font-semibold bg-primary text-primary-foreground hover:bg-primary/90 transition-colors disabled:opacity-50"
+                      >
+                        <Sparkles className="w-3.5 h-3.5" />
+                        {isRedrafting ? "Redrafting…" : "Redraft with AI"}
+                      </button>
+                    </div>
+                  )}
+                </div>
+
+                {/* Redraft Suggestion */}
+                <AnimatePresence>
+                  {redraftSuggestion && (
+                    <motion.div
+                      initial={{ opacity: 0, height: 0 }}
+                      animate={{ opacity: 1, height: "auto" }}
+                      exit={{ opacity: 0, height: 0 }}
+                      className="overflow-hidden mb-3"
+                    >
+                      <div className="p-3 rounded-xl border border-primary/30 bg-primary/5">
+                        <p className="text-sm text-foreground mb-2">{redraftSuggestion}</p>
+                        <div className="flex gap-2">
+                          <button
+                            onClick={() => { setConciergeDescription(redraftSuggestion); setRedraftSuggestion(null); }}
+                            className="px-3 py-1 rounded-full text-xs font-semibold bg-primary text-primary-foreground hover:bg-primary/90"
+                          >
+                            Accept
+                          </button>
+                          <button
+                            onClick={() => setRedraftSuggestion(null)}
+                            className="px-3 py-1 rounded-full text-xs font-semibold border border-border text-foreground hover:bg-muted"
+                          >
+                            Ignore
+                          </button>
+                        </div>
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+
+                {/* Concierge Service Requirements */}
+                <Collapsible className="mt-3 text-xs text-foreground">
+                  <CollapsibleTrigger className="flex items-center gap-1 font-semibold cursor-pointer hover:opacity-70 transition-opacity">
+                    Concierge Service Requirements
+                    <ChevronDown className="w-3.5 h-3.5 transition-transform duration-200 [&[data-state=open]]:rotate-180" />
+                  </CollapsibleTrigger>
+                  <CollapsibleContent className="space-y-3 mt-2">
+                    <div>
+                      <p className="text-muted-foreground leading-relaxed">Before submitting your request, please ensure the following:</p>
+                      <ul className="text-muted-foreground leading-relaxed mt-1 space-y-0.5">
+                        <li>• Items must be legal and safe to handle</li>
+                        <li>• Single items are limited to a $1,500 declared value</li>
+                        <li>• High-value requests may require pre-approval</li>
+                      </ul>
+                    </div>
+                    <div>
+                      <p className="font-semibold mb-1">Restricted Items</p>
+                      <p className="text-muted-foreground leading-relaxed">Concierge services do not handle alcohol, firearms, hazardous materials, illegal goods, or cryptocurrency hardware wallets.</p>
+                      <p className="text-muted-foreground leading-relaxed mt-1">All requests must comply with local, state, and federal laws. Requests involving restricted or unlawful items may be canceled, and accounts may be suspended.</p>
+                    </div>
+                    <div>
+                      <p className="font-semibold mb-1">Insurance & Agreement</p>
+                      <p className="text-muted-foreground leading-relaxed">Courial does not provide cargo insurance unless in a premium tier. By confirming your request, you acknowledge and accept Courial's Terms and Conditions.</p>
+                    </div>
+                  </CollapsibleContent>
+                </Collapsible>
+
+                {/* Concierge Pricing & Payment */}
+                <div className="mt-3 rounded-2xl border border-border bg-background p-5">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-1.5">
+                      <span className="text-lg font-bold text-foreground">Fee estimate</span>
+                      <button type="button" onClick={() => setShowPriceBreakdown(true)} className="cursor-pointer hover:opacity-70 transition-opacity">
+                        <Info className="w-4 h-4 text-muted-foreground" />
+                      </button>
+                    </div>
+                    <span className="text-lg font-bold text-foreground">$21.59</span>
+                  </div>
+                  <div className="border-t border-border my-4" />
+                  <div className="flex items-center justify-between">
+                    <button
+                      onClick={() => setShowPaymentMethods(true)}
+                      className="flex items-center gap-1.5 flex-shrink-0 hover:opacity-80 transition-opacity"
+                    >
+                      <img src={activePayment.icon} alt={activePayment.label} className="w-12 h-auto rounded" />
+                      <span className="text-sm text-muted-foreground tracking-wide">••••&nbsp;{activePayment.last4}</span>
+                      <ChevronDown className="w-3 h-3 text-muted-foreground" />
+                    </button>
+                    <Button
+                      disabled={!isFormValid}
+                      onClick={handleBookingSubmit}
+                      className="rounded h-8 text-base font-semibold px-5"
+                      variant={isFormValid ? "hero" : "secondary"}
+                    >
+                      Book Concierge
+                    </Button>
+                  </div>
+                </div>
+              </motion.div>
+            )}
+
+            {/* Deliver / Valet Form */}
             <AnimatePresence>
-              {(selectedVehicle || selectedService === "concierge" || selectedService === "valet") && (
+              {selectedService !== "concierge" && (selectedVehicle || selectedService === "valet") && (
                 <motion.div
                   initial={{ opacity: 0, height: 0 }}
                   animate={{ opacity: 1, height: "auto" }}
@@ -686,7 +1062,6 @@ const Book = () => {
                   transition={{ duration: 0.2 }}
                   className="overflow-hidden"
                 >
-
 
                   {/* Input Fields */}
                   <div className="space-y-0">
@@ -751,7 +1126,7 @@ const Book = () => {
                   {/* Delivery Requirements Notice */}
                   <Collapsible className="mt-3 text-xs text-foreground">
                     <CollapsibleTrigger className="flex items-center gap-1 font-semibold cursor-pointer hover:opacity-70 transition-opacity">
-                      Delivery Requirements
+                      {selectedService === "valet" ? "Valet Service Requirements" : "Delivery Requirements"}
                       <ChevronDown className="w-3.5 h-3.5 transition-transform duration-200 [&[data-state=open]]:rotate-180" />
                     </CollapsibleTrigger>
                     <CollapsibleContent className="space-y-3 mt-2">
