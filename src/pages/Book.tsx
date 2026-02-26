@@ -1040,7 +1040,7 @@ const Book = () => {
                       className={cn(
                         "px-2.5 py-1 rounded-full text-[11px] font-normal transition-all leading-none",
                         conciergeAddressToggles[type]
-                          ? "bg-muted text-foreground border-none"
+                          ? "border border-primary text-foreground"
                           : "border border-border/60 bg-background text-foreground hover:border-foreground/50"
                       )}
                     >
