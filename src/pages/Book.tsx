@@ -731,7 +731,7 @@ const Book = () => {
                     </AnimatePresence>
                   </div>
 
-                  {/* Address toggles — above info field */}
+                  {/* Address toggles — pill buttons on same row */}
                   <AnimatePresence>
                     {conciergeCategory && (
                       <motion.div
@@ -741,11 +741,23 @@ const Book = () => {
                         transition={{ duration: 0.2 }}
                         className="overflow-hidden space-y-2"
                       >
-                        {/* Add start address toggle */}
-                        <div className="flex items-center justify-between">
-                          <p className="text-xs font-semibold text-muted-foreground tracking-wide">Add start address</p>
-                          <Switch checked={conciergeStartAddress} onCheckedChange={setConciergeStartAddress} />
+                        <div className="flex items-center gap-2">
+                          <button
+                            type="button"
+                            onClick={() => setConciergeStartAddress(!conciergeStartAddress)}
+                            className={`px-2.5 py-1 rounded-full text-[11px] font-normal transition-all border leading-none ${conciergeStartAddress ? 'bg-foreground text-background border-foreground' : 'bg-background text-foreground/75 border-border/60 hover:border-foreground/50'}`}
+                          >
+                            + Start address
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => setConciergeStopAddress(!conciergeStopAddress)}
+                            className={`px-2.5 py-1 rounded-full text-[11px] font-normal transition-all border leading-none ${conciergeStopAddress ? 'bg-foreground text-background border-foreground' : 'bg-background text-foreground/75 border-border/60 hover:border-foreground/50'}`}
+                          >
+                            + Stop address
+                          </button>
                         </div>
+
                         <AnimatePresence>
                           {conciergeStartAddress && (
                             <motion.div
@@ -779,11 +791,6 @@ const Book = () => {
                           )}
                         </AnimatePresence>
 
-                        {/* Add stop address toggle */}
-                        <div className="flex items-center justify-between">
-                          <p className="text-xs font-semibold text-muted-foreground tracking-wide">Add stop address</p>
-                          <Switch checked={conciergeStopAddress} onCheckedChange={setConciergeStopAddress} />
-                        </div>
                         <AnimatePresence>
                           {conciergeStopAddress && (
                             <motion.div
