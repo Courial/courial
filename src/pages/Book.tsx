@@ -540,11 +540,11 @@ const Book = () => {
                 </div>
 
                 {/* Now / Later pill toggle */}
-                <div className="flex bg-muted rounded-full p-0.5 gap-0.5">
+                <div className="flex bg-background rounded-full p-0.5 gap-0.5 border border-foreground/20">
                   <button
                     onClick={() => setTimeMode("now")}
                     className={cn(
-                      "px-3 py-1 rounded-full text-[10px] font-semibold transition-all duration-200 flex items-center gap-1",
+                      "px-3 py-1 rounded-full text-xs font-semibold transition-all duration-200 flex items-center gap-1",
                       timeMode === "now"
                         ? "bg-foreground text-background shadow-sm"
                         : "text-muted-foreground hover:text-foreground"
@@ -556,7 +556,7 @@ const Book = () => {
                   <button
                     onClick={() => setTimeMode("later")}
                     className={cn(
-                      "px-3 py-1 rounded-full text-[10px] font-semibold transition-all duration-200 flex items-center gap-1",
+                      "px-3 py-1 rounded-full text-xs font-semibold transition-all duration-200 flex items-center gap-1",
                       timeMode === "later"
                         ? "bg-foreground text-background shadow-sm"
                         : "text-muted-foreground hover:text-foreground"
