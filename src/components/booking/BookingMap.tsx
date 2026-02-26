@@ -279,7 +279,9 @@ const BookingMap: React.FC<BookingMapProps> = ({ pickupCoords, dropoffCoords, st
       }
     }
 
-    // Fit bounds
+    // Fit bounds and draw route
+    const markerCount = [pickupCoords, dropoffCoords, stopCoords].filter(Boolean).length;
+
     if (pickupCoords && dropoffCoords) {
       map.fitBounds(bounds, { top: 80, bottom: 40, left: 40, right: 40 });
 
@@ -311,8 +313,11 @@ const BookingMap: React.FC<BookingMapProps> = ({ pickupCoords, dropoffCoords, st
           }
         }
       );
-    } else if (pickupCoords || dropoffCoords) {
-      const coords = pickupCoords || dropoffCoords!;
+    } else if (markerCount > 1) {
+      // Multiple markers but no pickup+dropoff pair (e.g. pickup + stop only)
+      map.fitBounds(bounds, { top: 80, bottom: 40, left: 40, right: 40 });
+    } else if (markerCount === 1) {
+      const coords = pickupCoords || dropoffCoords || stopCoords!;
       map.setCenter(coords);
       map.setZoom(14);
     }
