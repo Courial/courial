@@ -1080,7 +1080,7 @@ const Book = () => {
                 </AnimatePresence>
 
                 {/* Service Mode Toggle */}
-                <div className="flex items-center gap-2 mb-3">
+                <div className="flex items-center gap-2 mb-3 pt-2">
                   <span className="text-[11px] text-muted-foreground">Service Type</span>
                   {[
                     { value: "hourly" as const, label: "Hourly" },
