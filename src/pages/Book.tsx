@@ -1207,7 +1207,7 @@ const Book = () => {
                 <div className="relative mb-1">
                   <div className="px-4 py-4 border border-border rounded-xl bg-background focus-within:border-border">
                     <textarea
-                      placeholder="Outline the scope of work, preferences, timing requirements, special instructions, and any relevant contact names and phone numbers. Before confirming your booking, you may choose to have AI professionally refine your message for clarity, completeness, and precision."
+                      placeholder="Outline the scope of work, preferences, timing requirements, special instructions, relevant contact names and phone numbers, and any external links the Courial will need access to. You may choose to have AI refine your message for clarity and completeness before confirming your booking."
                       className="w-full bg-transparent text-sm text-foreground placeholder:text-foreground/35 outline-none resize-none overflow-hidden"
                       rows={1}
                       value={conciergeDescription}
