@@ -1057,19 +1057,21 @@ const Book = () => {
             {selectedService === "concierge" && conciergeSubCategory && (
               <div className="mb-4">
                 {conciergeLanguage ? (
-                  <div className="flex items-center gap-2">
-                    <button
-                      onClick={() => setConciergeLanguage(null)}
-                      className="p-0.5 hover:opacity-70 transition-opacity"
-                    >
-                      <ChevronLeft className="w-4 h-4 text-foreground" />
-                    </button>
-                    <span className="text-xs font-medium text-muted-foreground">Preferred Language</span>
-                    <span className="px-2.5 py-1 rounded-full text-[11px] font-normal leading-none border border-primary text-foreground">
-                      {conciergeLanguage}
-                    </span>
-                  </div>
-                  <p className="text-[10px] text-muted-foreground mt-1.5 leading-snug">We will make our best efforts to match you with your preferred language; however, this is subject to availability.</p>
+                  <>
+                    <div className="flex items-center gap-2">
+                      <button
+                        onClick={() => setConciergeLanguage(null)}
+                        className="p-0.5 hover:opacity-70 transition-opacity"
+                      >
+                        <ChevronLeft className="w-4 h-4 text-foreground" />
+                      </button>
+                      <span className="text-xs font-medium text-muted-foreground">Preferred Language</span>
+                      <span className="px-2.5 py-1 rounded-full text-[11px] font-normal leading-none border border-primary text-foreground">
+                        {conciergeLanguage}
+                      </span>
+                    </div>
+                    <p className="text-[10px] text-muted-foreground mt-1.5 leading-snug">We will make our best efforts to match you with your preferred language; however, this is subject to availability.</p>
+                  </>
                 ) : (
                   <>
                     <p className="text-xs font-medium text-muted-foreground mb-2">Select Preferred Language</p>
