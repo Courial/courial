@@ -149,16 +149,6 @@ const Book = () => {
       ],
     },
     {
-      label: "Real Estate",
-      desc: "Rentals & relocation help",
-      items: [
-        { id: "short-term-rentals", label: "Luxury Short-term Rentals", icon: "🏡" },
-        { id: "relocation", label: "Relocation Assistance", icon: "📦" },
-        { id: "property-scouting", label: "Property Scouting", icon: "🏢" },
-        { id: "amenity-rentals", label: "Amenity-specific Rental Search", icon: "🏋️" },
-      ],
-    },
-    {
       label: "Something Else?",
       desc: "Custom & flexible requests",
       items: [
