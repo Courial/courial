@@ -1666,8 +1666,10 @@ const Book = () => {
                     {/* Add Stop button */}
                     {deliverMultiStop && (
                       <div className="pt-2 mt-1">
-                        <button
+                        <Button
                           type="button"
+                          variant="hero"
+                          className="w-full rounded-lg h-10 text-sm font-semibold"
                           onClick={() => {
                             if (deliverExtraStops.length >= 19) {
                               toast.error("Maximum of 20 dropoffs reached.");
@@ -1675,11 +1677,9 @@ const Book = () => {
                             }
                             setDeliverExtraStops(prev => [...prev, { address: "", placeName: null, coords: null }]);
                           }}
-                          className="w-full rounded-xl border border-dashed border-border/60 bg-background py-2.5 text-xs font-medium text-foreground hover:bg-muted/50 transition-colors flex items-center justify-center gap-1.5"
                         >
-                          <Plus className="w-3 h-3" />
-                          + Add Stop(s)
-                        </button>
+                          Add Stop
+                        </Button>
                       </div>
                     )}
 
