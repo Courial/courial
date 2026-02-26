@@ -1689,7 +1689,7 @@ const Book = () => {
                       />
                     </div>
                     <p className="text-[10px] text-muted-foreground mt-0.5 leading-relaxed">
-                      If the Courial needs to make purchases on your behalf, add estimated costs below.
+                      Check box if the Courial needs to make purchases on your behalf.
                     </p>
                   </div>
 
