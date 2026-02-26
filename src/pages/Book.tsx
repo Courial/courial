@@ -5,7 +5,7 @@ import { Navbar } from "@/components/Navbar";
 import { Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { Helmet } from "react-helmet-async";
-import { MapPin, Search, CarFront, ParkingCircle, Leaf, Box, ConciergeBell, Clock, CalendarIcon, ChevronDown, ChevronLeft, Info, Plus, Trash2, CreditCard, Star, X, Weight, Sparkles, Loader2 } from "lucide-react";
+import { MapPin, Search, CarFront, ParkingCircle, Leaf, Box, ConciergeBell, Clock, CalendarIcon, ChevronDown, Info, Plus, Trash2, CreditCard, Star, X, Weight } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import visaIcon from "@/assets/card-icons/visa.svg";
 import mastercardIcon from "@/assets/card-icons/mastercard.svg";
@@ -28,7 +28,6 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { toast } from "sonner";
 import AddressAutocomplete from "@/components/booking/AddressAutocomplete";
-import { Switch } from "@/components/ui/switch";
 import BookingMap from "@/components/booking/BookingMap";
 import chauffeurImage from "@/assets/chauffeur-service.jpg";
 import deliverBox from "@/assets/deliver-box.png";
@@ -91,73 +90,6 @@ const Book = () => {
   const [twoCourials, setTwoCourials] = useState<boolean | null>(null);
   const [hasStairs, setHasStairs] = useState<boolean | null>(null);
 
-  // Concierge flow state
-  const [conciergeCategory, setConciergeCategory] = useState<string | null>(null);
-  const [conciergeGroupIndex, setConciergeGroupIndex] = useState<number | null>(null);
-  const [conciergeDetails, setConciergeDetails] = useState("");
-  const [conciergeDetailsEditing, setConciergeDetailsEditing] = useState(false);
-  const [isRedrafting, setIsRedrafting] = useState(false);
-  const [showRedraftResult, setShowRedraftResult] = useState(false);
-  const [redraftedText, setRedraftedText] = useState("");
-  const [conciergeNeedsAddress, setConciergeNeedsAddress] = useState(false);
-  const [conciergeStartAddress, setConciergeStartAddress] = useState(false);
-  const [conciergeStopAddress, setConciergeStopAddress] = useState(false);
-  const [conciergeFinalAddress, setConciergeFinalAddress] = useState(false);
-  const [finalAddress, setFinalAddress] = useState("");
-  const [finalAddressCoords, setFinalAddressCoords] = useState<{ lat: number; lng: number } | null>(null);
-  const [finalAddressPlaceName, setFinalAddressPlaceName] = useState<string | null>(null);
-  
-
-  const conciergeGroups = [
-    {
-      label: "Personal Assistant",
-      desc: "Dedicated PA support",
-      items: [
-        { id: "pa-film-tv", label: "Film and TV", icon: "🎬" },
-        { id: "pa-fashion", label: "Fashion", icon: "👗" },
-        { id: "pa-executive", label: "Executive", icon: "💼" },
-        { id: "pa-real-estate", label: "Real Estate", icon: "🏡" },
-        { id: "pa-other", label: "Other", icon: "📋" },
-      ],
-    },
-    {
-      label: "Waiting",
-      desc: "We wait so you don't",
-      items: [
-        { id: "wait-in-line", label: "Wait in Line", icon: "⏳" },
-        { id: "wait-service", label: "Wait for Service Provider", icon: "🔧" },
-        { id: "be-somewhere", label: "Be Somewhere for Me", icon: "📍" },
-        { id: "get-docs-signed", label: "Get Documents Signed", icon: "✍️" },
-      ],
-    },
-    {
-      label: "Notary Services",
-      desc: "Official notary support",
-      items: [
-        { id: "certified-notary", label: "Certified Notary", icon: "📜" },
-        { id: "notary-assistance", label: "Notary Assistance", icon: "📝" },
-      ],
-    },
-    {
-      label: "Travel",
-      desc: "Trips, flights & logistics",
-      items: [
-        { id: "custom-itinerary", label: "Plan Custom Itinerary", icon: "🗺️" },
-        { id: "private-drivers", label: "Arrange Private Drivers", icon: "🚘" },
-        { id: "multi-city-travel", label: "Coordinate Multi-city Travel", icon: "✈️" },
-        { id: "book-activities", label: "Book Activities & Reservations", icon: "🎯" },
-      ],
-    },
-    {
-      label: "Something Else?",
-      desc: "Tell us about it",
-      items: [],
-    },
-  ];
-
-
-  const conciergeFlowComplete = !!(conciergeCategory && conciergeDetails.trim());
-
   // Auto-select "Require 2 Courials" based on weight conditions
   useEffect(() => {
     if (over70lbs) {
@@ -206,8 +138,7 @@ const Book = () => {
   const activePayment = paymentMethods.find(p => p.id === selectedPaymentMethod) || paymentMethods[0];
 
   const needsVehicle = selectedService === "deliver";
-  const needsConciergeFlow = selectedService === "concierge";
-  const isFormValid = pickup.trim().length > 0 && dropoff.trim().length > 0 && (!needsVehicle || selectedVehicle !== null) && notes.trim().length > 0 && (!needsConciergeFlow || conciergeFlowComplete);
+  const isFormValid = pickup.trim().length > 0 && dropoff.trim().length > 0 && (!needsVehicle || selectedVehicle !== null) && notes.trim().length > 0;
 
   const handleBookingSubmit = useCallback(async () => {
     if (!isFormValid) return;
@@ -588,431 +519,259 @@ const Book = () => {
                 )}
               </AnimatePresence>
 
-              {/* Concierge Intake Flow */}
-              {selectedService === "concierge" && (
-                <div className="mb-4 space-y-4">
-                  {/* Step 1: Choose Category */}
-                  <div>
+              {/* Quick Options Pills — before vehicle selection */}
+              {selectedService === "deliver" && (
+                <div className="mb-4">
+                  <div className="flex flex-wrap items-center justify-center gap-1.5">
                     <AnimatePresence mode="wait">
-                      {conciergeGroupIndex === null || (conciergeGroupIndex !== null && conciergeGroups[conciergeGroupIndex].items.length === 0) ? (
+                      {heavyExpanded ? (
                         <motion.div
-                          key="group-list"
-                          initial={{ opacity: 0 }}
-                          animate={{ opacity: 1 }}
-                          exit={{ opacity: 0 }}
+                          key="selects"
+                          initial={{ opacity: 0, width: 0 }}
+                          animate={{ opacity: 1, width: "auto" }}
+                          exit={{ opacity: 0, width: 0 }}
                           transition={{ duration: 0.15 }}
+                          className="flex items-center gap-1.5 overflow-hidden"
                         >
-                          <p className="text-xs font-semibold text-muted-foreground mb-2 uppercase tracking-wide">Choose category</p>
-                          <div className="flex flex-wrap items-center gap-1.5">
-                            {conciergeGroupIndex !== null && conciergeGroups[conciergeGroupIndex].items.length === 0 ? (
-                              <>
-                                <button
-                                  type="button"
-                                  onClick={() => {
-                                    setConciergeGroupIndex(null);
-                                    setConciergeCategory(null);
-                                  }}
-                                  className="text-muted-foreground hover:text-foreground transition-colors"
-                                >
-                                  <ChevronLeft className="w-4 h-4" />
-                                </button>
-                                <span className="px-2.5 py-1 rounded-full text-[11px] font-normal border leading-none bg-background text-foreground border-primary">
-                                  {conciergeGroups[conciergeGroupIndex].label}
-                                </span>
-                                <span className="text-[11px] text-muted-foreground">
-                                  {conciergeGroups[conciergeGroupIndex].desc}
-                                </span>
-                              </>
-                            ) : (
-                              conciergeGroups.map((group, idx) => (
-                                <button
-                                  key={group.label}
-                                  type="button"
-                                  onClick={() => {
-                                    setConciergeGroupIndex(idx);
-                                    if (group.items.length === 0) {
-                                      setConciergeCategory(group.label);
-                                    } else {
-                                      setConciergeCategory(null);
-                                    }
-                                  }}
-                                  className="px-2.5 py-1 rounded-full text-[11px] font-normal transition-all border leading-none bg-background text-foreground/75 border-border/60 hover:border-foreground/50"
-                                >
-                                  {group.label}
-                                </button>
-                              ))
-                            )}
-                          </div>
+                          <Select value={heavyWeight} onValueChange={setHeavyWeight}>
+                            <SelectTrigger className="h-auto px-2.5 py-1 rounded-full text-[11px] font-normal border leading-none w-auto min-w-0 gap-1 bg-background text-foreground/75 border-border/60 focus:ring-0 focus:ring-offset-0">
+                              <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent>
+                              {["70","75","80","90","100","125","150","175","200","250","300","350","400","450","500"].map(w => (
+                                <SelectItem key={w} value={w}>{w} lbs</SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                          <Select value={heavyItems} onValueChange={setHeavyItems}>
+                            <SelectTrigger className="h-auto px-2.5 py-1 rounded-full text-[11px] font-normal border leading-none w-auto min-w-0 gap-1 bg-background text-foreground/75 border-border/60 focus:ring-0 focus:ring-offset-0">
+                              <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent>
+                              {["1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24","25"].map(n => (
+                                <SelectItem key={n} value={n}>{n} {parseInt(n) === 1 ? "item" : "items"}</SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                          <button
+                            type="button"
+                            onClick={() => setHeavyExpanded(false)}
+                            className="px-2.5 py-1 rounded-full text-[11px] font-normal transition-all border leading-none bg-background text-foreground/75 border-border/60 hover:border-foreground/50"
+                          >
+                            ✓
+                          </button>
                         </motion.div>
                       ) : (
                         <motion.div
-                          key="sub-list"
+                          key="pills"
                           initial={{ opacity: 0 }}
                           animate={{ opacity: 1 }}
                           exit={{ opacity: 0 }}
                           transition={{ duration: 0.15 }}
+                          className="flex items-center gap-1.5"
                         >
-                          <div className="flex items-center gap-2 mb-2">
-                            <button
-                              type="button"
-                              onClick={() => {
-                                setConciergeGroupIndex(null);
-                                setConciergeCategory(null);
-                              }}
-                              className="text-muted-foreground hover:text-foreground transition-colors"
-                            >
-                              <ChevronLeft className="w-4 h-4" />
-                            </button>
-                            <span className="px-2.5 py-1 rounded-full text-[11px] font-normal border leading-none bg-background text-foreground border-primary">
-                              {conciergeGroups[conciergeGroupIndex].label}
-                            </span>
-                            <span className="text-[11px] text-muted-foreground">
-                              {conciergeGroups[conciergeGroupIndex].desc}
-                            </span>
-                          </div>
-                          <div className="flex flex-wrap items-center gap-1.5">
-                            {conciergeGroups[conciergeGroupIndex].items.length === 0 ? (
-                              <span className="text-[11px] text-muted-foreground italic">Describe your request below</span>
-                            ) : conciergeCategory ? (
-                              <>
-                                <button
-                                  type="button"
-                                  onClick={() => setConciergeCategory(null)}
-                                  className="text-muted-foreground hover:text-foreground transition-colors"
-                                >
-                                  <ChevronLeft className="w-4 h-4" />
-                                </button>
-                                <span className="px-2.5 py-1 rounded-full text-[11px] font-normal leading-none bg-muted text-foreground">
-                                  {conciergeGroups[conciergeGroupIndex].items.find(c => c.id === conciergeCategory)?.label}
-                                </span>
-                              </>
-                            ) : (
-                              conciergeGroups[conciergeGroupIndex].items.map((cat) => (
-                                <button
-                                  key={cat.id}
-                                  type="button"
-                                  onClick={() => setConciergeCategory(cat.id)}
-                                  className="px-2.5 py-1 rounded-full text-[11px] font-normal transition-all border leading-none bg-background text-foreground/75 border-border/60 hover:border-foreground/50"
-                                >
-                                  {cat.label}
-                                </button>
-                              ))
+                          {/* Over 70 lbs / weight summary pill */}
+                          <button
+                            type="button"
+                            onClick={() => {
+                              if (over70lbs) {
+                                // Already set — tap to edit
+                                setHeavyExpanded(true);
+                              } else {
+                                // First tap — activate and expand
+                                setOver70lbs(true);
+                                setHeavyExpanded(true);
+                                if (selectedVehicle === "walker" || selectedVehicle === "scooter") {
+                                  setSelectedVehicle(null);
+                                }
+                              }
+                            }}
+                            className={cn(
+                              "px-2.5 py-1 rounded-full text-[11px] font-normal transition-all border leading-none",
+                              over70lbs
+                                ? "bg-background text-foreground border-primary"
+                                : "bg-background text-foreground/75 border-border/60 hover:border-foreground/50"
                             )}
-                          </div>
+                          >
+                            {over70lbs ? `${heavyWeight}lbs / ${heavyItems} ${parseInt(heavyItems) === 1 ? "item" : "items"}` : "Over 70 lbs"}
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              const newVal = twoCourials === true ? null : true;
+                              setTwoCourials(newVal);
+                              if (newVal === true && selectedVehicle !== "van" && selectedVehicle !== "truck") {
+                                setSelectedVehicle(null);
+                              }
+                            }}
+                            className={cn(
+                              "px-2.5 py-1 rounded-full text-[11px] font-normal transition-all border leading-none",
+                              twoCourials === true
+                                ? "bg-background text-foreground border-primary"
+                                : "bg-background text-foreground/75 border-border/60 hover:border-foreground/50"
+                            )}
+                          >
+                            Require 2 Courials
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => setHasStairs(hasStairs === true ? null : true)}
+                            className={cn(
+                              "px-2.5 py-1 rounded-full text-[11px] font-normal transition-all border leading-none",
+                              hasStairs === true
+                                ? "bg-background text-foreground border-primary"
+                                : "bg-background text-foreground/75 border-border/60 hover:border-foreground/50"
+                            )}
+                          >
+                            Involves stairs
+                          </button>
                         </motion.div>
                       )}
                     </AnimatePresence>
                   </div>
+                </div>
+              )}
 
-                  {/* Address toggles — pill buttons on same row */}
-                  <AnimatePresence>
-                    {conciergeCategory && (
-                      <motion.div
-                        initial={{ opacity: 0, height: 0 }}
-                        animate={{ opacity: 1, height: "auto" }}
-                        exit={{ opacity: 0, height: 0 }}
-                        transition={{ duration: 0.2 }}
-                        className="overflow-hidden space-y-2"
-                      >
-                        <div className="flex items-center justify-center gap-2">
-                          <button
-                            type="button"
-                            onClick={() => setConciergeStartAddress(!conciergeStartAddress)}
-                            className={`px-2.5 py-1 rounded-full text-[11px] font-normal transition-all border leading-none ${conciergeStartAddress ? 'bg-muted text-foreground border-border' : 'bg-background text-foreground/75 border-border/60 hover:border-foreground/50'}`}
-                          >
-                            + Start address
-                          </button>
-                          <button
-                            type="button"
-                            onClick={() => setConciergeStopAddress(!conciergeStopAddress)}
-                            className={`px-2.5 py-1 rounded-full text-[11px] font-normal transition-all border leading-none ${conciergeStopAddress ? 'bg-muted text-foreground border-border' : 'bg-background text-foreground/75 border-border/60 hover:border-foreground/50'}`}
-                          >
-                            + Stop address
-                          </button>
-                          <button
-                            type="button"
-                            onClick={() => setConciergeFinalAddress(!conciergeFinalAddress)}
-                            className={`px-2.5 py-1 rounded-full text-[11px] font-normal transition-all border leading-none ${conciergeFinalAddress ? 'bg-muted text-foreground border-border' : 'bg-background text-foreground/75 border-border/60 hover:border-foreground/50'}`}
-                          >
-                            + Final address
-                          </button>
-                        </div>
-
-                        <AnimatePresence>
-                          {conciergeStartAddress && (
-                            <motion.div
-                              initial={{ opacity: 0, height: 0 }}
-                              animate={{ opacity: 1, height: "auto" }}
-                              exit={{ opacity: 0, height: 0 }}
-                              transition={{ duration: 0.15 }}
-                              className="overflow-hidden"
-                            >
-                              <div className="flex items-start gap-3 px-4 py-3 border border-border rounded-xl bg-background transition-colors focus-within:border-foreground">
-                                <div className="flex-shrink-0 w-2.5 h-2.5 rounded-full bg-green-500 mt-[7px]" />
-                                <div className="flex-1 min-w-0">
-                                  {pickupPlaceName && pickupCoords && (
-                                    <div className="text-sm font-semibold text-foreground leading-tight">{pickupPlaceName}</div>
-                                  )}
-                                  <AddressAutocomplete
-                                    placeholder="Pickup location"
-                                    value={pickup}
-                                    onChange={(v) => { setPickup(v); if (!v) setPickupPlaceName(null); }}
-                                    onPlaceSelect={handlePickupSelect}
-                                    className={`w-full bg-transparent text-foreground placeholder:text-muted-foreground outline-none ${pickupPlaceName && pickupCoords ? 'text-muted-foreground text-xs mt-0.5' : 'text-sm'}`}
-                                  />
-                                </div>
-                                {pickup && (
-                                  <button type="button" onClick={() => { setPickup(""); setPickupCoords(null); setPickupPlaceName(null); }} className="flex-shrink-0 mt-1 text-muted-foreground hover:text-foreground transition-colors">
-                                    <X className="w-4 h-4" />
-                                  </button>
-                                )}
-                              </div>
-                            </motion.div>
-                          )}
-                        </AnimatePresence>
-
-                        <AnimatePresence>
-                          {conciergeStopAddress && (
-                            <motion.div
-                              initial={{ opacity: 0, height: 0 }}
-                              animate={{ opacity: 1, height: "auto" }}
-                              exit={{ opacity: 0, height: 0 }}
-                              transition={{ duration: 0.15 }}
-                              className="overflow-hidden"
-                            >
-                              <div className="flex items-start gap-3 px-4 py-3 border border-border rounded-xl bg-background transition-colors focus-within:border-foreground">
-                                <div className="flex-shrink-0 w-2.5 h-2.5 bg-red-500 mt-[7px]" />
-                                <div className="flex-1 min-w-0">
-                                  {dropoffPlaceName && dropoffCoords && (
-                                    <div className="text-sm font-semibold text-foreground leading-tight">{dropoffPlaceName}</div>
-                                  )}
-                                  <AddressAutocomplete
-                                    placeholder="Drop-off location"
-                                    value={dropoff}
-                                    onChange={(v) => { setDropoff(v); if (!v) setDropoffPlaceName(null); }}
-                                    onPlaceSelect={handleDropoffSelect}
-                                    className={`w-full bg-transparent text-foreground placeholder:text-muted-foreground outline-none ${dropoffPlaceName && dropoffCoords ? 'text-muted-foreground text-xs mt-0.5' : 'text-sm'}`}
-                                  />
-                                </div>
-                                {dropoff && (
-                                  <button type="button" onClick={() => { setDropoff(""); setDropoffCoords(null); setDropoffPlaceName(null); }} className="flex-shrink-0 mt-1 text-muted-foreground hover:text-foreground transition-colors">
-                                    <X className="w-4 h-4" />
-                                  </button>
-                                )}
-                              </div>
-                            </motion.div>
-                          )}
-                        </AnimatePresence>
-
-                        <AnimatePresence>
-                          {conciergeFinalAddress && (
-                            <motion.div
-                              initial={{ opacity: 0, height: 0 }}
-                              animate={{ opacity: 1, height: "auto" }}
-                              exit={{ opacity: 0, height: 0 }}
-                              transition={{ duration: 0.15 }}
-                              className="overflow-hidden"
-                            >
-                              <div className="flex items-start gap-3 px-4 py-3 border border-border rounded-xl bg-background transition-colors focus-within:border-foreground">
-                                <div className="flex-shrink-0 w-2.5 h-2.5 rounded-full bg-blue-500 mt-[7px]" />
-                                <div className="flex-1 min-w-0">
-                                  {finalAddressPlaceName && finalAddressCoords && (
-                                    <div className="text-sm font-semibold text-foreground leading-tight">{finalAddressPlaceName}</div>
-                                  )}
-                                  <AddressAutocomplete
-                                    placeholder="Final location"
-                                    value={finalAddress}
-                                    onChange={(v) => { setFinalAddress(v); if (!v) setFinalAddressPlaceName(null); }}
-                                    onPlaceSelect={(place: any) => {
-                                      if (place?.geometry) {
-                                        setFinalAddressCoords({ lat: place.geometry.location.lat(), lng: place.geometry.location.lng() });
-                                        const name = place.name || "";
-                                        const addr = (place.formatted_address || "").replace(/,?\s*(USA|US|United States)\s*$/i, '').trim();
-                                        setFinalAddressPlaceName(name && !addr.startsWith(name) ? name : null);
-                                      }
-                                    }}
-                                    className={`w-full bg-transparent text-foreground placeholder:text-muted-foreground outline-none ${finalAddressPlaceName && finalAddressCoords ? 'text-muted-foreground text-xs mt-0.5' : 'text-sm'}`}
-                                  />
-                                </div>
-                                {finalAddress && (
-                                  <button type="button" onClick={() => { setFinalAddress(""); setFinalAddressCoords(null); setFinalAddressPlaceName(null); }} className="flex-shrink-0 mt-1 text-muted-foreground hover:text-foreground transition-colors">
-                                    <X className="w-4 h-4" />
-                                  </button>
-                                )}
-                              </div>
-                            </motion.div>
-                          )}
-                        </AnimatePresence>
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-
-                  {/* Step 2: Details */}
-                  <AnimatePresence>
-                    {conciergeCategory && (
-                      <motion.div
-                        initial={{ opacity: 0, height: 0, overflow: "hidden" }}
-                        animate={{ opacity: 1, height: "auto", overflow: "visible" }}
-                        exit={{ opacity: 0, height: 0, overflow: "hidden" }}
-                        transition={{ duration: 0.2 }}
-                      >
-                        <div className="relative">
-                          <div className="border border-border rounded-xl bg-background px-4 py-3 focus-within:border-foreground transition-colors">
-                            <textarea
-                              ref={(el) => {
-                                if (el) {
-                                  el.style.height = 'auto';
-                                  el.style.height = el.scrollHeight + 'px';
-                                }
-                              }}
-                              placeholder="Enter the details of your request. Be as specific as possible."
-                              className="w-full bg-transparent text-sm text-foreground placeholder:text-foreground/35 outline-none resize-none overflow-hidden min-h-[3rem]"
-                              rows={2}
-                              value={conciergeDetails}
-                              onChange={(e) => { setConciergeDetails(e.target.value); setConciergeDetailsEditing(true); setShowRedraftResult(false); }}
-                              onFocus={() => setConciergeDetailsEditing(true)}
-                              onInput={(e) => { const t = e.currentTarget; t.style.height = 'auto'; t.style.height = t.scrollHeight + 'px'; }}
-                            />
+              {/* Vehicle type icons for Deliver */}
+              {selectedService === "deliver" && (
+                <div className="mb-6">
+                  <div className="flex items-end justify-center gap-4">
+                    {vehicleOptions.filter((v) => {
+                      if (twoCourials === true && v.id !== "van" && v.id !== "truck") return false;
+                      if (over70lbs === true && (v.id === "walker" || v.id === "scooter")) return false;
+                      return true;
+                    }).map((v) => {
+                      const isActive = selectedVehicle === v.id;
+                      return (
+                        <button
+                          key={v.id}
+                          onClick={() => setSelectedVehicle(isActive ? null : v.id)}
+                          className="bg-transparent border-none outline-none cursor-pointer flex items-center"
+                        >
+                          <div className={cn(
+                            "h-[36px] flex items-end justify-center transition-all duration-300",
+                            isActive ? "grayscale-0 opacity-100 scale-110" : "grayscale opacity-30 scale-100"
+                          )}>
+                            <img src={v.image} alt={v.label} className={cn("object-contain", v.imgClass)} />
                           </div>
-                          {/* Redraft with AI button — on bottom border */}
-                          <AnimatePresence>
-                            {conciergeDetails.trim().length > 10 && !showRedraftResult && (
-                              <motion.div
-                                initial={{ opacity: 0, scale: 0.9 }}
-                                animate={{ opacity: 1, scale: 1 }}
-                                exit={{ opacity: 0, scale: 0.9 }}
-                                className="absolute -bottom-3 left-1/2 -translate-x-1/2"
-                              >
-                                <button
-                                  type="button"
-                                  disabled={isRedrafting}
-                                  onClick={async () => {
-                                    setIsRedrafting(true);
-                                    try {
-                                      const categoryLabel = conciergeGroups.flatMap(g => g.items).find(i => i.id === conciergeCategory)?.label || "general";
-                                      const { data, error } = await supabase.functions.invoke("redraft-concierge", {
-                                        body: { message: conciergeDetails, category: categoryLabel },
-                                      });
-                                      if (error) throw error;
-                                      if (data?.redrafted) {
-                                        setRedraftedText(data.redrafted);
-                                        setShowRedraftResult(true);
-                                      }
-                                    } catch (err) {
-                                      console.error("Redraft failed:", err);
-                                      toast.error("Could not redraft. Please try again.");
-                                    } finally {
-                                      setIsRedrafting(false);
-                                    }
-                                  }}
-                                  className="flex items-center gap-1 px-3 py-1 rounded-full bg-primary text-primary-foreground text-[10px] font-semibold shadow-sm hover:bg-primary/90 transition-colors"
-                                >
-                                  {isRedrafting ? <Loader2 className="w-3 h-3 animate-spin" /> : <Sparkles className="w-3 h-3" />}
-                                  Redraft with AI
-                                </button>
-                              </motion.div>
-                            )}
-                          </AnimatePresence>
-                        </div>
-
-                        {/* Redraft result */}
-                        <AnimatePresence>
-                          {showRedraftResult && redraftedText && (
-                            <motion.div
-                              initial={{ opacity: 0, height: 0 }}
-                              animate={{ opacity: 1, height: "auto" }}
-                              exit={{ opacity: 0, height: 0 }}
-                              transition={{ duration: 0.2 }}
-                              className="overflow-hidden mt-3"
-                            >
-                              <div className="border border-primary/30 rounded-xl bg-primary/5 px-4 py-3">
-                                <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wide mb-1 flex items-center gap-1">
-                                  <Sparkles className="w-3 h-3" /> AI Suggestion
-                                </p>
-                                <p className="text-sm text-foreground leading-relaxed">{redraftedText}</p>
-                                <div className="flex gap-2 mt-2">
-                                  <button
-                                    type="button"
-                                    onClick={() => { setConciergeDetails(redraftedText); setShowRedraftResult(false); setRedraftedText(""); }}
-                                    className="px-3 py-1 rounded-full bg-foreground text-background text-[10px] font-semibold hover:opacity-90 transition-opacity"
-                                  >
-                                    Accept
-                                  </button>
-                                  <button
-                                    type="button"
-                                    onClick={() => { setShowRedraftResult(false); setRedraftedText(""); }}
-                                    className="px-3 py-1 rounded-full border border-border text-foreground text-[10px] font-semibold hover:bg-muted transition-colors"
-                                  >
-                                    Ignore
-                                  </button>
-                                </div>
-                              </div>
-                            </motion.div>
-                          )}
-                        </AnimatePresence>
-                      </motion.div>
+                        </button>
+                      );
+                    })}
+                  </div>
+                  <AnimatePresence mode="wait">
+                    {selectedVehicle && (
+                      <motion.p
+                        key={selectedVehicle}
+                        initial={{ opacity: 0, y: -4 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -4 }}
+                        transition={{ duration: 0.15 }}
+                        className="text-xs text-muted-foreground text-center mt-2"
+                      >
+                        {vehicleCaptions[selectedVehicle]}
+                      </motion.p>
                     )}
                   </AnimatePresence>
+                </div>
+              )}
+            </motion.div>
+            )}
 
-                  {/* (address fields now inline with toggles above) */}
+            <AnimatePresence>
+              {(selectedVehicle || selectedService === "concierge" || selectedService === "valet") && (
+                <motion.div
+                  initial={{ opacity: 0, height: 0 }}
+                  animate={{ opacity: 1, height: "auto" }}
+                  exit={{ opacity: 0, height: 0 }}
+                  transition={{ duration: 0.2 }}
+                  className="overflow-hidden"
+                >
+
+
+                  {/* Input Fields */}
+                  <div className="space-y-0">
+                    <div className="relative group">
+                      <div className="flex items-start gap-3 px-4 py-3 border border-border rounded-xl bg-background transition-colors focus-within:border-foreground mb-2">
+                        <div className="flex-shrink-0 w-2.5 h-2.5 rounded-full bg-green-500 mt-[7px]" />
+                        <div className="flex-1 min-w-0">
+                          {pickupPlaceName && pickupCoords && (
+                            <div className="text-sm font-semibold text-foreground leading-tight">{pickupPlaceName}</div>
+                          )}
+                          <AddressAutocomplete
+                            placeholder="Pickup location"
+                            value={pickup}
+                            onChange={(v) => { setPickup(v); if (!v) setPickupPlaceName(null); }}
+                            onPlaceSelect={handlePickupSelect}
+                            className={`w-full bg-transparent text-foreground placeholder:text-muted-foreground outline-none ${pickupPlaceName && pickupCoords ? 'text-muted-foreground text-xs mt-0.5' : 'text-sm'}`}
+                          />
+                        </div>
+                      </div>
+                    </div>
+                    <div className="relative group mt-2">
+                      <div className="flex items-start gap-3 px-4 py-3 border border-border rounded-xl bg-background transition-colors focus-within:border-foreground">
+                        <div className="flex-shrink-0 w-2.5 h-2.5 bg-red-500 mt-[7px]" />
+                        <div className="flex-1 min-w-0">
+                          {dropoffPlaceName && dropoffCoords && (
+                            <div className="text-sm font-semibold text-foreground leading-tight">{dropoffPlaceName}</div>
+                          )}
+                          <AddressAutocomplete
+                            placeholder="Dropoff location"
+                            value={dropoff}
+                            onChange={(v) => { setDropoff(v); if (!v) setDropoffPlaceName(null); }}
+                            onPlaceSelect={handleDropoffSelect}
+                            className={`w-full bg-transparent text-foreground placeholder:text-muted-foreground outline-none ${dropoffPlaceName && dropoffCoords ? 'text-muted-foreground text-xs mt-0.5' : 'text-sm'}`}
+                          />
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* ETA info — visible when both addresses set */}
+                    {pickupCoords && dropoffCoords && (
+                      <p className="text-[15px] font-medium text-muted-foreground text-center py-4 flex items-center justify-center gap-1.5">
+                        <img src={deliverBox} alt="" className="w-5 h-5" />
+                        4 mins away • 2:01 AM dropoff
+                      </p>
+                    )}
+                  </div>
+
+                  {/* Notes Field */}
+                  <div className="relative group -mt-1">
+                    <div className="flex items-start gap-3 px-4 py-4 border border-border rounded-xl bg-background transition-colors focus-within:border-foreground">
+                      <textarea
+                        placeholder="Provide all relevant pickup and drop-off details, including contact numbers, special instructions, access information, gate codes, and any other important notes."
+                        className="w-full bg-transparent text-sm text-foreground placeholder:text-foreground/35 outline-none resize-none overflow-hidden"
+                        rows={1}
+                        value={notes}
+                        onChange={(e) => setNotes(e.target.value)}
+                        onInput={(e) => { const t = e.currentTarget; t.style.height = 'auto'; t.style.height = t.scrollHeight + 'px'; }}
+                      />
+                    </div>
+                  </div>
 
                   {/* Delivery Requirements Notice */}
                   <Collapsible className="mt-3 text-xs text-foreground">
                     <CollapsibleTrigger className="flex items-center gap-1 font-semibold cursor-pointer hover:opacity-70 transition-opacity">
-                      {selectedService === "concierge" ? "Concierge Service Requirements" : "Service Requirements"}
+                      Delivery Requirements
                       <ChevronDown className="w-3.5 h-3.5 transition-transform duration-200 [&[data-state=open]]:rotate-180" />
                     </CollapsibleTrigger>
                     <CollapsibleContent className="space-y-3 mt-2">
-                      {selectedService === "concierge" ? (
-                        <>
-                          <div>
-                            <p className="text-muted-foreground leading-relaxed">Before placing a Concierge request, please ensure:</p>
-                            <ul className="text-muted-foreground leading-relaxed mt-1 space-y-0.5">
-                              <li>• Requests are lawful and compliant with local, state, and federal regulations</li>
-                              <li>• Any items to be transported are legal and safe to handle</li>
-                              <li>• Items requiring special handling (fragile, high-value, temperature-sensitive) are disclosed in advance</li>
-                              <li>• Declared value of any single item does not exceed $1,500 unless pre-approved</li>
-                            </ul>
-                          </div>
-                          <div>
-                            <p className="font-semibold mb-1">Restricted Items</p>
-                            <p className="text-muted-foreground leading-relaxed">Courial Concierge does not facilitate or transport:</p>
-                            <ul className="text-muted-foreground leading-relaxed mt-1 space-y-0.5">
-                              <li>• Alcohol or controlled substances (unless permitted under specific service agreements)</li>
-                              <li>• Firearms or weapons</li>
-                              <li>• Hazardous or regulated materials</li>
-                              <li>• Illegal goods</li>
-                              <li>• Items with extraordinary sentimental or irreplaceable value</li>
-                              <li>• Cash, bearer instruments, or cryptocurrency hardware wallets</li>
-                            </ul>
-                          </div>
-                          <div>
-                            <p className="font-semibold mb-1">Risk & Liability</p>
-                            <p className="text-muted-foreground leading-relaxed">Courial does not provide cargo insurance unless explicitly stated in a premium service tier. High-value requests may require pre-approval and additional verification.</p>
-                            <p className="text-muted-foreground leading-relaxed mt-1">By confirming your Concierge request, you acknowledge and accept Courial's Terms and Conditions.</p>
-                          </div>
-                        </>
-                      ) : (
-                        <>
-                          <div>
-                            <p className="text-muted-foreground leading-relaxed">Before placing your order, please ensure your shipment meets the following criteria:</p>
-                            <ul className="text-muted-foreground leading-relaxed mt-1 space-y-0.5">
-                              <li>• The total declared value does not exceed $300</li>
-                              <li>• Items are properly packaged, sealed, and ready at the time of pickup</li>
-                              <li>• Contents do not fall under restricted categories</li>
-                            </ul>
-                          </div>
-                          <div>
-                            <p className="font-semibold mb-1">Restricted Items</p>
-                            <p className="text-muted-foreground leading-relaxed">Courial does not transport alcohol, prescription or non-prescription drugs, firearms, hazardous materials, illegal goods, or items with significant sentimental or irreplaceable value.</p>
-                            <p className="text-muted-foreground leading-relaxed mt-1">All shipments must comply with local, state, and federal laws, as well as Courial's platform policies. Orders involving restricted or unlawful items may be canceled, and accounts may be suspended or terminated. Courial reserves the right to cooperate with law enforcement in cases involving illegal activity.</p>
-                          </div>
-                          <div>
-                            <p className="font-semibold mb-1">Insurance & Agreement</p>
-                            <p className="text-muted-foreground leading-relaxed">Courial does not provide cargo insurance coverage. By confirming your delivery request, you acknowledge and accept Courial's Terms and Conditions.</p>
-                          </div>
-                        </>
-                      )}
+                      <div>
+                        <p className="text-muted-foreground leading-relaxed">Before placing your order, please ensure your shipment meets the following criteria:</p>
+                        <ul className="text-muted-foreground leading-relaxed mt-1 space-y-0.5">
+                          <li>• The total declared value does not exceed $300</li>
+                          <li>• Items are properly packaged, sealed, and ready at the time of pickup</li>
+                          <li>• Contents do not fall under restricted categories</li>
+                        </ul>
+                      </div>
+                      <div>
+                        <p className="font-semibold mb-1">Restricted Items</p>
+                        <p className="text-muted-foreground leading-relaxed">Courial does not transport alcohol, prescription or non-prescription drugs, firearms, hazardous materials, illegal goods, or items with significant sentimental or irreplaceable value.</p>
+                        <p className="text-muted-foreground leading-relaxed mt-1">All shipments must comply with local, state, and federal laws, as well as Courial's platform policies. Orders involving restricted or unlawful items may be canceled, and accounts may be suspended or terminated. Courial reserves the right to cooperate with law enforcement in cases involving illegal activity.</p>
+                      </div>
+                      <div>
+                        <p className="font-semibold mb-1">Insurance & Agreement</p>
+                        <p className="text-muted-foreground leading-relaxed">Courial does not provide cargo insurance coverage. By confirming your delivery request, you acknowledge and accept Courial's Terms and Conditions.</p>
+                      </div>
                     </CollapsibleContent>
                   </Collapsible>
 
@@ -1054,10 +813,9 @@ const Book = () => {
                       </Button>
                     </div>
                   </div>
-                </div>
+                </motion.div>
               )}
-            </motion.div>
-            )}
+            </AnimatePresence>
           </div>
           )}
 
