@@ -896,7 +896,7 @@ const Book = () => {
                     >
                       {conciergeAddressToggles.start && (
                         <div className="flex items-center gap-3 px-4 py-3 border border-border rounded-xl bg-background focus-within:border-foreground">
-                          <div className="flex-shrink-0 w-[15px] h-[15px] rounded-full bg-green-500" />
+                          <div className="flex-shrink-0 w-2.5 h-2.5 rounded-full bg-green-500" />
                           <AddressAutocomplete
                             placeholder="Start address"
                             value={conciergeStartAddress}
@@ -911,7 +911,7 @@ const Book = () => {
                       )}
                       {conciergeAddressToggles.stop && (
                         <div className="flex items-center gap-3 px-4 py-3 border border-border rounded-xl bg-background focus-within:border-foreground">
-                          <div className="flex-shrink-0 w-[15px] h-[15px] rounded-none bg-blue-500" />
+                          <div className="flex-shrink-0 w-2.5 h-2.5 rounded-none bg-blue-500" />
                           <AddressAutocomplete
                             placeholder="Stop address"
                             value={conciergeStopAddress}
@@ -926,7 +926,7 @@ const Book = () => {
                       )}
                       {conciergeAddressToggles.final && (
                         <div className="flex items-center gap-3 px-4 py-3 border border-border rounded-xl bg-background focus-within:border-foreground">
-                          <div className="flex-shrink-0 w-[15px] h-[15px] rounded-none bg-destructive" />
+                          <div className="flex-shrink-0 w-2.5 h-2.5 rounded-none bg-destructive" />
                           <AddressAutocomplete
                             placeholder="Final address"
                             value={conciergeFinalAddress}
