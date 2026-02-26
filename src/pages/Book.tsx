@@ -1080,26 +1080,24 @@ const Book = () => {
                 </AnimatePresence>
 
                 {/* Service Mode Toggle */}
-                <div className="mb-3">
-                  <p className="text-[11px] text-muted-foreground mb-2">Service Type</p>
-                  <div className="flex gap-2">
-                    {[
-                      { value: "hourly" as const, label: "Hourly" },
-                      { value: "daily" as const, label: "Daily (8 Hrs)" },
-                    ].map((mode) => (
-                      <button
-                        key={mode.value}
-                        onClick={() => setConciergeServiceMode(mode.value)}
-                        className={`px-3 py-1.5 rounded-full text-[11px] font-normal transition-all leading-none ${
-                          conciergeServiceMode === mode.value
-                            ? "bg-muted text-foreground"
-                            : "border border-border/60 bg-background text-foreground/75 hover:border-foreground/50"
-                        }`}
-                      >
-                        {mode.label}
-                      </button>
-                    ))}
-                  </div>
+                <div className="flex items-center gap-2 mb-3">
+                  <span className="text-[11px] text-muted-foreground">Service Type</span>
+                  {[
+                    { value: "hourly" as const, label: "Hourly" },
+                    { value: "daily" as const, label: "Daily (8 Hrs)" },
+                  ].map((mode) => (
+                    <button
+                      key={mode.value}
+                      onClick={() => setConciergeServiceMode(mode.value)}
+                      className={`px-2.5 py-1 rounded-full text-[11px] font-normal transition-all leading-none ${
+                        conciergeServiceMode === mode.value
+                          ? "bg-muted text-foreground"
+                          : "border border-border/60 bg-background text-foreground/75 hover:border-foreground/50"
+                      }`}
+                    >
+                      {mode.label}
+                    </button>
+                  ))}
                 </div>
 
                 {/* Concierge Service Requirements */}
