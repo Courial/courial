@@ -125,6 +125,8 @@ const Book = () => {
   const [overageCapWarning, setOverageCapWarning] = useState(false);
   const [redraftSuggestion, setRedraftSuggestion] = useState<string | null>(null);
   const [isRedrafting, setIsRedrafting] = useState(false);
+  const [expenseRedraftSuggestion, setExpenseRedraftSuggestion] = useState<{ index: number; text: string } | null>(null);
+  const [isExpenseRedrafting, setIsExpenseRedrafting] = useState<number | null>(null);
 
   // Auto-select "Require 2 Courials" based on weight conditions
   useEffect(() => {
@@ -203,6 +205,31 @@ const Book = () => {
       setIsRedrafting(false);
     }
   }, [conciergeDescription, conciergeCategory, conciergeSubCategory, isRedrafting]);
+
+  const handleExpenseRedraft = useCallback(async (index: number) => {
+    const item = conciergeExpenseItems[index];
+    if (!item || item.description.trim().length < 10 || isExpenseRedrafting !== null) return;
+    setIsExpenseRedrafting(index);
+    setExpenseRedraftSuggestion(null);
+    try {
+      const selectedCat = conciergeCategories.find(c => c.id === conciergeCategory);
+      const categoryLabel = conciergeSubCategory
+        ? `${selectedCat?.label} > ${conciergeSubCategory}`
+        : selectedCat?.label || "General";
+      const { data, error } = await supabase.functions.invoke("redraft-concierge", {
+        body: { description: item.description, category: `${categoryLabel} — Expense Item` },
+      });
+      if (error || !data?.redrafted) {
+        toast.error("Couldn't redraft — please try again.");
+      } else {
+        setExpenseRedraftSuggestion({ index, text: data.redrafted });
+      }
+    } catch {
+      toast.error("Redraft failed.");
+    } finally {
+      setIsExpenseRedrafting(null);
+    }
+  }, [conciergeExpenseItems, conciergeCategory, conciergeSubCategory, isExpenseRedrafting]);
 
   const handleBookingSubmit = useCallback(async () => {
     if (!isFormValid) return;
@@ -1152,6 +1179,7 @@ const Book = () => {
                                 const updated = [...conciergeExpenseItems];
                                 updated[index].description = e.target.value;
                                 setConciergeExpenseItems(updated);
+                                setExpenseRedraftSuggestion(prev => prev?.index === index ? null : prev);
                                 e.target.style.height = 'auto';
                                 e.target.style.height = e.target.scrollHeight + 'px';
                               }}
@@ -1159,6 +1187,56 @@ const Book = () => {
                               rows={1}
                               className="w-full rounded-lg border border-border/60 bg-background px-3 py-1.5 text-xs text-foreground placeholder:text-muted-foreground/60 focus:outline-none focus:ring-1 focus:ring-ring resize-none overflow-hidden"
                             />
+                            {/* Redraft with AI button for expense description */}
+                            {item.description.trim().length > 10 && (
+                              <div className="flex justify-end -mt-1 relative z-10">
+                                <button
+                                  type="button"
+                                  onClick={() => handleExpenseRedraft(index)}
+                                  disabled={isExpenseRedrafting !== null}
+                                  className="flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-[hsl(210,100%,50%)] text-white hover:bg-[hsl(210,100%,45%)] transition-colors disabled:opacity-50"
+                                >
+                                  <Sparkles className="w-2.5 h-2.5" />
+                                  {isExpenseRedrafting === index ? "Redrafting…" : "Redraft with AI"}
+                                </button>
+                              </div>
+                            )}
+                            {/* Expense Redraft Suggestion */}
+                            <AnimatePresence>
+                              {expenseRedraftSuggestion?.index === index && (
+                                <motion.div
+                                  initial={{ opacity: 0, height: 0 }}
+                                  animate={{ opacity: 1, height: "auto" }}
+                                  exit={{ opacity: 0, height: 0 }}
+                                  transition={{ duration: 0.2 }}
+                                >
+                                  <div className="p-2 rounded-lg border border-primary/30 bg-primary/5">
+                                    <p className="text-xs text-foreground mb-1.5">{expenseRedraftSuggestion.text}</p>
+                                    <div className="flex gap-2">
+                                      <button
+                                        type="button"
+                                        onClick={() => {
+                                          const updated = [...conciergeExpenseItems];
+                                          updated[index].description = expenseRedraftSuggestion.text;
+                                          setConciergeExpenseItems(updated);
+                                          setExpenseRedraftSuggestion(null);
+                                        }}
+                                        className="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-primary text-primary-foreground hover:bg-primary/90"
+                                      >
+                                        Accept
+                                      </button>
+                                      <button
+                                        type="button"
+                                        onClick={() => setExpenseRedraftSuggestion(null)}
+                                        className="px-2 py-0.5 rounded-full text-[10px] font-semibold border border-border text-foreground hover:bg-muted"
+                                      >
+                                        Ignore
+                                      </button>
+                                    </div>
+                                  </div>
+                                </motion.div>
+                              )}
+                            </AnimatePresence>
                           </div>
                           <div className="flex items-center gap-2">
                             <label className="text-[10px] text-muted-foreground/80 leading-tight">Estimated<br />Amount</label>
