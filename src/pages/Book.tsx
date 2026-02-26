@@ -1026,7 +1026,7 @@ const Book = () => {
                 <div className="relative mb-1">
                   <div className="px-4 py-4 border border-border rounded-xl bg-background focus-within:border-foreground">
                     <textarea
-                      placeholder="Describe your task in detail — what needs to be done, any preferences, timing constraints, or special instructions."
+                      placeholder="Outline the scope of work, preferences, timing requirements, special instructions, and any relevant contact names and phone numbers. Before confirming your booking, you may choose to have AI professionally refine your message for clarity, completeness, and precision."
                       className="w-full bg-transparent text-sm text-foreground placeholder:text-foreground/35 outline-none resize-none overflow-hidden"
                       rows={3}
                       value={conciergeDescription}
