@@ -562,7 +562,7 @@ const Book = () => {
             </motion.div>
 
             {/* Title row with box icon + Now/Later toggle — only when service selected */}
-            {selectedService && (
+            {selectedService && !showAllServices && (
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
