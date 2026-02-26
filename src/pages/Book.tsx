@@ -903,23 +903,32 @@ const Book = () => {
             {/* Preferred Language for Concierge */}
             {selectedService === "concierge" && conciergeSubCategory && (
               <div className="mb-4">
-                <p className="text-[11px] text-muted-foreground mb-2 text-center">Preferred Language</p>
-                <div className="flex flex-wrap justify-center gap-2">
-                  {["English", "Spanish", "Arabic", "Chinese", "Hindi", "Japanese", "Korean", "Thai"].map((lang) => (
+                {conciergeLanguage ? (
+                  <div className="flex items-center gap-2">
                     <button
-                      key={lang}
-                      onClick={() => setConciergeLanguage(conciergeLanguage === lang ? null : lang)}
-                      className={cn(
-                        "px-2.5 py-1 rounded-full text-[11px] font-normal transition-all leading-none",
-                        conciergeLanguage === lang
-                          ? "bg-muted text-foreground border-none"
-                          : "border border-border/60 bg-background text-foreground/75 hover:border-foreground/50"
-                      )}
+                      onClick={() => setConciergeLanguage(null)}
+                      className="px-2.5 py-1 rounded-full text-[11px] font-normal transition-all leading-none bg-muted text-foreground flex items-center gap-1"
                     >
-                      {lang}
+                      <span className="text-[10px]">←</span>
+                      {conciergeLanguage}
                     </button>
-                  ))}
-                </div>
+                  </div>
+                ) : (
+                  <>
+                    <p className="text-[11px] text-muted-foreground mb-2">Select Preferred Language</p>
+                    <div className="flex flex-wrap gap-2">
+                      {["English", "Spanish", "Arabic", "Chinese", "Hindi", "Japanese", "Korean", "Thai"].map((lang) => (
+                        <button
+                          key={lang}
+                          onClick={() => setConciergeLanguage(lang)}
+                          className="px-2.5 py-1 rounded-full text-[11px] font-normal transition-all leading-none border border-border/60 bg-background text-foreground/75 hover:border-foreground/50"
+                        >
+                          {lang}
+                        </button>
+                      ))}
+                    </div>
+                  </>
+                )}
               </div>
             )}
 
