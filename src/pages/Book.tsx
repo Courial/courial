@@ -904,7 +904,7 @@ const Book = () => {
                             onPlaceSelect={() => {}}
                             className="w-full bg-transparent text-sm text-foreground placeholder:text-muted-foreground outline-none"
                           />
-                          <button onClick={() => { setConciergeStartAddress(""); setConciergeAddressToggles(prev => ({ ...prev, start: false })); }} className="flex-shrink-0 ml-auto hover:opacity-70 transition-opacity">
+                          <button onClick={() => setConciergeStartAddress("")} className="flex-shrink-0 ml-auto hover:opacity-70 transition-opacity">
                             <X className="w-2.5 h-2.5 text-muted-foreground/50" />
                           </button>
                         </div>
@@ -919,7 +919,7 @@ const Book = () => {
                             onPlaceSelect={() => {}}
                             className="w-full bg-transparent text-sm text-foreground placeholder:text-muted-foreground outline-none"
                           />
-                          <button onClick={() => { setConciergeStopAddress(""); setConciergeAddressToggles(prev => ({ ...prev, stop: false })); }} className="flex-shrink-0 ml-auto hover:opacity-70 transition-opacity">
+                          <button onClick={() => setConciergeStopAddress("")} className="flex-shrink-0 ml-auto hover:opacity-70 transition-opacity">
                             <X className="w-2.5 h-2.5 text-muted-foreground/50" />
                           </button>
                         </div>
@@ -934,7 +934,7 @@ const Book = () => {
                             onPlaceSelect={() => {}}
                             className="w-full bg-transparent text-sm text-foreground placeholder:text-muted-foreground outline-none"
                           />
-                          <button onClick={() => { setConciergeFinalAddress(""); setConciergeAddressToggles(prev => ({ ...prev, final: false })); }} className="flex-shrink-0 ml-auto hover:opacity-70 transition-opacity">
+                          <button onClick={() => setConciergeFinalAddress("")} className="flex-shrink-0 ml-auto hover:opacity-70 transition-opacity">
                             <X className="w-2.5 h-2.5 text-muted-foreground/50" />
                           </button>
                         </div>
