@@ -116,7 +116,7 @@ const Book = () => {
   const [conciergeFinalAddress, setConciergeFinalAddress] = useState("");
   const [conciergeDescription, setConciergeDescription] = useState("");
   const [conciergeLanguage, setConciergeLanguage] = useState<string | null>(null);
-  const [conciergeServiceMode, setConciergeServiceMode] = useState<"hourly" | "daily">("hourly");
+  const [conciergeServiceMode, setConciergeServiceMode] = useState<"hourly" | "daily" | null>(null);
   const [conciergeHasExpenses, setConciergeHasExpenses] = useState<boolean | null>(null);
   const [conciergeExpensePurpose, setConciergeExpensePurpose] = useState("");
   const [conciergeExpenseCost, setConciergeExpenseCost] = useState("");
