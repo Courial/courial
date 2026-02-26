@@ -102,6 +102,10 @@ const Book = () => {
   const [conciergeNeedsAddress, setConciergeNeedsAddress] = useState(false);
   const [conciergeStartAddress, setConciergeStartAddress] = useState(false);
   const [conciergeStopAddress, setConciergeStopAddress] = useState(false);
+  const [conciergeFinalAddress, setConciergeFinalAddress] = useState(false);
+  const [finalAddress, setFinalAddress] = useState("");
+  const [finalAddressCoords, setFinalAddressCoords] = useState<{ lat: number; lng: number } | null>(null);
+  const [finalAddressPlaceName, setFinalAddressPlaceName] = useState<string | null>(null);
   
 
   const conciergeGroups = [
@@ -756,6 +760,13 @@ const Book = () => {
                           >
                             + Stop address
                           </button>
+                          <button
+                            type="button"
+                            onClick={() => setConciergeFinalAddress(!conciergeFinalAddress)}
+                            className={`px-2.5 py-1 rounded-full text-[11px] font-normal transition-all border leading-none ${conciergeFinalAddress ? 'bg-foreground text-background border-foreground' : 'bg-background text-foreground/75 border-border/60 hover:border-foreground/50'}`}
+                          >
+                            + Final address
+                          </button>
                         </div>
 
                         <AnimatePresence>
@@ -816,6 +827,46 @@ const Book = () => {
                                 </div>
                                 {dropoff && (
                                   <button type="button" onClick={() => { setDropoff(""); setDropoffCoords(null); setDropoffPlaceName(null); }} className="flex-shrink-0 mt-1 text-muted-foreground hover:text-foreground transition-colors">
+                                    <X className="w-4 h-4" />
+                                  </button>
+                                )}
+                              </div>
+                            </motion.div>
+                          )}
+                        </AnimatePresence>
+
+                        <AnimatePresence>
+                          {conciergeFinalAddress && (
+                            <motion.div
+                              initial={{ opacity: 0, height: 0 }}
+                              animate={{ opacity: 1, height: "auto" }}
+                              exit={{ opacity: 0, height: 0 }}
+                              transition={{ duration: 0.15 }}
+                              className="overflow-hidden"
+                            >
+                              <div className="flex items-start gap-3 px-4 py-3 border border-border rounded-xl bg-background transition-colors focus-within:border-foreground">
+                                <div className="flex-shrink-0 w-2.5 h-2.5 rounded-full bg-blue-500 mt-[7px]" />
+                                <div className="flex-1 min-w-0">
+                                  {finalAddressPlaceName && finalAddressCoords && (
+                                    <div className="text-sm font-semibold text-foreground leading-tight">{finalAddressPlaceName}</div>
+                                  )}
+                                  <AddressAutocomplete
+                                    placeholder="Final location"
+                                    value={finalAddress}
+                                    onChange={(v) => { setFinalAddress(v); if (!v) setFinalAddressPlaceName(null); }}
+                                    onPlaceSelect={(place: any) => {
+                                      if (place?.geometry) {
+                                        setFinalAddressCoords({ lat: place.geometry.location.lat(), lng: place.geometry.location.lng() });
+                                        const name = place.name || "";
+                                        const addr = (place.formatted_address || "").replace(/,?\s*(USA|US|United States)\s*$/i, '').trim();
+                                        setFinalAddressPlaceName(name && !addr.startsWith(name) ? name : null);
+                                      }
+                                    }}
+                                    className={`w-full bg-transparent text-foreground placeholder:text-muted-foreground outline-none ${finalAddressPlaceName && finalAddressCoords ? 'text-muted-foreground text-xs mt-0.5' : 'text-sm'}`}
+                                  />
+                                </div>
+                                {finalAddress && (
+                                  <button type="button" onClick={() => { setFinalAddress(""); setFinalAddressCoords(null); setFinalAddressPlaceName(null); }} className="flex-shrink-0 mt-1 text-muted-foreground hover:text-foreground transition-colors">
                                     <X className="w-4 h-4" />
                                   </button>
                                 )}
