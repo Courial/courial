@@ -40,7 +40,7 @@ import vehicleTruck from "@/assets/vehicle-truck.png";
 
 type VehicleId = "walker" | "scooter" | "car" | "van" | "truck";
 const vehicleCaptions: Record<VehicleId, string> = {
-  walker: "For meals, documents, and small parcels within 2 miles.",
+  walker: "For food and small parcels within 2 miles.",
   scooter: "Best for catering trays, small electronics, grocery",
   car: "Best for retail, small appliances",
   van: "Best for furniture, medium appliances",
