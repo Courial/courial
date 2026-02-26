@@ -1920,7 +1920,8 @@ const Book = () => {
               <Testimonials />
               <Footer />
             </div>
-          )}
+          );
+            })()}
         </div>
       </div>
       {/* Price Breakdown Dialog */}
