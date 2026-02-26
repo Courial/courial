@@ -1101,7 +1101,7 @@ const Book = () => {
                 </div>
 
                 {/* Concierge Service Requirements */}
-                <Collapsible className="mt-3 text-xs text-foreground">
+                <Collapsible className="mt-5 text-xs text-foreground">
                   <CollapsibleTrigger className="flex items-center gap-1 font-semibold cursor-pointer hover:opacity-70 transition-opacity">
                     Concierge Service Requirements
                     <ChevronDown className="w-3.5 h-3.5 transition-transform duration-200 [&[data-state=open]]:rotate-180" />
