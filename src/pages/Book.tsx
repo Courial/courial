@@ -1045,16 +1045,21 @@ const Book = () => {
                       className="space-y-2 mb-3 overflow-visible"
                     >
                       {conciergeAddressToggles.start && (
-                        <div className="flex items-center gap-3 px-4 py-3 border border-border rounded-xl bg-background focus-within:border-foreground">
-                          <div className="flex-shrink-0 w-2.5 h-2.5 rounded-full bg-green-500" />
-                          <AddressAutocomplete
-                            placeholder="Start address"
-                            value={conciergeStartAddress}
-                            onChange={setConciergeStartAddress}
-                            onPlaceSelect={() => {}}
-                            className="w-full bg-transparent text-sm text-foreground placeholder:text-muted-foreground outline-none"
-                          />
-                          <button onClick={() => setConciergeStartAddress("")} className="flex-shrink-0 ml-auto hover:opacity-70 transition-opacity">
+                        <div className="flex items-start gap-3 px-4 py-3 border border-border rounded-xl bg-background focus-within:border-foreground">
+                          <div className="flex-shrink-0 w-2.5 h-2.5 rounded-full bg-green-500 mt-[7px]" />
+                          <div className="flex-1 min-w-0">
+                            {conciergeStartPlaceName && conciergeStartCoords && (
+                              <div className="text-sm font-semibold text-foreground leading-tight">{conciergeStartPlaceName}</div>
+                            )}
+                            <AddressAutocomplete
+                              placeholder="Start address"
+                              value={conciergeStartAddress}
+                              onChange={(v) => { setConciergeStartAddress(v); if (!v) { setConciergeStartPlaceName(null); setConciergeStartCoords(null); } }}
+                              onPlaceSelect={handleConciergeStartSelect}
+                              className={`w-full bg-transparent text-foreground placeholder:text-muted-foreground outline-none ${conciergeStartPlaceName && conciergeStartCoords ? 'text-muted-foreground text-xs mt-0.5' : 'text-sm'}`}
+                            />
+                          </div>
+                          <button onClick={() => { setConciergeStartAddress(""); setConciergeStartPlaceName(null); setConciergeStartCoords(null); }} className="flex-shrink-0 ml-auto hover:opacity-70 transition-opacity">
                             <X className="w-2.5 h-2.5 text-muted-foreground/50" />
                           </button>
                         </div>
