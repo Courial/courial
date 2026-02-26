@@ -1389,7 +1389,7 @@ const Book = () => {
                     <Button
                       disabled={!isFormValid}
                       onClick={handleBookingSubmit}
-                      className="rounded h-8 text-base font-semibold px-5"
+                      className="rounded h-10 text-lg font-semibold px-6"
                       variant={isFormValid ? "hero" : "secondary"}
                     >
                       Book Concierge
