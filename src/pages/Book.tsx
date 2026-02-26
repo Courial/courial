@@ -150,14 +150,8 @@ const Book = () => {
     },
     {
       label: "Something Else?",
-      desc: "Custom & flexible requests",
-      items: [
-        { id: "personal-assistant", label: "Personal Assistant", icon: "🤝" },
-        { id: "half-day", label: "Half-day Support", icon: "🕐" },
-        { id: "full-day", label: "Full-day Support", icon: "🕛" },
-        { id: "custom-request", label: "Custom Request", icon: "🧠" },
-        { id: "other", label: "Something Else", icon: "✨" },
-      ],
+      desc: "Tell us about it",
+      items: [],
     },
   ];
 
@@ -616,7 +610,12 @@ const Book = () => {
                                 type="button"
                                 onClick={() => {
                                   setConciergeGroupIndex(idx);
-                                  setConciergeCategory(null);
+                                  // If group has no sub-items, auto-select with group label
+                                  if (group.items.length === 0) {
+                                    setConciergeCategory(group.label);
+                                  } else {
+                                    setConciergeCategory(null);
+                                  }
                                 }}
                                 className="px-2.5 py-1 rounded-full text-[11px] font-normal transition-all border leading-none bg-background text-foreground/75 border-border/60 hover:border-foreground/50"
                               >
@@ -652,7 +651,9 @@ const Book = () => {
                             </span>
                           </div>
                           <div className="flex flex-wrap items-center gap-1.5">
-                            {conciergeCategory ? (
+                            {conciergeGroups[conciergeGroupIndex].items.length === 0 ? (
+                              <span className="text-[11px] text-muted-foreground italic">Describe your request below</span>
+                            ) : conciergeCategory ? (
                               <>
                                 <button
                                   type="button"
