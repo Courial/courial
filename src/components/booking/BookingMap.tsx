@@ -140,7 +140,7 @@ function generateRandomPositions(center: LatLng, count: number, radiusKm: number
   return positions;
 }
 
-const BookingMap: React.FC<BookingMapProps> = ({ pickupCoords, dropoffCoords, pickupAddress, dropoffAddress, pickupPlaceName, dropoffPlaceName, bookingState = "input", vehicleType }) => {
+const BookingMap: React.FC<BookingMapProps> = ({ pickupCoords, dropoffCoords, stopCoords, pickupAddress, dropoffAddress, stopAddress, pickupPlaceName, dropoffPlaceName, stopPlaceName, bookingState = "input", vehicleType }) => {
   const mapRef = useRef<HTMLDivElement>(null);
   const mapInstanceRef = useRef<google.maps.Map | null>(null);
   const markersRef = useRef<google.maps.Marker[]>([]);
