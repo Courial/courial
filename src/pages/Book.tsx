@@ -254,6 +254,28 @@ const Book = () => {
     }
   }, [conciergeExpenseItems, conciergeCategory, conciergeSubCategory, isExpenseRedrafting]);
 
+  // Redraft handler for Deliver expense items
+  const handleDeliverExpenseRedraft = useCallback(async (index: number) => {
+    const item = deliverExpenseItems[index];
+    if (!item || item.description.trim().length < 10 || isDeliverExpenseRedrafting !== null) return;
+    setIsDeliverExpenseRedrafting(index);
+    setDeliverExpenseRedraftSuggestion(null);
+    try {
+      const { data, error } = await supabase.functions.invoke("redraft-concierge", {
+        body: { description: item.description, category: `${selectedService === "valet" ? "Valet" : "Delivery"} — Expense Item` },
+      });
+      if (error || !data?.redrafted) {
+        toast.error("Couldn't redraft — please try again.");
+      } else {
+        setDeliverExpenseRedraftSuggestion({ index, text: data.redrafted });
+      }
+    } catch {
+      toast.error("Redraft failed.");
+    } finally {
+      setIsDeliverExpenseRedrafting(null);
+    }
+  }, [deliverExpenseItems, selectedService, isDeliverExpenseRedrafting]);
+
   // Redraft with AI handler for Deliver/Valet notes
   const handleDeliverRedraft = useCallback(async () => {
     if (notes.trim().length < 10 || isDeliverRedrafting) return;
