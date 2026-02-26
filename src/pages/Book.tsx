@@ -1065,8 +1065,8 @@ const Book = () => {
                         </div>
                       )}
                       {conciergeAddressToggles.stop && (
-                        <div className="flex items-start gap-3 px-4 py-3 border border-border rounded-xl bg-background focus-within:border-foreground">
-                          <div className="flex-shrink-0 w-2.5 h-2.5 rounded-none bg-blue-500 mt-[7px]" />
+                        <div className="flex items-center gap-3 px-4 py-3 border border-border rounded-xl bg-background focus-within:border-foreground">
+                          <div className="flex-shrink-0 w-2.5 h-2.5 rounded-none bg-blue-500" />
                           <div className="flex-1 min-w-0">
                             {conciergeStopPlaceName && conciergeStopCoords && (
                               <div className="text-sm font-semibold text-foreground leading-tight">{conciergeStopPlaceName}</div>
