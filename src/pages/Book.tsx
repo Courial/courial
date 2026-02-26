@@ -68,7 +68,7 @@ const conciergeCategories: ConciergeCategory[] = [
   { id: "waiting", label: "Waiting", desc: "We wait so you don't", subs: ["Wait in Line", "Wait for Service Provider", "Be Somewhere for Me", "Get Documents Signed"] },
   { id: "notary", label: "Notary Services", desc: "Official notary support", subs: ["Certified Notary", "Notary Assistance"] },
   { id: "travel", label: "Travel", desc: "Trips, flights & logistics", subs: ["Plan Custom Itinerary", "Arrange Private Drivers", "Coordinate Multi-city Travel", "Book Activities & Reservations"] },
-  { id: "something-else", label: "Something Else?", desc: "", subs: [] },
+  { id: "something-else", label: "Something Else?", desc: "Whatever the task, consider it handled.", subs: [] },
 ];
 
 const serviceCards: { id: ServiceId; label: string; desc: string; href: string; external?: boolean; image: string; icons: LucideIcon[] }[] = [
