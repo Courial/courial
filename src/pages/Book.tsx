@@ -1153,8 +1153,8 @@ const Book = () => {
                               className="w-full rounded-lg border border-border/60 bg-background px-3 py-1.5 text-xs text-foreground placeholder:text-muted-foreground/60 focus:outline-none focus:ring-1 focus:ring-ring resize-none overflow-hidden"
                             />
                           </div>
-                          <div className="flex items-end gap-2">
-                            <label className="text-[10px] text-muted-foreground/80 mb-0.5">Estimated Amount</label>
+                          <div className="flex items-center gap-2">
+                            <label className="text-[10px] text-muted-foreground/80 leading-tight">Estimated<br />Amount</label>
                             <div className="relative">
                               <span className="absolute left-2 top-1/2 -translate-y-1/2 text-xs text-muted-foreground">$</span>
                               <input
@@ -1170,7 +1170,7 @@ const Book = () => {
                                   }
                                 }}
                                 placeholder="0.00"
-                                className="w-20 rounded-lg border border-border/60 bg-background pl-5 pr-2 py-1.5 text-xs text-foreground placeholder:text-muted-foreground/60 focus:outline-none focus:ring-1 focus:ring-ring"
+                                className="w-20 rounded-lg border border-border/60 bg-background pl-5 pr-2 py-0.5 text-xs text-foreground placeholder:text-muted-foreground/60 focus:outline-none focus:ring-1 focus:ring-ring"
                               />
                             </div>
                           </div>
