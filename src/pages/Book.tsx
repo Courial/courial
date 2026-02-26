@@ -1329,7 +1329,7 @@ const Book = () => {
                                 }}
                                 placeholder="0"
                                 onFocus={(e) => e.target.select()}
-                                className="w-20 rounded-lg border border-border/60 bg-background pl-5 pr-2 py-0.5 text-xs text-foreground placeholder:text-muted-foreground/60 focus:outline-none focus:ring-1 focus:ring-ring"
+                                className="w-20 rounded-lg border border-border/60 bg-background pl-5 pr-2 py-0.5 text-xs text-foreground placeholder:text-muted-foreground/60 focus:outline-none focus:ring-0"
                               />
                             </div>
                             {expenseCapWarning === index && (
