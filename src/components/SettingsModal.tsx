@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -7,6 +7,7 @@ import { motion } from "framer-motion";
 import { Settings, Home, Building2, Heart, Bell, ChevronDown, ChevronUp } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import profileIcon from "@/assets/profile-icon.png";
+import { SavedAddressModal, getSavedAddresses, type SavedAddress } from "@/components/SavedAddressModal";
 
 interface SettingsModalProps {
   open: boolean;
