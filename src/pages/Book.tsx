@@ -2286,18 +2286,30 @@ const Book = () => {
               {/* Driver Card */}
               <div className="rounded-2xl border border-border bg-background p-5 mb-4">
                 <div className="flex items-center gap-4 mb-4">
-                  <div className="w-15 h-15 rounded-full bg-muted flex items-center justify-center text-xl font-bold text-foreground" style={{ width: 60, height: 60 }}>
-                    M
-                  </div>
+                  {acceptedCourial?.image ? (
+                    <img src={acceptedCourial.image} alt={acceptedCourial.name} className="w-[60px] h-[60px] rounded-full object-cover border border-border" />
+                  ) : (
+                    <div className="rounded-full bg-muted flex items-center justify-center text-xl font-bold text-foreground" style={{ width: 60, height: 60 }}>
+                      {(acceptedCourial?.name || "M").charAt(0)}
+                    </div>
+                  )}
                   <div className="flex-1">
                     <div className="flex items-center gap-2">
-                      <h3 className="text-base font-bold text-foreground">Marcus</h3>
+                      <h3 className="text-base font-bold text-foreground">{acceptedCourial?.name || "Marcus"}</h3>
                       <Star className="w-3.5 h-3.5 text-primary fill-primary" />
-                      <span className="text-sm text-muted-foreground">4.68</span>
+                      <span className="text-sm text-muted-foreground">{acceptedCourial?.rating?.toFixed(2) || "4.68"}</span>
                     </div>
-                    <div className="text-xs text-muted-foreground mt-0.5">Courial Since '25</div>
-                    <div className="text-xs text-muted-foreground mt-0.5">Black Toyota Corolla</div>
-                    <div className="text-xs font-bold text-foreground mt-0.5">ABC1234</div>
+                    <div className="text-xs text-muted-foreground mt-0.5">
+                      {acceptedCourial?.memberSince
+                        ? `Courial Since '${new Date(acceptedCourial.memberSince).getFullYear().toString().slice(-2)}`
+                        : "Courial Since '25"}
+                    </div>
+                    <div className="text-xs text-muted-foreground mt-0.5">
+                      {acceptedCourial
+                        ? `${acceptedCourial.vehicleColor} ${acceptedCourial.vehicleMake} ${acceptedCourial.vehicleModel}`.trim() || "Vehicle info pending"
+                        : "Black Toyota Corolla"}
+                    </div>
+                    <div className="text-xs font-bold text-foreground mt-0.5">{acceptedCourial?.licensePlate || "ABC1234"}</div>
                   </div>
                   {selectedVehicle && (
                     <img
