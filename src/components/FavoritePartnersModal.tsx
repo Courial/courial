@@ -3,7 +3,7 @@ import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowLeft, Star, Circle, X } from "lucide-react";
+import { Star, Circle, Minus } from "lucide-react";
 import profileIcon from "@/assets/profile-icon.png";
 
 interface FavoritePartnersModalProps {
