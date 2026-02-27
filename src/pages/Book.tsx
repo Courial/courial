@@ -1798,7 +1798,7 @@ const Book = () => {
                         setState(a, stB); setState(b, stA);
                       };
                       return allFields.map((field, idx) => (
-                        <div key={field.id} className={`relative group ${idx === 0 ? '' : idx === 1 ? 'mt-4' : 'pt-2'}`}>
+                        <div key={field.id} className={`relative group ${idx === 0 ? '' : 'mt-3'}`}>
                           <div className="flex items-center gap-2">
                             <button
                               type="button"
