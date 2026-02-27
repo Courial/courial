@@ -34,30 +34,62 @@ serve(async (req) => {
 
     const courialUrl = "https://gocourial.com/userApis/send_login_otp";
 
-    const courialRes = await fetch(courialUrl, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded",
-        "security_key": apiKey,
-        "Authorization": `Bearer ${apiKey}`,
-      },
-      body: new URLSearchParams({
-        type: type === "1" ? "1" : "0",
-        deviceID,
-        country_code,
-        phone,
-      }).toString(),
-    });
+    const normalizedPhone = String(phone).trim();
+    const phoneCandidates = Array.from(new Set([
+      normalizedPhone,
+      normalizedPhone.startsWith("0") ? normalizedPhone.replace(/^0+/, "") : `0${normalizedPhone}`,
+    ])).filter(Boolean);
 
-    const courialData = await courialRes.json();
+    const requestedType = type === "1" ? "1" : "0";
+    const typeCandidates = requestedType === "0" ? ["0", "1"] : ["1", "0"];
 
-    // Couriol may return HTTP 200 but with success:0 for errors
-    const isSuccess = courialRes.ok && courialData.success !== 0 && courialData.success !== false;
+    let lastData: any = { success: 0, code: 400, msg: "OTP request failed" };
+    let lastStatus = 400;
+
+    for (const typeValue of typeCandidates) {
+      for (const candidatePhone of phoneCandidates) {
+        const courialRes = await fetch(courialUrl, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+            "security_key": apiKey,
+            "Authorization": `Bearer ${apiKey}`,
+          },
+          body: new URLSearchParams({
+            type: typeValue,
+            deviceID,
+            country_code,
+            phone: candidatePhone,
+          }).toString(),
+        });
+
+        let courialData: any = {};
+        try {
+          courialData = await courialRes.json();
+        } catch {
+          courialData = { success: 0, code: courialRes.status, msg: "Invalid Courial response" };
+        }
+
+        const isSuccess = courialRes.ok && courialData.success !== 0 && courialData.success !== false;
+        if (isSuccess) {
+          return new Response(
+            JSON.stringify({ ...courialData, deviceID, type: typeValue, phone: candidatePhone }),
+            {
+              status: 200,
+              headers: { ...corsHeaders, "Content-Type": "application/json" },
+            }
+          );
+        }
+
+        lastData = courialData;
+        lastStatus = courialData.code || courialRes.status || 400;
+      }
+    }
 
     return new Response(
-      JSON.stringify({ ...courialData, deviceID }),
+      JSON.stringify({ ...lastData, deviceID }),
       {
-        status: isSuccess ? 200 : (courialData.code || 400),
+        status: lastStatus,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       }
     );
