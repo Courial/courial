@@ -98,10 +98,14 @@ export const ProfileHoverCard = () => {
                 else if (item.href === "__profile_modal__") setShowProfileModal(true);
                 else if (item.href === "__settings_modal__") setShowSettingsModal(true);
                 else if (item.href === "__support__") {
-                  navigate("/help");
-                  setTimeout(() => {
+                  if (window.location.pathname === "/help") {
                     window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" });
-                  }, 400);
+                  } else {
+                    navigate("/help");
+                    setTimeout(() => {
+                      window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" });
+                    }, 500);
+                  }
                 }
               };
 
