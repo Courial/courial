@@ -242,7 +242,7 @@ const RideDetail = ({ ride, onBack }: { ride: any; onBack: () => void }) => {
               {ride.scheduled ? "Scheduled Ride" : "On-Demand"}
             </p>
           </div>
-          <div className="w-11 h-11 rounded-lg bg-muted-foreground/15 flex items-center justify-center shrink-0 overflow-hidden">
+          <div className="w-11 h-11 rounded-lg bg-muted-foreground/10 flex items-center justify-center shrink-0 overflow-hidden">
             <img src={iconSrc} alt={ride.type} className="w-9 h-9 object-contain" />
           </div>
         </div>
