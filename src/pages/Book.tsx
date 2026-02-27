@@ -148,7 +148,8 @@ const Book = () => {
   const [deliverLanguage, setDeliverLanguage] = useState<string | null>(null);
    const [deliverHasExpenses, setDeliverHasExpenses] = useState<boolean | null>(null);
    const [deliverOrderValue, setDeliverOrderValue] = useState("");
-   const [showHighValueDialog, setShowHighValueDialog] = useState(false);
+    const [showHighValueDialog, setShowHighValueDialog] = useState(false);
+    const [declineProtection, setDeclineProtection] = useState(false);
   const [deliverExpenseItems, setDeliverExpenseItems] = useState<Array<{ description: string; amount: string }>>([{ description: "", amount: "0" }]);
   const [deliverAllowOverage, setDeliverAllowOverage] = useState(false);
   const [deliverOverageLimit, setDeliverOverageLimit] = useState("0");
@@ -2062,6 +2063,15 @@ const Book = () => {
                               <li>• For eligible high-value orders over $200, the Courial must physically witness the item being placed into the package prior to sealing.</li>
                             </ul>
                             <p className="text-[10px] text-muted-foreground mt-1">All protection is subject to Courial's Delivery Protection & Coverage Policy.</p>
+                            <label className="flex items-center gap-2 mt-2 cursor-pointer">
+                              <input
+                                type="checkbox"
+                                checked={declineProtection}
+                                onChange={(e) => setDeclineProtection(e.target.checked)}
+                                className="rounded border-border/60 h-3.5 w-3.5 accent-primary"
+                              />
+                              <span className="text-[10px] text-muted-foreground">I decline additional protection coverage and wish to proceed without it.</span>
+                            </label>
                           </div>
                         </motion.div>
                       )}
