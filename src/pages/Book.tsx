@@ -469,14 +469,29 @@ const Book = () => {
 
       if (error) {
         console.error("[book-delivery] invoke error:", error);
-        // Check if the error is a 401 token expiry from the Courial API
-        const errMsg = typeof error === "object" && error !== null ? JSON.stringify(error) : String(error);
-        if (errMsg.includes("Invalid Token") || errMsg.includes("401")) {
+        // FunctionsHttpError contains the response context — try to read the body
+        let errorBody: any = null;
+        try {
+          if (error?.context?.body) {
+            const reader = error.context.body.getReader?.();
+            if (reader) {
+              const { value } = await reader.read();
+              errorBody = JSON.parse(new TextDecoder().decode(value));
+            }
+          }
+        } catch (_) { /* ignore parse errors */ }
+
+        const is401 =
+          errorBody?.details?.code === 401 ||
+          errorBody?.error?.message?.includes?.("Invalid Token") ||
+          String(error?.message || "").includes("401");
+
+        if (is401) {
           console.warn("[book-delivery] Courial token expired — clearing and prompting re-auth");
           localStorage.removeItem("courial_api_token");
           toast.error("Your session has expired. Please sign out and sign back in to refresh your token.", { duration: 6000 });
         } else {
-          toast.error("Booking failed — please try again.");
+          toast.error(errorBody?.error?.message || "Booking failed — please try again.");
         }
         setBookingState("input");
         return;
