@@ -489,10 +489,10 @@ const BookingMap: React.FC<BookingMapProps> = ({ pickupCoords, dropoffCoords, st
     return cleanup;
   }, [bookingState, pickupCoords]);
 
-  // --- Active phase: single car moves along route toward dropoff + pulsing dot ---
+  // --- Active phase: show real courial position on map ---
   useEffect(() => {
     const map = mapInstanceRef.current;
-    if (!map || !pickupCoords || !dropoffCoords) return;
+    if (!map) return;
 
     const cleanup = () => {
       if (trackingAnimationRef.current) {
@@ -510,90 +510,87 @@ const BookingMap: React.FC<BookingMapProps> = ({ pickupCoords, dropoffCoords, st
       return;
     }
 
-    // Get route path via Directions API
-    const directionsService = new google.maps.DirectionsService();
-    directionsService.route(
-      {
-        origin: pickupCoords,
-        destination: dropoffCoords,
-        travelMode: google.maps.TravelMode.DRIVING,
-      },
-      (result, status) => {
-        if (status !== "OK" || !result) return;
+    if (!courialCoords) {
+      cleanup();
+      return;
+    }
 
-        const path = result.routes[0].overview_path;
+    const iconUrl = getVehicleIconUrl(vehicleType);
+    const iconMaxDim = getVehicleIconMaxDim(vehicleType);
+    const canvasSize = Math.ceil(Math.sqrt(iconMaxDim * iconMaxDim * 2));
 
-
-        // Create tracking car marker (will be updated with rotated icon)
-        const iconUrl = getVehicleIconUrl(vehicleType);
-        const iconMaxDim = getVehicleIconMaxDim(vehicleType);
-        const canvasSize = Math.ceil(Math.sqrt(iconMaxDim * iconMaxDim * 2));
-
-        const carMarker = new google.maps.Marker({
-          position: pickupCoords,
-          map,
-          zIndex: 10,
+    if (!trackingMarkerRef.current) {
+      // Create marker at courial's real position
+      const carMarker = new google.maps.Marker({
+        position: courialCoords,
+        map,
+        zIndex: 10,
+      });
+      // Compute bearing toward pickup for initial icon rotation
+      const initialBearing = pickupCoords
+        ? getBearing(courialCoords, pickupCoords)
+        : 0;
+      createRotatedIcon(iconUrl, initialBearing, iconMaxDim).then((rotatedUrl) => {
+        carMarker.setIcon({
+          url: rotatedUrl,
+          scaledSize: new google.maps.Size(canvasSize, canvasSize),
+          anchor: new google.maps.Point(canvasSize / 2, canvasSize / 2),
         });
-        // Use rotated icon at 0° to preserve aspect ratio from the start
-        createRotatedIcon(iconUrl, 0, iconMaxDim).then((rotatedUrl) => {
-          carMarker.setIcon({
+      });
+      trackingMarkerRef.current = carMarker;
+    } else {
+      // Update existing marker position smoothly
+      const marker = trackingMarkerRef.current;
+      const prevPos = marker.getPosition();
+      const newPos = new google.maps.LatLng(courialCoords.lat, courialCoords.lng);
+
+      if (prevPos) {
+        // Compute bearing from previous to new position
+        const bearing = getBearing(
+          { lat: prevPos.lat(), lng: prevPos.lng() },
+          courialCoords
+        );
+        createRotatedIcon(iconUrl, bearing, iconMaxDim).then((rotatedUrl) => {
+          marker.setIcon({
             url: rotatedUrl,
             scaledSize: new google.maps.Size(canvasSize, canvasSize),
             anchor: new google.maps.Point(canvasSize / 2, canvasSize / 2),
           });
         });
-        trackingMarkerRef.current = carMarker;
 
-        // Animate along route path — slow loop
-        const totalDuration = 20000;
+        // Animate smoothly from prev to new over 1s
+        const duration = 1000;
         const startTime = performance.now();
-        let lastBearing = -999;
+        const startLat = prevPos.lat();
+        const startLng = prevPos.lng();
+        const endLat = courialCoords.lat;
+        const endLng = courialCoords.lng;
+
+        if (trackingAnimationRef.current) {
+          cancelAnimationFrame(trackingAnimationRef.current);
+        }
 
         const animate = (now: number) => {
           const elapsed = now - startTime;
-          const progress = (elapsed % totalDuration) / totalDuration;
-          
-          const totalPoints = path.length;
-          const exactIndex = progress * (totalPoints - 1);
-          const idx = Math.floor(exactIndex);
-          const frac = exactIndex - idx;
-          
-          const from = path[Math.min(idx, totalPoints - 1)];
-          const to = path[Math.min(idx + 1, totalPoints - 1)];
-          
-          const lat = from.lat() + (to.lat() - from.lat()) * frac;
-          const lng = from.lng() + (to.lng() - from.lng()) * frac;
-          
-          const pos = { lat, lng };
-          carMarker.setPosition(pos);
-
-          // Rotate icon to match bearing along path
-          const bearing = getBearing(
-            { lat: from.lat(), lng: from.lng() },
-            { lat: to.lat(), lng: to.lng() }
-          );
-          const roundedBearing = Math.round(bearing / 5) * 5;
-          if (roundedBearing !== lastBearing) {
-            lastBearing = roundedBearing;
-            createRotatedIcon(iconUrl, bearing, iconMaxDim).then((rotatedUrl) => {
-              carMarker.setIcon({
-                url: rotatedUrl,
-                scaledSize: new google.maps.Size(canvasSize, canvasSize),
-                anchor: new google.maps.Point(canvasSize / 2, canvasSize / 2),
-              });
-            });
+          const t = Math.min(elapsed / duration, 1);
+          const eased = t * (2 - t); // ease-out
+          const lat = startLat + (endLat - startLat) * eased;
+          const lng = startLng + (endLng - startLng) * eased;
+          marker.setPosition({ lat, lng });
+          if (t < 1) {
+            trackingAnimationRef.current = requestAnimationFrame(animate);
           }
-
-
-          trackingAnimationRef.current = requestAnimationFrame(animate);
         };
-
         trackingAnimationRef.current = requestAnimationFrame(animate);
+      } else {
+        marker.setPosition(newPos);
       }
-    );
+    }
 
-    return cleanup;
-  }, [bookingState, pickupCoords, dropoffCoords]);
+    return () => {
+      // Don't cleanup marker on every courialCoords change, only on unmount/state change
+    };
+  }, [bookingState, courialCoords, pickupCoords, vehicleType]);
 
   if (!ready) {
     return (
