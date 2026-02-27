@@ -101,6 +101,9 @@ export function useCourialSocket({ token, enabled, onAccepted }: UseCourialSocke
         const fullNameFromParts = `${firstName} ${lastName}`.trim();
         const providerImage = provider?.image || provider?.profile_image || "";
 
+        // Provider.UserVehicle for plate number
+        const userVehicle = provider?.UserVehicle ?? provider?.userVehicle ?? {};
+
         const ratingRaw =
           courialData?.rating ??
           courialData?.avg_rating ??
@@ -136,12 +139,16 @@ export function useCourialSocket({ token, enabled, onAccepted }: UseCourialSocke
           vehicleMake: courialData?.vehicleMake || courialData?.vehicle_make || courialData?.vehicle?.make || "",
           vehicleModel: courialData?.vehicleModel || courialData?.vehicle_model || courialData?.vehicle?.model || "",
           licensePlate:
+            userVehicle?.plate_number ||
+            userVehicle?.plateNumber ||
             courialData?.licensePlate ||
             courialData?.license_plate ||
             courialData?.plateNumber ||
             courialData?.vehicle?.license_plate ||
             "",
           memberSince:
+            provider?.since_year ||
+            provider?.sinceYear ||
             courialData?.memberSince ||
             courialData?.member_since ||
             courialData?.created_at ||

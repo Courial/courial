@@ -2347,7 +2347,7 @@ const Book = () => {
                     </div>
                     <div className="text-xs text-muted-foreground mt-0.5">
                       {acceptedCourial?.memberSince
-                        ? `Courial Since '${new Date(acceptedCourial.memberSince).getFullYear().toString().slice(-2)}`
+                        ? `Courial Since '${String(acceptedCourial.memberSince).length === 4 ? String(acceptedCourial.memberSince).slice(-2) : new Date(acceptedCourial.memberSince).getFullYear().toString().slice(-2)}`
                         : "Courial Since '25"}
                     </div>
                     <div className="text-xs text-muted-foreground mt-0.5">
