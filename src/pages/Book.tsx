@@ -469,7 +469,28 @@ const Book = () => {
 
       if (error) {
         console.error("[book-delivery] invoke error:", error);
-        toast.error("Booking failed — please try again.");
+        // Check if the error is a 401 token expiry from the Courial API
+        const errMsg = typeof error === "object" && error !== null ? JSON.stringify(error) : String(error);
+        if (errMsg.includes("Invalid Token") || errMsg.includes("401")) {
+          console.warn("[book-delivery] Courial token expired — clearing and prompting re-auth");
+          localStorage.removeItem("courial_api_token");
+          toast.error("Your session has expired. Please sign out and sign back in to refresh your token.", { duration: 6000 });
+        } else {
+          toast.error("Booking failed — please try again.");
+        }
+        setBookingState("input");
+        return;
+      }
+
+      // Also check for inline error responses (supabase.functions.invoke may not throw on 401)
+      if (data?.error || data?.details?.code === 401) {
+        console.error("[book-delivery] API error response:", data);
+        if (data?.details?.code === 401 || data?.error?.message?.includes?.("Invalid Token")) {
+          localStorage.removeItem("courial_api_token");
+          toast.error("Your session has expired. Please sign out and sign back in to refresh your token.", { duration: 6000 });
+        } else {
+          toast.error(data?.error?.message || data?.error || "Booking failed.");
+        }
         setBookingState("input");
         return;
       }
