@@ -117,14 +117,15 @@ export function useCourialSocket({ token, enabled, onAccepted }: UseCourialSocke
             courialData?.user_id ||
             "",
           name:
+            fullNameFromParts ||
             courialData?.name ||
             courialData?.full_name ||
             courialData?.fullName ||
-            fullNameFromParts ||
             "Your Courial",
           rating: Number(ratingRaw) || 5.0,
           phone: courialData?.phone || courialData?.contact || courialData?.mobile || "",
           image:
+            providerImage ||
             courialData?.image ||
             courialData?.profile_image ||
             courialData?.profileImage ||
