@@ -304,7 +304,7 @@ const AddressAutocomplete: React.FC<AddressAutocompleteProps> = ({
               }`}
             >
               <Heart className="w-3.5 h-3.5" />
-              Favorite Places
+              Favorites
             </button>
           </div>
 
