@@ -67,23 +67,23 @@ export const FavoritePartnersModal = ({ open, onOpenChange }: FavoritePartnersMo
             </h1>
 
             {/* Toggle */}
-            <div className="flex rounded-full border border-background/30 overflow-hidden mb-5">
+            <div className="flex rounded-full border border-background/20 p-0.5 mb-5 w-fit mx-auto">
               <button
                 onClick={() => setTab("courials")}
-                className={`flex-1 py-2 text-xs font-semibold transition-all ${
+                className={`px-5 py-1.5 rounded-full text-xs font-bold transition-all ${
                   tab === "courials"
                     ? "bg-background text-foreground"
-                    : "bg-foreground text-background hover:opacity-75"
+                    : "text-background/60"
                 }`}
               >
                 Courials
               </button>
               <button
                 onClick={() => setTab("chauffeurs")}
-                className={`flex-1 py-2 text-xs font-semibold transition-all ${
+                className={`px-5 py-1.5 rounded-full text-xs font-bold transition-all ${
                   tab === "chauffeurs"
-                    ? "bg-foreground text-background border border-background/30"
-                    : "bg-background text-foreground hover:opacity-75"
+                    ? "bg-background text-foreground"
+                    : "text-background/60"
                 }`}
               >
                 Chauffeurs
