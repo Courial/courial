@@ -220,7 +220,7 @@ const RideDetail = ({ ride, onBack }: { ride: any; onBack: () => void }) => {
   return (
     <div className="h-full flex flex-col">
       {/* Map */}
-      <div className="relative mx-6 mt-6 h-48 rounded-2xl overflow-hidden bg-muted">
+      <div className="relative mx-6 mt-10 h-48 rounded-2xl overflow-hidden bg-muted">
         <ActivityDetailMap origin={ride.origin || ""} destination={ride.destination || ""} />
         <button
           onClick={onBack}
