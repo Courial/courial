@@ -175,9 +175,10 @@ export const UpdateProfileModal = ({ open, onOpenChange }: UpdateProfileModalPro
             {/* Footer */}
             <Button
               onClick={hasChanges ? handleSave : () => handleClose(false)}
+              disabled={saving}
               className="w-full rounded-lg h-10 text-sm font-semibold mt-5 bg-transparent border border-background/30 text-background hover:bg-background/10"
             >
-              {hasChanges ? "Save" : "Close"}
+              {saving ? "Saving…" : hasChanges ? "Save" : "Close"}
             </Button>
           </div>
         </motion.div>
