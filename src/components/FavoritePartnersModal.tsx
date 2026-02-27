@@ -21,17 +21,18 @@ interface Partner {
   sinceYear: string;
   lastMet: string;
   online: boolean;
+  vehicle: string;
 }
 
 const MOCK_COURIALS: Partner[] = [
-  { id: "1", firstName: "Marcus", rating: 4.9, sinceYear: "22", lastMet: "Feb 12, 2026", online: true },
-  { id: "2", firstName: "Aisha", rating: 4.8, sinceYear: "23", lastMet: "Jan 28, 2026", online: false },
-  { id: "3", firstName: "Diego", rating: 5.0, sinceYear: "21", lastMet: "Feb 20, 2026", online: true },
+  { id: "1", firstName: "Marcus", rating: 4.9, sinceYear: "22", lastMet: "Feb 12, 2026", online: true, vehicle: "White 2023 Honda Civic" },
+  { id: "2", firstName: "Aisha", rating: 4.8, sinceYear: "23", lastMet: "Jan 28, 2026", online: false, vehicle: "Black 2024 Toyota Camry" },
+  { id: "3", firstName: "Diego", rating: 5.0, sinceYear: "21", lastMet: "Feb 20, 2026", online: true, vehicle: "Silver 2022 Hyundai Elantra" },
 ];
 
 const MOCK_CHAUFFEURS: Partner[] = [
-  { id: "4", firstName: "James", rating: 4.9, sinceYear: "20", lastMet: "Feb 25, 2026", online: true },
-  { id: "5", firstName: "Sophia", rating: 5.0, sinceYear: "24", lastMet: "Feb 10, 2026", online: false },
+  { id: "4", firstName: "James", rating: 4.9, sinceYear: "20", lastMet: "Feb 25, 2026", online: true, vehicle: "Black 2025 Mercedes S-Class" },
+  { id: "5", firstName: "Sophia", rating: 5.0, sinceYear: "24", lastMet: "Feb 10, 2026", online: false, vehicle: "Black 2024 BMW 7 Series" },
 ];
 
 export const FavoritePartnersModal = ({ open, onOpenChange }: FavoritePartnersModalProps) => {
@@ -138,6 +139,9 @@ export const FavoritePartnersModal = ({ open, onOpenChange }: FavoritePartnersMo
                       </div>
                       <p className="text-[10px] text-background/40">
                         Since '{partner.sinceYear} · Last met {partner.lastMet}
+                      </p>
+                      <p className="text-[10px] text-background/40">
+                        {partner.vehicle}
                       </p>
                     </div>
 
