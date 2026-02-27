@@ -73,7 +73,7 @@ export const FavoritePartnersModal = ({ open, onOpenChange }: FavoritePartnersMo
                 className={`px-6 py-2 rounded-full text-sm font-bold transition-all ${
                   tab === "courials"
                     ? "bg-background text-foreground"
-                    : "text-background/60"
+                    : "text-background"
                 }`}
               >
                 Courials
@@ -83,7 +83,7 @@ export const FavoritePartnersModal = ({ open, onOpenChange }: FavoritePartnersMo
                 className={`px-6 py-2 rounded-full text-sm font-bold transition-all ${
                   tab === "chauffeurs"
                     ? "bg-background text-foreground"
-                    : "text-background/60"
+                    : "text-background"
                 }`}
               >
                 Chauffeurs
