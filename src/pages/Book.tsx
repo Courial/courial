@@ -2075,8 +2075,8 @@ const Book = () => {
                         >
                           <div className="mt-2 p-3 rounded-lg border border-destructive/30 bg-destructive/5 space-y-2">
                             <p className="text-[11px] font-medium text-foreground">
-                              For orders valued at $200 or more, please{" "}
-                              <Link to="/help" className="text-primary underline underline-offset-2 hover:opacity-80">contact Courial Support</Link>{" "}
+                              For orders valued at $200 or more, please contact{" "}
+                              <Link to="/help" className="text-primary hover:opacity-80">Courial Support</Link>{" "}
                               to complete this booking.
                             </p>
                             <Button
