@@ -18,7 +18,7 @@ import { PaymentMethodsModal } from "@/components/PaymentMethodsModal";
 const menuItems = [
   { icon: UserRoundPen, label: "Update Profile", href: "/account/profile" },
   { icon: CreditCard, label: "Payment Methods", href: "__payment_modal__" },
-  { icon: Headphones, label: "Get Support", href: "/help" },
+  { icon: Headphones, label: "Get Support", href: "__support__" },
   { icon: Settings, label: "Settings", href: "/account/settings" },
   { icon: Clock, label: "Activity", href: "/account/orders" },
 ];
