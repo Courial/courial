@@ -13,6 +13,7 @@ import visaIcon from "@/assets/card-icons/visa.svg";
 import mastercardIcon from "@/assets/card-icons/mastercard.svg";
 import amexIcon from "@/assets/card-icons/amex.svg";
 import discoverIcon from "@/assets/card-icons/discover.svg";
+import { PaymentMethodsModal } from "@/components/PaymentMethodsModal";
 
 import { Hero } from "@/components/Hero";
 import { LogoTicker } from "@/components/LogoTicker";
