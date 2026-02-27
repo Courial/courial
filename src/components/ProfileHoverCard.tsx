@@ -29,6 +29,8 @@ export const ProfileHoverCard = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
   const [showPaymentModal, setShowPaymentModal] = useState(false);
+  const [showProfileModal, setShowProfileModal] = useState(false);
+  const [showSettingsModal, setShowSettingsModal] = useState(false);
 
   const displayName =
     user?.user_metadata?.full_name ||
