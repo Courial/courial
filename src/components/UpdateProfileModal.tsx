@@ -7,6 +7,8 @@ import { motion } from "framer-motion";
 import { Camera } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
 import profileIcon from "@/assets/profile-icon.png";
 
 interface UpdateProfileModalProps {
@@ -14,11 +16,15 @@ interface UpdateProfileModalProps {
   onOpenChange: (open: boolean) => void;
 }
 
+const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
+const SUPABASE_KEY = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY;
+
 export const UpdateProfileModal = ({ open, onOpenChange }: UpdateProfileModalProps) => {
   const { user } = useAuth();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [editingName, setEditingName] = useState(false);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [saving, setSaving] = useState(false);
 
   const displayName =
     user?.user_metadata?.full_name ||
@@ -32,7 +38,6 @@ export const UpdateProfileModal = ({ open, onOpenChange }: UpdateProfileModalPro
 
   const hasChanges = editName !== displayName || previewUrl !== null;
 
-  // Reset state when displayName changes (e.g. user changes)
   useEffect(() => {
     setEditName(displayName);
   }, [displayName]);
@@ -43,9 +48,42 @@ export const UpdateProfileModal = ({ open, onOpenChange }: UpdateProfileModalPro
     setPreviewUrl(URL.createObjectURL(file));
   };
 
-  const handleSave = () => {
-    // TODO: persist changes via API
-    onOpenChange(false);
+  const handleSave = async () => {
+    if (!editName.trim()) return;
+    setSaving(true);
+
+    const nameParts = editName.trim().split(/\s+/);
+    const firstName = nameParts[0] || "";
+    const lastName = nameParts.slice(1).join(" ") || "";
+
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      const courialToken = localStorage.getItem("courial_api_token") || "";
+
+      const res = await fetch(`${SUPABASE_URL}/functions/v1/update-profile`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "apikey": SUPABASE_KEY,
+          "Authorization": `Bearer ${session?.access_token || ""}`,
+          "x-courial-token": courialToken,
+        },
+        body: JSON.stringify({ first_name: firstName, last_name: lastName }),
+      });
+      const data = await res.json();
+
+      if (!res.ok) {
+        toast.error(data.error || "Failed to update profile");
+      } else {
+        // Refresh local session to pick up new metadata
+        await supabase.auth.refreshSession();
+        toast.success("Profile updated");
+        onOpenChange(false);
+      }
+    } catch {
+      toast.error("Network error. Please try again.");
+    }
+    setSaving(false);
   };
 
   const handleClose = (o: boolean) => {
@@ -137,9 +175,10 @@ export const UpdateProfileModal = ({ open, onOpenChange }: UpdateProfileModalPro
             {/* Footer */}
             <Button
               onClick={hasChanges ? handleSave : () => handleClose(false)}
+              disabled={saving}
               className="w-full rounded-lg h-10 text-sm font-semibold mt-5 bg-transparent border border-background/30 text-background hover:bg-background/10"
             >
-              {hasChanges ? "Save" : "Close"}
+              {saving ? "Saving…" : hasChanges ? "Save" : "Close"}
             </Button>
           </div>
         </motion.div>
