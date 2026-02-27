@@ -2861,6 +2861,22 @@ const Book = () => {
           </AnimatePresence>
         </DialogContent>
       </Dialog>
+      {/* High-Value Order Dialog */}
+      <Dialog open={showHighValueDialog} onOpenChange={setShowHighValueDialog}>
+        <DialogContent className="max-w-xs rounded-2xl text-center p-7">
+          <DialogTitle className="text-base font-bold">Request Received</DialogTitle>
+          <p className="text-sm text-muted-foreground leading-relaxed mt-1">
+            Someone from the Courial Logistics team will contact you within 30 minutes to complete this order on your behalf.
+          </p>
+          <Button
+            variant="hero"
+            className="mt-4 w-full"
+            onClick={() => setShowHighValueDialog(false)}
+          >
+            Got it
+          </Button>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
