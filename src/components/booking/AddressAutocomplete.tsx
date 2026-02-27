@@ -95,7 +95,7 @@ const AddressAutocomplete: React.FC<AddressAutocompleteProps> = ({
     if (!ready || !inputRef.current || autocompleteRef.current) return;
 
     const autocomplete = new google.maps.places.Autocomplete(inputRef.current, {
-      componentRestrictions: { country: "us" },
+      componentRestrictions: { country: ["us", "th"] },
       fields: ["formatted_address", "geometry", "name"],
     });
 
