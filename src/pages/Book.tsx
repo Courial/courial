@@ -2174,7 +2174,7 @@ const Book = () => {
 
                       {/* Request Delivery Button */}
                       <Button
-                        disabled={!isFormValid}
+                        disabled={!isFormValid || (Number(deliverOrderValue) > 200 && !declineProtection)}
                         onClick={handleBookingSubmit}
                         className="rounded h-10 text-lg font-semibold px-6"
                         variant={isFormValid ? "hero" : "secondary"}
