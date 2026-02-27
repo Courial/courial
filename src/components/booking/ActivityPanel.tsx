@@ -80,9 +80,9 @@ const statusColor: Record<string, string> = {
 };
 
 const statusBadgeBg: Record<string, string> = {
-  Completed: "bg-primary/15 text-primary",
-  Cancelled: "bg-red-400/15 text-red-400",
-  Pending: "bg-yellow-500/15 text-yellow-500",
+  Completed: "text-primary",
+  Cancelled: "text-red-400",
+  Pending: "text-yellow-500",
 };
 
 export const ActivityPanel = ({ onBack }: { onBack: () => void }) => {
@@ -166,7 +166,7 @@ export const ActivityPanel = ({ onBack }: { onBack: () => void }) => {
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center justify-between gap-2 mb-1">
                           <span className="text-sm font-bold text-foreground truncate">{ride.destination}</span>
-                          <span className={`text-[11px] font-semibold px-2 py-0.5 rounded-md shrink-0 ${statusBadgeBg[ride.status] || "bg-muted text-muted-foreground"}`}>
+                          <span className={`text-[9px] font-semibold shrink-0 ${statusBadgeBg[ride.status] || "text-muted-foreground"}`}>
                             {ride.status}
                           </span>
                         </div>
@@ -262,7 +262,7 @@ const RideDetail = ({ ride, onBack }: { ride: any; onBack: () => void }) => {
 
         {/* Status badge */}
         <div className="flex items-center gap-2">
-          <span className={`text-xs font-semibold px-2.5 py-1 rounded-md ${statusBadgeBg[ride.status] || "bg-muted text-muted-foreground"}`}>
+          <span className={`text-[9px] font-semibold ${statusBadgeBg[ride.status] || "text-muted-foreground"}`}>
             {ride.status}
           </span>
         </div>
