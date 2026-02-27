@@ -80,9 +80,9 @@ const statusColor: Record<string, string> = {
 };
 
 const statusBadgeBg: Record<string, string> = {
-  Completed: "bg-primary/15 text-primary",
-  Cancelled: "bg-red-400/15 text-red-400",
-  Pending: "bg-yellow-500/15 text-yellow-500",
+  Completed: "text-primary",
+  Cancelled: "text-red-400",
+  Pending: "text-yellow-500",
 };
 
 export const ActivityPanel = ({ onBack }: { onBack: () => void }) => {
