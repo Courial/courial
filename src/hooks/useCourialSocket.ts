@@ -83,7 +83,10 @@ export function useCourialSocket({ token, enabled, onAccepted }: UseCourialSocke
         const parsedData = typeof rawData === "string" ? JSON.parse(rawData) : rawData;
         const payload = parsedData?.data ?? parsedData;
 
-        // Normalize payload shape from different backend variants
+        // The backend sends driver info inside a "Provider" object
+        const provider = payload?.Provider ?? payload?.provider ?? {};
+
+        // Also look at top-level payload for fallback fields
         const courialData =
           payload?.courial ??
           payload?.driver ??
@@ -92,9 +95,11 @@ export function useCourialSocket({ token, enabled, onAccepted }: UseCourialSocke
           payload?.courialData ??
           payload;
 
-        const firstName = courialData?.firstName || courialData?.first_name || "";
-        const lastName = courialData?.lastName || courialData?.last_name || "";
+        // Prefer Provider object for name & image
+        const firstName = provider?.first_name || provider?.firstName || courialData?.firstName || courialData?.first_name || "";
+        const lastName = provider?.last_name || provider?.lastName || courialData?.lastName || courialData?.last_name || "";
         const fullNameFromParts = `${firstName} ${lastName}`.trim();
+        const providerImage = provider?.image || provider?.profile_image || "";
 
         const ratingRaw =
           courialData?.rating ??
@@ -112,14 +117,15 @@ export function useCourialSocket({ token, enabled, onAccepted }: UseCourialSocke
             courialData?.user_id ||
             "",
           name:
+            fullNameFromParts ||
             courialData?.name ||
             courialData?.full_name ||
             courialData?.fullName ||
-            fullNameFromParts ||
             "Your Courial",
           rating: Number(ratingRaw) || 5.0,
           phone: courialData?.phone || courialData?.contact || courialData?.mobile || "",
           image:
+            providerImage ||
             courialData?.image ||
             courialData?.profile_image ||
             courialData?.profileImage ||
