@@ -30,13 +30,15 @@ interface UseCourialSocketOptions {
   onAccepted: (driver: CourialDriver) => void;
   /** Callback when courial location updates */
   onLocationUpdate?: (coords: { lat: number; lng: number }) => void;
+  /** Callback when delivery status changes */
+  onStatusChange?: (status: string) => void;
 }
 
 /**
  * Connects to the Courial real-time socket after booking
  * and listens for the AcceptOrder_listener event.
  */
-export function useCourialSocket({ token, enabled, acceptedDriverId, onAccepted, onLocationUpdate }: UseCourialSocketOptions) {
+export function useCourialSocket({ token, enabled, acceptedDriverId, onAccepted, onLocationUpdate, onStatusChange }: UseCourialSocketOptions) {
   const socketRef = useRef<Socket | null>(null);
   const [connected, setConnected] = useState(false);
 
@@ -208,12 +210,29 @@ export function useCourialSocket({ token, enabled, acceptedDriverId, onAccepted,
       });
     });
 
+    // Listen for delivery lifecycle status events
+    const statusListeners: Record<string, string> = {
+      confirmPickupPointArrival_listener: "Courial at Pickup",
+      confirmPickup_listener: "Courial Picked Up",
+      confirmDeliveryPointArrival_listener: "Courial at Drop-off",
+      confirmDelivery_listener: "Order Complete",
+    };
+
+    Object.entries(statusListeners).forEach(([eventName, status]) => {
+      socket.on(eventName, (rawData: any) => {
+        console.log(`[CourialSocket] ${eventName} received:`, rawData);
+        if (onStatusChange) {
+          onStatusChange(status);
+        }
+      });
+    });
+
     return () => {
       socket.disconnect();
       socketRef.current = null;
       setConnected(false);
     };
-  }, [enabled, token, acceptedDriverId, onAccepted, onLocationUpdate]);
+  }, [enabled, token, acceptedDriverId, onAccepted, onLocationUpdate, onStatusChange]);
 
   return { connected, disconnect };
 }
