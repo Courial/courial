@@ -2443,40 +2443,21 @@ const Book = () => {
                       <p className="text-xs text-foreground">{notes}</p>
                     </div>
                   )}
-                  {(over70lbs || twoCourials || hasStairs) && (
+                  {/* Info pills row */}
+                  {(over70lbs || twoCourials || hasStairs || deliverLanguage || deliverOrderValue || (deliverHasExpenses && deliverExpenseItems.some(e => e.description.trim())) || (Number(deliverOrderValue) > 100 && declineProtection)) && (
                     <div className="py-2 border-b border-border">
                       <div className="flex flex-wrap gap-1.5">
                         {over70lbs && <span className="text-xs text-muted-foreground bg-muted px-2 py-0.5 rounded-full">{heavyWeight}lbs / {heavyItems} {parseInt(heavyItems) === 1 ? "item" : "items"}</span>}
                         {twoCourials && <span className="text-xs text-muted-foreground bg-muted px-2 py-0.5 rounded-full">2 Courials</span>}
                         {hasStairs && <span className="text-xs text-muted-foreground bg-muted px-2 py-0.5 rounded-full">Involves stairs</span>}
-                      </div>
-                    </div>
-                  )}
-                  {deliverLanguage && (
-                    <div className="py-2 border-b border-border">
-                      <p className="text-xs font-medium text-muted-foreground mb-0.5">Preferred Language</p>
-                      <p className="text-xs text-foreground">{deliverLanguage}</p>
-                    </div>
-                  )}
-                  {deliverOrderValue && (
-                    <div className="py-2 border-b border-border">
-                      <p className="text-xs font-medium text-muted-foreground mb-0.5">Order Value</p>
-                      <p className="text-xs font-semibold text-foreground">${deliverOrderValue}</p>
-                    </div>
-                  )}
-                  {deliverHasExpenses && deliverExpenseItems.some(e => e.description.trim()) && (
-                    <div className="py-2 border-b border-border">
-                      <p className="text-xs font-medium text-muted-foreground mb-1">Expenses</p>
-                      <div className="space-y-1">
-                        {deliverExpenseItems.filter(e => e.description.trim()).map((item, i) => (
-                          <div key={i} className="flex justify-between items-start gap-2">
-                            <p className="text-xs text-foreground flex-1">{item.description}</p>
-                            {Number(item.amount) > 0 && <span className="text-xs text-muted-foreground shrink-0">~${item.amount}</span>}
-                          </div>
-                        ))}
-                        {deliverAllowOverage && Number(deliverOverageLimit) > 0 && (
-                          <p className="text-[10px] text-muted-foreground italic">Overage allowed up to ${deliverOverageLimit}</p>
+                        {deliverLanguage && <span className="text-xs text-muted-foreground bg-muted px-2 py-0.5 rounded-full">{deliverLanguage}</span>}
+                        {deliverOrderValue && <span className="text-xs text-muted-foreground bg-muted px-2 py-0.5 rounded-full">${deliverOrderValue} Value</span>}
+                        {deliverHasExpenses && deliverExpenseItems.some(e => e.description.trim()) && (
+                          <span className="text-xs text-muted-foreground bg-muted px-2 py-0.5 rounded-full">
+                            ${deliverExpenseItems.filter(e => e.description.trim()).reduce((sum, e) => sum + Number(e.amount || 0), 0)} Expenses
+                          </span>
                         )}
+                        {Number(deliverOrderValue) > 100 && declineProtection && <span className="text-xs text-muted-foreground bg-muted px-2 py-0.5 rounded-full">Declined Insurance</span>}
                       </div>
                     </div>
                   )}
