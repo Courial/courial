@@ -160,8 +160,8 @@ export const ActivityPanel = ({ onBack }: { onBack: () => void }) => {
                   >
                     <div className="flex items-start gap-3">
                       {/* Service icon box */}
-                      <div className="w-11 h-11 rounded-lg bg-muted-foreground/10 flex items-center justify-center shrink-0 overflow-hidden">
-                        <img src={iconSrc} alt={ride.type} className="w-9 h-9 object-contain" />
+                      <div className="w-11 h-11 rounded-lg bg-muted-foreground/7 flex items-center justify-center shrink-0 overflow-hidden">
+                        <img src={iconSrc} alt={ride.type} className="w-7 h-7 object-contain" />
                       </div>
 
                       <div className="flex-1 min-w-0">
