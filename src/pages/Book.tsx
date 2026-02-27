@@ -2341,7 +2341,7 @@ const Book = () => {
                   )}
                   <div className="flex-1">
                     <div className="flex items-center gap-2">
-                      <h3 className="text-base font-bold text-foreground">{acceptedCourial?.name || "Marcus"}</h3>
+                      <h3 className="text-base font-bold text-foreground">{(acceptedCourial?.name || "Marcus").split(" ")[0]}</h3>
                       <Star className="w-3.5 h-3.5 text-primary fill-primary" />
                       <span className="text-sm text-muted-foreground">{acceptedCourial?.rating?.toFixed(2) || "4.68"}</span>
                     </div>
