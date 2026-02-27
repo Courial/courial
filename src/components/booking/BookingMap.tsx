@@ -286,7 +286,7 @@ const BookingMap: React.FC<BookingMapProps> = ({ pickupCoords, dropoffCoords, st
     }
 
     // Add extra stop markers (red squares, like dropoff)
-    const validExtraStops = (extraStops || []).filter(s => s.coords);
+    const validExtraStops = stableExtraStops.filter(s => s.coords);
     validExtraStops.forEach((stop) => {
       const marker = new google.maps.Marker({
         position: stop.coords!,
