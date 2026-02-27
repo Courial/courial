@@ -103,7 +103,7 @@ export const SettingsModal = ({ open, onOpenChange }: SettingsModalProps) => {
               <p className="text-[10px] font-bold text-background/50 uppercase tracking-wider mb-2">Location</p>
               <button
                 onClick={() => setCommuteOpen(!commuteOpen)}
-                className="flex items-center justify-between w-full py-2.5 hover:bg-background/10 transition-colors rounded-lg"
+                className="flex items-center justify-between w-full py-2.5 hover:opacity-75 transition-opacity rounded-lg"
               >
                 <div className="flex items-center gap-3">
                   <Bell className="h-4 w-4 text-background/60" />
