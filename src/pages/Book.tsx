@@ -1757,48 +1757,92 @@ const Book = () => {
                     </p>
                   </div>
 
-                  {/* Input Fields */}
+                  {/* Input Fields — Draggable to swap */}
                   <div className="space-y-0">
-                    <div className="relative group">
-                      <div className="flex items-center gap-3 px-4 py-3 border border-border rounded-xl bg-background transition-colors focus-within:border-border mb-2">
-                        <div className="flex-shrink-0 w-2.5 h-2.5 rounded-full bg-green-500" />
-                        <div className="flex-1 min-w-0">
-                          {pickupPlaceName && pickupCoords && (
-                            <div className="text-sm font-semibold text-foreground leading-tight">{pickupPlaceName}</div>
-                          )}
-                          <AddressAutocomplete
-                            placeholder="Pickup location"
-                            value={pickup}
-                            onChange={(v) => { setPickup(v); if (!v) { setPickupPlaceName(null); setPickupCoords(null); } }}
-                            onPlaceSelect={handlePickupSelect}
-                            className={`w-full bg-transparent text-foreground placeholder:text-muted-foreground outline-none ${pickupPlaceName && pickupCoords ? 'text-muted-foreground text-xs mt-0.5' : 'text-sm'}`}
-                          />
+                    {(() => {
+                      const fields = [
+                        { id: "pickup", dotClass: "rounded-full bg-green-500", placeName: pickupPlaceName, coords: pickupCoords, value: pickup, placeholder: "Pickup location", onChange: (v: string) => { setPickup(v); if (!v) { setPickupPlaceName(null); setPickupCoords(null); } }, onPlaceSelect: handlePickupSelect, onClear: () => { setPickup(""); setPickupPlaceName(null); setPickupCoords(null); } },
+                        { id: "dropoff", dotClass: "bg-red-500", placeName: dropoffPlaceName, coords: dropoffCoords, value: dropoff, placeholder: deliverMultiStop ? "Dropoff #1" : "Dropoff location", onChange: (v: string) => { setDropoff(v); if (!v) { setDropoffPlaceName(null); setDropoffCoords(null); } }, onPlaceSelect: handleDropoffSelect, onClear: () => { setDropoff(""); setDropoffPlaceName(null); setDropoffCoords(null); } },
+                      ];
+
+                      const swapFields = () => {
+                        const tempAddr = pickup;
+                        const tempName = pickupPlaceName;
+                        const tempCoords = pickupCoords;
+                        setPickup(dropoff);
+                        setPickupPlaceName(dropoffPlaceName);
+                        setPickupCoords(dropoffCoords);
+                        setDropoff(tempAddr);
+                        setDropoffPlaceName(tempName);
+                        setDropoffCoords(tempCoords);
+                      };
+
+                      return fields.map((field, idx) => (
+                        <div key={field.id} className={`relative group ${idx === 0 ? '' : 'mt-2'}`}>
+                          <div className="flex items-center gap-3 px-4 py-3 border border-border rounded-xl bg-background transition-colors focus-within:border-border">
+                            {/* Drag handle — click/drag to swap */}
+                            <button
+                              type="button"
+                              className="flex-shrink-0 cursor-grab active:cursor-grabbing text-muted-foreground/40 hover:text-muted-foreground transition-colors touch-none select-none"
+                              onPointerDown={(e) => {
+                                const startY = e.clientY;
+                                const el = e.currentTarget.closest('.relative.group') as HTMLElement;
+                                if (!el) return;
+                                el.style.zIndex = '10';
+                                el.style.transition = 'none';
+                                let dragged = false;
+
+                                const onMove = (ev: PointerEvent) => {
+                                  const dy = ev.clientY - startY;
+                                  if (Math.abs(dy) > 8) dragged = true;
+                                  el.style.transform = `translateY(${dy}px)`;
+                                  el.style.opacity = '0.85';
+                                };
+
+                                const onUp = (ev: PointerEvent) => {
+                                  document.removeEventListener('pointermove', onMove);
+                                  document.removeEventListener('pointerup', onUp);
+                                  const dy = ev.clientY - startY;
+                                  el.style.transition = 'transform 0.2s, opacity 0.2s';
+                                  el.style.transform = '';
+                                  el.style.opacity = '';
+                                  setTimeout(() => { el.style.zIndex = ''; el.style.transition = ''; }, 200);
+                                  // Swap if dragged more than 30px in the right direction
+                                  if (dragged && ((idx === 0 && dy > 30) || (idx === 1 && dy < -30))) {
+                                    swapFields();
+                                  }
+                                };
+
+                                document.addEventListener('pointermove', onMove);
+                                document.addEventListener('pointerup', onUp);
+                              }}
+                            >
+                              <svg width="10" height="16" viewBox="0 0 10 16" fill="currentColor">
+                                <circle cx="2" cy="2" r="1.5" /><circle cx="8" cy="2" r="1.5" />
+                                <circle cx="2" cy="8" r="1.5" /><circle cx="8" cy="8" r="1.5" />
+                                <circle cx="2" cy="14" r="1.5" /><circle cx="8" cy="14" r="1.5" />
+                              </svg>
+                            </button>
+                            <div className={`flex-shrink-0 w-2.5 h-2.5 ${field.dotClass}`} />
+                            <div className="flex-1 min-w-0">
+                              {field.placeName && field.coords && (
+                                <div className="text-sm font-semibold text-foreground leading-tight">{field.placeName}</div>
+                              )}
+                              <AddressAutocomplete
+                                placeholder={field.placeholder}
+                                value={field.value}
+                                onChange={field.onChange}
+                                onPlaceSelect={field.onPlaceSelect}
+                                className={`w-full bg-transparent text-foreground placeholder:text-muted-foreground outline-none ${field.placeName && field.coords ? 'text-muted-foreground text-xs mt-0.5' : 'text-sm'}`}
+                              />
+                            </div>
+                            <button onClick={field.onClear} className="flex-shrink-0 ml-auto hover:opacity-70 transition-opacity">
+                              <X className="w-2.5 h-2.5 text-muted-foreground/50" />
+                            </button>
+                          </div>
                         </div>
-                        <button onClick={() => { setPickup(""); setPickupPlaceName(null); setPickupCoords(null); }} className="flex-shrink-0 ml-auto hover:opacity-70 transition-opacity">
-                          <X className="w-2.5 h-2.5 text-muted-foreground/50" />
-                        </button>
-                      </div>
-                    </div>
-                    <div className="relative group mt-2">
-                      <div className="flex items-center gap-3 px-4 py-3 border border-border rounded-xl bg-background transition-colors focus-within:border-border">
-                        <div className="flex-shrink-0 w-2.5 h-2.5 bg-red-500" />
-                        <div className="flex-1 min-w-0">
-                          {dropoffPlaceName && dropoffCoords && (
-                            <div className="text-sm font-semibold text-foreground leading-tight">{dropoffPlaceName}</div>
-                          )}
-                          <AddressAutocomplete
-                            placeholder={deliverMultiStop ? "Dropoff #1" : "Dropoff location"}
-                            value={dropoff}
-                            onChange={(v) => { setDropoff(v); if (!v) { setDropoffPlaceName(null); setDropoffCoords(null); } }}
-                            onPlaceSelect={handleDropoffSelect}
-                            className={`w-full bg-transparent text-foreground placeholder:text-muted-foreground outline-none ${dropoffPlaceName && dropoffCoords ? 'text-muted-foreground text-xs mt-0.5' : 'text-sm'}`}
-                          />
-                        </div>
-                        <button onClick={() => { setDropoff(""); setDropoffPlaceName(null); setDropoffCoords(null); }} className="flex-shrink-0 ml-auto hover:opacity-70 transition-opacity">
-                          <X className="w-2.5 h-2.5 text-muted-foreground/50" />
-                        </button>
-                      </div>
-                    </div>
+                      ));
+                    })()}
 
                     {/* Extra stop fields when multi-stop enabled */}
                     <AnimatePresence>
