@@ -440,7 +440,10 @@ const Book = () => {
 
       if (data?.success === 1 && data?.data?.deliveryId) {
         deliveryIdRef.current = data.data.deliveryId;
-        console.log("[book-delivery] Delivery created:", data.data.deliveryId);
+        if (data.data.nearbyCourials?.length) {
+          setNearbyCourials(data.data.nearbyCourials);
+        }
+        console.log("[book-delivery] Delivery created:", data.data.deliveryId, "nearbyCourials:", data.data.nearbyCourials);
       } else {
         console.error("[book-delivery] Unexpected response:", data);
         toast.error(data?.msg || "Booking failed — unexpected response.");
