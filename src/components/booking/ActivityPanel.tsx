@@ -214,7 +214,7 @@ export const ActivityPanel = ({ onBack }: { onBack: () => void }) => {
 
 /* ── Detail View ── */
 const RideDetail = ({ ride, onBack }: { ride: any; onBack: () => void }) => {
-  const Icon = serviceIcon[ride.type] || Box;
+  const iconSrc = serviceIconSrc[ride.type] || deliverIcon;
 
   return (
     <div className="h-full flex flex-col">
