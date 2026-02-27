@@ -21,6 +21,7 @@ interface Partner {
   sinceYear: string;
   lastMet: string;
   online: boolean;
+  vehicle: string;
 }
 
 const MOCK_COURIALS: Partner[] = [
