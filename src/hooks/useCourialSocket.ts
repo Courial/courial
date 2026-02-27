@@ -24,6 +24,8 @@ interface UseCourialSocketOptions {
   token: string | null;
   /** Whether to connect (true after successful booking) */
   enabled: boolean;
+  /** Accepted driver ID (Provider.id) for matching live updates */
+  acceptedDriverId?: string | null;
   /** Callback when a courial accepts the order */
   onAccepted: (driver: CourialDriver) => void;
   /** Callback when courial location updates */
@@ -34,7 +36,7 @@ interface UseCourialSocketOptions {
  * Connects to the Courial real-time socket after booking
  * and listens for the AcceptOrder_listener event.
  */
-export function useCourialSocket({ token, enabled, onAccepted, onLocationUpdate }: UseCourialSocketOptions) {
+export function useCourialSocket({ token, enabled, acceptedDriverId, onAccepted, onLocationUpdate }: UseCourialSocketOptions) {
   const socketRef = useRef<Socket | null>(null);
   const [connected, setConnected] = useState(false);
 
@@ -177,6 +179,7 @@ export function useCourialSocket({ token, enabled, onAccepted, onLocationUpdate 
     const locationEvents = [
       "LocationUpdate", "location_update", "ProviderLocation",
       "provider_location", "updateLocation", "update_location",
+      "driverLiveUpdate",
     ];
     locationEvents.forEach((eventName) => {
       socket.on(eventName, (rawData: any) => {
@@ -184,6 +187,16 @@ export function useCourialSocket({ token, enabled, onAccepted, onLocationUpdate 
         try {
           const parsed = typeof rawData === "string" ? JSON.parse(rawData) : rawData;
           const data = parsed?.data ?? parsed;
+
+          // For driverLiveUpdate, match userId to accepted driver ID
+          if (eventName === "driverLiveUpdate" && acceptedDriverId) {
+            const eventUserId = String(data?.userId ?? data?.user_id ?? "");
+            if (eventUserId && eventUserId !== String(acceptedDriverId)) {
+              console.log(`[CourialSocket] driverLiveUpdate skipped: userId ${eventUserId} !== accepted ${acceptedDriverId}`);
+              return;
+            }
+          }
+
           const lat = parseFloat(data?.latitude ?? data?.lat);
           const lng = parseFloat(data?.longitude ?? data?.lng);
           if (!isNaN(lat) && !isNaN(lng) && onLocationUpdate) {
@@ -200,7 +213,7 @@ export function useCourialSocket({ token, enabled, onAccepted, onLocationUpdate 
       socketRef.current = null;
       setConnected(false);
     };
-  }, [enabled, token, onAccepted, onLocationUpdate]);
+  }, [enabled, token, acceptedDriverId, onAccepted, onLocationUpdate]);
 
   return { connected, disconnect };
 }

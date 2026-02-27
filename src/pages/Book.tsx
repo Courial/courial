@@ -249,6 +249,7 @@ const Book = () => {
   useCourialSocket({
     token: courialToken,
     enabled: socketEnabled,
+    acceptedDriverId: acceptedCourial?.id || null,
     onAccepted: handleCourialAccepted,
     onLocationUpdate: handleLocationUpdate,
   });
