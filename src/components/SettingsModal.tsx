@@ -8,6 +8,7 @@ import { Settings, Home, Building2, Heart, Bell, ChevronDown, ChevronUp } from "
 import { useAuth } from "@/hooks/useAuth";
 import profileIcon from "@/assets/profile-icon.png";
 import { SavedAddressModal, getSavedAddresses, type SavedAddress } from "@/components/SavedAddressModal";
+import { FavoritePartnersModal } from "@/components/FavoritePartnersModal";
 
 interface SettingsModalProps {
   open: boolean;
@@ -23,6 +24,7 @@ export const SettingsModal = ({ open, onOpenChange }: SettingsModalProps) => {
   const [chatEnabled, setChatEnabled] = useState(true);
   const [addressModalType, setAddressModalType] = useState<string | null>(null);
   const [savedAddresses, setSavedAddresses] = useState<SavedAddress[]>(getSavedAddresses());
+  const [favoritesOpen, setFavoritesOpen] = useState(false);
 
   useEffect(() => {
     if (open) setSavedAddresses(getSavedAddresses());
