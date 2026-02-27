@@ -80,6 +80,7 @@ const App = () => (
                 <Route path="/account/orders" element={<AccountOrders />} />
                 <Route path="/account/profile" element={<AccountProfile />} />
                 <Route path="/account/payments" element={<AccountPayments />} />
+                <Route path="/account/settings" element={<AccountSettings />} />
                 <Route path="/book" element={<Book />} />
                 {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                 <Route path="*" element={<NotFound />} />
