@@ -1,7 +1,11 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Clock, Package, RotateCcw, Calendar, MapPin, ArrowLeft, Box, ConciergeBell, CarFront, ParkingCircle, Zap, X } from "lucide-react";
+import { Clock, RotateCcw, Calendar, MapPin, ArrowLeft, Zap } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import deliverIcon from "@/assets/service-icons/deliver.png";
+import conciergeIcon from "@/assets/service-icons/concierge.png";
+import chauffeurIcon from "@/assets/service-icons/chauffeur.png";
+import valetIcon from "@/assets/service-icons/valet.png";
 
 type Tab = "pending" | "past";
 
@@ -66,11 +70,11 @@ const mockPastRides = [
   },
 ];
 
-const serviceIcon: Record<string, typeof Box> = {
-  Deliver: Box,
-  Concierge: ConciergeBell,
-  Chauffeur: CarFront,
-  Valet: ParkingCircle,
+const serviceIconSrc: Record<string, string> = {
+  Deliver: deliverIcon,
+  Concierge: conciergeIcon,
+  Chauffeur: chauffeurIcon,
+  Valet: valetIcon,
 };
 
 const statusColor: Record<string, string> = {
@@ -147,7 +151,7 @@ export const ActivityPanel = ({ onBack }: { onBack: () => void }) => {
               className="space-y-3"
             >
               {rides.map((ride) => {
-                const Icon = serviceIcon[ride.type] || Box;
+                const iconSrc = serviceIconSrc[ride.type] || deliverIcon;
                 return (
                   <div
                     key={ride.id}
@@ -156,8 +160,8 @@ export const ActivityPanel = ({ onBack }: { onBack: () => void }) => {
                   >
                     <div className="flex items-start gap-3">
                       {/* Service icon box */}
-                      <div className="w-11 h-11 rounded-lg bg-muted flex items-center justify-center shrink-0">
-                        <Icon className="w-5 h-5 text-foreground" />
+                      <div className="w-11 h-11 rounded-lg bg-muted flex items-center justify-center shrink-0 overflow-hidden">
+                        <img src={iconSrc} alt={ride.type} className="w-9 h-9 object-contain" />
                       </div>
 
                       <div className="flex-1 min-w-0">
@@ -210,7 +214,7 @@ export const ActivityPanel = ({ onBack }: { onBack: () => void }) => {
 
 /* ── Detail View ── */
 const RideDetail = ({ ride, onBack }: { ride: any; onBack: () => void }) => {
-  const Icon = serviceIcon[ride.type] || Box;
+  const iconSrc = serviceIconSrc[ride.type] || deliverIcon;
 
   return (
     <div className="h-full flex flex-col">
@@ -238,8 +242,8 @@ const RideDetail = ({ ride, onBack }: { ride: any; onBack: () => void }) => {
               {ride.scheduled ? "Scheduled Ride" : "On-Demand"}
             </p>
           </div>
-          <div className="w-11 h-11 rounded-lg bg-muted flex items-center justify-center shrink-0">
-            <Icon className="w-5 h-5 text-foreground" />
+          <div className="w-11 h-11 rounded-lg bg-muted flex items-center justify-center shrink-0 overflow-hidden">
+            <img src={iconSrc} alt={ride.type} className="w-9 h-9 object-contain" />
           </div>
         </div>
 
