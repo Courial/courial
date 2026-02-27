@@ -70,7 +70,7 @@ export const FavoritePartnersModal = ({ open, onOpenChange }: FavoritePartnersMo
             <div className="flex rounded-full border border-background/20 p-0.5 mb-5 w-fit mx-auto">
               <button
                 onClick={() => setTab("courials")}
-                className={`px-5 py-1.5 rounded-full text-xs font-bold transition-all ${
+                className={`px-6 py-2 rounded-full text-sm font-bold transition-all ${
                   tab === "courials"
                     ? "bg-background text-foreground"
                     : "text-background/60"
@@ -80,7 +80,7 @@ export const FavoritePartnersModal = ({ open, onOpenChange }: FavoritePartnersMo
               </button>
               <button
                 onClick={() => setTab("chauffeurs")}
-                className={`px-5 py-1.5 rounded-full text-xs font-bold transition-all ${
+                className={`px-6 py-2 rounded-full text-sm font-bold transition-all ${
                   tab === "chauffeurs"
                     ? "bg-background text-foreground"
                     : "text-background/60"
