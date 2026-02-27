@@ -1,10 +1,11 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X, LogOut, Package } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { ProfileHoverCard } from "@/components/ProfileHoverCard";
+import { supabase } from "@/integrations/supabase/client";
 import courialLogo from "@/assets/courial-logo-black.svg";
 
 const navLinks = [
