@@ -3,7 +3,7 @@ import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { motion, AnimatePresence } from "framer-motion";
-import { CreditCard, Plus, Trash2, ArrowLeft, Shield, Eye, EyeOff } from "lucide-react";
+import { CreditCard, Plus, Trash2, ArrowLeft, Shield, Eye, EyeOff, Check } from "lucide-react";
 import { Link } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import visaIcon from "@/assets/card-icons/visa.svg";
@@ -45,7 +45,7 @@ export const PaymentMethodsModal = ({
 
   return (
     <Dialog open={open} onOpenChange={handleClose}>
-      <DialogContent className="sm:max-w-[19.2rem] bg-transparent border-none !rounded-[20px] p-0 overflow-y-auto max-h-[90vh] [&>button]:hidden shadow-none">
+      <DialogContent className="sm:max-w-[22rem] bg-transparent border-none !rounded-[20px] p-0 overflow-y-auto max-h-[90vh] [&>button]:hidden shadow-none">
         <AnimatePresence mode="wait">
           {!showAddCard ? (
             <motion.div key="methods" initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, x: -20 }} transition={{ duration: 0.3 }}>
@@ -67,12 +67,12 @@ export const PaymentMethodsModal = ({
                       )}
                     >
                       <img src={method.icon} alt={method.label} className="w-9 h-auto rounded" />
-                      <div className="flex-1">
+                      <div className="flex-1 flex items-center gap-2">
                         <p className="text-sm font-semibold text-background">{method.label}</p>
                         <p className="text-xs text-background/50">•••• {method.last4}</p>
                       </div>
                       {selected === method.id && (
-                        <div className="w-2 h-2 rounded-full bg-background" />
+                        <Check className="w-4 h-4 text-green-400" />
                       )}
                       <button
                         onClick={(e) => { e.stopPropagation(); }}
