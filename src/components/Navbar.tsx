@@ -113,7 +113,7 @@ export const Navbar = () => {
               <div className="w-[70px]" />
             )}
             <Link to="/book">
-              <Button variant={isActive("/book") ? "secondary" : "hero"} size="sm">
+              <Button variant={isActive("/book") ? "secondary" : "hero"} size="sm" className={hasActiveOrder ? "animate-pulse-gentle border border-destructive" : ""}>
                 Book Now
               </Button>
             </Link>
