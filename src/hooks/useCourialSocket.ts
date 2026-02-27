@@ -12,6 +12,7 @@ export interface CourialDriver {
   vehicleColor: string;
   vehicleMake: string;
   vehicleModel: string;
+  vehicleYear: string;
   licensePlate: string;
   memberSince: string;
 }
