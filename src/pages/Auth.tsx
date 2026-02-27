@@ -37,6 +37,19 @@ const splitPhone = (intlPhone: string) => {
     : { countryCode: "", nationalNumber: intlPhone };
 };
 
+/** Format a national number for display based on digit count */
+const formatDisplayPhone = (countryCode: string, national: string): string => {
+  const digits = national.replace(/\D/g, "");
+  if (digits.length === 10) {
+    // US format: (213) 284-5742
+    return `${countryCode} (${digits.slice(0,3)}) ${digits.slice(3,6)}-${digits.slice(6)}`;
+  } else if (digits.length === 9) {
+    // Thai format: (98) (121)-(2106)
+    return `${countryCode} (${digits.slice(0,2)}) (${digits.slice(2,5)})-(${digits.slice(5)})`;
+  }
+  return `${countryCode} ${digits}`;
+};
+
 const Auth = () => {
   const [view, setView] = useState<View>("main");
   const [mode, setMode] = useState<"signin" | "signup">("signin");
