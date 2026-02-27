@@ -2020,8 +2020,8 @@ const Book = () => {
 
                   {/* Order Value */}
                   <div className="mb-3 mt-4">
-                    <div className="flex items-center gap-2">
-                      <h4 className="text-xs font-medium text-foreground">Order Value</h4>
+                    <div className="flex items-baseline gap-2">
+                      <h4 className="text-xs font-medium text-foreground leading-none">Order Value</h4>
                       <div className="relative">
                         <span className="absolute left-2 top-1/2 -translate-y-1/2 text-xs text-muted-foreground">$</span>
                         <input
