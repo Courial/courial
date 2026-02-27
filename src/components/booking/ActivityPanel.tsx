@@ -1,7 +1,11 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Clock, Package, RotateCcw, Calendar, MapPin, ArrowLeft, Box, ConciergeBell, CarFront, ParkingCircle, Zap, X } from "lucide-react";
+import { Clock, RotateCcw, Calendar, MapPin, ArrowLeft, Zap } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import deliverIcon from "@/assets/service-icons/deliver.png";
+import conciergeIcon from "@/assets/service-icons/concierge.png";
+import chauffeurIcon from "@/assets/service-icons/chauffeur.png";
+import valetIcon from "@/assets/service-icons/valet.png";
 
 type Tab = "pending" | "past";
 
