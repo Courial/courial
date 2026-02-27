@@ -2097,6 +2097,15 @@ const Book = () => {
                             >
                               Send to Courial
                             </Button>
+                            <label className="flex items-center gap-2 mt-1 cursor-pointer">
+                              <input
+                                type="checkbox"
+                                checked={declineProtection}
+                                onChange={(e) => setDeclineProtection(e.target.checked)}
+                                className="h-3 w-3 rounded border border-border/60 accent-foreground cursor-pointer appearance-none checked:appearance-auto bg-background"
+                              />
+                              <span className="text-[10px] text-muted-foreground">I decline additional protection coverage and wish to proceed without it.</span>
+                            </label>
                           </div>
                         </motion.div>
                       )}
