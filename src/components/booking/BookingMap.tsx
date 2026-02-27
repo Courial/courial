@@ -21,6 +21,7 @@ interface BookingMapProps {
   stopPlaceName?: string | null;
   bookingState?: "input" | "loading" | "active";
   vehicleType?: string | null;
+  courialCoords?: LatLng | null;
 }
 
 function buildInfoContent(address: string, placeName?: string | null): string {
