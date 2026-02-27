@@ -375,8 +375,8 @@ const Book = () => {
 
       if (over70lbs) {
         payload.weightCategory = "over_70_lbs";
-        if (selectedWeight) payload.weight = selectedWeight;
-        if (selectedItemCount) payload.itemCount = selectedItemCount;
+        if (heavyWeight) payload.weight = Number(heavyWeight);
+        if (heavyItems) payload.itemCount = Number(heavyItems);
       }
       if (twoCourials) {
         payload.requiresCourials = 2;
