@@ -105,6 +105,7 @@ export function useCourialSocket({ token, enabled, onAccepted }: UseCourialSocke
         const userVehicle = provider?.UserVehicle ?? provider?.userVehicle ?? {};
 
         const ratingRaw =
+          provider?.rating ??
           courialData?.rating ??
           courialData?.avg_rating ??
           courialData?.averageRating ??
