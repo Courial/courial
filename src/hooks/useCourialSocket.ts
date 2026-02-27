@@ -210,12 +210,29 @@ export function useCourialSocket({ token, enabled, acceptedDriverId, onAccepted,
       });
     });
 
+    // Listen for delivery lifecycle status events
+    const statusListeners: Record<string, string> = {
+      confirmPickupPointArrival_listener: "Courial at Pickup",
+      confirmPickup_listener: "Courial Picked Up",
+      confirmDeliveryPointArrival_listener: "Courial at Drop-off",
+      confirmDelivery_listener: "Order Complete",
+    };
+
+    Object.entries(statusListeners).forEach(([eventName, status]) => {
+      socket.on(eventName, (rawData: any) => {
+        console.log(`[CourialSocket] ${eventName} received:`, rawData);
+        if (onStatusChange) {
+          onStatusChange(status);
+        }
+      });
+    });
+
     return () => {
       socket.disconnect();
       socketRef.current = null;
       setConnected(false);
     };
-  }, [enabled, token, acceptedDriverId, onAccepted, onLocationUpdate]);
+  }, [enabled, token, acceptedDriverId, onAccepted, onLocationUpdate, onStatusChange]);
 
   return { connected, disconnect };
 }
