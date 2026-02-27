@@ -25,13 +25,19 @@ export const Navbar = () => {
   const navigate = useNavigate();
   const [hasOrders, setHasOrders] = useState(false);
 
+  const [hasActiveOrder, setHasActiveOrder] = useState(false);
+
   useEffect(() => {
-    if (!user) { setHasOrders(false); return; }
+    if (!user) { setHasOrders(false); setHasActiveOrder(false); return; }
     supabase
       .from("orders")
-      .select("id", { count: "exact", head: true })
+      .select("id, status", { count: "exact" })
       .eq("user_id", user.id)
-      .then(({ count }) => setHasOrders((count ?? 0) > 0));
+      .then(({ data, count }) => {
+        setHasOrders((count ?? 0) > 0);
+        const active = data?.some(o => ["pending", "confirmed", "in_transit", "scheduled", "active"].includes(o.status));
+        setHasActiveOrder(!!active);
+      });
   }, [user]);
 
 
@@ -107,7 +113,7 @@ export const Navbar = () => {
               <div className="w-[70px]" />
             )}
             <Link to="/book">
-              <Button variant={isActive("/book") ? "secondary" : "hero"} size="sm">
+              <Button variant={isActive("/book") ? "secondary" : "hero"} size="sm" className={hasActiveOrder ? "animate-pulse-gentle border border-destructive" : ""}>
                 Book Now
               </Button>
             </Link>
@@ -182,7 +188,7 @@ export const Navbar = () => {
                   </Link>
                 )}
                 <Link to="/book" onClick={() => setIsOpen(false)}>
-                  <Button variant={isActive("/book") ? "secondary" : "hero"} className="w-full">Book Now</Button>
+                  <Button variant={isActive("/book") ? "secondary" : "hero"} className={`w-full ${hasActiveOrder ? "animate-pulse-gentle border border-destructive" : ""}`}>Book Now</Button>
                 </Link>
               </div>
             </div>
