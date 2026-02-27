@@ -98,9 +98,6 @@ export const ActivityPanel = ({ onBack }: { onBack: () => void }) => {
 
   return (
     <div className="p-8 h-full flex flex-col">
-      {/* Header */}
-      <h2 className="text-lg font-bold text-primary mb-6">ACTIVITY</h2>
-
       {/* Tabs */}
       <div className="flex gap-2 mb-8">
         {(["pending", "past"] as Tab[]).map((t) => (
