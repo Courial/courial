@@ -222,14 +222,20 @@ const Book = () => {
     "https://images.unsplash.com/photo-1580489944761-15a19d654956?w=200&h=200&fit=crop&crop=face",
   ], []);
 
+  // Use real courial photos when available, otherwise stock
+  const activeProfiles = useMemo(() => {
+    if (nearbyCourials.length > 0) return nearbyCourials.map(c => c.image);
+    return courialProfiles;
+  }, [nearbyCourials, courialProfiles]);
+
   // Cycle through profile photos during loading
   useEffect(() => {
     if (bookingState !== "loading") return;
     const interval = setInterval(() => {
-      setCurrentProfileIndex((prev) => (prev + 1) % courialProfiles.length);
+      setCurrentProfileIndex((prev) => (prev + 1) % activeProfiles.length);
     }, 600);
     return () => clearInterval(interval);
-  }, [bookingState, courialProfiles.length]);
+  }, [bookingState, activeProfiles.length]);
 
   const paymentMethods = [
     { id: "visa-4242", type: "visa", label: "Visa", last4: "4242", icon: visaIcon },
