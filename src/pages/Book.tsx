@@ -1860,7 +1860,7 @@ const Book = () => {
                         <Button
                           type="button"
                           variant="hero"
-                          className="rounded-lg h-10 text-lg font-semibold px-6"
+                          className="rounded-lg h-8 text-lg font-semibold px-6"
                           onClick={() => {
                             if (deliverExtraStops.length >= 19) {
                               toast.error("Maximum of 20 dropoffs reached.");
@@ -1872,7 +1872,7 @@ const Book = () => {
                           Add Stop
                         </Button>
                         <p className="text-[13px] text-muted-foreground leading-tight">
-                          Double tap <span className="inline-block w-2.5 h-2.5 bg-red-500 align-middle mx-0.5" /> to<br />remove stop
+                          Double tap<br /><span className="inline-block w-2.5 h-2.5 bg-red-500 align-middle mx-0.5" /> to remove
                         </p>
                       </div>
                     )}
