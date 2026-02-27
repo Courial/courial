@@ -76,38 +76,78 @@ export function useCourialSocket({ token, enabled, onAccepted }: UseCourialSocke
     });
 
     // Listen for the AcceptOrder event
-    socket.on("AcceptOrder_listener", (data: any) => {
-      console.log("[CourialSocket] AcceptOrder_listener received:", data);
+    socket.on("AcceptOrder_listener", (rawData: any) => {
+      console.log("[CourialSocket] AcceptOrder_listener received:", rawData);
 
       try {
-        // Extract courial info from the payload
-        const courialData = data?.courial || data?.driver || data?.data?.courial || data?.data?.driver || data;
+        const parsedData = typeof rawData === "string" ? JSON.parse(rawData) : rawData;
+        const payload = parsedData?.data ?? parsedData;
+
+        // Normalize payload shape from different backend variants
+        const courialData =
+          payload?.courial ??
+          payload?.driver ??
+          payload?.acceptedCourial ??
+          payload?.accepted_courial ??
+          payload?.courialData ??
+          payload;
+
+        const firstName = courialData?.firstName || courialData?.first_name || "";
+        const lastName = courialData?.lastName || courialData?.last_name || "";
+        const fullNameFromParts = `${firstName} ${lastName}`.trim();
+
+        const ratingRaw =
+          courialData?.rating ??
+          courialData?.avg_rating ??
+          courialData?.averageRating ??
+          5;
 
         const driver: CourialDriver = {
-          id: courialData?.id || courialData?.courial_id || courialData?.driverId || "",
-          name: courialData?.name || courialData?.full_name || courialData?.firstName
-            ? `${courialData.firstName || ""} ${courialData.lastName || ""}`.trim()
-            : "Your Courial",
-          rating: parseFloat(courialData?.rating || courialData?.avg_rating) || 5.0,
+          id:
+            courialData?.id ||
+            courialData?.courial_id ||
+            courialData?.driverId ||
+            courialData?.driver_id ||
+            courialData?.userId ||
+            courialData?.user_id ||
+            "",
+          name:
+            courialData?.name ||
+            courialData?.full_name ||
+            courialData?.fullName ||
+            fullNameFromParts ||
+            "Your Courial",
+          rating: Number(ratingRaw) || 5.0,
           phone: courialData?.phone || courialData?.contact || courialData?.mobile || "",
-          image: courialData?.image || courialData?.profile_image || courialData?.avatar || "",
-          vehicleColor: courialData?.vehicleColor || courialData?.vehicle_color || "",
-          vehicleMake: courialData?.vehicleMake || courialData?.vehicle_make || "",
-          vehicleModel: courialData?.vehicleModel || courialData?.vehicle_model || "",
-          licensePlate: courialData?.licensePlate || courialData?.license_plate || courialData?.plateNumber || "",
-          memberSince: courialData?.memberSince || courialData?.created_at || courialData?.joinedAt || "",
+          image:
+            courialData?.image ||
+            courialData?.profile_image ||
+            courialData?.profileImage ||
+            courialData?.avatar ||
+            courialData?.avatar_url ||
+            "",
+          vehicleColor: courialData?.vehicleColor || courialData?.vehicle_color || courialData?.vehicle?.color || "",
+          vehicleMake: courialData?.vehicleMake || courialData?.vehicle_make || courialData?.vehicle?.make || "",
+          vehicleModel: courialData?.vehicleModel || courialData?.vehicle_model || courialData?.vehicle?.model || "",
+          licensePlate:
+            courialData?.licensePlate ||
+            courialData?.license_plate ||
+            courialData?.plateNumber ||
+            courialData?.vehicle?.license_plate ||
+            "",
+          memberSince:
+            courialData?.memberSince ||
+            courialData?.member_since ||
+            courialData?.created_at ||
+            courialData?.createdAt ||
+            courialData?.joinedAt ||
+            "",
         };
 
-        // Validate minimum info
-        if (driver.id || driver.name !== "Your Courial") {
-          console.log("[CourialSocket] Courial accepted:", driver);
-          onAccepted(driver);
-        } else {
-          console.warn("[CourialSocket] AcceptOrder data missing courial info, using raw:", data);
-          onAccepted(driver);
-        }
+        console.log("[CourialSocket] Parsed accepted courial:", driver);
+        onAccepted(driver);
       } catch (err) {
-        console.error("[CourialSocket] Error parsing AcceptOrder data:", err);
+        console.error("[CourialSocket] Error parsing AcceptOrder data:", err, rawData);
       }
     });
 
