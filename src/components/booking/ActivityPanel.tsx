@@ -262,7 +262,7 @@ const RideDetail = ({ ride, onBack }: { ride: any; onBack: () => void }) => {
 
         {/* Status badge */}
         <div className="flex items-center gap-2">
-          <span className={`text-xs font-semibold px-2.5 py-1 rounded-md ${statusBadgeBg[ride.status] || "bg-muted text-muted-foreground"}`}>
+          <span className={`text-[9px] font-semibold ${statusBadgeBg[ride.status] || "text-muted-foreground"}`}>
             {ride.status}
           </span>
         </div>
