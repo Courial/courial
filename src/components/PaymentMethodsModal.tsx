@@ -3,7 +3,7 @@ import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { motion, AnimatePresence } from "framer-motion";
-import { CreditCard, Plus, Trash2, ArrowLeft, Shield, Eye, EyeOff } from "lucide-react";
+import { CreditCard, Plus, Trash2, ArrowLeft, Shield, Eye, EyeOff, Check } from "lucide-react";
 import { Link } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import visaIcon from "@/assets/card-icons/visa.svg";
