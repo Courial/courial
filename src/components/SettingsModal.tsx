@@ -111,7 +111,7 @@ export const SettingsModal = ({ open, onOpenChange }: SettingsModalProps) => {
                 Choose your preferred method to receive our customised offers and marketing communications.
               </p>
 
-              <div className="space-y-2">
+              <div className="space-y-1.5">
                 {[
                   { label: "Push", value: pushEnabled, setter: setPushEnabled },
                   { label: "Email", value: emailEnabled, setter: setEmailEnabled },
@@ -120,13 +120,13 @@ export const SettingsModal = ({ open, onOpenChange }: SettingsModalProps) => {
                 ].map((item) => (
                   <div
                     key={item.label}
-                    className="flex items-center justify-between bg-background/10 rounded-xl px-3 py-2.5"
+                    className="flex items-center justify-between bg-background/10 rounded-xl px-3 py-1.5"
                   >
                     <span className="text-sm font-medium text-background">{item.label}</span>
                     <Switch
                       checked={item.value}
                       onCheckedChange={item.setter}
-                      className="data-[state=checked]:bg-primary"
+                      className="data-[state=checked]:bg-primary scale-90"
                     />
                   </div>
                 ))}
