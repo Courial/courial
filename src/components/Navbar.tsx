@@ -188,7 +188,7 @@ export const Navbar = () => {
                   </Link>
                 )}
                 <Link to="/book" onClick={() => setIsOpen(false)}>
-                  <Button variant={isActive("/book") ? "secondary" : "hero"} className="w-full">Book Now</Button>
+                  <Button variant={isActive("/book") ? "secondary" : "hero"} className={`w-full ${hasActiveOrder ? "animate-pulse-gentle border border-destructive" : ""}`}>Book Now</Button>
                 </Link>
               </div>
             </div>
