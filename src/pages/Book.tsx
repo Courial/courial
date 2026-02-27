@@ -2020,7 +2020,8 @@ const Book = () => {
                     )}
                   </AnimatePresence>
 
-                  {/* Order Value */}
+                  {/* Order Value — only show when required fields are filled */}
+                  {isFormValid && (
                   <div className="mb-3 mt-4">
                     <div className="flex items-baseline gap-2">
                       <h4 className="text-xs font-medium text-foreground leading-none">Order Value</h4>
