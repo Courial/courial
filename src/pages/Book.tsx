@@ -2570,8 +2570,8 @@ const Book = () => {
                   className={cn(
                     "flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl border transition-colors text-sm font-semibold",
                     showChat
-                      ? "border-primary bg-primary/10 text-primary"
-                      : "border-border bg-muted/40 hover:bg-muted/70 text-foreground"
+                      ? "border-primary bg-primary text-primary-foreground"
+                      : "border-primary bg-primary hover:bg-primary/90 text-primary-foreground"
                   )}
                 >
                   <MessageCircle className="w-4 h-4" />
