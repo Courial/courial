@@ -219,13 +219,12 @@ const RideDetail = ({ ride, onBack }: { ride: any; onBack: () => void }) => {
 
   return (
     <div className="h-full flex flex-col">
-      {/* Map placeholder */}
-      <div className="relative w-full h-52 bg-muted overflow-hidden">
+      {/* Map */}
+      <div className="relative mx-6 mt-6 h-48 rounded-[20%/20%] overflow-hidden bg-muted">
         <ActivityDetailMap origin={ride.origin || ""} destination={ride.destination || ""} />
-        {/* Back button overlay */}
         <button
           onClick={onBack}
-          className="absolute top-6 left-4 w-7 h-7 rounded-full bg-background/50 backdrop-blur-sm flex items-center justify-center shadow-md hover:bg-background/70 transition-colors z-10"
+          className="absolute top-3 left-3 w-7 h-7 rounded-full bg-background/50 backdrop-blur-sm flex items-center justify-center shadow-md hover:bg-background/70 transition-colors z-10"
         >
           <ArrowLeft className="w-3.5 h-3.5 text-foreground" />
         </button>
