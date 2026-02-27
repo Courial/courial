@@ -81,7 +81,7 @@ const statusColor: Record<string, string> = {
 
 const statusBadgeBg: Record<string, string> = {
   Completed: "text-green-700",
-  Cancelled: "text-red-400",
+  Cancelled: "text-red-700",
   Pending: "text-yellow-500",
 };
 
