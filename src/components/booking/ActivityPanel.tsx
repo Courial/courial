@@ -2,6 +2,7 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Clock, RotateCcw, Calendar, MapPin, ArrowLeft, Zap } from "lucide-react";
 import ActivityDetailMap from "./ActivityDetailMap";
+import noScheduledIllustration from "@/assets/no-scheduled-illustration.png";
 import { useNavigate } from "react-router-dom";
 import deliverIcon from "@/assets/service-icons/deliver.png";
 import conciergeIcon from "@/assets/service-icons/concierge.png";
@@ -139,18 +140,20 @@ export const ActivityPanel = ({ onBack }: { onBack: () => void }) => {
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -10 }}
-              className="flex flex-col items-center justify-center py-20 text-center"
+              className="flex flex-col items-center justify-center py-16 text-center"
             >
-              <div className="w-20 h-20 rounded-full bg-muted flex items-center justify-center mb-6">
-                <Clock className="w-8 h-8 text-muted-foreground" />
-              </div>
+              <img
+                src={noScheduledIllustration}
+                alt="No scheduled services"
+                className="w-48 h-auto mb-6 opacity-80"
+              />
               <h3 className="text-xl font-bold text-foreground mb-2">
-                {tab === "pending" ? "No Scheduled Rides" : "No Past Activity"}
+                {tab === "pending" ? "No Scheduled Services" : "No Past Activity"}
               </h3>
-              <p className="text-sm text-muted-foreground max-w-[240px]">
+              <p className="text-sm text-muted-foreground max-w-[260px]">
                 {tab === "pending"
-                  ? "You don't have any upcoming scheduled rides."
-                  : "You haven't completed any rides yet."}
+                  ? "You don't have any upcoming services scheduled."
+                  : "You haven't completed any services yet."}
               </p>
             </motion.div>
           ) : (
