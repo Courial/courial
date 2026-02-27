@@ -31,6 +31,7 @@ import AdminSupplies from "./pages/AdminSupplies";
 import AccountOrders from "./pages/AccountOrders";
 import AccountProfile from "./pages/AccountProfile";
 import AccountPayments from "./pages/AccountPayments";
+import AccountSettings from "./pages/AccountSettings";
 import Book from "./pages/Book";
 import NotFound from "./pages/NotFound";
 import { CartProvider } from "./hooks/useCart";
@@ -79,6 +80,7 @@ const App = () => (
                 <Route path="/account/orders" element={<AccountOrders />} />
                 <Route path="/account/profile" element={<AccountProfile />} />
                 <Route path="/account/payments" element={<AccountPayments />} />
+                <Route path="/account/settings" element={<AccountSettings />} />
                 <Route path="/book" element={<Book />} />
                 {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                 <Route path="*" element={<NotFound />} />
