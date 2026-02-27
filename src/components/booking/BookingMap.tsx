@@ -365,7 +365,7 @@ const BookingMap: React.FC<BookingMapProps> = ({ pickupCoords, dropoffCoords, st
       map.setCenter(coords);
       map.setZoom(14);
     }
-  }, [pickupCoords, dropoffCoords, stopCoords, extraStops, pickupAddress, dropoffAddress, stopAddress, pickupPlaceName, dropoffPlaceName, stopPlaceName]);
+  }, [pickupCoords, dropoffCoords, stopCoords, stableExtraStops, pickupAddress, dropoffAddress, stopAddress, pickupPlaceName, dropoffPlaceName, stopPlaceName]);
 
   // --- Loading phase: multiple cars converge toward pickup along real roads ---
   useEffect(() => {
