@@ -86,6 +86,8 @@ const serviceCards: { id: ServiceId; label: string; desc: string; href: string; 
 
 const Book = () => {
   const { user } = useAuth();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const showActivity = searchParams.get("view") === "activity";
   const deliveryIdRef = useRef<string | null>(null);
   const [selectedService, setSelectedService] = useState<ServiceId | null>(null);
   const [pickup, setPickup] = useState("");
