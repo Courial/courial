@@ -15,6 +15,8 @@ export interface CourialDriver {
   vehicleYear: string;
   licensePlate: string;
   memberSince: string;
+  latitude: number | null;
+  longitude: number | null;
 }
 
 interface UseCourialSocketOptions {
@@ -24,6 +26,8 @@ interface UseCourialSocketOptions {
   enabled: boolean;
   /** Callback when a courial accepts the order */
   onAccepted: (driver: CourialDriver) => void;
+  /** Callback when courial location updates */
+  onLocationUpdate?: (coords: { lat: number; lng: number }) => void;
 }
 
 /**
