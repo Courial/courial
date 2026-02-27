@@ -1760,27 +1760,46 @@ const Book = () => {
                   {/* Input Fields — Draggable to swap */}
                   <div className="space-y-0">
                     {(() => {
-                      const fields = [
+                      type FieldDef = { id: string; dotClass: string; placeName: string | null; coords: any; value: string; placeholder: string; onChange: (v: string) => void; onPlaceSelect: (p: any) => void; onClear: () => void; onDoubleClickDot?: () => void };
+                      const allFields: FieldDef[] = [
                         { id: "pickup", dotClass: "rounded-full bg-green-500", placeName: pickupPlaceName, coords: pickupCoords, value: pickup, placeholder: "Pickup location", onChange: (v: string) => { setPickup(v); if (!v) { setPickupPlaceName(null); setPickupCoords(null); } }, onPlaceSelect: handlePickupSelect, onClear: () => { setPickup(""); setPickupPlaceName(null); setPickupCoords(null); } },
                         { id: "dropoff", dotClass: "bg-red-500", placeName: dropoffPlaceName, coords: dropoffCoords, value: dropoff, placeholder: deliverMultiStop ? "Dropoff #1" : "Dropoff location", onChange: (v: string) => { setDropoff(v); if (!v) { setDropoffPlaceName(null); setDropoffCoords(null); } }, onPlaceSelect: handleDropoffSelect, onClear: () => { setDropoff(""); setDropoffPlaceName(null); setDropoffCoords(null); } },
                       ];
-
-                      const swapFields = () => {
-                        const tempAddr = pickup;
-                        const tempName = pickupPlaceName;
-                        const tempCoords = pickupCoords;
-                        setPickup(dropoff);
-                        setPickupPlaceName(dropoffPlaceName);
-                        setPickupCoords(dropoffCoords);
-                        setDropoff(tempAddr);
-                        setDropoffPlaceName(tempName);
-                        setDropoffCoords(tempCoords);
+                      if (deliverMultiStop) {
+                        deliverExtraStops.forEach((stop, i) => {
+                          allFields.push({
+                            id: `extra-${i}`,
+                            dotClass: "bg-red-500",
+                            placeName: stop.placeName,
+                            coords: stop.coords,
+                            value: stop.address,
+                            placeholder: `Dropoff #${i + 2}`,
+                            onChange: (v: string) => { setDeliverExtraStops(prev => { const u = [...prev]; u[i] = { ...u[i], address: v, ...(v ? {} : { placeName: null, coords: null }) }; return u; }); },
+                            onPlaceSelect: (place: any) => handleExtraStopSelect(i, place),
+                            onClear: () => { setDeliverExtraStops(prev => { const u = [...prev]; u[i] = { address: "", placeName: null, coords: null }; return u; }); },
+                            onDoubleClickDot: () => setDeliverExtraStops(prev => prev.filter((_, idx) => idx !== i)),
+                          });
+                        });
+                      }
+                      const swapByIndex = (a: number, b: number) => {
+                        if (a < 0 || b < 0 || a >= allFields.length || b >= allFields.length) return;
+                        const getState = (idx: number) => {
+                          if (idx === 0) return { addr: pickup, name: pickupPlaceName, coords: pickupCoords };
+                          if (idx === 1) return { addr: dropoff, name: dropoffPlaceName, coords: dropoffCoords };
+                          const si = idx - 2; const s = deliverExtraStops[si];
+                          return { addr: s?.address || "", name: s?.placeName || null, coords: s?.coords || null };
+                        };
+                        const stA = getState(a), stB = getState(b);
+                        const setState = (idx: number, s: { addr: string; name: string | null; coords: any }) => {
+                          if (idx === 0) { setPickup(s.addr); setPickupPlaceName(s.name); setPickupCoords(s.coords); }
+                          else if (idx === 1) { setDropoff(s.addr); setDropoffPlaceName(s.name); setDropoffCoords(s.coords); }
+                          else { const si = idx - 2; setDeliverExtraStops(prev => { const u = [...prev]; u[si] = { address: s.addr, placeName: s.name, coords: s.coords }; return u; }); }
+                        };
+                        setState(a, stB); setState(b, stA);
                       };
-
-                      return fields.map((field, idx) => (
-                        <div key={field.id} className={`relative group ${idx === 0 ? '' : 'mt-4'}`}>
+                      return allFields.map((field, idx) => (
+                        <div key={field.id} className={`relative group ${idx === 0 ? '' : idx === 1 ? 'mt-4' : 'pt-2'}`}>
                           <div className="flex items-center gap-2">
-                            {/* Drag handle — outside the field */}
                             <button
                               type="button"
                               className="flex-shrink-0 cursor-grab active:cursor-grabbing text-muted-foreground/40 hover:text-muted-foreground transition-colors touch-none select-none p-1"
@@ -1788,32 +1807,18 @@ const Book = () => {
                                 const startY = e.clientY;
                                 const el = e.currentTarget.closest('.relative.group') as HTMLElement;
                                 if (!el) return;
-                                el.style.zIndex = '10';
-                                el.style.transition = 'none';
+                                el.style.zIndex = '10'; el.style.transition = 'none';
                                 let dragged = false;
-
-                                const onMove = (ev: PointerEvent) => {
-                                  const dy = ev.clientY - startY;
-                                  if (Math.abs(dy) > 8) dragged = true;
-                                  el.style.transform = `translateY(${dy}px)`;
-                                  el.style.opacity = '0.85';
-                                };
-
+                                const onMove = (ev: PointerEvent) => { const dy = ev.clientY - startY; if (Math.abs(dy) > 8) dragged = true; el.style.transform = `translateY(${dy}px)`; el.style.opacity = '0.85'; };
                                 const onUp = (ev: PointerEvent) => {
-                                  document.removeEventListener('pointermove', onMove);
-                                  document.removeEventListener('pointerup', onUp);
-                                  const dy = ev.clientY - startY;
-                                  el.style.transition = 'transform 0.2s, opacity 0.2s';
-                                  el.style.transform = '';
-                                  el.style.opacity = '';
+                                  document.removeEventListener('pointermove', onMove); document.removeEventListener('pointerup', onUp);
+                                  el.style.transition = 'transform 0.2s, opacity 0.2s'; el.style.transform = ''; el.style.opacity = '';
                                   setTimeout(() => { el.style.zIndex = ''; el.style.transition = ''; }, 200);
-                                  if (dragged && ((idx === 0 && dy > 30) || (idx === 1 && dy < -30))) {
-                                    swapFields();
-                                  }
+                                  const dy = ev.clientY - startY;
+                                  if (dragged && dy > 30) swapByIndex(idx, idx + 1);
+                                  else if (dragged && dy < -30) swapByIndex(idx, idx - 1);
                                 };
-
-                                document.addEventListener('pointermove', onMove);
-                                document.addEventListener('pointerup', onUp);
+                                document.addEventListener('pointermove', onMove); document.addEventListener('pointerup', onUp);
                               }}
                             >
                               <svg width="10" height="16" viewBox="0 0 10 16" fill="currentColor">
@@ -1822,9 +1827,12 @@ const Book = () => {
                                 <circle cx="2" cy="14" r="1.5" /><circle cx="8" cy="14" r="1.5" />
                               </svg>
                             </button>
-                            {/* Field container */}
                             <div className="flex-1 flex items-center gap-3 px-4 py-3 border border-border rounded-xl bg-background transition-colors focus-within:border-border">
-                              <div className={`flex-shrink-0 w-2.5 h-2.5 ${field.dotClass}`} />
+                              <div
+                                className={`flex-shrink-0 w-2.5 h-2.5 ${field.dotClass}${field.onDoubleClickDot ? ' cursor-pointer' : ''}`}
+                                onDoubleClick={field.onDoubleClickDot}
+                                title={field.onDoubleClickDot ? "Double-tap to remove" : undefined}
+                              />
                               <div className="flex-1 min-w-0">
                                 {field.placeName && field.coords && (
                                   <div className="text-sm font-semibold text-foreground leading-tight">{field.placeName}</div>
@@ -1845,52 +1853,6 @@ const Book = () => {
                         </div>
                       ));
                     })()}
-
-                    {/* Extra stop fields when multi-stop enabled */}
-                    <AnimatePresence>
-                      {deliverMultiStop && deliverExtraStops.map((stop, i) => (
-                        <motion.div
-                          key={i}
-                          initial={{ opacity: 0, height: 0 }}
-                          animate={{ opacity: 1, height: "auto" }}
-                          exit={{ opacity: 0, height: 0 }}
-                          transition={{ duration: 0.15 }}
-                          className="relative group pt-2"
-                        >
-                          <div className="flex items-center gap-3 px-4 py-3 border border-border rounded-xl bg-background transition-colors focus-within:border-border">
-                            <div
-                              className="flex-shrink-0 w-2.5 h-2.5 bg-red-500 cursor-pointer"
-                              onDoubleClick={() => setDeliverExtraStops(prev => prev.filter((_, idx) => idx !== i))}
-                              title="Double-tap to remove"
-                            />
-                            <div className="flex-1 min-w-0">
-                              {stop.placeName && stop.coords && (
-                                <div className="text-sm font-semibold text-foreground leading-tight">{stop.placeName}</div>
-                              )}
-                              <AddressAutocomplete
-                                placeholder={`Dropoff #${i + 2}`}
-                                value={stop.address}
-                                onChange={(v) => {
-                                  setDeliverExtraStops(prev => {
-                                    const updated = [...prev];
-                                    updated[i] = { ...updated[i], address: v, ...(v ? {} : { placeName: null, coords: null }) };
-                                    return updated;
-                                  });
-                                }}
-                                onPlaceSelect={(place) => handleExtraStopSelect(i, place)}
-                                className={`w-full bg-transparent text-foreground placeholder:text-muted-foreground outline-none ${stop.placeName && stop.coords ? 'text-muted-foreground text-xs mt-0.5' : 'text-sm'}`}
-                              />
-                            </div>
-                            <button
-                              onClick={() => { setDeliverExtraStops(prev => { const u = [...prev]; u[i] = { address: "", placeName: null, coords: null }; return u; }); }}
-                              className="flex-shrink-0 ml-auto hover:opacity-70 transition-opacity"
-                            >
-                              <X className="w-2.5 h-2.5 text-muted-foreground/50" />
-                            </button>
-                          </div>
-                        </motion.div>
-                      ))}
-                    </AnimatePresence>
 
                     {/* Add Stop button */}
                     {deliverMultiStop && (
