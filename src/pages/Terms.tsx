@@ -36,6 +36,11 @@ const summaryCards = [
     title: "Breaking the Rules",
     description: "If you misuse the app or break laws, Courial can suspend or terminate your account.",
   },
+  {
+    icon: Shield,
+    title: "Delivery Protection",
+    description: "Built-in protection for eligible deliveries, with optional Extended Protection for higher-value items. Claims must follow stated procedures and deadlines.",
+  },
 ];
 
 const Terms = () => {
