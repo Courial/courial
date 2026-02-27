@@ -42,12 +42,15 @@ export const FavoritePartnersModal = ({ open, onOpenChange }: FavoritePartnersMo
 
   const partners = tab === "courials" ? courials : chauffeurs;
 
+  const [pendingRemove, setPendingRemove] = useState<Partner | null>(null);
+
   const removePartner = (id: string) => {
     if (tab === "courials") {
       setCourials((prev) => prev.filter((p) => p.id !== id));
     } else {
       setChauffeurs((prev) => prev.filter((p) => p.id !== id));
     }
+    setPendingRemove(null);
   };
 
   return (
