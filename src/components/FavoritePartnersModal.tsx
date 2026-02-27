@@ -61,7 +61,7 @@ export const FavoritePartnersModal = ({ open, onOpenChange }: FavoritePartnersMo
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.3 }}
         >
-          <div className="rounded-[20px] bg-foreground/75 text-background px-6 py-6 shadow-2xl backdrop-blur-sm flex flex-col">
+          <div className="relative rounded-[20px] bg-foreground/75 text-background px-6 py-6 shadow-2xl backdrop-blur-sm flex flex-col">
             <DialogTitle className="sr-only">Favorite Partners</DialogTitle>
 
             {/* Header */}
