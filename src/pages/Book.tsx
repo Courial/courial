@@ -2177,7 +2177,7 @@ const Book = () => {
                         disabled={!isFormValid || (Number(deliverOrderValue) > 200 && !declineProtection)}
                         onClick={handleBookingSubmit}
                         className="rounded h-10 text-lg font-semibold px-6"
-                        variant={isFormValid ? "hero" : "secondary"}
+                        variant={isFormValid && !(Number(deliverOrderValue) > 200 && !declineProtection) ? "hero" : "secondary"}
                       >
                         Book {selectedService ? serviceCards.find(s => s.id === selectedService)?.label : "Delivery"}
                       </Button>
