@@ -31,6 +31,7 @@ import AdminSupplies from "./pages/AdminSupplies";
 import AccountOrders from "./pages/AccountOrders";
 import AccountProfile from "./pages/AccountProfile";
 import AccountPayments from "./pages/AccountPayments";
+import AccountSettings from "./pages/AccountSettings";
 import Book from "./pages/Book";
 import NotFound from "./pages/NotFound";
 import { CartProvider } from "./hooks/useCart";
