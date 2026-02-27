@@ -76,7 +76,6 @@ const AddressAutocomplete: React.FC<AddressAutocompleteProps> = ({
   const [showDropdown, setShowDropdown] = useState(false);
   const [isFocused, setIsFocused] = useState(false);
   const [activeTab, setActiveTab] = useState<DropdownTab>("recent");
-  const [activeTab, setActiveTab] = useState<DropdownTab>("recent");
   const [recents, setRecents] = useState<RecentAddress[]>([]);
   const [favorites, setFavorites] = useState<SavedAddress[]>([]);
   const [inputText, setInputText] = useState(value);
