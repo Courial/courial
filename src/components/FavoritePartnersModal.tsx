@@ -149,10 +149,10 @@ export const FavoritePartnersModal = ({ open, onOpenChange }: FavoritePartnersMo
 
                     {/* Remove */}
                     <button
-                      onClick={() => removePartner(partner.id)}
+                      onClick={() => setPendingRemove(partner)}
                       className="hover:opacity-75 transition-opacity p-1"
                     >
-                      <X className="h-3.5 w-3.5 text-background/40" />
+                      <Minus className="h-4 w-4 text-red-500" />
                     </button>
                   </motion.div>
                 ))}
