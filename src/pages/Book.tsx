@@ -2358,6 +2358,34 @@ const Book = () => {
                       </div>
                     </div>
                   )}
+                  {deliverLanguage && (
+                    <div className="py-2 border-b border-border">
+                      <p className="text-xs font-medium text-muted-foreground mb-0.5">Preferred Language</p>
+                      <p className="text-xs text-foreground">{deliverLanguage}</p>
+                    </div>
+                  )}
+                  {deliverOrderValue && (
+                    <div className="py-2 border-b border-border">
+                      <p className="text-xs font-medium text-muted-foreground mb-0.5">Order Value</p>
+                      <p className="text-xs font-semibold text-foreground">${deliverOrderValue}</p>
+                    </div>
+                  )}
+                  {deliverHasExpenses && deliverExpenseItems.some(e => e.description.trim()) && (
+                    <div className="py-2 border-b border-border">
+                      <p className="text-xs font-medium text-muted-foreground mb-1">Expenses</p>
+                      <div className="space-y-1">
+                        {deliverExpenseItems.filter(e => e.description.trim()).map((item, i) => (
+                          <div key={i} className="flex justify-between items-start gap-2">
+                            <p className="text-xs text-foreground flex-1">{item.description}</p>
+                            {Number(item.amount) > 0 && <span className="text-xs text-muted-foreground shrink-0">~${item.amount}</span>}
+                          </div>
+                        ))}
+                        {deliverAllowOverage && Number(deliverOverageLimit) > 0 && (
+                          <p className="text-[10px] text-muted-foreground italic">Overage allowed up to ${deliverOverageLimit}</p>
+                        )}
+                      </div>
+                    </div>
+                  )}
                 </div>
 
                 {/* Trip Summary */}
@@ -2369,6 +2397,15 @@ const Book = () => {
                       <p className="text-xs text-muted-foreground truncate">{pickup}</p>
                     </div>
                   </div>
+                  {deliverMultiStop && deliverExtraStops.length > 0 && deliverExtraStops.filter(s => s.address).map((stop, i) => (
+                    <div key={i} className="flex items-start gap-3">
+                      <div className="flex-shrink-0 w-2.5 h-2.5 rounded-sm bg-primary/60 mt-[5px]" />
+                      <div className="min-w-0">
+                        {stop.placeName && <p className="text-sm font-semibold text-foreground leading-tight">{stop.placeName}</p>}
+                        <p className="text-xs text-muted-foreground truncate">{stop.address}</p>
+                      </div>
+                    </div>
+                  ))}
                   <div className="flex items-start gap-3">
                     <div className="flex-shrink-0 w-2.5 h-2.5 bg-red-500 mt-[5px]" />
                     <div className="min-w-0">
