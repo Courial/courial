@@ -174,6 +174,38 @@ const Book = () => {
   const [loadingProgress, setLoadingProgress] = useState(0);
   const [deliveryStep, setDeliveryStep] = useState(0);
   const [currentProfileIndex, setCurrentProfileIndex] = useState(0);
+  const [showChat, setShowChat] = useState(false);
+  const [chatMessages, setChatMessages] = useState<{ from: "user" | "courial"; text: string; time: string }[]>([
+    { from: "courial", text: "Hey! I'm on my way to the pickup. Let me know if you have any instructions.", time: new Date().toLocaleTimeString([], { hour: "numeric", minute: "2-digit" }) },
+  ]);
+  const [chatInput, setChatInput] = useState("");
+  const chatEndRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [chatMessages]);
+
+  const handleSendChat = useCallback(() => {
+    if (!chatInput.trim()) return;
+    const now = new Date().toLocaleTimeString([], { hour: "numeric", minute: "2-digit" });
+    setChatMessages(prev => [...prev, { from: "user", text: chatInput.trim(), time: now }]);
+    setChatInput("");
+    // Simulate courial reply after 1.5s
+    setTimeout(() => {
+      const replies = [
+        "Got it, thanks for letting me know!",
+        "No problem, I'll handle that.",
+        "Sure thing! Almost there.",
+        "Thanks for the heads up 👍",
+        "On it!",
+      ];
+      setChatMessages(prev => [...prev, {
+        from: "courial",
+        text: replies[Math.floor(Math.random() * replies.length)],
+        time: new Date().toLocaleTimeString([], { hour: "numeric", minute: "2-digit" }),
+      }]);
+    }, 1500);
+  }, [chatInput]);
 
   // Random profile photos for loading state
   const courialProfiles = useMemo(() => [
