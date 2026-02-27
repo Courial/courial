@@ -166,6 +166,36 @@ export const FavoritePartnersModal = ({ open, onOpenChange }: FavoritePartnersMo
             >
               Close
             </Button>
+
+            {/* Confirm delete overlay */}
+            <AnimatePresence>
+              {pendingRemove && (
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  className="absolute inset-0 rounded-[20px] bg-foreground/90 backdrop-blur-sm flex flex-col items-center justify-center gap-5 z-10"
+                >
+                  <p className="text-background text-sm font-semibold">
+                    Delete {pendingRemove.firstName}?
+                  </p>
+                  <div className="flex gap-3">
+                    <Button
+                      onClick={() => removePartner(pendingRemove.id)}
+                      className="rounded-full px-6 bg-red-500 hover:bg-red-600 text-white text-xs font-bold"
+                    >
+                      Yes
+                    </Button>
+                    <Button
+                      onClick={() => setPendingRemove(null)}
+                      className="rounded-full px-6 bg-transparent border border-background/30 text-background hover:bg-background/10 text-xs font-bold"
+                    >
+                      No
+                    </Button>
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
           </div>
         </motion.div>
       </DialogContent>
