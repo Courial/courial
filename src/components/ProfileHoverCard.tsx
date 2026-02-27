@@ -20,7 +20,6 @@ const menuItems = [
   { icon: Headphones, label: "Get Support", href: "/help" },
   { icon: Settings, label: "Settings", href: "/account/settings" },
   { icon: Clock, label: "Activity", href: "/account/orders" },
-  { icon: Car, label: "Become a Chauffeur", href: "/courials" },
 ];
 
 export const ProfileHoverCard = () => {
