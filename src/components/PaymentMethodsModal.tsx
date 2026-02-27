@@ -67,12 +67,12 @@ export const PaymentMethodsModal = ({
                       )}
                     >
                       <img src={method.icon} alt={method.label} className="w-9 h-auto rounded" />
-                      <div className="flex-1">
+                      <div className="flex-1 flex items-center gap-2">
                         <p className="text-sm font-semibold text-background">{method.label}</p>
                         <p className="text-xs text-background/50">•••• {method.last4}</p>
                       </div>
                       {selected === method.id && (
-                        <div className="w-2 h-2 rounded-full bg-background" />
+                        <Check className="w-4 h-4 text-green-400" />
                       )}
                       <button
                         onClick={(e) => { e.stopPropagation(); }}
