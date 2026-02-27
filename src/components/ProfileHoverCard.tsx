@@ -174,6 +174,14 @@ export const ProfileHoverCard = () => {
         open={showPaymentModal}
         onOpenChange={setShowPaymentModal}
       />
+      <UpdateProfileModal
+        open={showProfileModal}
+        onOpenChange={setShowProfileModal}
+      />
+      <SettingsModal
+        open={showSettingsModal}
+        onOpenChange={setShowSettingsModal}
+      />
     </>
   );
 };
