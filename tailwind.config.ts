@@ -118,6 +118,7 @@ export default {
         "fade-in": "fade-in 0.4s ease-out forwards",
         "scale-in": "scale-in 0.3s ease-out forwards",
         float: "float 6s ease-in-out infinite",
+        "pulse-gentle": "pulse-gentle 2.5s ease-in-out infinite",
       },
       backgroundImage: {
         "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
