@@ -340,6 +340,32 @@ const Book = () => {
         payload.conciergeSubCategory = conciergeSubCategory === "__direct__" ? cat?.label : conciergeSubCategory;
         if (conciergeStopAddress) payload.stopAddress = conciergeStopAddress;
         if (conciergeLanguage) payload.preferredLanguage = conciergeLanguage;
+        if (conciergeServiceMode) payload.serviceMode = conciergeServiceMode;
+        if (conciergeHasExpenses && conciergeExpenseItems.length > 0) {
+          payload.expenseItems = conciergeExpenseItems.filter(e => e.description.trim());
+          payload.allowOverage = conciergeAllowOverage;
+          if (conciergeAllowOverage && conciergeOverageLimit !== "0") {
+            payload.overageLimit = Number(conciergeOverageLimit);
+          }
+        }
+      } else {
+        // Deliver / Valet specific fields
+        if (deliverLanguage) payload.preferredLanguage = deliverLanguage;
+        if (deliverMultiStop && deliverExtraStops.length > 0) {
+          payload.extraStops = deliverExtraStops.filter(s => s.address && s.coords).map(s => ({
+            address: s.address,
+            placeName: s.placeName,
+            lat: s.coords!.lat,
+            lng: s.coords!.lng,
+          }));
+        }
+        if (deliverHasExpenses && deliverExpenseItems.length > 0) {
+          payload.expenseItems = deliverExpenseItems.filter(e => e.description.trim());
+          payload.allowOverage = deliverAllowOverage;
+          if (deliverAllowOverage && deliverOverageLimit !== "0") {
+            payload.overageLimit = Number(deliverOverageLimit);
+          }
+        }
       }
 
       if (timeMode === "later" && selectedDate) {
@@ -349,6 +375,8 @@ const Book = () => {
 
       if (over70lbs) {
         payload.weightCategory = "over_70_lbs";
+        if (heavyWeight) payload.weight = Number(heavyWeight);
+        if (heavyItems) payload.itemCount = Number(heavyItems);
       }
       if (twoCourials) {
         payload.requiresCourials = 2;
@@ -384,7 +412,7 @@ const Book = () => {
       toast.error("Something went wrong — please try again.");
       setBookingState("input");
     }
-  }, [isFormValid, user, timeMode, selectedService, selectedVehicle, notes, pickup, pickupCoords, dropoff, dropoffCoords, selectedDate, selectedTime, over70lbs, twoCourials, hasStairs, conciergeDescription, conciergeCategory, conciergeSubCategory, conciergeStartAddress, conciergeStopAddress, conciergeFinalAddress]);
+  }, [isFormValid, user, timeMode, selectedService, selectedVehicle, notes, pickup, pickupCoords, dropoff, dropoffCoords, selectedDate, selectedTime, over70lbs, heavyWeight, heavyItems, twoCourials, hasStairs, conciergeDescription, conciergeCategory, conciergeSubCategory, conciergeStartAddress, conciergeStopAddress, conciergeFinalAddress, conciergeLanguage, conciergeServiceMode, conciergeHasExpenses, conciergeExpenseItems, conciergeAllowOverage, conciergeOverageLimit, deliverLanguage, deliverMultiStop, deliverExtraStops, deliverHasExpenses, deliverExpenseItems, deliverAllowOverage, deliverOverageLimit]);
 
   // Animate loading progress and transition to active
   useEffect(() => {
