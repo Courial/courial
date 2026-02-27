@@ -1,5 +1,5 @@
 /// <reference types="google.maps" />
-import React, { useRef, useEffect, useState, useMemo } from "react";
+import React, { useRef, useEffect, useState, useMemo, useCallback } from "react";
 
 const GOOGLE_MAPS_API_KEY = "AIzaSyDxJoLqE0Whu0VmkQv4zVpcVim4UZ3e_c4";
 
@@ -180,6 +180,10 @@ const BookingMap: React.FC<BookingMapProps> = ({ pickupCoords, dropoffCoords, st
   }, [ready, defaultCenter]);
 
   // Update markers and route
+  // Stabilize extraStops reference to prevent re-renders from parent typing
+  const extraStopsKey = useMemo(() => JSON.stringify(extraStops || []), [extraStops]);
+  const stableExtraStops = useMemo(() => extraStops || [], [extraStopsKey]);
+
   useEffect(() => {
     const map = mapInstanceRef.current;
     if (!map) return;
@@ -282,7 +286,7 @@ const BookingMap: React.FC<BookingMapProps> = ({ pickupCoords, dropoffCoords, st
     }
 
     // Add extra stop markers (red squares, like dropoff)
-    const validExtraStops = (extraStops || []).filter(s => s.coords);
+    const validExtraStops = stableExtraStops.filter(s => s.coords);
     validExtraStops.forEach((stop) => {
       const marker = new google.maps.Marker({
         position: stop.coords!,
@@ -361,7 +365,7 @@ const BookingMap: React.FC<BookingMapProps> = ({ pickupCoords, dropoffCoords, st
       map.setCenter(coords);
       map.setZoom(14);
     }
-  }, [pickupCoords, dropoffCoords, stopCoords, extraStops, pickupAddress, dropoffAddress, stopAddress, pickupPlaceName, dropoffPlaceName, stopPlaceName]);
+  }, [pickupCoords, dropoffCoords, stopCoords, stableExtraStops, pickupAddress, dropoffAddress, stopAddress, pickupPlaceName, dropoffPlaceName, stopPlaceName]);
 
   // --- Loading phase: multiple cars converge toward pickup along real roads ---
   useEffect(() => {
