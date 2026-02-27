@@ -213,7 +213,7 @@ export function useCourialSocket({ token, enabled, acceptedDriverId, onAccepted,
       socketRef.current = null;
       setConnected(false);
     };
-  }, [enabled, token, onAccepted, onLocationUpdate]);
+  }, [enabled, token, acceptedDriverId, onAccepted, onLocationUpdate]);
 
   return { connected, disconnect };
 }
