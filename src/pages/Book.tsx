@@ -209,7 +209,7 @@ const Book = () => {
   const conciergeReady = selectedService === "concierge" && (conciergeSubCategory !== null || conciergeCategory === "something-else") && conciergeDescription.trim().length > 0;
   const isFormValid = selectedService === "concierge"
     ? conciergeReady
-    : pickup.trim().length > 0 && dropoff.trim().length > 0 && (!needsVehicle || selectedVehicle !== null) && notes.trim().length > 0;
+    : pickup.trim().length > 0 && dropoff.trim().length > 0 && (!needsVehicle || selectedVehicle !== null) && notes.trim().length > 0 && deliverOrderValue.trim().length > 0 && Number(deliverOrderValue.replace(/,/g, '')) > 0;
 
   // Redraft with AI handler
   const handleRedraft = useCallback(async () => {
