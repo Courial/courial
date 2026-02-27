@@ -395,12 +395,15 @@ const BookingMap: React.FC<BookingMapProps> = ({ pickupCoords, dropoffCoords, st
       const marker = new google.maps.Marker({
         position: pos,
         map,
-        icon: {
-          url: iconUrl,
+        zIndex: 5,
+      });
+      // Use rotated icon at 0° to preserve aspect ratio from the start
+      createRotatedIcon(iconUrl, 0, iconMaxDim).then((rotatedUrl) => {
+        marker.setIcon({
+          url: rotatedUrl,
           scaledSize: new google.maps.Size(canvasSize, canvasSize),
           anchor: new google.maps.Point(canvasSize / 2, canvasSize / 2),
-        },
-        zIndex: 5,
+        });
       });
       return marker;
     });
@@ -528,12 +531,15 @@ const BookingMap: React.FC<BookingMapProps> = ({ pickupCoords, dropoffCoords, st
         const carMarker = new google.maps.Marker({
           position: pickupCoords,
           map,
-          icon: {
-            url: iconUrl,
+          zIndex: 10,
+        });
+        // Use rotated icon at 0° to preserve aspect ratio from the start
+        createRotatedIcon(iconUrl, 0, iconMaxDim).then((rotatedUrl) => {
+          carMarker.setIcon({
+            url: rotatedUrl,
             scaledSize: new google.maps.Size(canvasSize, canvasSize),
             anchor: new google.maps.Point(canvasSize / 2, canvasSize / 2),
-          },
-          zIndex: 10,
+          });
         });
         trackingMarkerRef.current = carMarker;
 
