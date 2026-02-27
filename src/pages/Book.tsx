@@ -2361,7 +2361,7 @@ const Book = () => {
                     <img
                       src={vehicleOptions.find(v => v.id === selectedVehicle)?.image}
                       alt={selectedVehicle}
-                      className="h-10 object-contain opacity-60"
+                      className="h-10 object-contain"
                     />
                   )}
                 </div>
