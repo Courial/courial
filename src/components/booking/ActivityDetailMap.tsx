@@ -138,7 +138,9 @@ const ActivityDetailMap: React.FC<ActivityDetailMapProps> = ({ origin, destinati
     }
   }, [ready, origin, destination]);
 
-  return <div ref={mapRef} className="w-full h-full" />;
+  return (
+    <div ref={mapRef} className="w-full h-full [&_.gm-style-cc]:!hidden [&_.gmnoprint]:!hidden [&_a[href*='google']]:!hidden [&_.gm-style>div>a]:!hidden" />
+  );
 };
 
 export default ActivityDetailMap;
