@@ -1,5 +1,7 @@
 /// <reference types="google.maps" />
 import React, { useRef, useEffect, useState, useCallback } from "react";
+import { Clock, Heart, MapPin } from "lucide-react";
+import { getSavedAddresses, type SavedAddress } from "@/components/SavedAddressModal";
 
 const GOOGLE_MAPS_API_KEY = "AIzaSyDxJoLqE0Whu0VmkQv4zVpcVim4UZ3e_c4";
 const RECENT_KEY = "courial_recent_addresses";
@@ -50,6 +52,8 @@ function saveRecentAddress(entry: RecentAddress) {
   localStorage.setItem(RECENT_KEY, JSON.stringify(recents.slice(0, MAX_RECENT)));
 }
 
+type DropdownTab = "recent" | "favorites";
+
 interface AddressAutocompleteProps {
   placeholder: string;
   value: string;
@@ -69,8 +73,10 @@ const AddressAutocomplete: React.FC<AddressAutocompleteProps> = ({
   const autocompleteRef = useRef<google.maps.places.Autocomplete | null>(null);
   const [ready, setReady] = useState(false);
   const isSelectingRef = useRef(false);
-  const [showRecents, setShowRecents] = useState(false);
+  const [showDropdown, setShowDropdown] = useState(false);
+  const [activeTab, setActiveTab] = useState<DropdownTab>("recent");
   const [recents, setRecents] = useState<RecentAddress[]>([]);
+  const [favorites, setFavorites] = useState<SavedAddress[]>([]);
   const [inputText, setInputText] = useState(value);
   const wrapperRef = useRef<HTMLDivElement>(null);
 
@@ -84,6 +90,19 @@ const AddressAutocomplete: React.FC<AddressAutocompleteProps> = ({
         );
       })
     : recents;
+
+  const filteredFavorites = inputText.trim()
+    ? favorites.filter((f) => {
+        const q = inputText.toLowerCase();
+        return (
+          f.address.toLowerCase().includes(q) ||
+          f.name.toLowerCase().includes(q)
+        );
+      })
+    : favorites;
+
+  const activeList = activeTab === "recent" ? filteredRecents : filteredFavorites;
+  const hasAnyData = recents.length > 0 || favorites.length > 0;
 
   useEffect(() => {
     loadGoogleMaps()
@@ -133,7 +152,7 @@ const AddressAutocomplete: React.FC<AddressAutocompleteProps> = ({
         setRecents(getRecentAddresses());
 
         if (inputRef.current) inputRef.current.value = address;
-        setShowRecents(false);
+        setShowDropdown(false);
         setTimeout(() => { isSelectingRef.current = false; }, 100);
       }
     });
@@ -153,15 +172,20 @@ const AddressAutocomplete: React.FC<AddressAutocompleteProps> = ({
     setInputText(value);
   }, [value]);
 
-  // Close recents when clicking outside
+  // Close dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
       if (wrapperRef.current && !wrapperRef.current.contains(e.target as Node)) {
-        setShowRecents(false);
+        setShowDropdown(false);
       }
     };
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  const refreshData = useCallback(() => {
+    setRecents(getRecentAddresses());
+    setFavorites(getSavedAddresses());
   }, []);
 
   const handleChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
@@ -169,42 +193,39 @@ const AddressAutocomplete: React.FC<AddressAutocompleteProps> = ({
       const val = e.target.value;
       onChange(val);
       setInputText(val);
-      // Show recents when typing and there are matches
-      setRecents(getRecentAddresses());
-      setShowRecents(true);
+      refreshData();
+      setShowDropdown(true);
     }
-  }, [onChange]);
+  }, [onChange, refreshData]);
 
   const handleFocus = useCallback(() => {
-    setRecents(getRecentAddresses());
-    if (getRecentAddresses().length > 0) {
-      setShowRecents(true);
+    refreshData();
+    if (getRecentAddresses().length > 0 || getSavedAddresses().length > 0) {
+      setShowDropdown(true);
     }
-  }, []);
+  }, [refreshData]);
 
-  const handleRecentClick = useCallback((recent: RecentAddress) => {
-    const address = recent.address;
+  const handleItemClick = useCallback((address: string, name: string | undefined, lat: number, lng: number) => {
     isSelectingRef.current = true;
     onChange(address);
     setInputText(address);
     if (inputRef.current) inputRef.current.value = address;
-    setShowRecents(false);
+    setShowDropdown(false);
 
-    // Create a mock place object so the parent handler works
     const mockPlace = {
       formatted_address: address,
-      name: recent.placeName || address,
+      name: name || address,
       geometry: {
         location: {
-          lat: () => recent.lat,
-          lng: () => recent.lng,
+          lat: () => lat,
+          lng: () => lng,
         },
       },
     };
     onPlaceSelect(mockPlace);
 
-    // Move to top of recents
-    saveRecentAddress(recent);
+    // Save to recents
+    saveRecentAddress({ address, placeName: name, lat, lng });
     setTimeout(() => { isSelectingRef.current = false; }, 100);
   }, [onChange, onPlaceSelect]);
 
@@ -220,35 +241,75 @@ const AddressAutocomplete: React.FC<AddressAutocompleteProps> = ({
         className={className}
         autoComplete="off"
       />
-      {showRecents && filteredRecents.length > 0 && (
-        <div className="absolute left-0 right-0 top-full mt-1 bg-background border border-border rounded-xl shadow-lg overflow-hidden"
-             style={{ zIndex: 10001 }}>
-          <div className="px-3 py-1.5 text-[11px] font-medium text-muted-foreground uppercase tracking-wider">
-            Recent
-          </div>
-          {filteredRecents.map((r, i) => (
+      {showDropdown && hasAnyData && (
+        <div
+          className="absolute left-0 right-0 top-full mt-1 bg-background border border-border rounded-xl shadow-lg overflow-hidden"
+          style={{ zIndex: 10001 }}
+        >
+          {/* Tab icons */}
+          <div className="flex items-center gap-1 px-3 pt-2.5 pb-1.5">
             <button
-              key={i}
               type="button"
-              className="w-full text-left px-3 py-2 hover:bg-muted/50 transition-colors flex items-start gap-2"
-              onMouseDown={(e) => {
-                e.preventDefault(); // prevent blur before click
-                handleRecentClick(r);
-              }}
+              onMouseDown={(e) => { e.preventDefault(); setActiveTab("recent"); }}
+              className={`w-8 h-8 rounded-full flex items-center justify-center transition-colors ${
+                activeTab === "recent"
+                  ? "bg-foreground text-background"
+                  : "text-muted-foreground hover:bg-muted"
+              }`}
             >
-              <svg className="w-4 h-4 mt-0.5 text-muted-foreground flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
-              <div className="min-w-0">
-                {r.placeName && (
-                  <div className="text-sm font-medium text-foreground truncate">{r.placeName}</div>
-                )}
-                <div className={`text-sm truncate ${r.placeName ? "text-muted-foreground text-xs" : "text-foreground"}`}>
-                  {r.address}
-                </div>
-              </div>
+              <Clock className="w-4 h-4" />
             </button>
-          ))}
+            <button
+              type="button"
+              onMouseDown={(e) => { e.preventDefault(); setActiveTab("favorites"); }}
+              className={`w-8 h-8 rounded-full flex items-center justify-center transition-colors ${
+                activeTab === "favorites"
+                  ? "bg-foreground text-background"
+                  : "text-muted-foreground hover:bg-muted"
+              }`}
+            >
+              <Heart className="w-4 h-4" />
+            </button>
+          </div>
+
+          <div className="border-t border-border">
+            {activeList.length === 0 ? (
+              <div className="px-3 py-4 text-center text-xs text-muted-foreground">
+                {activeTab === "recent" ? "No recent places" : "No saved places"}
+              </div>
+            ) : (
+              activeList.map((item, i) => {
+                const isRecent = activeTab === "recent";
+                const r = item as any;
+                const addr = isRecent ? r.address : r.address;
+                const name = isRecent ? r.placeName : r.name;
+                const lat = r.lat;
+                const lng = r.lng;
+
+                return (
+                  <button
+                    key={i}
+                    type="button"
+                    className="w-full text-left px-3 py-2.5 hover:bg-muted/50 transition-colors flex items-start gap-2.5 border-b border-border last:border-b-0"
+                    onMouseDown={(e) => {
+                      e.preventDefault();
+                      handleItemClick(addr, name, lat, lng);
+                    }}
+                  >
+                    <MapPin className="w-4 h-4 mt-0.5 text-muted-foreground flex-shrink-0" />
+                    <div className="min-w-0 flex-1">
+                      {name && (
+                        <div className="text-[13px] font-semibold text-foreground leading-snug">{name}</div>
+                      )}
+                      <div className={`leading-snug ${name ? "text-xs text-muted-foreground" : "text-[13px] font-medium text-foreground"}`}>
+                        {addr}
+                      </div>
+                    </div>
+                  </button>
+                );
+              })
+            )}
+          </div>
         </div>
       )}
     </div>
