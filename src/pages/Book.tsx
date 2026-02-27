@@ -1778,7 +1778,7 @@ const Book = () => {
                       };
 
                       return fields.map((field, idx) => (
-                        <div key={field.id} className={`relative group ${idx === 0 ? '' : 'mt-3'}`}>
+                        <div key={field.id} className={`relative group ${idx === 0 ? '' : 'mt-4'}`}>
                           <div className="flex items-center gap-2">
                             {/* Drag handle — outside the field */}
                             <button
