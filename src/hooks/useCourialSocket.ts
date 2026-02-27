@@ -30,6 +30,8 @@ interface UseCourialSocketOptions {
   onAccepted: (driver: CourialDriver) => void;
   /** Callback when courial location updates */
   onLocationUpdate?: (coords: { lat: number; lng: number }) => void;
+  /** Callback when delivery status changes */
+  onStatusChange?: (status: string) => void;
 }
 
 /**
