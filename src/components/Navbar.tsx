@@ -24,11 +24,6 @@ export const Navbar = () => {
   const navigate = useNavigate();
 
 
-  const displayName = user?.user_metadata?.full_name || user?.user_metadata?.courial_email || user?.email;
-  const userInitial = displayName
-    ? displayName.charAt(0).toUpperCase()
-    : "U";
-  const avatarUrl = user?.user_metadata?.avatar_url;
 
   const handleNavClick = useCallback((e: React.MouseEvent, href: string) => {
     e.preventDefault();
