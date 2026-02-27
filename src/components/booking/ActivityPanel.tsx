@@ -271,7 +271,12 @@ const RideDetail = ({ ride, onBack }: { ride: any; onBack: () => void }) => {
             <Zap className="w-3.5 h-3.5 text-muted-foreground" />
           )}
           {ride.vehicle && <span className="text-muted-foreground">{ride.vehicle}</span>}
-        </div>
+          {ride.vehicleDetail && (
+            <>
+              <span className="text-muted-foreground/40">•</span>
+              <span className="text-muted-foreground">{ride.vehicleDetail}</span>
+            </>
+          )}
 
         {/* Date */}
         <p className="text-sm text-muted-foreground">{ride.date}</p>
