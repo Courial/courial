@@ -2044,8 +2044,7 @@ const Book = () => {
                         <p className="text-muted-foreground leading-relaxed mt-1">Protection terms, eligibility, and claim guidelines are outlined in our Delivery Protection & Coverage Policy.</p>
                       </div>
                       <div>
-                        <p className="text-muted-foreground leading-relaxed">By confirming your order, you agree to Courial's Terms of Service and Delivery Protection & Coverage Policy.</p>
-                        <a href="/terms" className="text-primary hover:underline text-xs font-semibold mt-1 inline-block">View Terms of Service</a>
+                        <p className="text-muted-foreground leading-relaxed">By confirming your order, you agree to Courial's <a href="/terms" className="text-sky-400 hover:underline">Terms of Service</a> and Delivery Protection & Coverage Policy.</p>
                       </div>
                     </CollapsibleContent>
                   </Collapsible>
