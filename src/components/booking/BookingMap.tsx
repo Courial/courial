@@ -180,6 +180,10 @@ const BookingMap: React.FC<BookingMapProps> = ({ pickupCoords, dropoffCoords, st
   }, [ready, defaultCenter]);
 
   // Update markers and route
+  // Stabilize extraStops reference to prevent re-renders from parent typing
+  const extraStopsKey = useMemo(() => JSON.stringify(extraStops || []), [extraStops]);
+  const stableExtraStops = useMemo(() => extraStops || [], [extraStopsKey]);
+
   useEffect(() => {
     const map = mapInstanceRef.current;
     if (!map) return;
