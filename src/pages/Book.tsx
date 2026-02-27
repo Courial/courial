@@ -506,6 +506,8 @@ const Book = () => {
     setBookingState("input");
     setLoadingProgress(0);
     setDeliveryStep(0);
+    setSocketEnabled(false);
+    setAcceptedCourial(null);
   }, []);
 
   const deliveryStepsMap: Record<string, { label: string; desc: string }[]> = {
