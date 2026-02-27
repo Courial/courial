@@ -33,6 +33,15 @@ serve(async (req) => {
     // Step 1: Verify OTP with Courial API
     const courialUrl = "https://gocourial.com/userApis/verify_login_otp";
 
+    // Format phone to match Courial API expectations (same as send-otp)
+    const rawPhone = String(phone).replace(/\D/g, "").replace(/^0+/, "");
+    let formattedPhone = rawPhone;
+    if (rawPhone.length === 10) {
+      formattedPhone = `(${rawPhone.slice(0,3)}) ${rawPhone.slice(3,6)}-${rawPhone.slice(6)}`;
+    } else if (rawPhone.length === 9) {
+      formattedPhone = `(${rawPhone.slice(0,2)}) (${rawPhone.slice(2,5)})-(${rawPhone.slice(5)})`;
+    }
+
     const courialRes = await fetch(courialUrl, {
       method: "POST",
       headers: {
@@ -44,7 +53,7 @@ serve(async (req) => {
         type: "0",
         otp,
         country_code,
-        phone,
+        phone: formattedPhone,
         ...(deviceId ? { deviceId } : {}),
       }).toString(),
     });
