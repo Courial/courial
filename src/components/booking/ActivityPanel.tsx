@@ -261,6 +261,7 @@ const RideDetail = ({ ride, onBack }: { ride: any; onBack: () => void }) => {
               <p className="text-[10px] text-muted-foreground mt-0.5">{ride.orderNumber}</p>
             )}
           </div>
+        </div>
 
         {/* Price & vehicle */}
         <div className="flex items-center gap-3 text-sm text-foreground">
