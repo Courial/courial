@@ -366,6 +366,18 @@
 .pac-container .pac-item {
   border-top: none !important;
   padding: 8px 12px !important;
+  white-space: normal !important;
+  word-break: break-word !important;
+  overflow: visible !important;
+  text-overflow: unset !important;
+  line-height: 1.4 !important;
+}
+
+.pac-container .pac-item .pac-item-query {
+  white-space: normal !important;
+  word-break: break-word !important;
+  overflow: visible !important;
+  text-overflow: unset !important;
 }
 
 .pac-logo::after,
