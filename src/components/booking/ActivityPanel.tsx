@@ -221,9 +221,7 @@ const RideDetail = ({ ride, onBack }: { ride: any; onBack: () => void }) => {
     <div className="h-full flex flex-col">
       {/* Map placeholder */}
       <div className="relative w-full h-52 bg-muted overflow-hidden">
-        <div className="absolute inset-0 bg-foreground/5 flex items-center justify-center">
-          <MapPin className="w-10 h-10 text-muted-foreground/30" />
-        </div>
+        <ActivityDetailMap origin={ride.origin || ""} destination={ride.destination || ""} />
         {/* Back button overlay */}
         <button
           onClick={onBack}
