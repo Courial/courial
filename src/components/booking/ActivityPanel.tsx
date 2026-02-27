@@ -232,18 +232,21 @@ const RideDetail = ({ ride, onBack }: { ride: any; onBack: () => void }) => {
       </div>
 
       {/* Details */}
-      <div className="flex-1 p-6 space-y-5 overflow-y-auto">
-        {/* Title row */}
-        <div className="flex items-start justify-between gap-3">
-          <div>
-            <h3 className="text-xl font-bold text-foreground">{ride.type}</h3>
-            <p className="text-sm text-muted-foreground mt-0.5">
-              {ride.scheduled ? "Scheduled Ride" : "On-Demand"}
-            </p>
-          </div>
+      <div className="flex-1 p-6 space-y-3 overflow-y-auto">
+        {/* Title row: icon left, title center, status right */}
+        <div className="flex items-center gap-3">
           <div className="w-11 h-11 rounded-lg bg-muted-foreground/10 flex items-center justify-center shrink-0 overflow-hidden">
             <img src={iconSrc} alt={ride.type} className="w-7 h-7 object-contain" />
           </div>
+          <div className="flex-1 min-w-0">
+            <h3 className="text-xl font-bold text-foreground">{ride.type}</h3>
+            <p className="text-xs text-muted-foreground">
+              {ride.scheduled ? "Scheduled Ride" : "On-Demand"}
+            </p>
+          </div>
+          <span className={`text-[11px] font-semibold shrink-0 ${statusBadgeBg[ride.status] || "text-muted-foreground"}`}>
+            {ride.status}
+          </span>
         </div>
 
         {/* Price & vehicle */}
@@ -259,13 +262,6 @@ const RideDetail = ({ ride, onBack }: { ride: any; onBack: () => void }) => {
 
         {/* Date */}
         <p className="text-sm text-muted-foreground">{ride.date}</p>
-
-        {/* Status badge */}
-        <div className="flex items-center gap-2">
-          <span className={`text-[11px] font-semibold ${statusBadgeBg[ride.status] || "text-muted-foreground"}`}>
-            {ride.status}
-          </span>
-        </div>
 
         {/* Addresses */}
         <div className="space-y-3 pt-2 border-t border-border">
