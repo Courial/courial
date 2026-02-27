@@ -106,15 +106,7 @@ export const SavedAddressModal = ({
           <div className="rounded-[20px] bg-foreground/75 text-background px-6 py-6 shadow-2xl backdrop-blur-sm flex flex-col">
             <DialogTitle className="sr-only">Save {label} Address</DialogTitle>
 
-            <div className="flex items-center gap-2 mb-5">
-              <button
-                onClick={() => onOpenChange(false)}
-                className="p-1 -ml-1 rounded-lg hover:bg-background/10 transition-colors"
-              >
-                <ArrowLeft className="w-4 h-4 text-background/70" />
-              </button>
-              <h1 className="text-2xl font-bold">Save {label}</h1>
-            </div>
+            <h1 className="text-2xl font-bold text-center mb-5">Save {label}</h1>
 
             {/* Address field */}
             <div className="mb-3">
