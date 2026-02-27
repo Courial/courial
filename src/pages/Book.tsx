@@ -2020,7 +2020,8 @@ const Book = () => {
                     )}
                   </AnimatePresence>
 
-                  {/* Order Value */}
+                  {/* Order Value — only show when required fields are filled */}
+                  {isFormValid && (
                   <div className="mb-3 mt-4">
                     <div className="flex items-baseline gap-2">
                       <h4 className="text-xs font-medium text-foreground leading-none">Order Value</h4>
@@ -2111,6 +2112,7 @@ const Book = () => {
                       )}
                     </AnimatePresence>
                   </div>
+                  )}
 
                   {/* Delivery Requirements Notice */}
                   <Collapsible className="mt-3 text-xs text-foreground">
@@ -2173,10 +2175,10 @@ const Book = () => {
 
                       {/* Request Delivery Button */}
                       <Button
-                        disabled={!isFormValid}
+                        disabled={!isFormValid || (Number(deliverOrderValue) > 200 && !declineProtection)}
                         onClick={handleBookingSubmit}
                         className="rounded h-10 text-lg font-semibold px-6"
-                        variant={isFormValid ? "hero" : "secondary"}
+                        variant={isFormValid && !(Number(deliverOrderValue) > 200 && !declineProtection) ? "hero" : "secondary"}
                       >
                         Book {selectedService ? serviceCards.find(s => s.id === selectedService)?.label : "Delivery"}
                       </Button>
