@@ -161,12 +161,14 @@ export const Navbar = () => {
                   <span className="text-xs text-muted-foreground animate-pulse py-2">Checking...</span>
                 ) : user ? (
                   <>
-                    <Link to="/account/orders" onClick={() => setIsOpen(false)}>
-                      <Button variant="ghost" className="w-full justify-start border border-foreground/25">
-                        <Package className="w-4 h-4 mr-2" />
-                        My Orders
-                      </Button>
-                    </Link>
+                    {hasOrders && (
+                      <Link to="/account/orders" onClick={() => setIsOpen(false)}>
+                        <Button variant="ghost" className="w-full justify-start border border-foreground/25">
+                          <Package className="w-4 h-4 mr-2" />
+                          My Orders
+                        </Button>
+                      </Link>
+                    )}
                     <Button variant="ghost" className="w-full justify-start border border-foreground/25" onClick={() => { console.log("[Navbar] Sign out - nuking session"); localStorage.clear(); sessionStorage.clear(); window.location.replace("/"); }}>
                       <LogOut className="w-4 h-4 mr-2" />
                       Sign Out
