@@ -112,7 +112,7 @@ export const ActivityPanel = ({ onBack }: { onBack: () => void }) => {
                 ? t === "pending"
                   ? "bg-background text-foreground border border-border"
                   : "bg-foreground text-background"
-                : "bg-muted text-muted-foreground hover:bg-muted/80"
+                : "bg-muted text-muted-foreground hover:bg-muted/80 border border-border"
             }`}
           >
             {t === "pending" ? "Pending" : "Past"}
