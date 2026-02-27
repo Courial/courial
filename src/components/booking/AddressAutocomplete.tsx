@@ -299,9 +299,9 @@ const AddressAutocomplete: React.FC<AddressAutocompleteProps> = ({
                     <MapPin className="w-4 h-4 mt-0.5 text-muted-foreground flex-shrink-0" />
                     <div className="min-w-0 flex-1">
                       {name && (
-                        <div className="text-[13px] font-semibold text-foreground leading-snug">{name}</div>
+                        <div className="text-[13px] font-semibold text-foreground leading-snug break-words whitespace-normal">{name}</div>
                       )}
-                      <div className={`leading-snug ${name ? "text-xs text-muted-foreground" : "text-[13px] font-medium text-foreground"}`}>
+                      <div className={`leading-snug break-words whitespace-normal ${name ? "text-xs text-muted-foreground" : "text-[13px] font-medium text-foreground"}`}>
                         {addr}
                       </div>
                     </div>
