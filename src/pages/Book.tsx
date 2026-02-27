@@ -2672,7 +2672,7 @@ const Book = () => {
                           <AnimatePresence mode="wait">
                             <motion.img
                               key={currentProfileIndex}
-                              src={courialProfiles[currentProfileIndex]}
+                              src={activeProfiles[currentProfileIndex]}
                               alt="Courial nearby"
                               initial={{ opacity: 0, scale: 0.8 }}
                               animate={{ opacity: 1, scale: 1 }}
