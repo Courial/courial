@@ -225,9 +225,9 @@ const RideDetail = ({ ride, onBack }: { ride: any; onBack: () => void }) => {
         {/* Back button overlay */}
         <button
           onClick={onBack}
-          className="absolute top-4 left-4 w-9 h-9 rounded-full bg-background/90 backdrop-blur-sm flex items-center justify-center shadow-md hover:bg-background transition-colors z-10"
+          className="absolute top-6 left-4 w-7 h-7 rounded-full bg-background/50 backdrop-blur-sm flex items-center justify-center shadow-md hover:bg-background/70 transition-colors z-10"
         >
-          <ArrowLeft className="w-4 h-4 text-foreground" />
+          <ArrowLeft className="w-3.5 h-3.5 text-foreground" />
         </button>
       </div>
 
