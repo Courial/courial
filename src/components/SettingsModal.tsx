@@ -77,7 +77,7 @@ export const SettingsModal = ({ open, onOpenChange }: SettingsModalProps) => {
                   <button
                     key={type}
                     onClick={() => setAddressModalType(type)}
-                    className="flex items-center gap-3 w-full py-3 border-b border-background/20 text-left hover:bg-background/10 transition-colors"
+                    className="flex items-center gap-3 w-full py-3 border-b border-background/20 text-left hover:opacity-75 transition-opacity"
                   >
                     <Icon className="h-4 w-4 text-background/60" />
                     <div className="min-w-0 flex-1">
