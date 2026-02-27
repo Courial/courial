@@ -471,7 +471,9 @@ const Book = () => {
         if (data.data.nearbyCourials?.length) {
           setNearbyCourials(data.data.nearbyCourials);
         }
-        console.log("[book-delivery] Delivery created:", data.data.deliveryId, "nearbyCourials:", data.data.nearbyCourials);
+        // Enable socket connection to listen for courial acceptance
+        setSocketEnabled(true);
+        console.log("[book-delivery] Delivery created:", data.data.deliveryId, "— socket enabled, listening for AcceptOrder_listener");
       } else {
         console.error("[book-delivery] Unexpected response:", data);
         toast.error(data?.msg || "Booking failed — unexpected response.");
