@@ -24,6 +24,8 @@ interface UseCourialSocketOptions {
   token: string | null;
   /** Whether to connect (true after successful booking) */
   enabled: boolean;
+  /** Accepted driver ID (Provider.id) for matching live updates */
+  acceptedDriverId?: string | null;
   /** Callback when a courial accepts the order */
   onAccepted: (driver: CourialDriver) => void;
   /** Callback when courial location updates */
