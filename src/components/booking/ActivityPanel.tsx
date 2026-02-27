@@ -16,6 +16,7 @@ const mockPendingRides: any[] = [];
 const mockPastRides = [
   {
     id: "1",
+    orderNumber: "CRL-20250226-001",
     type: "Deliver",
     destination: "350 Fifth Avenue, New York",
     origin: "200 Park Avenue, New York",
@@ -23,10 +24,12 @@ const mockPastRides = [
     price: "$21.59",
     status: "Completed",
     vehicle: "Car",
+    vehicleDetail: "2023 Toyota Camry",
     scheduled: false,
   },
   {
     id: "2",
+    orderNumber: "CRL-20250224-002",
     type: "Concierge",
     destination: "SoHo House NYC",
     origin: "Central Park West, New York",
@@ -34,10 +37,12 @@ const mockPastRides = [
     price: "$65.00",
     status: "Completed",
     vehicle: null,
+    vehicleDetail: null,
     scheduled: true,
   },
   {
     id: "3",
+    orderNumber: "CRL-20250220-003",
     type: "Deliver",
     destination: "Brooklyn Navy Yard",
     origin: "Wall Street, New York",
@@ -45,10 +50,12 @@ const mockPastRides = [
     price: "$18.30",
     status: "Cancelled",
     vehicle: "Van",
+    vehicleDetail: "2022 Ford Transit",
     scheduled: false,
   },
   {
     id: "4",
+    orderNumber: "CRL-20250218-004",
     type: "Valet",
     destination: "The Plaza Hotel",
     origin: "Times Square, New York",
@@ -56,10 +63,12 @@ const mockPastRides = [
     price: "$35.00",
     status: "Completed",
     vehicle: null,
+    vehicleDetail: null,
     scheduled: true,
   },
   {
     id: "5",
+    orderNumber: "CRL-20250215-005",
     type: "Deliver",
     destination: "Hudson Yards",
     origin: "Chelsea Market, New York",
@@ -67,6 +76,7 @@ const mockPastRides = [
     price: "$14.75",
     status: "Cancelled",
     vehicle: "Scooter",
+    vehicleDetail: "2024 Honda PCX",
     scheduled: false,
   },
 ];
@@ -243,9 +253,14 @@ const RideDetail = ({ ride, onBack }: { ride: any; onBack: () => void }) => {
               {ride.scheduled ? "Scheduled Ride" : "On-Demand"}
             </p>
           </div>
-          <span className={`text-[11px] font-semibold shrink-0 ${statusBadgeBg[ride.status] || "text-muted-foreground"}`}>
-            {ride.status}
-          </span>
+          <div className="text-right shrink-0">
+            <span className={`text-[11px] font-semibold ${statusBadgeBg[ride.status] || "text-muted-foreground"}`}>
+              {ride.status}
+            </span>
+            {ride.orderNumber && (
+              <p className="text-[10px] text-muted-foreground mt-0.5">{ride.orderNumber}</p>
+            )}
+          </div>
         </div>
 
         {/* Price & vehicle */}
@@ -257,6 +272,12 @@ const RideDetail = ({ ride, onBack }: { ride: any; onBack: () => void }) => {
             <Zap className="w-3.5 h-3.5 text-muted-foreground" />
           )}
           {ride.vehicle && <span className="text-muted-foreground">{ride.vehicle}</span>}
+          {ride.vehicleDetail && (
+            <>
+              <span className="text-muted-foreground/40">•</span>
+              <span className="text-muted-foreground">{ride.vehicleDetail}</span>
+            </>
+          )}
         </div>
 
         {/* Date */}
