@@ -2112,6 +2112,7 @@ const Book = () => {
                       )}
                     </AnimatePresence>
                   </div>
+                  )}
 
                   {/* Delivery Requirements Notice */}
                   <Collapsible className="mt-3 text-xs text-foreground">
