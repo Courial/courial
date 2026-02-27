@@ -8,6 +8,7 @@ import { Settings, Home, Building2, Heart, Bell, ChevronDown, ChevronUp } from "
 import { useAuth } from "@/hooks/useAuth";
 import profileIcon from "@/assets/profile-icon.png";
 import { SavedAddressModal, getSavedAddresses, type SavedAddress } from "@/components/SavedAddressModal";
+import { FavoritePartnersModal } from "@/components/FavoritePartnersModal";
 
 interface SettingsModalProps {
   open: boolean;
@@ -23,6 +24,7 @@ export const SettingsModal = ({ open, onOpenChange }: SettingsModalProps) => {
   const [chatEnabled, setChatEnabled] = useState(true);
   const [addressModalType, setAddressModalType] = useState<string | null>(null);
   const [savedAddresses, setSavedAddresses] = useState<SavedAddress[]>(getSavedAddresses());
+  const [favoritesOpen, setFavoritesOpen] = useState(false);
 
   useEffect(() => {
     if (open) setSavedAddresses(getSavedAddresses());
@@ -89,11 +91,14 @@ export const SettingsModal = ({ open, onOpenChange }: SettingsModalProps) => {
                   </button>
                 );
               })}
-              <button className="flex items-center gap-3 w-full py-3 border-b border-background/20 text-left hover:opacity-75 transition-opacity">
+              <button
+                onClick={() => setFavoritesOpen(true)}
+                className="flex items-center gap-3 w-full py-3 border-b border-background/20 text-left hover:opacity-75 transition-opacity"
+              >
                 <Heart className="h-4 w-4 text-background/60" />
                 <div>
                   <p className="text-sm font-semibold text-background">Favorite Partners</p>
-                  <p className="text-[10px] text-background/50">View your favorite chauffeurs</p>
+                  <p className="text-[10px] text-background/50">View your favorite partners</p>
                 </div>
               </button>
             </div>
@@ -166,6 +171,11 @@ export const SettingsModal = ({ open, onOpenChange }: SettingsModalProps) => {
       onOpenChange={(o) => { if (!o) setAddressModalType(null); }}
       addressType={addressModalType || "home"}
       onSave={() => setSavedAddresses(getSavedAddresses())}
+    />
+
+    <FavoritePartnersModal
+      open={favoritesOpen}
+      onOpenChange={setFavoritesOpen}
     />
   </>
   );
