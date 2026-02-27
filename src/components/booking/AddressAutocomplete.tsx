@@ -99,6 +99,20 @@ const AddressAutocomplete: React.FC<AddressAutocompleteProps> = ({
       fields: ["formatted_address", "geometry", "name"],
     });
 
+    // Bias results toward the user's current location
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const circle = new google.maps.Circle({
+            center: { lat: position.coords.latitude, lng: position.coords.longitude },
+            radius: position.coords.accuracy || 50000,
+          });
+          autocomplete.setBounds(circle.getBounds()!);
+        },
+        () => { /* silently ignore denial */ }
+      );
+    }
+
     autocomplete.addListener("place_changed", () => {
       const place = autocomplete.getPlace();
       if (place?.geometry) {
