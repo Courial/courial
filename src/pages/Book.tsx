@@ -1,4 +1,5 @@
 import React, { useState, useCallback, useEffect, useMemo, useRef } from "react";
+import { useCourialSocket, type CourialDriver } from "@/hooks/useCourialSocket";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { Navbar } from "@/components/Navbar";
@@ -209,6 +210,27 @@ const Book = () => {
   }, [chatInput]);
 
   const [showContactSupport, setShowContactSupport] = useState(false);
+  const [acceptedCourial, setAcceptedCourial] = useState<CourialDriver | null>(null);
+  const [socketEnabled, setSocketEnabled] = useState(false);
+
+  // Socket: connect after successful booking, listen for courial acceptance
+  const handleCourialAccepted = useCallback((driver: CourialDriver) => {
+    console.log("[Book] Courial accepted order:", driver);
+    setAcceptedCourial(driver);
+    // Immediately transition to active tracking when a courial accepts
+    setBookingState("active");
+    setLoadingProgress(100);
+    setDeliveryStep(0);
+    toast.success(`${driver.name} accepted your order!`);
+  }, []);
+
+  const courialToken = typeof window !== "undefined" ? localStorage.getItem("courial_api_token") : null;
+
+  useCourialSocket({
+    token: courialToken,
+    enabled: socketEnabled,
+    onAccepted: handleCourialAccepted,
+  });
   const courialProfiles = useMemo(() => [
     "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop&crop=face",
     "https://images.unsplash.com/photo-1494790108755-2616b612b786?w=200&h=200&fit=crop&crop=face",
@@ -449,7 +471,9 @@ const Book = () => {
         if (data.data.nearbyCourials?.length) {
           setNearbyCourials(data.data.nearbyCourials);
         }
-        console.log("[book-delivery] Delivery created:", data.data.deliveryId, "nearbyCourials:", data.data.nearbyCourials);
+        // Enable socket connection to listen for courial acceptance
+        setSocketEnabled(true);
+        console.log("[book-delivery] Delivery created:", data.data.deliveryId, "— socket enabled, listening for AcceptOrder_listener");
       } else {
         console.error("[book-delivery] Unexpected response:", data);
         toast.error(data?.msg || "Booking failed — unexpected response.");
@@ -482,6 +506,8 @@ const Book = () => {
     setBookingState("input");
     setLoadingProgress(0);
     setDeliveryStep(0);
+    setSocketEnabled(false);
+    setAcceptedCourial(null);
   }, []);
 
   const deliveryStepsMap: Record<string, { label: string; desc: string }[]> = {
@@ -2262,18 +2288,30 @@ const Book = () => {
               {/* Driver Card */}
               <div className="rounded-2xl border border-border bg-background p-5 mb-4">
                 <div className="flex items-center gap-4 mb-4">
-                  <div className="w-15 h-15 rounded-full bg-muted flex items-center justify-center text-xl font-bold text-foreground" style={{ width: 60, height: 60 }}>
-                    M
-                  </div>
+                  {acceptedCourial?.image ? (
+                    <img src={acceptedCourial.image} alt={acceptedCourial.name} className="w-[60px] h-[60px] rounded-full object-cover border border-border" />
+                  ) : (
+                    <div className="rounded-full bg-muted flex items-center justify-center text-xl font-bold text-foreground" style={{ width: 60, height: 60 }}>
+                      {(acceptedCourial?.name || "M").charAt(0)}
+                    </div>
+                  )}
                   <div className="flex-1">
                     <div className="flex items-center gap-2">
-                      <h3 className="text-base font-bold text-foreground">Marcus</h3>
+                      <h3 className="text-base font-bold text-foreground">{acceptedCourial?.name || "Marcus"}</h3>
                       <Star className="w-3.5 h-3.5 text-primary fill-primary" />
-                      <span className="text-sm text-muted-foreground">4.68</span>
+                      <span className="text-sm text-muted-foreground">{acceptedCourial?.rating?.toFixed(2) || "4.68"}</span>
                     </div>
-                    <div className="text-xs text-muted-foreground mt-0.5">Courial Since '25</div>
-                    <div className="text-xs text-muted-foreground mt-0.5">Black Toyota Corolla</div>
-                    <div className="text-xs font-bold text-foreground mt-0.5">ABC1234</div>
+                    <div className="text-xs text-muted-foreground mt-0.5">
+                      {acceptedCourial?.memberSince
+                        ? `Courial Since '${new Date(acceptedCourial.memberSince).getFullYear().toString().slice(-2)}`
+                        : "Courial Since '25"}
+                    </div>
+                    <div className="text-xs text-muted-foreground mt-0.5">
+                      {acceptedCourial
+                        ? `${acceptedCourial.vehicleColor} ${acceptedCourial.vehicleMake} ${acceptedCourial.vehicleModel}`.trim() || "Vehicle info pending"
+                        : "Black Toyota Corolla"}
+                    </div>
+                    <div className="text-xs font-bold text-foreground mt-0.5">{acceptedCourial?.licensePlate || "ABC1234"}</div>
                   </div>
                   {selectedVehicle && (
                     <img
