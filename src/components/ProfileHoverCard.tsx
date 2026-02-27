@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card";
@@ -18,13 +18,14 @@ import { PaymentMethodsModal } from "@/components/PaymentMethodsModal";
 const menuItems = [
   { icon: UserRoundPen, label: "Update Profile", href: "/account/profile" },
   { icon: CreditCard, label: "Payment Methods", href: "__payment_modal__" },
-  { icon: Headphones, label: "Get Support", href: "/help" },
+  { icon: Headphones, label: "Get Support", href: "__support__" },
   { icon: Settings, label: "Settings", href: "/account/settings" },
   { icon: Clock, label: "Activity", href: "/account/orders" },
 ];
 
 export const ProfileHoverCard = () => {
   const { user } = useAuth();
+  const navigate = useNavigate();
   const [showPaymentModal, setShowPaymentModal] = useState(false);
 
   const displayName =
@@ -89,6 +90,22 @@ export const ProfileHoverCard = () => {
                 <button
                   key={item.label}
                   onClick={() => setShowPaymentModal(true)}
+                  className="flex items-center gap-4 px-5 py-3.5 text-foreground hover:bg-accent transition-colors w-full text-left"
+                >
+                  <div className="h-10 w-10 rounded-full bg-secondary flex items-center justify-center shrink-0">
+                    <item.icon className="h-5 w-5 text-muted-foreground" />
+                  </div>
+                  <span className="text-[0.9375rem] font-medium">{item.label}</span>
+                </button>
+              ) : item.href === "__support__" ? (
+                <button
+                  key={item.label}
+                  onClick={() => {
+                    navigate("/help#contact");
+                    setTimeout(() => {
+                      document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" });
+                    }, 300);
+                  }}
                   className="flex items-center gap-4 px-5 py-3.5 text-foreground hover:bg-accent transition-colors w-full text-left"
                 >
                   <div className="h-10 w-10 rounded-full bg-secondary flex items-center justify-center shrink-0">
