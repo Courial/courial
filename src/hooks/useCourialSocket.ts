@@ -36,7 +36,7 @@ interface UseCourialSocketOptions {
  * Connects to the Courial real-time socket after booking
  * and listens for the AcceptOrder_listener event.
  */
-export function useCourialSocket({ token, enabled, onAccepted, onLocationUpdate }: UseCourialSocketOptions) {
+export function useCourialSocket({ token, enabled, acceptedDriverId, onAccepted, onLocationUpdate }: UseCourialSocketOptions) {
   const socketRef = useRef<Socket | null>(null);
   const [connected, setConnected] = useState(false);
 
