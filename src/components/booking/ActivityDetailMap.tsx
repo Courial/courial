@@ -46,11 +46,8 @@ const ActivityDetailMap: React.FC<ActivityDetailMapProps> = ({ origin, destinati
       styles: [
         { featureType: "poi", stylers: [{ visibility: "off" }] },
         { featureType: "transit", stylers: [{ visibility: "off" }] },
-        { featureType: "road", elementType: "labels", stylers: [{ visibility: "off" }] },
-        { featureType: "administrative", elementType: "labels", stylers: [{ visibility: "off" }] },
-        { featureType: "water", elementType: "labels", stylers: [{ visibility: "off" }] },
-        { featureType: "landscape", elementType: "labels", stylers: [{ visibility: "off" }] },
       ],
+      keyboardShortcuts: false,
     });
     mapInstanceRef.current = map;
 
@@ -141,7 +138,9 @@ const ActivityDetailMap: React.FC<ActivityDetailMapProps> = ({ origin, destinati
     }
   }, [ready, origin, destination]);
 
-  return <div ref={mapRef} className="w-full h-full" />;
+  return (
+    <div ref={mapRef} className="w-full h-full [&_.gm-style-cc]:!hidden [&_.gmnoprint]:!hidden [&_a[href*='google']]:!hidden [&_.gm-style>div>a]:!hidden" />
+  );
 };
 
 export default ActivityDetailMap;
