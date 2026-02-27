@@ -248,13 +248,18 @@ const Book = () => {
 
   const handleStatusChange = useCallback((status: string) => {
     console.log("[Book] Delivery status changed:", status);
-    const steps = deliveryStepsMap[selectedService || "deliver"] || deliveryStepsMap.deliver;
-    const stepIndex = steps.findIndex((s) => s.label === status);
-    if (stepIndex !== -1) {
+    const statusStepMap: Record<string, number> = {
+      "Courial at Pickup": 1,
+      "Courial Picked Up": 2,
+      "Courial at Drop-off": 3,
+      "Order Complete": 5,
+    };
+    const stepIndex = statusStepMap[status];
+    if (stepIndex !== undefined) {
       setDeliveryStep(stepIndex);
       toast.info(status);
     }
-  }, [selectedService]);
+  }, []);
 
   useCourialSocket({
     token: courialToken,
