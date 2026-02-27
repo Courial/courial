@@ -74,6 +74,7 @@ const AddressAutocomplete: React.FC<AddressAutocompleteProps> = ({
   const [ready, setReady] = useState(false);
   const isSelectingRef = useRef(false);
   const [showDropdown, setShowDropdown] = useState(false);
+  const [isFocused, setIsFocused] = useState(false);
   const [activeTab, setActiveTab] = useState<DropdownTab>("recent");
   const [recents, setRecents] = useState<RecentAddress[]>([]);
   const [favorites, setFavorites] = useState<SavedAddress[]>([]);
@@ -199,11 +200,16 @@ const AddressAutocomplete: React.FC<AddressAutocompleteProps> = ({
   }, [onChange, refreshData]);
 
   const handleFocus = useCallback(() => {
+    setIsFocused(true);
     refreshData();
     if (getRecentAddresses().length > 0 || getSavedAddresses().length > 0) {
       setShowDropdown(true);
     }
   }, [refreshData]);
+
+  const handleBlur = useCallback(() => {
+    setIsFocused(false);
+  }, []);
 
   const handleItemClick = useCallback((address: string, name: string | undefined, lat: number, lng: number) => {
     isSelectingRef.current = true;
@@ -229,8 +235,20 @@ const AddressAutocomplete: React.FC<AddressAutocompleteProps> = ({
     setTimeout(() => { isSelectingRef.current = false; }, 100);
   }, [onChange, onPlaceSelect]);
 
+  const showOverlay = !isFocused && !!value && value.length > 0;
+
   return (
     <div ref={wrapperRef as any} className="relative">
+      {/* Wrapping text overlay shown when not focused */}
+      {showOverlay && (
+        <div
+          className={`${className} cursor-text break-words whitespace-normal`}
+          style={{ position: 'absolute', inset: 0, zIndex: 1, background: 'inherit', pointerEvents: 'auto' }}
+          onClick={() => { inputRef.current?.focus(); }}
+        >
+          {value}
+        </div>
+      )}
       <input
         ref={inputRef}
         type="text"
@@ -238,7 +256,8 @@ const AddressAutocomplete: React.FC<AddressAutocompleteProps> = ({
         defaultValue={value}
         onChange={handleChange}
         onFocus={handleFocus}
-        className={className}
+        onBlur={handleBlur}
+        className={`${className} ${showOverlay ? 'invisible' : ''}`}
         autoComplete="off"
       />
       {showDropdown && hasAnyData && (
