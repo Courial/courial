@@ -70,6 +70,11 @@ export function useCourialSocket({ token, enabled, onAccepted }: UseCourialSocke
       console.error("[CourialSocket] Connection error:", err.message);
     });
 
+    // Log ALL incoming events for debugging
+    socket.onAny((eventName, ...args) => {
+      console.log("[CourialSocket] Event received:", eventName, args);
+    });
+
     // Listen for the AcceptOrder event
     socket.on("AcceptOrder_listener", (data: any) => {
       console.log("[CourialSocket] AcceptOrder_listener received:", data);

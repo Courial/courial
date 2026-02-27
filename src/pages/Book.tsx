@@ -224,7 +224,15 @@ const Book = () => {
     toast.success(`${driver.name} accepted your order!`);
   }, []);
 
-  const courialToken = typeof window !== "undefined" ? localStorage.getItem("courial_api_token") : null;
+  // Read token reactively when socket becomes enabled
+  const [courialToken, setCourialToken] = useState<string | null>(null);
+  useEffect(() => {
+    if (socketEnabled) {
+      const token = localStorage.getItem("courial_api_token");
+      console.log("[Book] socketEnabled=true, courialToken:", token ? `${token.substring(0, 20)}...` : "NULL");
+      setCourialToken(token);
+    }
+  }, [socketEnabled]);
 
   useCourialSocket({
     token: courialToken,
