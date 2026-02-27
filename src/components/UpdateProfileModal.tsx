@@ -117,7 +117,7 @@ export const UpdateProfileModal = ({ open, onOpenChange }: UpdateProfileModalPro
                     onChange={(e) => setEditName(e.target.value)}
                     onBlur={() => setEditingName(false)}
                     onKeyDown={(e) => e.key === "Enter" && setEditingName(false)}
-                    className="mt-1 h-7 text-xs bg-transparent border-primary text-background placeholder:text-background/40 focus-visible:ring-1 focus-visible:ring-primary focus-visible:ring-offset-0"
+                    className="mt-1 h-7 text-xs bg-transparent border-primary text-background placeholder:text-background/40 focus-visible:ring-0 focus-visible:ring-offset-0"
                     autoFocus
                   />
                 ) : (
