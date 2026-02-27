@@ -46,6 +46,10 @@ const ActivityDetailMap: React.FC<ActivityDetailMapProps> = ({ origin, destinati
       styles: [
         { featureType: "poi", stylers: [{ visibility: "off" }] },
         { featureType: "transit", stylers: [{ visibility: "off" }] },
+        { featureType: "road", elementType: "labels", stylers: [{ visibility: "off" }] },
+        { featureType: "administrative", elementType: "labels", stylers: [{ visibility: "off" }] },
+        { featureType: "water", elementType: "labels", stylers: [{ visibility: "off" }] },
+        { featureType: "landscape", elementType: "labels", stylers: [{ visibility: "off" }] },
       ],
     });
     mapInstanceRef.current = map;
