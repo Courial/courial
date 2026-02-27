@@ -34,7 +34,11 @@ serve(async (req) => {
 
     const courialUrl = "https://gocourial.com/userApis/send_login_otp";
 
+    // Normalize country_code: strip leading "+" since the API may expect just digits
+    const normalizedCC = String(country_code).replace(/^\+/, "").trim();
+
     const normalizedPhone = String(phone).trim();
+    // Build phone candidates: raw, without leading 0, and with leading 0
     const phoneCandidates = Array.from(new Set([
       normalizedPhone,
       normalizedPhone.startsWith("0") ? normalizedPhone.replace(/^0+/, "") : `0${normalizedPhone}`,
@@ -43,46 +47,55 @@ serve(async (req) => {
     const requestedType = type === "1" ? "1" : "0";
     const typeCandidates = requestedType === "0" ? ["0", "1"] : ["1", "0"];
 
+    // Also try country_code both with and without "+"
+    const ccCandidates = Array.from(new Set([normalizedCC, `+${normalizedCC}`]));
+
     let lastData: any = { success: 0, code: 400, msg: "OTP request failed" };
     let lastStatus = 400;
 
     for (const typeValue of typeCandidates) {
-      for (const candidatePhone of phoneCandidates) {
-        const courialRes = await fetch(courialUrl, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/x-www-form-urlencoded",
-            "security_key": apiKey,
-            "Authorization": `Bearer ${apiKey}`,
-          },
-          body: new URLSearchParams({
-            type: typeValue,
-            deviceID,
-            country_code,
-            phone: candidatePhone,
-          }).toString(),
-        });
+      for (const cc of ccCandidates) {
+        for (const candidatePhone of phoneCandidates) {
+          console.log(`[send-otp] Trying type=${typeValue} cc=${cc} phone=${candidatePhone}`);
 
-        let courialData: any = {};
-        try {
-          courialData = await courialRes.json();
-        } catch {
-          courialData = { success: 0, code: courialRes.status, msg: "Invalid Courial response" };
+          const courialRes = await fetch(courialUrl, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/x-www-form-urlencoded",
+              "security_key": apiKey,
+              "Authorization": `Bearer ${apiKey}`,
+            },
+            body: new URLSearchParams({
+              type: typeValue,
+              deviceID,
+              country_code: cc,
+              phone: candidatePhone,
+            }).toString(),
+          });
+
+          let courialData: any = {};
+          try {
+            courialData = await courialRes.json();
+          } catch {
+            courialData = { success: 0, code: courialRes.status, msg: "Invalid Courial response" };
+          }
+
+          console.log(`[send-otp] Response: status=${courialRes.status} success=${courialData.success} msg=${courialData.msg}`);
+
+          const isSuccess = courialRes.ok && courialData.success !== 0 && courialData.success !== false;
+          if (isSuccess) {
+            return new Response(
+              JSON.stringify({ ...courialData, deviceID, type: typeValue, phone: candidatePhone, country_code: cc }),
+              {
+                status: 200,
+                headers: { ...corsHeaders, "Content-Type": "application/json" },
+              }
+            );
+          }
+
+          lastData = courialData;
+          lastStatus = courialData.code || courialRes.status || 400;
         }
-
-        const isSuccess = courialRes.ok && courialData.success !== 0 && courialData.success !== false;
-        if (isSuccess) {
-          return new Response(
-            JSON.stringify({ ...courialData, deviceID, type: typeValue, phone: candidatePhone }),
-            {
-              status: 200,
-              headers: { ...corsHeaders, "Content-Type": "application/json" },
-            }
-          );
-        }
-
-        lastData = courialData;
-        lastStatus = courialData.code || courialRes.status || 400;
       }
     }
 
