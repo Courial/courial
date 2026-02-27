@@ -213,16 +213,27 @@ const Book = () => {
   const [showContactSupport, setShowContactSupport] = useState(false);
   const [acceptedCourial, setAcceptedCourial] = useState<CourialDriver | null>(null);
   const [socketEnabled, setSocketEnabled] = useState(false);
+  const [courialCoords, setCourialCoords] = useState<{ lat: number; lng: number } | null>(null);
 
   // Socket: connect after successful booking, listen for courial acceptance
   const handleCourialAccepted = useCallback((driver: CourialDriver) => {
     console.log("[Book] Courial accepted order:", driver);
     setAcceptedCourial(driver);
+    // Set initial courial position from Provider.latitude/longitude
+    if (driver.latitude && driver.longitude) {
+      setCourialCoords({ lat: driver.latitude, lng: driver.longitude });
+    }
     // Immediately transition to active tracking when a courial accepts
     setBookingState("active");
     setLoadingProgress(100);
     setDeliveryStep(0);
     toast.success(`${driver.name} accepted your order!`);
+  }, []);
+
+  // Handle real-time location updates from socket
+  const handleLocationUpdate = useCallback((coords: { lat: number; lng: number }) => {
+    console.log("[Book] Courial location update:", coords);
+    setCourialCoords(coords);
   }, []);
 
   // Read token reactively when socket becomes enabled
@@ -239,6 +250,7 @@ const Book = () => {
     token: courialToken,
     enabled: socketEnabled,
     onAccepted: handleCourialAccepted,
+    onLocationUpdate: handleLocationUpdate,
   });
   const courialProfiles = useMemo(() => [
     "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop&crop=face",
@@ -2724,7 +2736,7 @@ const Book = () => {
                const hasCoords = mapPickup || mapDropoff;
                return hasCoords ? (
              <div className="flex-1 relative">
-               <BookingMap pickupCoords={mapPickup} dropoffCoords={mapPickup !== mapDropoff ? mapDropoff : null} stopCoords={mapStop} extraStops={mapExtraStops} pickupAddress={mapPickupAddr} dropoffAddress={mapDropoffAddr} stopAddress={mapStopAddr} pickupPlaceName={mapPickupName} dropoffPlaceName={mapDropoffName} stopPlaceName={mapStopName} bookingState={bookingState} vehicleType={mapVehicle} />
+               <BookingMap pickupCoords={mapPickup} dropoffCoords={mapPickup !== mapDropoff ? mapDropoff : null} stopCoords={mapStop} extraStops={mapExtraStops} pickupAddress={mapPickupAddr} dropoffAddress={mapDropoffAddr} stopAddress={mapStopAddr} pickupPlaceName={mapPickupName} dropoffPlaceName={mapDropoffName} stopPlaceName={mapStopName} bookingState={bookingState} vehicleType={mapVehicle} courialCoords={courialCoords} />
               
               {/* Loading Overlay Popup */}
               <AnimatePresence>
