@@ -1872,7 +1872,7 @@ const Book = () => {
                           Add Stop
                         </Button>
                         <p className="text-[13px] text-muted-foreground leading-tight">
-                          Double tap <span className="inline-block w-2.5 h-2.5 bg-red-500 align-middle mx-0.5" /> to remove
+                          Double tap<br /><span className="inline-block w-2.5 h-2.5 bg-red-500 align-middle mx-0.5" /> to remove
                         </p>
                       </div>
                     )}
