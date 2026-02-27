@@ -8,7 +8,6 @@ import {
   Headphones,
   Settings,
   Clock,
-  Car,
   LogOut,
   Star,
 } from "lucide-react";
