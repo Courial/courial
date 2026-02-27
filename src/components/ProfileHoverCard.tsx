@@ -14,12 +14,14 @@ import {
 } from "lucide-react";
 import profileIcon from "@/assets/profile-icon.png";
 import { PaymentMethodsModal } from "@/components/PaymentMethodsModal";
+import { UpdateProfileModal } from "@/components/UpdateProfileModal";
+import { SettingsModal } from "@/components/SettingsModal";
 
 const menuItems = [
-  { icon: UserRoundPen, label: "Update Profile", href: "/account/profile" },
+  { icon: UserRoundPen, label: "Update Profile", href: "__profile_modal__" },
   { icon: CreditCard, label: "Payment Methods", href: "__payment_modal__" },
   { icon: Headphones, label: "Get Support", href: "__support__" },
-  { icon: Settings, label: "Settings", href: "/account/settings" },
+  { icon: Settings, label: "Settings", href: "__settings_modal__" },
   { icon: Clock, label: "Activity", href: "/account/orders" },
 ];
 
