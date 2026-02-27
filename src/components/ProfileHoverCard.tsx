@@ -97,6 +97,22 @@ export const ProfileHoverCard = () => {
                   </div>
                   <span className="text-[0.9375rem] font-medium">{item.label}</span>
                 </button>
+              ) : item.href === "__support__" ? (
+                <button
+                  key={item.label}
+                  onClick={() => {
+                    navigate("/help#contact");
+                    setTimeout(() => {
+                      document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" });
+                    }, 300);
+                  }}
+                  className="flex items-center gap-4 px-5 py-3.5 text-foreground hover:bg-accent transition-colors w-full text-left"
+                >
+                  <div className="h-10 w-10 rounded-full bg-secondary flex items-center justify-center shrink-0">
+                    <item.icon className="h-5 w-5 text-muted-foreground" />
+                  </div>
+                  <span className="text-[0.9375rem] font-medium">{item.label}</span>
+                </button>
               ) : (
                 <Link
                   key={item.label}
