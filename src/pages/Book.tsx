@@ -486,17 +486,16 @@ const Book = () => {
     }
   }, [isFormValid, user, timeMode, selectedService, selectedVehicle, notes, pickup, pickupCoords, dropoff, dropoffCoords, selectedDate, selectedTime, over70lbs, heavyWeight, heavyItems, twoCourials, hasStairs, conciergeDescription, conciergeCategory, conciergeSubCategory, conciergeStartAddress, conciergeStopAddress, conciergeFinalAddress, conciergeLanguage, conciergeServiceMode, conciergeHasExpenses, conciergeExpenseItems, conciergeAllowOverage, conciergeOverageLimit, deliverLanguage, deliverMultiStop, deliverExtraStops, deliverHasExpenses, deliverExpenseItems, deliverAllowOverage, deliverOverageLimit]);
 
-  // Animate loading progress and transition to active
+  // Animate loading progress — caps at 95% and waits for socket AcceptOrder_listener
   useEffect(() => {
     if (bookingState !== "loading") return;
     const interval = setInterval(() => {
       setLoadingProgress((prev) => {
-        if (prev >= 100) {
-          clearInterval(interval);
-          setBookingState("active");
-          return 100;
+        if (prev >= 95) {
+          // Hold at 95% — transition happens via handleCourialAccepted when socket fires
+          return 95;
         }
-        return prev + (100 / 150); // 150 steps over 15s (100ms interval)
+        return prev + (95 / 150); // reach 95% in ~15s (100ms interval)
       });
     }, 100);
     return () => clearInterval(interval);
