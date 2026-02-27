@@ -179,19 +179,19 @@ export const FavoritePartnersModal = ({ open, onOpenChange }: FavoritePartnersMo
                   <p className="text-background text-sm font-semibold">
                     Delete {pendingRemove.firstName}?
                   </p>
-                  <div className="flex gap-3">
-                    <Button
+                  <div className="flex rounded-full border border-background/20 p-0.5">
+                    <button
                       onClick={() => removePartner(pendingRemove.id)}
-                      className="rounded-full px-6 bg-red-500 hover:bg-red-600 text-white text-xs font-bold"
+                      className="px-4 py-1 rounded-full text-[10px] font-bold bg-red-500 text-white"
                     >
                       Yes
-                    </Button>
-                    <Button
+                    </button>
+                    <button
                       onClick={() => setPendingRemove(null)}
-                      className="rounded-full px-6 bg-transparent border border-background/30 text-background hover:bg-background/10 text-xs font-bold"
+                      className="px-4 py-1 rounded-full text-[10px] font-bold text-background"
                     >
                       No
-                    </Button>
+                    </button>
                   </div>
                 </motion.div>
               )}
