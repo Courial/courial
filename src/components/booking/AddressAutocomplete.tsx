@@ -281,14 +281,14 @@ const AddressAutocomplete: React.FC<AddressAutocompleteProps> = ({
           style={{ zIndex: 10001 }}
         >
           {/* Tab buttons */}
-          <div className="flex items-center gap-1 px-3 pt-2.5 pb-1.5">
+          <div className="flex items-center justify-between px-3 pt-2.5 pb-1.5">
             <button
               type="button"
               onMouseDown={(e) => { e.preventDefault(); setActiveTab("recent"); }}
               className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold transition-colors ${
                 activeTab === "recent"
                   ? "bg-foreground text-background"
-                  : "text-muted-foreground hover:bg-muted"
+                  : "text-muted-foreground border border-border hover:bg-muted"
               }`}
             >
               <Clock className="w-3.5 h-3.5" />
@@ -300,7 +300,7 @@ const AddressAutocomplete: React.FC<AddressAutocompleteProps> = ({
               className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold transition-colors ${
                 activeTab === "favorites"
                   ? "bg-foreground text-background"
-                  : "text-muted-foreground hover:bg-muted"
+                  : "text-muted-foreground border border-border hover:bg-muted"
               }`}
             >
               <Heart className="w-3.5 h-3.5" />
