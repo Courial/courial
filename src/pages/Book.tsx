@@ -2046,7 +2046,7 @@ const Book = () => {
                     </p>
 
                     <AnimatePresence>
-                      {Number(deliverOrderValue) > 100 && Number(deliverOrderValue) < 200 && (
+                      {Number(deliverOrderValue) > 100 && Number(deliverOrderValue) <= 200 && (
                         <motion.div
                           initial={{ opacity: 0, height: 0 }}
                           animate={{ opacity: 1, height: "auto" }}
@@ -2065,7 +2065,7 @@ const Book = () => {
                           </div>
                         </motion.div>
                       )}
-                      {Number(deliverOrderValue) >= 200 && (
+                      {Number(deliverOrderValue) > 200 && (
                         <motion.div
                           initial={{ opacity: 0, height: 0 }}
                           animate={{ opacity: 1, height: "auto" }}
