@@ -253,10 +253,14 @@ const RideDetail = ({ ride, onBack }: { ride: any; onBack: () => void }) => {
               {ride.scheduled ? "Scheduled Ride" : "On-Demand"}
             </p>
           </div>
-          <span className={`text-[11px] font-semibold shrink-0 ${statusBadgeBg[ride.status] || "text-muted-foreground"}`}>
-            {ride.status}
-          </span>
-        </div>
+          <div className="text-right shrink-0">
+            <span className={`text-[11px] font-semibold ${statusBadgeBg[ride.status] || "text-muted-foreground"}`}>
+              {ride.status}
+            </span>
+            {ride.orderNumber && (
+              <p className="text-[10px] text-muted-foreground mt-0.5">{ride.orderNumber}</p>
+            )}
+          </div>
 
         {/* Price & vehicle */}
         <div className="flex items-center gap-3 text-sm text-foreground">
