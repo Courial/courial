@@ -210,6 +210,8 @@ const Book = () => {
   }, [chatInput]);
 
   const [showContactSupport, setShowContactSupport] = useState(false);
+  const [acceptedCourial, setAcceptedCourial] = useState<CourialDriver | null>(null);
+  const [socketEnabled, setSocketEnabled] = useState(false);
   const courialProfiles = useMemo(() => [
     "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop&crop=face",
     "https://images.unsplash.com/photo-1494790108755-2616b612b786?w=200&h=200&fit=crop&crop=face",
