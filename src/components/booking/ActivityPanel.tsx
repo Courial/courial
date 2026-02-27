@@ -151,7 +151,7 @@ export const ActivityPanel = ({ onBack }: { onBack: () => void }) => {
               className="space-y-3"
             >
               {rides.map((ride) => {
-                const Icon = serviceIcon[ride.type] || Box;
+                const iconSrc = serviceIconSrc[ride.type] || deliverIcon;
                 return (
                   <div
                     key={ride.id}
