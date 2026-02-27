@@ -2232,9 +2232,37 @@ const Book = () => {
         {/* Loading state moved to map overlay */}
         {bookingState === "loading" && (
           <div className="p-8 flex flex-col items-center justify-center h-full">
-            <div className="text-center text-muted-foreground text-sm">
+            <div className="text-center text-muted-foreground text-sm mb-6">
               {selectedService === "concierge" ? "Finding your Concierge…" : selectedService === "valet" ? "Connecting with a Valet…" : "Searching nearby Courials…"}
             </div>
+
+            {nearbyCourials.length > 0 && (
+              <motion.div
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 0.3 }}
+                className="w-full max-w-xs"
+              >
+                <p className="text-xs text-muted-foreground text-center mb-4 uppercase tracking-wider font-semibold">Nearby Courials</p>
+                <div className="flex items-center justify-center gap-3 flex-wrap">
+                  {nearbyCourials.map((c, i) => (
+                    <motion.div
+                      key={c.id}
+                      initial={{ opacity: 0, scale: 0.8 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      transition={{ duration: 0.3, delay: 0.5 + i * 0.15 }}
+                      className="flex flex-col items-center gap-1.5"
+                    >
+                      <div className="w-14 h-14 rounded-full overflow-hidden border-2 border-primary/30 ring-2 ring-primary/10">
+                        <img src={c.image} alt={c.name} className="w-full h-full object-cover" />
+                      </div>
+                      <span className="text-[11px] text-foreground font-medium truncate max-w-[70px] text-center">{c.name.split(" ")[0]}</span>
+                      <span className="text-[10px] text-muted-foreground">{c.distance}</span>
+                    </motion.div>
+                  ))}
+                </div>
+              </motion.div>
+            )}
           </div>
         )}
 
