@@ -22,7 +22,7 @@ const menuItems = [
   { icon: CreditCard, label: "Payment Methods", href: "__payment_modal__" },
   { icon: Headphones, label: "Get Support", href: "__support__" },
   { icon: Settings, label: "Settings", href: "__settings_modal__" },
-  { icon: Clock, label: "Activity", href: "/account/orders" },
+  { icon: Clock, label: "Activity", href: "/book?view=activity" },
 ];
 
 export const ProfileHoverCard = () => {

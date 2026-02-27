@@ -3,7 +3,8 @@ import { useCourialSocket, type CourialDriver } from "@/hooks/useCourialSocket";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { Navbar } from "@/components/Navbar";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
+import { ActivityPanel } from "@/components/booking/ActivityPanel";
 import { motion, AnimatePresence } from "framer-motion";
 import { Helmet } from "react-helmet-async";
 import { MapPin, Search, CarFront, ParkingCircle, Leaf, Box, ConciergeBell, Clock, CalendarIcon, ChevronDown, ChevronLeft, Info, Plus, Trash2, CreditCard, Star, X, Weight, Sparkles, Zap, ArrowLeft, Shield, Eye, EyeOff, MessageCircle, Headset, Send, Phone, Mail } from "lucide-react";
@@ -85,6 +86,8 @@ const serviceCards: { id: ServiceId; label: string; desc: string; href: string; 
 
 const Book = () => {
   const { user } = useAuth();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const showActivity = searchParams.get("view") === "activity";
   const deliveryIdRef = useRef<string | null>(null);
   const [selectedService, setSelectedService] = useState<ServiceId | null>(null);
   const [pickup, setPickup] = useState("");
@@ -689,7 +692,9 @@ const Book = () => {
       <div className="flex h-[calc(100vh-64px)] mt-16">
         {/* Left Column — Booking Card */}
         <div className="w-full max-w-[440px] flex-shrink-0 border-r border-border overflow-y-auto bg-black/[0.025]">
-          {bookingState === "input" && (
+          {showActivity ? (
+            <ActivityPanel onBack={() => setSearchParams({})} />
+          ) : bookingState === "input" && (
           <div className="p-8">
             {/* Service Bento Grid */}
             <motion.div
