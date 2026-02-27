@@ -179,6 +179,7 @@ export function useCourialSocket({ token, enabled, acceptedDriverId, onAccepted,
     const locationEvents = [
       "LocationUpdate", "location_update", "ProviderLocation",
       "provider_location", "updateLocation", "update_location",
+      "driverLiveUpdate",
     ];
     locationEvents.forEach((eventName) => {
       socket.on(eventName, (rawData: any) => {
@@ -186,6 +187,16 @@ export function useCourialSocket({ token, enabled, acceptedDriverId, onAccepted,
         try {
           const parsed = typeof rawData === "string" ? JSON.parse(rawData) : rawData;
           const data = parsed?.data ?? parsed;
+
+          // For driverLiveUpdate, match userId to accepted driver ID
+          if (eventName === "driverLiveUpdate" && acceptedDriverId) {
+            const eventUserId = String(data?.userId ?? data?.user_id ?? "");
+            if (eventUserId && eventUserId !== String(acceptedDriverId)) {
+              console.log(`[CourialSocket] driverLiveUpdate skipped: userId ${eventUserId} !== accepted ${acceptedDriverId}`);
+              return;
+            }
+          }
+
           const lat = parseFloat(data?.latitude ?? data?.lat);
           const lng = parseFloat(data?.longitude ?? data?.lng);
           if (!isNaN(lat) && !isNaN(lng) && onLocationUpdate) {
