@@ -246,12 +246,23 @@ const Book = () => {
     }
   }, [socketEnabled]);
 
+  const handleStatusChange = useCallback((status: string) => {
+    console.log("[Book] Delivery status changed:", status);
+    const steps = deliveryStepsMap[selectedService || "deliver"] || deliveryStepsMap.deliver;
+    const stepIndex = steps.findIndex((s) => s.label === status);
+    if (stepIndex !== -1) {
+      setDeliveryStep(stepIndex);
+      toast.info(status);
+    }
+  }, [selectedService]);
+
   useCourialSocket({
     token: courialToken,
     enabled: socketEnabled,
     acceptedDriverId: acceptedCourial?.id || null,
     onAccepted: handleCourialAccepted,
     onLocationUpdate: handleLocationUpdate,
+    onStatusChange: handleStatusChange,
   });
   const courialProfiles = useMemo(() => [
     "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop&crop=face",
