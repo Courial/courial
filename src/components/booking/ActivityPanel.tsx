@@ -2,6 +2,7 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Clock, RotateCcw, Calendar, MapPin, ArrowLeft, Zap } from "lucide-react";
 import ActivityDetailMap from "./ActivityDetailMap";
+import noScheduledIllustration from "@/assets/no-scheduled-illustration.png";
 import { useNavigate } from "react-router-dom";
 import deliverIcon from "@/assets/service-icons/deliver.png";
 import conciergeIcon from "@/assets/service-icons/concierge.png";
