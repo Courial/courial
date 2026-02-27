@@ -62,33 +62,32 @@ export const FavoritePartnersModal = ({ open, onOpenChange }: FavoritePartnersMo
             <DialogTitle className="sr-only">Favorite Partners</DialogTitle>
 
             {/* Header */}
-            <div className="flex items-center gap-3 mb-5">
-              <button
-                onClick={() => onOpenChange(false)}
-                className="hover:opacity-75 transition-opacity"
-              >
-                <ArrowLeft className="h-5 w-5 text-background" />
-              </button>
-              <h1 className="text-xl font-bold text-background flex-1 text-center pr-5">
-                Favorites
-              </h1>
-            </div>
+            <h1 className="text-xl font-bold text-background text-center mb-5">
+              Favorites
+            </h1>
 
             {/* Toggle */}
-            <div className="flex bg-background/10 rounded-xl p-1 mb-5">
-              {(["courials", "chauffeurs"] as PartnerType[]).map((type) => (
-                <button
-                  key={type}
-                  onClick={() => setTab(type)}
-                  className={`flex-1 py-2 rounded-lg text-xs font-semibold transition-all ${
-                    tab === type
-                      ? "bg-primary text-primary-foreground"
-                      : "text-background/60 hover:opacity-75"
-                  }`}
-                >
-                  {type === "courials" ? "Courials" : "Chauffeurs"}
-                </button>
-              ))}
+            <div className="flex rounded-full border border-background/30 overflow-hidden mb-5">
+              <button
+                onClick={() => setTab("courials")}
+                className={`flex-1 py-2 text-xs font-semibold transition-all ${
+                  tab === "courials"
+                    ? "bg-background text-foreground"
+                    : "bg-foreground text-background hover:opacity-75"
+                }`}
+              >
+                Courials
+              </button>
+              <button
+                onClick={() => setTab("chauffeurs")}
+                className={`flex-1 py-2 text-xs font-semibold transition-all ${
+                  tab === "chauffeurs"
+                    ? "bg-foreground text-background border border-background/30"
+                    : "bg-background text-foreground hover:opacity-75"
+                }`}
+              >
+                Chauffeurs
+              </button>
             </div>
 
             {/* List */}
