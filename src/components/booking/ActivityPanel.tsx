@@ -70,11 +70,11 @@ const mockPastRides = [
   },
 ];
 
-const serviceIcon: Record<string, typeof Box> = {
-  Deliver: Box,
-  Concierge: ConciergeBell,
-  Chauffeur: CarFront,
-  Valet: ParkingCircle,
+const serviceIconSrc: Record<string, string> = {
+  Deliver: deliverIcon,
+  Concierge: conciergeIcon,
+  Chauffeur: chauffeurIcon,
+  Valet: valetIcon,
 };
 
 const statusColor: Record<string, string> = {
