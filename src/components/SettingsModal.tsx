@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -7,6 +7,7 @@ import { motion } from "framer-motion";
 import { Settings, Home, Building2, Heart, Bell, ChevronDown, ChevronUp } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import profileIcon from "@/assets/profile-icon.png";
+import { SavedAddressModal, getSavedAddresses, type SavedAddress } from "@/components/SavedAddressModal";
 
 interface SettingsModalProps {
   open: boolean;
@@ -20,6 +21,12 @@ export const SettingsModal = ({ open, onOpenChange }: SettingsModalProps) => {
   const [emailEnabled, setEmailEnabled] = useState(true);
   const [smsEnabled, setSmsEnabled] = useState(true);
   const [chatEnabled, setChatEnabled] = useState(true);
+  const [addressModalType, setAddressModalType] = useState<string | null>(null);
+  const [savedAddresses, setSavedAddresses] = useState<SavedAddress[]>(getSavedAddresses());
+
+  useEffect(() => {
+    if (open) setSavedAddresses(getSavedAddresses());
+  }, [open]);
 
   const displayName =
     user?.user_metadata?.full_name ||
@@ -31,6 +38,7 @@ export const SettingsModal = ({ open, onOpenChange }: SettingsModalProps) => {
   const phone = user?.phone || user?.user_metadata?.phone || "";
 
   return (
+  <>
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[19.2rem] bg-transparent border-none !rounded-[20px] p-0 overflow-y-auto max-h-[90vh] [&>button]:hidden shadow-none">
         <motion.div
@@ -60,20 +68,27 @@ export const SettingsModal = ({ open, onOpenChange }: SettingsModalProps) => {
 
             {/* Saved Places */}
             <div className="space-y-0">
-              <button className="flex items-center gap-3 w-full py-3 border-b border-background/20 text-left hover:bg-background/10 transition-colors">
-                <Home className="h-4 w-4 text-background/60" />
-                <div>
-                  <p className="text-sm font-semibold text-background">Home</p>
-                  <p className="text-[10px] text-background/50">Add home</p>
-                </div>
-              </button>
-              <button className="flex items-center gap-3 w-full py-3 border-b border-background/20 text-left hover:bg-background/10 transition-colors">
-                <Building2 className="h-4 w-4 text-background/60" />
-                <div>
-                  <p className="text-sm font-semibold text-background">Work</p>
-                  <p className="text-[10px] text-background/50">Add work</p>
-                </div>
-              </button>
+              {[
+                { type: "home", icon: Home, label: "Home" },
+                { type: "work", icon: Building2, label: "Work" },
+              ].map(({ type, icon: Icon, label }) => {
+                const saved = savedAddresses.find((a) => a.type === type);
+                return (
+                  <button
+                    key={type}
+                    onClick={() => setAddressModalType(type)}
+                    className="flex items-center gap-3 w-full py-3 border-b border-background/20 text-left hover:bg-background/10 transition-colors"
+                  >
+                    <Icon className="h-4 w-4 text-background/60" />
+                    <div className="min-w-0 flex-1">
+                      <p className="text-sm font-semibold text-background">{saved?.name || label}</p>
+                      <p className="text-[10px] text-background/50 truncate">
+                        {saved?.address || `Add ${type}`}
+                      </p>
+                    </div>
+                  </button>
+                );
+              })}
               <button className="flex items-center gap-3 w-full py-3 border-b border-background/20 text-left hover:bg-background/10 transition-colors">
                 <Heart className="h-4 w-4 text-background/60" />
                 <div>
@@ -145,5 +160,13 @@ export const SettingsModal = ({ open, onOpenChange }: SettingsModalProps) => {
         </motion.div>
       </DialogContent>
     </Dialog>
+
+    <SavedAddressModal
+      open={!!addressModalType}
+      onOpenChange={(o) => { if (!o) setAddressModalType(null); }}
+      addressType={addressModalType || "home"}
+      onSave={() => setSavedAddresses(getSavedAddresses())}
+    />
+  </>
   );
 };
