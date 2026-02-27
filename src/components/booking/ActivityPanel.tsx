@@ -109,10 +109,8 @@ export const ActivityPanel = ({ onBack }: { onBack: () => void }) => {
             onClick={() => setTab(t)}
             className={`flex-1 py-2.5 rounded-lg text-sm font-semibold transition-all duration-200 ${
               tab === t
-                ? t === "pending"
-                  ? "bg-background text-foreground border border-border"
-                  : "bg-foreground text-background"
-                : "bg-muted text-muted-foreground hover:bg-muted/80 border border-border"
+                ? "bg-foreground text-background"
+                : "bg-background text-muted-foreground border border-border"
             }`}
           >
             {t === "pending" ? "Pending" : "Past"}
