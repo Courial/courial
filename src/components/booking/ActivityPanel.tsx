@@ -278,6 +278,7 @@ const RideDetail = ({ ride, onBack }: { ride: any; onBack: () => void }) => {
               <span className="text-muted-foreground">{ride.vehicleDetail}</span>
             </>
           )}
+        </div>
 
         {/* Date */}
         <p className="text-sm text-muted-foreground">{ride.date}</p>
