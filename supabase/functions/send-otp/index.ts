@@ -37,11 +37,29 @@ serve(async (req) => {
     // Normalize country_code: strip leading "+" since the API may expect just digits
     const normalizedCC = String(country_code).replace(/^\+/, "").trim();
 
-    const normalizedPhone = String(phone).trim();
-    // Build phone candidates: raw, without leading 0, and with leading 0
+    const rawPhone = String(phone).replace(/\D/g, "").replace(/^0+/, ""); // strip non-digits and leading zeros
+
+    // Format phone to match Courial API expectations
+    // Thai (9 digits): (98) (121)-(2106)
+    // US  (10 digits): (213) 284-5742
+    const formatPhone = (digits: string): string => {
+      if (digits.length === 10) {
+        // US format: (XXX) XXX-XXXX
+        return `(${digits.slice(0,3)}) ${digits.slice(3,6)}-${digits.slice(6)}`;
+      } else if (digits.length === 9) {
+        // Thai format: (XX) (XXX)-(XXXX)
+        return `(${digits.slice(0,2)}) (${digits.slice(2,5)})-(${digits.slice(5)})`;
+      }
+      // Fallback: return raw digits
+      return digits;
+    };
+
+    const formattedPhone = formatPhone(rawPhone);
+    // Build candidates: formatted first, then raw digits, then with leading 0
     const phoneCandidates = Array.from(new Set([
-      normalizedPhone,
-      normalizedPhone.startsWith("0") ? normalizedPhone.replace(/^0+/, "") : `0${normalizedPhone}`,
+      formattedPhone,
+      rawPhone,
+      `0${rawPhone}`,
     ])).filter(Boolean);
 
     const requestedType = type === "1" ? "1" : "0";
