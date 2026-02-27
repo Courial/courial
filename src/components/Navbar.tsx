@@ -1,12 +1,11 @@
 import { useState, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Menu, X, User, LogOut, Package } from "lucide-react";
+import { Menu, X, LogOut, Package } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { ProfileHoverCard } from "@/components/ProfileHoverCard";
 import courialLogo from "@/assets/courial-logo-black.svg";
-import profileIcon from "@/assets/profile-icon.png";
 
 const navLinks = [
   { name: "Home", href: "/" },
@@ -25,11 +24,6 @@ export const Navbar = () => {
   const navigate = useNavigate();
 
 
-  const displayName = user?.user_metadata?.full_name || user?.user_metadata?.courial_email || user?.email;
-  const userInitial = displayName
-    ? displayName.charAt(0).toUpperCase()
-    : "U";
-  const avatarUrl = user?.user_metadata?.avatar_url;
 
   const handleNavClick = useCallback((e: React.MouseEvent, href: string) => {
     e.preventDefault();
@@ -88,29 +82,7 @@ export const Navbar = () => {
                     My Orders
                   </Button>
                 </Link>
-                <div className="relative group flex items-center justify-center w-10 h-10">
-                  <button className="rounded-full focus:outline-none focus:ring-2 focus:ring-primary">
-                    <Avatar className="h-10 w-10 border border-foreground">
-                      <AvatarImage src={avatarUrl} alt="Profile" />
-                      <AvatarFallback className="bg-background p-0 flex items-center justify-center">
-                        <img src={profileIcon} alt="" className="h-3/4 w-3/4 object-contain" />
-                      </AvatarFallback>
-                    </Avatar>
-                  </button>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    className="absolute top-full mt-2 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity border border-foreground/25 whitespace-nowrap"
-                    onClick={() => {
-                      console.log("[Navbar] Sign out - nuking session");
-                      localStorage.clear();
-                      sessionStorage.clear();
-                      window.location.replace("/");
-                    }}
-                  >
-                    Sign Out
-                  </Button>
-                </div>
+                <ProfileHoverCard />
               </div>
             ) : !authLoading ? (
               <Link to="/auth">
