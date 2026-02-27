@@ -89,7 +89,7 @@ export const SettingsModal = ({ open, onOpenChange }: SettingsModalProps) => {
                   </button>
                 );
               })}
-              <button className="flex items-center gap-3 w-full py-3 border-b border-background/20 text-left hover:bg-background/10 transition-colors">
+              <button className="flex items-center gap-3 w-full py-3 border-b border-background/20 text-left hover:opacity-75 transition-opacity">
                 <Heart className="h-4 w-4 text-background/60" />
                 <div>
                   <p className="text-sm font-semibold text-background">Favorite Partners</p>
