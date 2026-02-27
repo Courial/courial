@@ -2046,7 +2046,7 @@ const Book = () => {
                     </p>
 
                     <AnimatePresence>
-                      {Number(deliverOrderValue) > 100 && Number(deliverOrderValue) < 500 && (
+                      {Number(deliverOrderValue) > 100 && Number(deliverOrderValue) < 200 && (
                         <motion.div
                           initial={{ opacity: 0, height: 0 }}
                           animate={{ opacity: 1, height: "auto" }}
@@ -2057,15 +2057,15 @@ const Book = () => {
                           <div className="mt-2 p-3 rounded-lg border border-border/60 bg-muted/30 space-y-1.5">
                             <p className="text-[11px] font-medium text-foreground">For orders exceeding $100 in declared value:</p>
                             <ul className="text-[10px] text-muted-foreground leading-relaxed space-y-0.5">
-                              <li>• $101–$500: Protection fee added at 5% of value.</li>
-                              <li>• Supporting documentation verifying value will be required.</li>
-                              <li>• For eligible high-value orders, the Courial must physically witness the item being placed into the package prior to sealing.</li>
+                              <li>• $101–$200: Protection fee added at 5% of value.</li>
+                              <li>• Supporting documentation verifying value will be required as well as photos of item(s) being packaged.</li>
+                              <li>• For eligible high-value orders over $200, the Courial must physically witness the item being placed into the package prior to sealing.</li>
                             </ul>
                             <p className="text-[10px] text-muted-foreground mt-1">All protection is subject to Courial's Delivery Protection & Coverage Policy.</p>
                           </div>
                         </motion.div>
                       )}
-                      {Number(deliverOrderValue) >= 500 && (
+                      {Number(deliverOrderValue) >= 200 && (
                         <motion.div
                           initial={{ opacity: 0, height: 0 }}
                           animate={{ opacity: 1, height: "auto" }}
@@ -2075,7 +2075,7 @@ const Book = () => {
                         >
                           <div className="mt-2 p-3 rounded-lg border border-destructive/30 bg-destructive/5 space-y-2">
                             <p className="text-[11px] font-medium text-foreground">
-                              For orders valued at $500 or more, please{" "}
+                              For orders valued at $200 or more, please{" "}
                               <Link to="/help" className="text-primary underline underline-offset-2 hover:opacity-80">contact Courial Support</Link>{" "}
                               to complete this booking.
                             </p>
