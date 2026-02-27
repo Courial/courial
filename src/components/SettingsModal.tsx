@@ -103,27 +103,6 @@ export const SettingsModal = ({ open, onOpenChange }: SettingsModalProps) => {
               </button>
             </div>
 
-            {/* Location */}
-            <div className="mt-4">
-              <p className="text-[10px] font-bold text-background/50 uppercase tracking-wider mb-2">Location</p>
-              <button
-                onClick={() => setCommuteOpen(!commuteOpen)}
-                className="flex items-center justify-between w-full py-2.5 hover:opacity-75 transition-opacity rounded-lg"
-              >
-                <div className="flex items-center gap-3">
-                  <Bell className="h-4 w-4 text-background/60" />
-                  <div className="text-left">
-                    <p className="text-sm font-semibold text-background">Commute alerts</p>
-                    <p className="text-[10px] text-background/50">Commute alerts</p>
-                  </div>
-                </div>
-                {commuteOpen ? (
-                  <ChevronUp className="h-3.5 w-3.5 text-background/50" />
-                ) : (
-                  <ChevronDown className="h-3.5 w-3.5 text-background/50" />
-                )}
-              </button>
-            </div>
 
             {/* Offers */}
             <div className="mt-4 border-t border-background/20 pt-4">
