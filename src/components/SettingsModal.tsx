@@ -82,7 +82,7 @@ export const SettingsModal = ({ open, onOpenChange }: SettingsModalProps) => {
                     <Icon className="h-4 w-4 text-background/60" />
                     <div className="min-w-0 flex-1">
                       <p className="text-sm font-semibold text-background">{saved?.name || label}</p>
-                      <p className="text-[10px] text-background/50 truncate">
+                      <p className="text-[10px] text-background/50 leading-snug break-words whitespace-normal">
                         {saved?.address || `Add ${type}`}
                       </p>
                     </div>
