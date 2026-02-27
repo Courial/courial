@@ -32,89 +32,87 @@ export const SettingsModal = ({ open, onOpenChange }: SettingsModalProps) => {
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-md bg-background border-border !rounded-[25px] p-0 overflow-y-auto max-h-[90vh] [&>button]:hidden">
-        <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.2 }}>
-          {/* Header band */}
-          <div className="bg-muted/80 rounded-t-[25px] px-7 pt-7 pb-5">
-            <div className="flex items-center gap-3">
-              <Settings className="w-7 h-7 text-foreground" />
-              <span className="text-[1.65rem] font-bold text-foreground">Settings</span>
-            </div>
-          </div>
+      <DialogContent className="sm:max-w-[19.2rem] bg-transparent border-none !rounded-[20px] p-0 overflow-y-auto max-h-[90vh] [&>button]:hidden shadow-none">
+        <motion.div
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.3 }}
+        >
+          <div className="rounded-[20px] bg-foreground/75 text-background px-6 py-6 shadow-2xl backdrop-blur-sm flex flex-col">
+            <DialogTitle className="sr-only">Settings</DialogTitle>
 
-          <div className="px-7 pb-2">
+            <h1 className="text-2xl font-bold text-center mt-1 mb-5">Settings</h1>
+
             {/* User Info */}
-            <div className="flex items-center gap-4 py-5 border-b border-border">
-              <Avatar className="h-14 w-14 border-2 border-border">
+            <div className="flex items-center gap-3 pb-4 border-b border-background/20">
+              <Avatar className="h-12 w-12 border-2 border-background/30">
                 <AvatarImage src={avatarUrl} alt="Profile" />
-                <AvatarFallback className="bg-secondary p-0 flex items-center justify-center">
-                  <img src={profileIcon} alt="" className="h-3/4 w-3/4 object-contain" />
+                <AvatarFallback className="bg-background/20 p-0 flex items-center justify-center">
+                  <img src={profileIcon} alt="" className="h-3/4 w-3/4 object-contain invert" />
                 </AvatarFallback>
               </Avatar>
               <div>
-                <p className="text-base font-semibold text-foreground">{displayName}</p>
-                <p className="text-xs text-muted-foreground">{phone || "No phone"}</p>
-                <p className="text-xs text-muted-foreground">{email}</p>
+                <p className="text-sm font-semibold text-background">{displayName}</p>
+                <p className="text-[10px] text-background/50">{phone || "No phone"}</p>
+                <p className="text-[10px] text-background/50">{email}</p>
               </div>
             </div>
 
-            <DialogTitle className="sr-only">Settings</DialogTitle>
-
             {/* Saved Places */}
             <div className="space-y-0">
-              <button className="flex items-center gap-4 w-full py-4 border-b border-border text-left hover:bg-accent/50 transition-colors">
-                <Home className="h-5 w-5 text-muted-foreground" />
+              <button className="flex items-center gap-3 w-full py-3 border-b border-background/20 text-left hover:bg-background/10 transition-colors">
+                <Home className="h-4 w-4 text-background/60" />
                 <div>
-                  <p className="text-sm font-semibold text-foreground">Home</p>
-                  <p className="text-xs text-muted-foreground">Add home</p>
+                  <p className="text-sm font-semibold text-background">Home</p>
+                  <p className="text-[10px] text-background/50">Add home</p>
                 </div>
               </button>
-              <button className="flex items-center gap-4 w-full py-4 border-b border-border text-left hover:bg-accent/50 transition-colors">
-                <Building2 className="h-5 w-5 text-muted-foreground" />
+              <button className="flex items-center gap-3 w-full py-3 border-b border-background/20 text-left hover:bg-background/10 transition-colors">
+                <Building2 className="h-4 w-4 text-background/60" />
                 <div>
-                  <p className="text-sm font-semibold text-foreground">Work</p>
-                  <p className="text-xs text-muted-foreground">Add work</p>
+                  <p className="text-sm font-semibold text-background">Work</p>
+                  <p className="text-[10px] text-background/50">Add work</p>
                 </div>
               </button>
-              <button className="flex items-center gap-4 w-full py-4 border-b border-border text-left hover:bg-accent/50 transition-colors">
-                <Heart className="h-5 w-5 text-muted-foreground" />
+              <button className="flex items-center gap-3 w-full py-3 border-b border-background/20 text-left hover:bg-background/10 transition-colors">
+                <Heart className="h-4 w-4 text-background/60" />
                 <div>
-                  <p className="text-sm font-semibold text-foreground">Favorite Partners</p>
-                  <p className="text-xs text-muted-foreground">View your favorite chauffeurs</p>
+                  <p className="text-sm font-semibold text-background">Favorite Partners</p>
+                  <p className="text-[10px] text-background/50">View your favorite chauffeurs</p>
                 </div>
               </button>
             </div>
 
             {/* Location */}
-            <div className="mt-5">
-              <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-3">Location</p>
+            <div className="mt-4">
+              <p className="text-[10px] font-bold text-background/50 uppercase tracking-wider mb-2">Location</p>
               <button
                 onClick={() => setCommuteOpen(!commuteOpen)}
-                className="flex items-center justify-between w-full py-3 hover:bg-accent/50 transition-colors rounded-lg"
+                className="flex items-center justify-between w-full py-2.5 hover:bg-background/10 transition-colors rounded-lg"
               >
-                <div className="flex items-center gap-4">
-                  <Bell className="h-5 w-5 text-muted-foreground" />
+                <div className="flex items-center gap-3">
+                  <Bell className="h-4 w-4 text-background/60" />
                   <div className="text-left">
-                    <p className="text-sm font-semibold text-foreground">Commute alerts</p>
-                    <p className="text-xs text-muted-foreground">Commute alerts</p>
+                    <p className="text-sm font-semibold text-background">Commute alerts</p>
+                    <p className="text-[10px] text-background/50">Commute alerts</p>
                   </div>
                 </div>
                 {commuteOpen ? (
-                  <ChevronUp className="h-4 w-4 text-muted-foreground" />
+                  <ChevronUp className="h-3.5 w-3.5 text-background/50" />
                 ) : (
-                  <ChevronDown className="h-4 w-4 text-muted-foreground" />
+                  <ChevronDown className="h-3.5 w-3.5 text-background/50" />
                 )}
               </button>
             </div>
 
             {/* Offers */}
-            <div className="mt-5 border-t border-border pt-5">
-              <p className="text-sm font-bold text-foreground">Offers from Courial</p>
-              <p className="text-xs text-muted-foreground mt-1 mb-4">
+            <div className="mt-4 border-t border-background/20 pt-4">
+              <p className="text-sm font-bold text-background">Offers from Courial</p>
+              <p className="text-[10px] text-background/50 mt-1 mb-3 leading-snug">
                 Choose your preferred method to receive our customised offers and marketing communications.
               </p>
 
-              <div className="space-y-2.5">
+              <div className="space-y-2">
                 {[
                   { label: "Push", value: pushEnabled, setter: setPushEnabled },
                   { label: "Email", value: emailEnabled, setter: setEmailEnabled },
@@ -123,9 +121,9 @@ export const SettingsModal = ({ open, onOpenChange }: SettingsModalProps) => {
                 ].map((item) => (
                   <div
                     key={item.label}
-                    className="flex items-center justify-between bg-secondary/50 rounded-xl px-4 py-3"
+                    className="flex items-center justify-between bg-background/10 rounded-xl px-3 py-2.5"
                   >
-                    <span className="text-sm font-medium text-foreground">{item.label}</span>
+                    <span className="text-sm font-medium text-background">{item.label}</span>
                     <Switch
                       checked={item.value}
                       onCheckedChange={item.setter}
@@ -135,14 +133,11 @@ export const SettingsModal = ({ open, onOpenChange }: SettingsModalProps) => {
                 ))}
               </div>
             </div>
-          </div>
 
-          {/* Footer */}
-          <div className="px-7 pt-4 pb-7">
+            {/* Footer */}
             <Button
               onClick={() => onOpenChange(false)}
-              className="w-auto mx-auto rounded-xl h-9 px-8 text-sm font-semibold block"
-              variant="hero"
+              className="w-full rounded-lg h-10 text-sm font-semibold mt-5 bg-transparent border border-background/30 text-background hover:bg-background/10"
             >
               Close
             </Button>
