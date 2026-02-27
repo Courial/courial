@@ -5,7 +5,7 @@ import { Navbar } from "@/components/Navbar";
 import { Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { Helmet } from "react-helmet-async";
-import { MapPin, Search, CarFront, ParkingCircle, Leaf, Box, ConciergeBell, Clock, CalendarIcon, ChevronDown, ChevronLeft, Info, Plus, Trash2, CreditCard, Star, X, Weight, Sparkles, Zap, ArrowLeft, Shield, Eye, EyeOff } from "lucide-react";
+import { MapPin, Search, CarFront, ParkingCircle, Leaf, Box, ConciergeBell, Clock, CalendarIcon, ChevronDown, ChevronLeft, Info, Plus, Trash2, CreditCard, Star, X, Weight, Sparkles, Zap, ArrowLeft, Shield, Eye, EyeOff, MessageCircle, Headset, Send } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import visaIcon from "@/assets/card-icons/visa.svg";
@@ -174,6 +174,38 @@ const Book = () => {
   const [loadingProgress, setLoadingProgress] = useState(0);
   const [deliveryStep, setDeliveryStep] = useState(0);
   const [currentProfileIndex, setCurrentProfileIndex] = useState(0);
+  const [showChat, setShowChat] = useState(false);
+  const [chatMessages, setChatMessages] = useState<{ from: "user" | "courial"; text: string; time: string }[]>([
+    { from: "courial", text: "Hey! I'm on my way to the pickup. Let me know if you have any instructions.", time: new Date().toLocaleTimeString([], { hour: "numeric", minute: "2-digit" }) },
+  ]);
+  const [chatInput, setChatInput] = useState("");
+  const chatEndRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [chatMessages]);
+
+  const handleSendChat = useCallback(() => {
+    if (!chatInput.trim()) return;
+    const now = new Date().toLocaleTimeString([], { hour: "numeric", minute: "2-digit" });
+    setChatMessages(prev => [...prev, { from: "user", text: chatInput.trim(), time: now }]);
+    setChatInput("");
+    // Simulate courial reply after 1.5s
+    setTimeout(() => {
+      const replies = [
+        "Got it, thanks for letting me know!",
+        "No problem, I'll handle that.",
+        "Sure thing! Almost there.",
+        "Thanks for the heads up 👍",
+        "On it!",
+      ];
+      setChatMessages(prev => [...prev, {
+        from: "courial",
+        text: replies[Math.floor(Math.random() * replies.length)],
+        time: new Date().toLocaleTimeString([], { hour: "numeric", minute: "2-digit" }),
+      }]);
+    }, 1500);
+  }, [chatInput]);
 
   // Random profile photos for loading state
   const courialProfiles = useMemo(() => [
@@ -2382,6 +2414,85 @@ const Book = () => {
                   <span className="text-sm font-bold text-foreground">$21.59</span>
                 </div>
               )}
+
+              {/* Contact & Chat */}
+              <div className="flex gap-2 mb-3">
+                <Link
+                  to="/help"
+                  className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl border border-border bg-muted/40 hover:bg-muted/70 transition-colors text-sm font-semibold text-foreground"
+                >
+                  <Headset className="w-4 h-4" />
+                  Contact Support
+                </Link>
+                <button
+                  onClick={() => setShowChat(prev => !prev)}
+                  className={cn(
+                    "flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl border transition-colors text-sm font-semibold",
+                    showChat
+                      ? "border-primary bg-primary/10 text-primary"
+                      : "border-border bg-muted/40 hover:bg-muted/70 text-foreground"
+                  )}
+                >
+                  <MessageCircle className="w-4 h-4" />
+                  Message Courial
+                </button>
+              </div>
+
+              {/* Chat Box */}
+              <AnimatePresence>
+                {showChat && (
+                  <motion.div
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: "auto" }}
+                    exit={{ opacity: 0, height: 0 }}
+                    transition={{ duration: 0.25 }}
+                    className="overflow-hidden mb-3"
+                  >
+                    <div className="rounded-xl border border-border bg-background">
+                      <div className="p-3 border-b border-border">
+                        <p className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Chat with Marcus</p>
+                      </div>
+                      <div className="p-3 space-y-2.5 max-h-[200px] overflow-y-auto">
+                        {chatMessages.map((msg, i) => (
+                          <div key={i} className={cn("flex", msg.from === "user" ? "justify-end" : "justify-start")}>
+                            <div
+                              className={cn(
+                                "max-w-[75%] rounded-2xl px-3 py-2",
+                                msg.from === "user"
+                                  ? "bg-primary text-primary-foreground rounded-br-md"
+                                  : "bg-muted text-foreground rounded-bl-md"
+                              )}
+                            >
+                              <p className="text-sm leading-snug">{msg.text}</p>
+                              <p className={cn(
+                                "text-[10px] mt-0.5",
+                                msg.from === "user" ? "text-primary-foreground/60" : "text-muted-foreground"
+                              )}>{msg.time}</p>
+                            </div>
+                          </div>
+                        ))}
+                        <div ref={chatEndRef} />
+                      </div>
+                      <div className="p-2 border-t border-border flex gap-2">
+                        <Input
+                          value={chatInput}
+                          onChange={(e) => setChatInput(e.target.value)}
+                          onKeyDown={(e) => e.key === "Enter" && handleSendChat()}
+                          placeholder="Type a message..."
+                          className="text-sm h-9"
+                        />
+                        <button
+                          onClick={handleSendChat}
+                          disabled={!chatInput.trim()}
+                          className="shrink-0 w-9 h-9 rounded-lg bg-primary text-primary-foreground flex items-center justify-center hover:bg-primary/90 transition-colors disabled:opacity-40"
+                        >
+                          <Send className="w-4 h-4" />
+                        </button>
+                      </div>
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
 
               {/* Action Buttons */}
               <div className="mt-auto space-y-2">
