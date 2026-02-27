@@ -8,7 +8,6 @@ import {
   Headphones,
   Settings,
   Clock,
-  Car,
   LogOut,
   Star,
 } from "lucide-react";
@@ -20,7 +19,6 @@ const menuItems = [
   { icon: Headphones, label: "Get Support", href: "/help" },
   { icon: Settings, label: "Settings", href: "/account/settings" },
   { icon: Clock, label: "Activity", href: "/account/orders" },
-  { icon: Car, label: "Become a Chauffeur", href: "/courials" },
 ];
 
 export const ProfileHoverCard = () => {
@@ -103,12 +101,10 @@ export const ProfileHoverCard = () => {
               sessionStorage.clear();
               window.location.replace("/");
             }}
-            className="flex items-center gap-4 px-5 py-3.5 w-full text-left hover:bg-accent transition-colors"
+            className="flex items-center gap-3 mx-4 my-2 px-4 py-2.5 rounded-lg border border-border bg-background text-foreground font-medium text-sm hover:bg-accent transition-colors justify-center"
           >
-            <div className="h-10 w-10 rounded-full bg-secondary flex items-center justify-center shrink-0">
-              <LogOut className="h-5 w-5 text-primary" />
-            </div>
-            <span className="text-[0.9375rem] font-medium text-primary">Log Out</span>
+            <LogOut className="h-4 w-4" />
+            Sign Out
           </button>
         </div>
       </HoverCardContent>

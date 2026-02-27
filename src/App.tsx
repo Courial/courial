@@ -29,6 +29,8 @@ import SuppliesCheckout from "./pages/SuppliesCheckout";
 import SuppliesSuccess from "./pages/SuppliesSuccess";
 import AdminSupplies from "./pages/AdminSupplies";
 import AccountOrders from "./pages/AccountOrders";
+import AccountProfile from "./pages/AccountProfile";
+import AccountPayments from "./pages/AccountPayments";
 import Book from "./pages/Book";
 import NotFound from "./pages/NotFound";
 import { CartProvider } from "./hooks/useCart";
@@ -75,6 +77,8 @@ const App = () => (
                 <Route path="/supplies/checkout" element={<SuppliesCheckout />} />
                 <Route path="/supplies/success" element={<SuppliesSuccess />} />
                 <Route path="/account/orders" element={<AccountOrders />} />
+                <Route path="/account/profile" element={<AccountProfile />} />
+                <Route path="/account/payments" element={<AccountPayments />} />
                 <Route path="/book" element={<Book />} />
                 {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                 <Route path="*" element={<NotFound />} />
