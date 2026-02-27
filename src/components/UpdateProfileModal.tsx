@@ -135,7 +135,7 @@ export const UpdateProfileModal = ({ open, onOpenChange }: UpdateProfileModalPro
               </div>
               <p className="text-[10px] text-background/60 text-center max-w-[220px] leading-snug">
                 Tap your name to update it. To change email or phone,{" "}
-                <Link to="/help#contact" className="text-background font-bold hover:underline" onClick={() => handleClose(false)}>
+                <Link to="/help#contact" className="text-background hover:text-background/50 transition-colors" onClick={() => handleClose(false)}>
                   contact support
                 </Link>.
               </p>
