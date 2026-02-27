@@ -1758,7 +1758,7 @@ const Book = () => {
                   </div>
 
                   {/* Input Fields — Draggable to swap */}
-                  <div className="space-y-0">
+                  <div>
                     {(() => {
                       type FieldDef = { id: string; dotClass: string; placeName: string | null; coords: any; value: string; placeholder: string; onChange: (v: string) => void; onPlaceSelect: (p: any) => void; onClear: () => void; onDoubleClickDot?: () => void };
                       const allFields: FieldDef[] = [
