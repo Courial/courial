@@ -2020,23 +2020,25 @@ const Book = () => {
 
                   {/* Order Value */}
                   <div className="mb-3 mt-4">
-                    <h4 className="text-xs font-medium text-foreground mb-1">Order Value</h4>
-                    <div className="relative w-32">
-                      <span className="absolute left-2 top-1/2 -translate-y-1/2 text-xs text-muted-foreground">$</span>
-                      <input
-                        type="text"
-                        inputMode="decimal"
-                        value={deliverOrderValue ? Number(deliverOrderValue.replace(/,/g, '')).toLocaleString('en-US') : ''}
-                        onChange={(e) => {
-                          const raw = e.target.value.replace(/,/g, '');
-                          if (raw === '' || /^\d+$/.test(raw)) {
-                            setDeliverOrderValue(raw);
-                          }
-                        }}
-                        placeholder="0"
-                        onFocus={(e) => e.target.select()}
-                        className="w-full rounded-lg border border-border/60 bg-background pl-5 pr-2 py-1 text-xs text-foreground placeholder:text-muted-foreground/60 focus:outline-none focus:ring-0"
-                      />
+                    <div className="flex items-center gap-2">
+                      <h4 className="text-xs font-medium text-foreground">Order Value</h4>
+                      <div className="relative">
+                        <span className="absolute left-2 top-1/2 -translate-y-1/2 text-xs text-muted-foreground">$</span>
+                        <input
+                          type="text"
+                          inputMode="decimal"
+                          value={deliverOrderValue ? Number(deliverOrderValue.replace(/,/g, '')).toLocaleString('en-US') : ''}
+                          onChange={(e) => {
+                            const raw = e.target.value.replace(/,/g, '');
+                            if (raw === '' || /^\d+$/.test(raw)) {
+                              setDeliverOrderValue(raw);
+                            }
+                          }}
+                          placeholder="0"
+                          onFocus={(e) => e.target.select()}
+                          className="w-20 rounded-lg border border-border/60 bg-background pl-5 pr-2 py-0.5 text-xs text-foreground placeholder:text-muted-foreground/60 focus:outline-none focus:ring-0"
+                        />
+                      </div>
                     </div>
                     <p className="text-[10px] text-muted-foreground mt-1 leading-relaxed">
                       Complimentary coverage is included for total declared order values up to $100.
