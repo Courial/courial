@@ -3,7 +3,7 @@ import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowLeft, Star, Circle, X } from "lucide-react";
+import { Star, Circle, Minus } from "lucide-react";
 import profileIcon from "@/assets/profile-icon.png";
 
 interface FavoritePartnersModalProps {
@@ -42,12 +42,15 @@ export const FavoritePartnersModal = ({ open, onOpenChange }: FavoritePartnersMo
 
   const partners = tab === "courials" ? courials : chauffeurs;
 
+  const [pendingRemove, setPendingRemove] = useState<Partner | null>(null);
+
   const removePartner = (id: string) => {
     if (tab === "courials") {
       setCourials((prev) => prev.filter((p) => p.id !== id));
     } else {
       setChauffeurs((prev) => prev.filter((p) => p.id !== id));
     }
+    setPendingRemove(null);
   };
 
   return (
@@ -58,7 +61,7 @@ export const FavoritePartnersModal = ({ open, onOpenChange }: FavoritePartnersMo
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.3 }}
         >
-          <div className="rounded-[20px] bg-foreground/75 text-background px-6 py-6 shadow-2xl backdrop-blur-sm flex flex-col">
+          <div className="relative rounded-[20px] bg-foreground/75 text-background px-6 py-6 shadow-2xl backdrop-blur-sm flex flex-col">
             <DialogTitle className="sr-only">Favorite Partners</DialogTitle>
 
             {/* Header */}
@@ -146,10 +149,10 @@ export const FavoritePartnersModal = ({ open, onOpenChange }: FavoritePartnersMo
 
                     {/* Remove */}
                     <button
-                      onClick={() => removePartner(partner.id)}
+                      onClick={() => setPendingRemove(partner)}
                       className="hover:opacity-75 transition-opacity p-1"
                     >
-                      <X className="h-3.5 w-3.5 text-background/40" />
+                      <Minus className="h-4 w-4 text-red-500" />
                     </button>
                   </motion.div>
                 ))}
@@ -163,6 +166,36 @@ export const FavoritePartnersModal = ({ open, onOpenChange }: FavoritePartnersMo
             >
               Close
             </Button>
+
+            {/* Confirm delete overlay */}
+            <AnimatePresence>
+              {pendingRemove && (
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  className="absolute inset-0 rounded-[20px] bg-foreground/90 backdrop-blur-sm flex flex-col items-center justify-center gap-5 z-10"
+                >
+                  <p className="text-background text-sm font-semibold">
+                    Delete {pendingRemove.firstName}?
+                  </p>
+                  <div className="flex gap-3">
+                    <Button
+                      onClick={() => removePartner(pendingRemove.id)}
+                      className="rounded-full px-6 bg-red-500 hover:bg-red-600 text-white text-xs font-bold"
+                    >
+                      Yes
+                    </Button>
+                    <Button
+                      onClick={() => setPendingRemove(null)}
+                      className="rounded-full px-6 bg-transparent border border-background/30 text-background hover:bg-background/10 text-xs font-bold"
+                    >
+                      No
+                    </Button>
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
           </div>
         </motion.div>
       </DialogContent>
