@@ -14,12 +14,14 @@ import {
 } from "lucide-react";
 import profileIcon from "@/assets/profile-icon.png";
 import { PaymentMethodsModal } from "@/components/PaymentMethodsModal";
+import { UpdateProfileModal } from "@/components/UpdateProfileModal";
+import { SettingsModal } from "@/components/SettingsModal";
 
 const menuItems = [
-  { icon: UserRoundPen, label: "Update Profile", href: "/account/profile" },
+  { icon: UserRoundPen, label: "Update Profile", href: "__profile_modal__" },
   { icon: CreditCard, label: "Payment Methods", href: "__payment_modal__" },
   { icon: Headphones, label: "Get Support", href: "__support__" },
-  { icon: Settings, label: "Settings", href: "/account/settings" },
+  { icon: Settings, label: "Settings", href: "__settings_modal__" },
   { icon: Clock, label: "Activity", href: "/account/orders" },
 ];
 
@@ -27,6 +29,8 @@ export const ProfileHoverCard = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
   const [showPaymentModal, setShowPaymentModal] = useState(false);
+  const [showProfileModal, setShowProfileModal] = useState(false);
+  const [showSettingsModal, setShowSettingsModal] = useState(false);
 
   const displayName =
     user?.user_metadata?.full_name ||
@@ -97,6 +101,28 @@ export const ProfileHoverCard = () => {
                   </div>
                   <span className="text-[0.9375rem] font-medium">{item.label}</span>
                 </button>
+              ) : item.href === "__profile_modal__" ? (
+                <button
+                  key={item.label}
+                  onClick={() => setShowProfileModal(true)}
+                  className="flex items-center gap-4 px-5 py-3.5 text-foreground hover:bg-accent transition-colors w-full text-left"
+                >
+                  <div className="h-10 w-10 rounded-full bg-secondary flex items-center justify-center shrink-0">
+                    <item.icon className="h-5 w-5 text-muted-foreground" />
+                  </div>
+                  <span className="text-[0.9375rem] font-medium">{item.label}</span>
+                </button>
+              ) : item.href === "__settings_modal__" ? (
+                <button
+                  key={item.label}
+                  onClick={() => setShowSettingsModal(true)}
+                  className="flex items-center gap-4 px-5 py-3.5 text-foreground hover:bg-accent transition-colors w-full text-left"
+                >
+                  <div className="h-10 w-10 rounded-full bg-secondary flex items-center justify-center shrink-0">
+                    <item.icon className="h-5 w-5 text-muted-foreground" />
+                  </div>
+                  <span className="text-[0.9375rem] font-medium">{item.label}</span>
+                </button>
               ) : item.href === "__support__" ? (
                 <button
                   key={item.label}
@@ -147,6 +173,14 @@ export const ProfileHoverCard = () => {
       <PaymentMethodsModal
         open={showPaymentModal}
         onOpenChange={setShowPaymentModal}
+      />
+      <UpdateProfileModal
+        open={showProfileModal}
+        onOpenChange={setShowProfileModal}
+      />
+      <SettingsModal
+        open={showSettingsModal}
+        onOpenChange={setShowSettingsModal}
       />
     </>
   );
