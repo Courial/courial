@@ -88,11 +88,13 @@ export const Navbar = () => {
             )}
             {user ? (
               <div className="flex items-center gap-2">
-                <Link to="/account/orders">
-                  <Button variant="ghost" size="sm" className="border border-foreground/25">
-                    My Orders
-                  </Button>
-                </Link>
+                {hasOrders && (
+                  <Link to="/account/orders">
+                    <Button variant="ghost" size="sm" className="border border-foreground/25">
+                      My Orders
+                    </Button>
+                  </Link>
+                )}
                 <ProfileHoverCard />
               </div>
             ) : !authLoading ? (
