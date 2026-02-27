@@ -2355,7 +2355,7 @@ const Book = () => {
                         ? `${acceptedCourial.vehicleColor} ${acceptedCourial.vehicleMake} ${acceptedCourial.vehicleModel}`.trim() || "Vehicle info pending"
                         : "Black Toyota Corolla"}
                     </div>
-                    <div className="text-xs font-bold text-foreground mt-0.5">{acceptedCourial?.licensePlate || "ABC1234"}</div>
+                    <div className="text-xs font-bold text-foreground mt-0.5">Lic #{acceptedCourial?.licensePlate || "ABC1234"}</div>
                   </div>
                   {selectedVehicle && (
                     <img
