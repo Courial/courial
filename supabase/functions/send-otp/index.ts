@@ -21,7 +21,7 @@ serve(async (req) => {
       );
     }
 
-    const apiKey = Deno.env.get("COURIAL_SMS_API_KEY");
+    const apiKey = Deno.env.get("COURIAL_API_SECURITY_KEY") || Deno.env.get("COURIAL_SMS_API_KEY");
     if (!apiKey) {
       return new Response(
         JSON.stringify({ error: "API key not configured" }),
