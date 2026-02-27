@@ -159,5 +159,13 @@ export const SettingsModal = ({ open, onOpenChange }: SettingsModalProps) => {
         </motion.div>
       </DialogContent>
     </Dialog>
+
+    <SavedAddressModal
+      open={!!addressModalType}
+      onOpenChange={(o) => { if (!o) setAddressModalType(null); }}
+      addressType={addressModalType || "home"}
+      onSave={() => setSavedAddresses(getSavedAddresses())}
+    />
+  </>
   );
 };
