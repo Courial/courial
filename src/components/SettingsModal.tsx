@@ -172,6 +172,11 @@ export const SettingsModal = ({ open, onOpenChange }: SettingsModalProps) => {
       addressType={addressModalType || "home"}
       onSave={() => setSavedAddresses(getSavedAddresses())}
     />
+
+    <FavoritePartnersModal
+      open={favoritesOpen}
+      onOpenChange={setFavoritesOpen}
+    />
   </>
   );
 };
