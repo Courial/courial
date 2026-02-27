@@ -21,6 +21,12 @@ export const SettingsModal = ({ open, onOpenChange }: SettingsModalProps) => {
   const [emailEnabled, setEmailEnabled] = useState(true);
   const [smsEnabled, setSmsEnabled] = useState(true);
   const [chatEnabled, setChatEnabled] = useState(true);
+  const [addressModalType, setAddressModalType] = useState<string | null>(null);
+  const [savedAddresses, setSavedAddresses] = useState<SavedAddress[]>(getSavedAddresses());
+
+  useEffect(() => {
+    if (open) setSavedAddresses(getSavedAddresses());
+  }, [open]);
 
   const displayName =
     user?.user_metadata?.full_name ||
