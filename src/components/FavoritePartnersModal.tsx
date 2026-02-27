@@ -140,6 +140,9 @@ export const FavoritePartnersModal = ({ open, onOpenChange }: FavoritePartnersMo
                       <p className="text-[10px] text-background/40">
                         Since '{partner.sinceYear} · Last met {partner.lastMet}
                       </p>
+                      <p className="text-[10px] text-background/40">
+                        {partner.vehicle}
+                      </p>
                     </div>
 
                     {/* Remove */}
