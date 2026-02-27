@@ -45,45 +45,40 @@ export const PaymentMethodsModal = ({
 
   return (
     <Dialog open={open} onOpenChange={handleClose}>
-      <DialogContent className="sm:max-w-md bg-background border-border !rounded-[25px] p-0 overflow-y-auto max-h-[90vh] [&>button]:hidden">
+      <DialogContent className="sm:max-w-[16rem] bg-transparent border-none !rounded-[20px] p-0 overflow-y-auto max-h-[90vh] [&>button]:hidden shadow-none">
         <AnimatePresence mode="wait">
           {!showAddCard ? (
-            <motion.div key="methods" initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} transition={{ duration: 0.2 }}>
-              <div className="bg-muted/80 rounded-t-[25px] px-7 pt-7 pb-5">
-                <div className="flex items-center gap-3">
-                  <CreditCard className="w-7 h-7 text-foreground" />
-                  <span className="text-[1.65rem] font-bold text-foreground">Payment</span>
-                </div>
-              </div>
+            <motion.div key="methods" initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, x: -20 }} transition={{ duration: 0.3 }}>
+              <div className="rounded-[20px] bg-foreground/75 text-background px-6 py-6 shadow-2xl backdrop-blur-sm flex flex-col">
+                <DialogTitle className="sr-only">Payment Methods</DialogTitle>
 
-              <div className="px-7 pb-2">
-                <DialogTitle className="text-2xl font-bold text-foreground mb-4">Your Methods</DialogTitle>
+                <h1 className="text-2xl font-bold text-center mt-1 mb-5">Payment</h1>
 
-                <div className="space-y-3 mb-6">
+                <div className="space-y-2 mb-4">
                   {paymentMethods.map((method) => (
                     <div
                       key={method.id}
                       onClick={() => handleSelect(method.id)}
                       className={cn(
-                        "flex items-center gap-3 p-3 rounded-xl border cursor-pointer transition-all",
+                        "flex items-center gap-3 p-2.5 rounded-xl border cursor-pointer transition-all",
                         selected === method.id
-                          ? "border-foreground bg-muted/60"
-                          : "border-border hover:bg-muted/40"
+                          ? "border-background/50 bg-background/10"
+                          : "border-background/20 hover:bg-background/10"
                       )}
                     >
-                      <img src={method.icon} alt={method.label} className="w-10 h-auto rounded" />
+                      <img src={method.icon} alt={method.label} className="w-9 h-auto rounded" />
                       <div className="flex-1">
-                        <p className="text-sm font-semibold text-foreground">{method.label}</p>
-                        <p className="text-xs text-muted-foreground">•••• {method.last4}</p>
+                        <p className="text-sm font-semibold text-background">{method.label}</p>
+                        <p className="text-xs text-background/50">•••• {method.last4}</p>
                       </div>
                       {selected === method.id && (
-                        <div className="w-2 h-2 rounded-full bg-foreground" />
+                        <div className="w-2 h-2 rounded-full bg-background" />
                       )}
                       <button
                         onClick={(e) => { e.stopPropagation(); }}
-                        className="p-1.5 rounded-lg hover:bg-destructive/10 text-muted-foreground hover:text-destructive transition-colors"
+                        className="p-1.5 rounded-lg hover:bg-red-500/20 text-background/50 hover:text-red-400 transition-colors"
                       >
-                        <Trash2 className="w-4 h-4" />
+                        <Trash2 className="w-3.5 h-3.5" />
                       </button>
                     </div>
                   ))}
@@ -91,60 +86,54 @@ export const PaymentMethodsModal = ({
 
                 <button
                   onClick={() => setShowAddCard(true)}
-                  className="flex items-center gap-3 w-full p-3 rounded-xl border border-dashed border-border hover:bg-muted/40 transition-colors mb-6"
+                  className="flex items-center gap-3 w-full p-2.5 rounded-xl border border-dashed border-background/30 hover:bg-background/10 transition-colors mb-4"
                 >
-                  <div className="w-10 h-7 rounded bg-muted flex items-center justify-center">
-                    <Plus className="w-4 h-4 text-muted-foreground" />
+                  <div className="w-9 h-6 rounded bg-background/20 flex items-center justify-center">
+                    <Plus className="w-3.5 h-3.5 text-background/60" />
                   </div>
-                  <span className="text-sm font-semibold text-foreground">Add credit or debit card</span>
+                  <span className="text-sm font-semibold text-background">Add card</span>
                 </button>
 
-                <div className="mb-6">
-                  <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-3">Other methods</p>
-                  <div className="space-y-3">
-                    <button className="flex items-center gap-3 w-full p-3 rounded-xl border border-border hover:bg-muted/40 transition-colors">
-                      <div className="w-10 h-7 rounded bg-[#003087] flex items-center justify-center">
-                        <span className="text-[0.5rem] font-bold italic text-white">Pay<span className="text-[#009cde]">Pal</span></span>
+                <div className="mb-4">
+                  <p className="text-[10px] font-bold text-background/50 uppercase tracking-wider mb-2">Other methods</p>
+                  <div className="space-y-2">
+                    <button className="flex items-center gap-3 w-full p-2.5 rounded-xl border border-background/20 hover:bg-background/10 transition-colors">
+                      <div className="w-9 h-6 rounded bg-[#003087] flex items-center justify-center">
+                        <span className="text-[0.45rem] font-bold italic text-white">Pay<span className="text-[#009cde]">Pal</span></span>
                       </div>
-                      <span className="text-sm font-semibold text-foreground">PayPal</span>
+                      <span className="text-sm font-semibold text-background">PayPal</span>
                     </button>
-                    <button className="flex items-center gap-3 w-full p-3 rounded-xl border border-border hover:bg-muted/40 transition-colors">
-                      <div className="w-10 h-7 rounded bg-foreground flex items-center justify-center">
-                        <span className="text-[0.5rem] font-bold text-background tracking-tight"> Pay</span>
+                    <button className="flex items-center gap-3 w-full p-2.5 rounded-xl border border-background/20 hover:bg-background/10 transition-colors">
+                      <div className="w-9 h-6 rounded bg-background flex items-center justify-center">
+                        <span className="text-[0.45rem] font-bold text-foreground tracking-tight"> Pay</span>
                       </div>
-                      <span className="text-sm font-semibold text-foreground">Apple Pay</span>
+                      <span className="text-sm font-semibold text-background">Apple Pay</span>
                     </button>
                   </div>
                 </div>
-              </div>
 
-              <div className="px-7 pb-7">
                 <Button
                   onClick={() => onOpenChange(false)}
-                  className="w-auto mx-auto rounded-xl h-9 px-8 text-sm font-semibold"
-                  variant="hero"
+                  className="w-full rounded-lg h-10 text-sm font-semibold bg-transparent border border-background/30 text-background hover:bg-background/10"
                 >
                   Close
                 </Button>
               </div>
             </motion.div>
           ) : (
-            <motion.div key="add-card" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 20 }} transition={{ duration: 0.2 }}>
-              <div className="bg-muted/80 rounded-t-[25px] px-7 pt-7 pb-5">
-                <div className="flex items-center gap-3">
-                  <button onClick={() => setShowAddCard(false)} className="p-1 -ml-1 rounded-lg hover:bg-muted transition-colors">
-                    <ArrowLeft className="w-5 h-5 text-foreground" />
+            <motion.div key="add-card" initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, x: 20 }} transition={{ duration: 0.3 }}>
+              <div className="rounded-[20px] bg-foreground/75 text-background px-6 py-6 shadow-2xl backdrop-blur-sm flex flex-col">
+                <DialogTitle className="sr-only">Add Card</DialogTitle>
+
+                <div className="flex items-center gap-2 mb-5">
+                  <button onClick={() => setShowAddCard(false)} className="p-1 -ml-1 rounded-lg hover:bg-background/10 transition-colors">
+                    <ArrowLeft className="w-4 h-4 text-background/70" />
                   </button>
-                  <CreditCard className="w-7 h-7 text-foreground" />
-                  <span className="text-[1.65rem] font-bold text-foreground">Payment</span>
+                  <h1 className="text-2xl font-bold">Add Card</h1>
                 </div>
-              </div>
 
-              <div className="px-7 pb-2">
-                <DialogTitle className="text-2xl font-bold text-foreground mb-4">Add Card</DialogTitle>
-
-                <div className="mb-4">
-                  <label className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-2 block">Card number</label>
+                <div className="mb-3">
+                  <label className="text-[10px] font-bold text-background/50 uppercase tracking-wider mb-1.5 block">Card number</label>
                   <Input
                     placeholder="0000 0000 0000 0000"
                     value={newCard.number}
@@ -154,13 +143,13 @@ export const PaymentMethodsModal = ({
                       setNewCard(prev => ({ ...prev, number: formatted }));
                     }}
                     inputMode="numeric"
-                    className="placeholder:text-foreground/30 hover:border-primary/40 transition-colors font-mono tracking-wider"
+                    className="bg-transparent border-background/30 text-background placeholder:text-background/30 focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:border-primary font-mono tracking-wider h-9 text-sm"
                   />
                 </div>
 
-                <div className="grid grid-cols-2 gap-3 mb-4">
+                <div className="grid grid-cols-2 gap-2 mb-3">
                   <div>
-                    <label className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-2 block">Expiry date</label>
+                    <label className="text-[10px] font-bold text-background/50 uppercase tracking-wider mb-1.5 block">Expiry</label>
                     <Input
                       placeholder="MM / YY"
                       value={newCard.expiry}
@@ -170,11 +159,11 @@ export const PaymentMethodsModal = ({
                         setNewCard(prev => ({ ...prev, expiry: raw }));
                       }}
                       inputMode="numeric"
-                      className="placeholder:text-foreground/30 hover:border-primary/40 transition-colors font-mono tracking-wider"
+                      className="bg-transparent border-background/30 text-background placeholder:text-background/30 focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:border-primary font-mono tracking-wider h-9 text-sm"
                     />
                   </div>
                   <div>
-                    <label className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-2 block">CVV</label>
+                    <label className="text-[10px] font-bold text-background/50 uppercase tracking-wider mb-1.5 block">CVV</label>
                     <div className="relative">
                       <Input
                         type={showCvv ? "text" : "password"}
@@ -182,47 +171,45 @@ export const PaymentMethodsModal = ({
                         value={newCard.cvv}
                         onChange={(e) => setNewCard(prev => ({ ...prev, cvv: e.target.value.replace(/\D/g, "").slice(0, 4) }))}
                         inputMode="numeric"
-                        className="placeholder:text-foreground/30 hover:border-primary/40 transition-colors font-mono tracking-wider pr-9"
+                        className="bg-transparent border-background/30 text-background placeholder:text-background/30 focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:border-primary font-mono tracking-wider pr-8 h-9 text-sm"
                       />
                       <button
                         type="button"
                         onClick={() => setShowCvv(!showCvv)}
-                        className="absolute right-2.5 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+                        className="absolute right-2 top-1/2 -translate-y-1/2 text-background/50 hover:text-background transition-colors"
                       >
-                        {showCvv ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                        {showCvv ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
                       </button>
                     </div>
                   </div>
                 </div>
 
-                <div className="flex items-center justify-between py-3 mb-4">
-                  <span className="text-sm font-medium text-foreground">Set as default method</span>
+                <div className="flex items-center justify-between py-2.5 mb-3">
+                  <span className="text-sm font-medium text-background">Set as default</span>
                   <button
                     onClick={() => setNewCard(prev => ({ ...prev, isDefault: !prev.isDefault }))}
                     className={cn(
-                      "relative w-11 h-6 rounded-full transition-colors",
-                      newCard.isDefault ? "bg-primary" : "bg-muted-foreground/30"
+                      "relative w-10 h-5 rounded-full transition-colors",
+                      newCard.isDefault ? "bg-primary" : "bg-background/30"
                     )}
                   >
                     <div className={cn(
-                      "absolute top-0.5 w-5 h-5 rounded-full bg-background shadow transition-transform",
+                      "absolute top-0.5 w-4 h-4 rounded-full bg-background shadow transition-transform",
                       newCard.isDefault ? "translate-x-[22px]" : "translate-x-0.5"
                     )} />
                   </button>
                 </div>
 
-                <div className="flex items-start gap-2 mb-6">
-                  <Shield className="w-4 h-4 text-muted-foreground mt-0.5 flex-shrink-0" />
-                  <p className="text-xs text-muted-foreground">Your card details will be saved securely and encrypted end-to-end.</p>
+                <div className="flex items-start gap-2 mb-3">
+                  <Shield className="w-3.5 h-3.5 text-background/50 mt-0.5 flex-shrink-0" />
+                  <p className="text-[10px] text-background/50 leading-snug">Your card details will be saved securely and encrypted end-to-end.</p>
                 </div>
 
-                <p className="text-xs text-muted-foreground mb-6 leading-relaxed">
+                <p className="text-[10px] text-background/50 mb-4 leading-relaxed">
                   Your card may be charged to verify it's valid. That amount will be automatically refunded. By adding a card, you agree to our{" "}
-                  <Link to="/terms" className="text-primary hover:underline">terms and conditions</Link>.
+                  <Link to="/terms" className="text-background hover:text-background/50 transition-colors">terms</Link>.
                 </p>
-              </div>
 
-              <div className="px-7 pb-7">
                 <Button
                   onClick={() => {
                     setNewCard({ number: "", expiry: "", cvv: "", isDefault: false });
@@ -230,8 +217,7 @@ export const PaymentMethodsModal = ({
                     setShowAddCard(false);
                   }}
                   disabled={newCard.number.replace(/\s/g, "").length < 15 || newCard.expiry.length < 7 || newCard.cvv.length < 3}
-                  className="w-full rounded-xl h-9 px-8 text-sm font-semibold"
-                  variant="hero"
+                  className="w-full rounded-lg h-10 text-sm font-semibold bg-transparent border border-background/30 text-background hover:bg-background/10 disabled:opacity-40"
                 >
                   Continue
                 </Button>
