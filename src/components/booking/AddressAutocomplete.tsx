@@ -95,7 +95,7 @@ const AddressAutocomplete: React.FC<AddressAutocompleteProps> = ({
     if (!ready || !inputRef.current || autocompleteRef.current) return;
 
     const autocomplete = new google.maps.places.Autocomplete(inputRef.current, {
-      componentRestrictions: { country: "us" },
+      componentRestrictions: { country: ["us", "th"] },
       fields: ["formatted_address", "geometry", "name"],
     });
 
@@ -117,7 +117,7 @@ const AddressAutocomplete: React.FC<AddressAutocompleteProps> = ({
       const place = autocomplete.getPlace();
       if (place?.geometry) {
         const rawAddress = place.formatted_address || place.name || "";
-        const address = rawAddress.replace(/,?\s*(USA|US|United States)\s*$/i, '').trim();
+        const address = rawAddress.replace(/,?\s*(USA|US|United States|Thailand|ประเทศไทย)\s*$/i, '').trim();
         isSelectingRef.current = true;
         onChange(address);
         setInputText(address);
