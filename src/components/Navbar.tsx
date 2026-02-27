@@ -1,10 +1,11 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X, LogOut, Package } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { ProfileHoverCard } from "@/components/ProfileHoverCard";
+import { supabase } from "@/integrations/supabase/client";
 import courialLogo from "@/assets/courial-logo-black.svg";
 
 const navLinks = [
@@ -22,6 +23,16 @@ export const Navbar = () => {
   const location = useLocation();
   const { user, isAdmin, loading: authLoading, signOut } = useAuth();
   const navigate = useNavigate();
+  const [hasOrders, setHasOrders] = useState(false);
+
+  useEffect(() => {
+    if (!user) { setHasOrders(false); return; }
+    supabase
+      .from("orders")
+      .select("id", { count: "exact", head: true })
+      .eq("user_id", user.id)
+      .then(({ count }) => setHasOrders((count ?? 0) > 0));
+  }, [user]);
 
 
 
@@ -77,11 +88,13 @@ export const Navbar = () => {
             )}
             {user ? (
               <div className="flex items-center gap-2">
-                <Link to="/account/orders">
-                  <Button variant="ghost" size="sm" className="border border-foreground/25">
-                    My Orders
-                  </Button>
-                </Link>
+                {hasOrders && (
+                  <Link to="/account/orders">
+                    <Button variant="ghost" size="sm" className="border border-foreground/25">
+                      My Orders
+                    </Button>
+                  </Link>
+                )}
                 <ProfileHoverCard />
               </div>
             ) : !authLoading ? (
@@ -148,12 +161,14 @@ export const Navbar = () => {
                   <span className="text-xs text-muted-foreground animate-pulse py-2">Checking...</span>
                 ) : user ? (
                   <>
-                    <Link to="/account/orders" onClick={() => setIsOpen(false)}>
-                      <Button variant="ghost" className="w-full justify-start border border-foreground/25">
-                        <Package className="w-4 h-4 mr-2" />
-                        My Orders
-                      </Button>
-                    </Link>
+                    {hasOrders && (
+                      <Link to="/account/orders" onClick={() => setIsOpen(false)}>
+                        <Button variant="ghost" className="w-full justify-start border border-foreground/25">
+                          <Package className="w-4 h-4 mr-2" />
+                          My Orders
+                        </Button>
+                      </Link>
+                    )}
                     <Button variant="ghost" className="w-full justify-start border border-foreground/25" onClick={() => { console.log("[Navbar] Sign out - nuking session"); localStorage.clear(); sessionStorage.clear(); window.location.replace("/"); }}>
                       <LogOut className="w-4 h-4 mr-2" />
                       Sign Out
