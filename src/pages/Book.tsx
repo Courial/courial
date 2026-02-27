@@ -2018,6 +2018,56 @@ const Book = () => {
                     )}
                   </AnimatePresence>
 
+                  {/* Order Value */}
+                  <div className="mb-3 mt-4">
+                    <h4 className="text-xs font-medium text-foreground mb-1">Order Value</h4>
+                    <div className="relative w-32">
+                      <span className="absolute left-2 top-1/2 -translate-y-1/2 text-xs text-muted-foreground">$</span>
+                      <input
+                        type="text"
+                        inputMode="decimal"
+                        value={deliverOrderValue ? Number(deliverOrderValue.replace(/,/g, '')).toLocaleString('en-US') : ''}
+                        onChange={(e) => {
+                          const raw = e.target.value.replace(/,/g, '');
+                          if (raw === '' || /^\d+$/.test(raw)) {
+                            setDeliverOrderValue(raw);
+                          }
+                        }}
+                        placeholder="0"
+                        onFocus={(e) => e.target.select()}
+                        className="w-full rounded-lg border border-border/60 bg-background pl-5 pr-2 py-1 text-xs text-foreground placeholder:text-muted-foreground/60 focus:outline-none focus:ring-0"
+                      />
+                    </div>
+                    <p className="text-[10px] text-muted-foreground mt-1 leading-relaxed">
+                      Complimentary coverage is included for total declared order values up to $100.
+                    </p>
+
+                    <AnimatePresence>
+                      {Number(deliverOrderValue) > 100 && (
+                        <motion.div
+                          initial={{ opacity: 0, height: 0 }}
+                          animate={{ opacity: 1, height: "auto" }}
+                          exit={{ opacity: 0, height: 0 }}
+                          transition={{ duration: 0.2 }}
+                          className="overflow-hidden"
+                        >
+                          <div className="mt-2 p-3 rounded-lg border border-border/60 bg-muted/30 space-y-1.5">
+                            <p className="text-[11px] font-medium text-foreground">For orders exceeding $100 in declared value:</p>
+                            <ul className="text-[10px] text-muted-foreground leading-relaxed space-y-0.5">
+                              <li>• $101–$2,500: Protection may be added at 5% of the declared order value.</li>
+                              <li>• Supporting documentation verifying value may be required.</li>
+                              <li>• For eligible high-value orders, the Courial must physically witness the item being placed into the package prior to sealing.</li>
+                            </ul>
+                            {Number(deliverOrderValue) > 2500 && (
+                              <p className="text-[10px] text-destructive font-medium mt-1">Orders exceeding $2,500 require prior approval.</p>
+                            )}
+                            <p className="text-[10px] text-muted-foreground mt-1">All protection is subject to Courial's Delivery Protection & Coverage Policy.</p>
+                          </div>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  </div>
+
                   {/* Delivery Requirements Notice */}
                   <Collapsible className="mt-3 text-xs text-foreground">
                     <CollapsibleTrigger className="flex items-center gap-1 font-semibold cursor-pointer hover:opacity-70 transition-opacity">
