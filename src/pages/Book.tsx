@@ -2417,13 +2417,13 @@ const Book = () => {
 
               {/* Contact & Chat */}
               <div className="flex gap-2 mb-3">
-                <Link
-                  to="/help"
+                <button
+                  onClick={() => setShowContactSupport(true)}
                   className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl border border-border bg-muted/40 hover:bg-muted/70 transition-colors text-sm font-semibold text-foreground"
                 >
                   <Headset className="w-4 h-4" />
                   Contact Support
-                </Link>
+                </button>
                 <button
                   onClick={() => setShowChat(prev => !prev)}
                   className={cn(
