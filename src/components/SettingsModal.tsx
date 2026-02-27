@@ -67,20 +67,27 @@ export const SettingsModal = ({ open, onOpenChange }: SettingsModalProps) => {
 
             {/* Saved Places */}
             <div className="space-y-0">
-              <button className="flex items-center gap-3 w-full py-3 border-b border-background/20 text-left hover:bg-background/10 transition-colors">
-                <Home className="h-4 w-4 text-background/60" />
-                <div>
-                  <p className="text-sm font-semibold text-background">Home</p>
-                  <p className="text-[10px] text-background/50">Add home</p>
-                </div>
-              </button>
-              <button className="flex items-center gap-3 w-full py-3 border-b border-background/20 text-left hover:bg-background/10 transition-colors">
-                <Building2 className="h-4 w-4 text-background/60" />
-                <div>
-                  <p className="text-sm font-semibold text-background">Work</p>
-                  <p className="text-[10px] text-background/50">Add work</p>
-                </div>
-              </button>
+              {[
+                { type: "home", icon: Home, label: "Home" },
+                { type: "work", icon: Building2, label: "Work" },
+              ].map(({ type, icon: Icon, label }) => {
+                const saved = savedAddresses.find((a) => a.type === type);
+                return (
+                  <button
+                    key={type}
+                    onClick={() => setAddressModalType(type)}
+                    className="flex items-center gap-3 w-full py-3 border-b border-background/20 text-left hover:bg-background/10 transition-colors"
+                  >
+                    <Icon className="h-4 w-4 text-background/60" />
+                    <div className="min-w-0 flex-1">
+                      <p className="text-sm font-semibold text-background">{saved?.name || label}</p>
+                      <p className="text-[10px] text-background/50 truncate">
+                        {saved?.address || `Add ${type}`}
+                      </p>
+                    </div>
+                  </button>
+                );
+              })}
               <button className="flex items-center gap-3 w-full py-3 border-b border-background/20 text-left hover:bg-background/10 transition-colors">
                 <Heart className="h-4 w-4 text-background/60" />
                 <div>
