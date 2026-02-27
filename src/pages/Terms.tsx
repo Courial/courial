@@ -307,6 +307,112 @@ const Terms = () => {
                     </p>
                   </div>
 
+                  <div className="space-y-4">
+                    <h3 className="text-xl font-semibold text-foreground">17. Delivery Protection & Coverage</h3>
+                    <p className="text-muted-foreground leading-relaxed">
+                      Courial provides built-in protection and optional Extended Protection for eligible deliveries as outlined in the Courial Delivery Protection & Coverage Policy, which is incorporated into these Terms by reference.
+                    </p>
+                    <p className="text-muted-foreground leading-relaxed">The Delivery Protection & Coverage Policy describes:</p>
+                    <ul className="text-muted-foreground leading-relaxed space-y-2">
+                      <li>• Complimentary protection included with eligible deliveries</li>
+                      <li>• How declared value is defined and applied</li>
+                      <li>• Optional Extended Protection for items exceeding $100 in declared value</li>
+                      <li>• Packaging and verification requirements</li>
+                      <li>• Coverage limits and exclusions</li>
+                      <li>• Claims procedures and deadlines</li>
+                    </ul>
+                    <p className="text-muted-foreground leading-relaxed">
+                      By booking a delivery through the Courial platform, you acknowledge and agree that any reimbursement eligibility, coverage limits, exclusions, or documentation requirements are governed exclusively by the Delivery Protection & Coverage Policy in effect at the time of booking.
+                    </p>
+                    <p className="text-muted-foreground leading-relaxed">
+                      If there is any conflict between a customer's expectations and the stated Protection Policy, the Protection Policy controls.
+                    </p>
+                    <p className="text-muted-foreground leading-relaxed">
+                      Courial reserves the right to modify protection limits, eligibility requirements, or verification procedures at any time, with updated terms posted on the website or in the app.
+                    </p>
+                  </div>
+
+                  <div className="space-y-4">
+                    <h3 className="text-xl font-semibold text-foreground">18. Declared Value</h3>
+                    <p className="text-muted-foreground leading-relaxed">
+                      At the time of booking, you may be required to state the declared value of the item being transported.
+                    </p>
+                    <p className="text-muted-foreground leading-relaxed">You agree that:</p>
+                    <ul className="text-muted-foreground leading-relaxed space-y-2">
+                      <li>• The declared value must reflect the reasonable, verifiable market value of the item.</li>
+                      <li>• Proof of value may be required for items exceeding $100 in declared value.</li>
+                      <li>• Courial may decline Extended Protection if sufficient documentation is not provided.</li>
+                      <li>• Misrepresentation of value may result in denial of claims and suspension of account access.</li>
+                    </ul>
+                    <p className="text-muted-foreground leading-relaxed">
+                      Declared value does not automatically entitle a customer to reimbursement. Coverage is subject to eligibility, compliance with packaging standards, and the limitations set forth in the Delivery Protection & Coverage Policy.
+                    </p>
+                  </div>
+
+                  <div className="space-y-4">
+                    <h3 className="text-xl font-semibold text-foreground">19. Packaging & Verification</h3>
+                    <p className="text-muted-foreground leading-relaxed">
+                      You are responsible for ensuring that all items are properly packaged and suitable for safe transport.
+                    </p>
+                    <p className="text-muted-foreground leading-relaxed">For deliveries seeking Extended Protection:</p>
+                    <ul className="text-muted-foreground leading-relaxed space-y-2">
+                      <li>• Items must be presented to the Courial prior to packaging.</li>
+                      <li>• Items must be packaged in the presence of the Courial before sealing.</li>
+                      <li>• Courial may document item condition and packaging through photographs.</li>
+                      <li>• Failure to comply with these requirements may void eligibility for Extended Protection.</li>
+                    </ul>
+                    <p className="text-muted-foreground leading-relaxed">
+                      Courial reserves the right to refuse any item deemed improperly packaged, unsafe, illegal, or high-risk.
+                    </p>
+                  </div>
+
+                  <div className="space-y-4">
+                    <h3 className="text-xl font-semibold text-foreground">20. Claims</h3>
+                    <p className="text-muted-foreground leading-relaxed">
+                      All claims for loss or damage must be submitted in accordance with the timelines and documentation requirements outlined in the Delivery Protection & Coverage Policy.
+                    </p>
+                    <p className="text-muted-foreground leading-relaxed">
+                      Failure to submit a claim within the required timeframe may result in denial of reimbursement eligibility.
+                    </p>
+                    <p className="text-muted-foreground leading-relaxed">
+                      Courial may investigate all claims using delivery records, courier documentation, GPS logs, and photographic evidence.
+                    </p>
+                  </div>
+
+                  <div className="space-y-4">
+                    <h3 className="text-xl font-semibold text-foreground">21. Limitation of Liability (Deliveries)</h3>
+                    <p className="text-muted-foreground leading-relaxed">To the fullest extent permitted by applicable law:</p>
+                    <p className="text-muted-foreground leading-relaxed">
+                      Courial's maximum liability for any claim arising from loss of or damage to an item during transit shall not exceed:
+                    </p>
+                    <ul className="text-muted-foreground leading-relaxed space-y-2">
+                      <li>• The approved declared value covered under the applicable protection tier selected at booking; or</li>
+                      <li>• The complimentary protection amount in effect at the time of booking if no Extended Protection was purchased.</li>
+                    </ul>
+                    <p className="text-muted-foreground leading-relaxed">Under no circumstances shall Courial be liable for:</p>
+                    <ul className="text-muted-foreground leading-relaxed space-y-2">
+                      <li>• Indirect, incidental, consequential, punitive, or special damages</li>
+                      <li>• Lost profits, lost revenue, or loss of business opportunity</li>
+                      <li>• Emotional or sentimental value</li>
+                      <li>• Pre-existing damage</li>
+                      <li>• Improperly packaged items</li>
+                      <li>• Restricted or prohibited items</li>
+                    </ul>
+                    <p className="text-muted-foreground leading-relaxed">
+                      In no event shall Courial's total aggregate liability exceed $2,500 per delivery unless expressly agreed to in writing prior to pickup.
+                    </p>
+                    <p className="text-muted-foreground leading-relaxed">
+                      These limitations apply regardless of the legal theory asserted, whether in contract, tort, negligence, strict liability, or otherwise.
+                    </p>
+                  </div>
+
+                  <div className="space-y-4">
+                    <h3 className="text-xl font-semibold text-foreground">22. Incorporation of Protection Policy</h3>
+                    <p className="text-muted-foreground leading-relaxed">
+                      The Courial Delivery Protection & Coverage Policy is hereby incorporated by reference into these Terms of Service. By using the platform, you agree to be bound by that policy in addition to these Terms.
+                    </p>
+                  </div>
+
                   {/* Contact Info */}
                   <div className="border-t border-border pt-10 mt-10">
                     <div className="grid md:grid-cols-2 gap-8">
