@@ -23,6 +23,16 @@ export const Navbar = () => {
   const location = useLocation();
   const { user, isAdmin, loading: authLoading, signOut } = useAuth();
   const navigate = useNavigate();
+  const [hasOrders, setHasOrders] = useState(false);
+
+  useEffect(() => {
+    if (!user) { setHasOrders(false); return; }
+    supabase
+      .from("orders")
+      .select("id", { count: "exact", head: true })
+      .eq("user_id", user.id)
+      .then(({ count }) => setHasOrders((count ?? 0) > 0));
+  }, [user]);
 
 
 
