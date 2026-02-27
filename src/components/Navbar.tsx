@@ -1,12 +1,11 @@
 import { useState, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Menu, X, User, LogOut, Package } from "lucide-react";
+import { Menu, X, LogOut, Package } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { ProfileHoverCard } from "@/components/ProfileHoverCard";
 import courialLogo from "@/assets/courial-logo-black.svg";
-import profileIcon from "@/assets/profile-icon.png";
 
 const navLinks = [
   { name: "Home", href: "/" },
