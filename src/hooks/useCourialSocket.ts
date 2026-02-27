@@ -136,9 +136,10 @@ export function useCourialSocket({ token, enabled, onAccepted }: UseCourialSocke
             courialData?.avatar ||
             courialData?.avatar_url ||
             "",
-          vehicleColor: courialData?.vehicleColor || courialData?.vehicle_color || courialData?.vehicle?.color || "",
-          vehicleMake: courialData?.vehicleMake || courialData?.vehicle_make || courialData?.vehicle?.make || "",
-          vehicleModel: courialData?.vehicleModel || courialData?.vehicle_model || courialData?.vehicle?.model || "",
+          vehicleColor: userVehicle?.color || courialData?.vehicleColor || courialData?.vehicle_color || "",
+          vehicleMake: userVehicle?.make || courialData?.vehicleMake || courialData?.vehicle_make || "",
+          vehicleModel: userVehicle?.model || courialData?.vehicleModel || courialData?.vehicle_model || "",
+          vehicleYear: userVehicle?.year || courialData?.vehicleYear || courialData?.vehicle_year || "",
           licensePlate:
             userVehicle?.plate_number ||
             userVehicle?.plateNumber ||
