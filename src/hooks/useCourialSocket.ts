@@ -162,6 +162,8 @@ export function useCourialSocket({ token, enabled, onAccepted, onLocationUpdate 
             courialData?.createdAt ||
             courialData?.joinedAt ||
             "",
+          latitude: parseFloat(provider?.latitude) || null,
+          longitude: parseFloat(provider?.longitude) || null,
         };
 
         console.log("[CourialSocket] Parsed accepted courial:", driver);
@@ -171,12 +173,34 @@ export function useCourialSocket({ token, enabled, onAccepted, onLocationUpdate 
       }
     });
 
+    // Listen for real-time location updates from the courier
+    const locationEvents = [
+      "LocationUpdate", "location_update", "ProviderLocation",
+      "provider_location", "updateLocation", "update_location",
+    ];
+    locationEvents.forEach((eventName) => {
+      socket.on(eventName, (rawData: any) => {
+        console.log(`[CourialSocket] ${eventName} received:`, rawData);
+        try {
+          const parsed = typeof rawData === "string" ? JSON.parse(rawData) : rawData;
+          const data = parsed?.data ?? parsed;
+          const lat = parseFloat(data?.latitude ?? data?.lat);
+          const lng = parseFloat(data?.longitude ?? data?.lng);
+          if (!isNaN(lat) && !isNaN(lng) && onLocationUpdate) {
+            onLocationUpdate({ lat, lng });
+          }
+        } catch (err) {
+          console.error(`[CourialSocket] Error parsing ${eventName}:`, err);
+        }
+      });
+    });
+
     return () => {
       socket.disconnect();
       socketRef.current = null;
       setConnected(false);
     };
-  }, [enabled, token, onAccepted]);
+  }, [enabled, token, onAccepted, onLocationUpdate]);
 
   return { connected, disconnect };
 }
