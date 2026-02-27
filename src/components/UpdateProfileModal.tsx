@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -17,7 +17,7 @@ interface UpdateProfileModalProps {
 export const UpdateProfileModal = ({ open, onOpenChange }: UpdateProfileModalProps) => {
   const { user } = useAuth();
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const [editing, setEditing] = useState(false);
+  const [editingName, setEditingName] = useState(false);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
 
   const displayName =
@@ -30,23 +30,30 @@ export const UpdateProfileModal = ({ open, onOpenChange }: UpdateProfileModalPro
   const email = user?.email || "";
   const phone = user?.phone || user?.user_metadata?.phone || "";
 
+  const hasChanges = editName !== displayName || previewUrl !== null;
+
+  // Reset state when displayName changes (e.g. user changes)
+  useEffect(() => {
+    setEditName(displayName);
+  }, [displayName]);
+
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    const url = URL.createObjectURL(file);
-    setPreviewUrl(url);
+    setPreviewUrl(URL.createObjectURL(file));
   };
 
   const handleSave = () => {
-    // TODO: persist name change via API
-    setEditing(false);
+    // TODO: persist changes via API
+    onOpenChange(false);
   };
 
   const handleClose = (o: boolean) => {
     onOpenChange(o);
     if (!o) {
-      setEditing(false);
+      setEditingName(false);
       setEditName(displayName);
+      setPreviewUrl(null);
     }
   };
 
@@ -100,17 +107,23 @@ export const UpdateProfileModal = ({ open, onOpenChange }: UpdateProfileModalPro
 
             {/* Info Fields */}
             <div className="space-y-0 mt-4">
-              <div className="py-3.5 border-b border-border">
+              {/* Name — tap to edit */}
+              <div
+                className="py-3.5 border-b border-border cursor-pointer"
+                onClick={() => !editingName && setEditingName(true)}
+              >
                 <span className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Name</span>
-                {editing ? (
+                {editingName ? (
                   <Input
                     value={editName}
                     onChange={(e) => setEditName(e.target.value)}
+                    onBlur={() => setEditingName(false)}
+                    onKeyDown={(e) => e.key === "Enter" && setEditingName(false)}
                     className="mt-1 h-8 text-sm"
                     autoFocus
                   />
                 ) : (
-                  <p className="text-sm text-foreground mt-0.5 font-medium">{displayName || "—"}</p>
+                  <p className="text-sm text-foreground mt-0.5 font-medium">{editName || "—"}</p>
                 )}
               </div>
               <div className="py-3.5 border-b border-border">
@@ -124,31 +137,14 @@ export const UpdateProfileModal = ({ open, onOpenChange }: UpdateProfileModalPro
             </div>
           </div>
 
-          {/* Footer — Edit & Close on same row */}
-          <div className="px-7 pt-4 pb-7 flex items-center gap-3">
-            {editing ? (
-              <Button
-                onClick={handleSave}
-                className="flex-1 rounded-xl h-10 text-sm font-semibold"
-                variant="hero"
-              >
-                Save
-              </Button>
-            ) : (
-              <Button
-                variant="outline"
-                onClick={() => setEditing(true)}
-                className="flex-1 rounded-xl h-10 text-sm font-semibold border-2 border-foreground"
-              >
-                Edit Info
-              </Button>
-            )}
+          {/* Footer */}
+          <div className="px-7 pt-4 pb-7">
             <Button
-              onClick={() => handleClose(false)}
-              className="flex-1 rounded-xl h-10 text-sm font-semibold"
+              onClick={hasChanges ? handleSave : () => handleClose(false)}
+              className="w-full rounded-xl h-10 text-sm font-semibold"
               variant="hero"
             >
-              Close
+              {hasChanges ? "Save" : "Close"}
             </Button>
           </div>
         </motion.div>
