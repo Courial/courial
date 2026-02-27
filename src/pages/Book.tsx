@@ -207,9 +207,12 @@ const Book = () => {
 
   const needsVehicle = selectedService === "deliver";
   const conciergeReady = selectedService === "concierge" && (conciergeSubCategory !== null || conciergeCategory === "something-else") && conciergeDescription.trim().length > 0;
-  const isFormValid = selectedService === "concierge"
+  const isBaseFormValid = selectedService === "concierge"
     ? conciergeReady
     : pickup.trim().length > 0 && dropoff.trim().length > 0 && (!needsVehicle || selectedVehicle !== null) && notes.trim().length > 0;
+  const isFormValid = selectedService === "concierge"
+    ? conciergeReady
+    : isBaseFormValid && deliverOrderValue.trim().length > 0 && Number(deliverOrderValue.replace(/,/g, '')) > 0;
 
   // Redraft with AI handler
   const handleRedraft = useCallback(async () => {
@@ -2021,7 +2024,7 @@ const Book = () => {
                   </AnimatePresence>
 
                   {/* Order Value — only show when required fields are filled */}
-                  {isFormValid && (
+                  {isBaseFormValid && (
                   <div className="mb-3 mt-4">
                     <div className="flex items-baseline gap-2">
                       <h4 className="text-xs font-medium text-foreground leading-none">Order Value</h4>
