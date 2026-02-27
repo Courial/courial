@@ -1779,11 +1779,11 @@ const Book = () => {
 
                       return fields.map((field, idx) => (
                         <div key={field.id} className={`relative group ${idx === 0 ? '' : 'mt-2'}`}>
-                          <div className="flex items-center gap-3 px-4 py-3 border border-border rounded-xl bg-background transition-colors focus-within:border-border">
-                            {/* Drag handle — click/drag to swap */}
+                          <div className="flex items-center gap-2">
+                            {/* Drag handle — outside the field */}
                             <button
                               type="button"
-                              className="flex-shrink-0 cursor-grab active:cursor-grabbing text-muted-foreground/40 hover:text-muted-foreground transition-colors touch-none select-none"
+                              className="flex-shrink-0 cursor-grab active:cursor-grabbing text-muted-foreground/40 hover:text-muted-foreground transition-colors touch-none select-none p-1"
                               onPointerDown={(e) => {
                                 const startY = e.clientY;
                                 const el = e.currentTarget.closest('.relative.group') as HTMLElement;
@@ -1807,7 +1807,6 @@ const Book = () => {
                                   el.style.transform = '';
                                   el.style.opacity = '';
                                   setTimeout(() => { el.style.zIndex = ''; el.style.transition = ''; }, 200);
-                                  // Swap if dragged more than 30px in the right direction
                                   if (dragged && ((idx === 0 && dy > 30) || (idx === 1 && dy < -30))) {
                                     swapFields();
                                   }
@@ -1823,22 +1822,25 @@ const Book = () => {
                                 <circle cx="2" cy="14" r="1.5" /><circle cx="8" cy="14" r="1.5" />
                               </svg>
                             </button>
-                            <div className={`flex-shrink-0 w-2.5 h-2.5 ${field.dotClass}`} />
-                            <div className="flex-1 min-w-0">
-                              {field.placeName && field.coords && (
-                                <div className="text-sm font-semibold text-foreground leading-tight">{field.placeName}</div>
-                              )}
-                              <AddressAutocomplete
-                                placeholder={field.placeholder}
-                                value={field.value}
-                                onChange={field.onChange}
-                                onPlaceSelect={field.onPlaceSelect}
-                                className={`w-full bg-transparent text-foreground placeholder:text-muted-foreground outline-none ${field.placeName && field.coords ? 'text-muted-foreground text-xs mt-0.5' : 'text-sm'}`}
-                              />
+                            {/* Field container */}
+                            <div className="flex-1 flex items-center gap-3 px-4 py-3 border border-border rounded-xl bg-background transition-colors focus-within:border-border">
+                              <div className={`flex-shrink-0 w-2.5 h-2.5 ${field.dotClass}`} />
+                              <div className="flex-1 min-w-0">
+                                {field.placeName && field.coords && (
+                                  <div className="text-sm font-semibold text-foreground leading-tight">{field.placeName}</div>
+                                )}
+                                <AddressAutocomplete
+                                  placeholder={field.placeholder}
+                                  value={field.value}
+                                  onChange={field.onChange}
+                                  onPlaceSelect={field.onPlaceSelect}
+                                  className={`w-full bg-transparent text-foreground placeholder:text-muted-foreground outline-none ${field.placeName && field.coords ? 'text-muted-foreground text-xs mt-0.5' : 'text-sm'}`}
+                                />
+                              </div>
+                              <button onClick={field.onClear} className="flex-shrink-0 ml-auto hover:opacity-70 transition-opacity">
+                                <X className="w-2.5 h-2.5 text-muted-foreground/50" />
+                              </button>
                             </div>
-                            <button onClick={field.onClear} className="flex-shrink-0 ml-auto hover:opacity-70 transition-opacity">
-                              <X className="w-2.5 h-2.5 text-muted-foreground/50" />
-                            </button>
                           </div>
                         </div>
                       ));
