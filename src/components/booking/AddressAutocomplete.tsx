@@ -292,7 +292,7 @@ const AddressAutocomplete: React.FC<AddressAutocompleteProps> = ({
               }`}
             >
               <Clock className="w-3.5 h-3.5" />
-              Recent Places
+              Recent
             </button>
             <button
               type="button"
@@ -304,7 +304,7 @@ const AddressAutocomplete: React.FC<AddressAutocompleteProps> = ({
               }`}
             >
               <Heart className="w-3.5 h-3.5" />
-              Favorite Places
+              Favorites
             </button>
           </div>
 
