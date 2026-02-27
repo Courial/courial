@@ -239,27 +239,42 @@ const AddressAutocomplete: React.FC<AddressAutocompleteProps> = ({
 
   return (
     <div ref={wrapperRef as any} className="relative">
-      {/* Wrapping text overlay shown when not focused */}
-      {showOverlay && (
-        <div
-          className={`${className} cursor-text break-words whitespace-normal`}
-          style={{ position: 'absolute', inset: 0, zIndex: 1, background: 'inherit', pointerEvents: 'auto' }}
-          onClick={() => { inputRef.current?.focus(); }}
-        >
-          {value}
-        </div>
+      {showOverlay ? (
+        <>
+          {/* Wrapping text display — replaces the input visually */}
+          <div
+            className={`${className} break-words whitespace-normal cursor-text`}
+            onClick={() => { inputRef.current?.focus(); }}
+          >
+            {value}
+          </div>
+          {/* Keep the input in DOM but hidden so Google autocomplete stays bound */}
+          <input
+            ref={inputRef}
+            type="text"
+            placeholder={placeholder}
+            defaultValue={value}
+            onChange={handleChange}
+            onFocus={handleFocus}
+            onBlur={handleBlur}
+            className={className}
+            style={{ position: 'absolute', opacity: 0, pointerEvents: 'none', height: 0, overflow: 'hidden' }}
+            autoComplete="off"
+          />
+        </>
+      ) : (
+        <input
+          ref={inputRef}
+          type="text"
+          placeholder={placeholder}
+          defaultValue={value}
+          onChange={handleChange}
+          onFocus={handleFocus}
+          onBlur={handleBlur}
+          className={className}
+          autoComplete="off"
+        />
       )}
-      <input
-        ref={inputRef}
-        type="text"
-        placeholder={placeholder}
-        defaultValue={value}
-        onChange={handleChange}
-        onFocus={handleFocus}
-        onBlur={handleBlur}
-        className={`${className} ${showOverlay ? 'invisible' : ''}`}
-        autoComplete="off"
-      />
       {showDropdown && hasAnyData && (
         <div
           className="absolute left-0 right-0 top-full mt-1 bg-background border border-border rounded-xl shadow-lg overflow-hidden"
