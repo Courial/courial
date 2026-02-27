@@ -2338,7 +2338,7 @@ const Book = () => {
               {/* Active header */}
               <div className="flex items-center gap-2 mb-6">
                 <div className="w-2 h-2 rounded-full bg-primary animate-pulse" />
-                <span className="text-xs font-semibold text-primary uppercase tracking-wider">Live</span>
+                <span className="text-sm font-semibold text-primary uppercase tracking-wider">Live</span>
               </div>
 
               {/* Driver Card */}
