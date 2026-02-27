@@ -38,6 +38,7 @@ export const SettingsModal = ({ open, onOpenChange }: SettingsModalProps) => {
   const phone = user?.phone || user?.user_metadata?.phone || "";
 
   return (
+  <>
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[19.2rem] bg-transparent border-none !rounded-[20px] p-0 overflow-y-auto max-h-[90vh] [&>button]:hidden shadow-none">
         <motion.div
