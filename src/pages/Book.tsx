@@ -212,6 +212,25 @@ const Book = () => {
   const [showContactSupport, setShowContactSupport] = useState(false);
   const [acceptedCourial, setAcceptedCourial] = useState<CourialDriver | null>(null);
   const [socketEnabled, setSocketEnabled] = useState(false);
+
+  // Socket: connect after successful booking, listen for courial acceptance
+  const handleCourialAccepted = useCallback((driver: CourialDriver) => {
+    console.log("[Book] Courial accepted order:", driver);
+    setAcceptedCourial(driver);
+    // Immediately transition to active tracking when a courial accepts
+    setBookingState("active");
+    setLoadingProgress(100);
+    setDeliveryStep(0);
+    toast.success(`${driver.name} accepted your order!`);
+  }, []);
+
+  const courialToken = typeof window !== "undefined" ? localStorage.getItem("courial_api_token") : null;
+
+  useCourialSocket({
+    token: courialToken,
+    enabled: socketEnabled,
+    onAccepted: handleCourialAccepted,
+  });
   const courialProfiles = useMemo(() => [
     "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop&crop=face",
     "https://images.unsplash.com/photo-1494790108755-2616b612b786?w=200&h=200&fit=crop&crop=face",
