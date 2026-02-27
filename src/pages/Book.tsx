@@ -2560,7 +2560,7 @@ const Book = () => {
               <div className="flex gap-2 mb-3">
                 <button
                   onClick={() => setShowContactSupport(true)}
-                  className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl border border-green-300 bg-green-50 hover:bg-green-100 transition-colors text-sm font-semibold text-green-700"
+                  className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl border border-green-600 bg-green-600 hover:bg-green-700 transition-colors text-sm font-semibold text-white"
                 >
                   <Headset className="w-4 h-4" />
                   Contact Support
