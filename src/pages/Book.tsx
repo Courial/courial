@@ -146,7 +146,8 @@ const Book = () => {
 
   // Deliver-specific: language + expenses
   const [deliverLanguage, setDeliverLanguage] = useState<string | null>(null);
-  const [deliverHasExpenses, setDeliverHasExpenses] = useState<boolean | null>(null);
+   const [deliverHasExpenses, setDeliverHasExpenses] = useState<boolean | null>(null);
+   const [deliverOrderValue, setDeliverOrderValue] = useState("");
   const [deliverExpenseItems, setDeliverExpenseItems] = useState<Array<{ description: string; amount: string }>>([{ description: "", amount: "0" }]);
   const [deliverAllowOverage, setDeliverAllowOverage] = useState(false);
   const [deliverOverageLimit, setDeliverOverageLimit] = useState("0");
