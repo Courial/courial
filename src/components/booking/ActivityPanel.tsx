@@ -166,7 +166,7 @@ export const ActivityPanel = ({ onBack }: { onBack: () => void }) => {
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center justify-between gap-2 mb-1">
                           <span className="text-sm font-bold text-foreground truncate">{ride.destination}</span>
-                          <span className={`text-[9px] font-semibold shrink-0 ${statusBadgeBg[ride.status] || "text-muted-foreground"}`}>
+                          <span className={`text-[11px] font-semibold shrink-0 ${statusBadgeBg[ride.status] || "text-muted-foreground"}`}>
                             {ride.status}
                           </span>
                         </div>
@@ -262,7 +262,7 @@ const RideDetail = ({ ride, onBack }: { ride: any; onBack: () => void }) => {
 
         {/* Status badge */}
         <div className="flex items-center gap-2">
-          <span className={`text-[9px] font-semibold ${statusBadgeBg[ride.status] || "text-muted-foreground"}`}>
+          <span className={`text-[11px] font-semibold ${statusBadgeBg[ride.status] || "text-muted-foreground"}`}>
             {ride.status}
           </span>
         </div>
