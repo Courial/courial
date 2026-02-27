@@ -2068,7 +2068,7 @@ const Book = () => {
                                 type="checkbox"
                                 checked={declineProtection}
                                 onChange={(e) => setDeclineProtection(e.target.checked)}
-                                className="rounded border-border/60 h-3.5 w-3.5 accent-primary"
+                                className="h-3 w-3 rounded border border-border/60 accent-foreground cursor-pointer appearance-none checked:appearance-auto bg-background"
                               />
                               <span className="text-[10px] text-muted-foreground">I decline additional protection coverage and wish to proceed without it.</span>
                             </label>
