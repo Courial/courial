@@ -88,14 +88,6 @@ const serviceCards: { id: ServiceId; label: string; desc: string; href: string; 
   { id: "valet", label: "Valet", desc: "More than parking. We park it, charge it, or drive it—whatever you need.", href: "/book", image: "https://images.unsplash.com/photo-1617788138017-80ad40651399?w=600&q=80", icons: [ParkingCircle, Leaf], serviceIcon: valetServiceIcon },
 ];
 
-  // Close roadside dropdowns on outside click
-  useEffect(() => {
-    const handler = () => { setRoadsideMakeOpen(false); setRoadsideModelOpen(false); setRoadsideColorOpen(false); };
-    if (roadsideMakeOpen || roadsideModelOpen || roadsideColorOpen) {
-      document.addEventListener("click", handler);
-      return () => document.removeEventListener("click", handler);
-    }
-  }, [roadsideMakeOpen, roadsideModelOpen, roadsideColorOpen]);
 
 const Book = () => {
   const { user } = useAuth();
