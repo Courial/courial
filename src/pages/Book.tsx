@@ -3342,7 +3342,7 @@ const Book = () => {
                   )}
                   {selectedService === "concierge" && conciergeSubCategory && (
                     <div className="flex justify-between">
-                      <span className="text-muted-foreground">Task</span>
+                      <span className="text-muted-foreground">Sub-Category</span>
                       <span className="text-foreground capitalize">{conciergeSubCategory.replace(/-/g, " ")}</span>
                     </div>
                   )}
