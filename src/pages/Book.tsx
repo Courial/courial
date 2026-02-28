@@ -1234,6 +1234,66 @@ const Book = () => {
             </motion.div>
             )}
 
+            {/* Roadside Assistance Vehicle Details */}
+            {selectedService === "concierge" && conciergeCategory === "roadside-assistance" && conciergeSubCategory && conciergeSubCategory !== "__direct__" && (
+              <div className="mb-4 mt-4 space-y-3">
+                <span className="text-xs font-medium text-muted-foreground">Vehicle Details</span>
+                <div className="space-y-2">
+                  <input
+                    type="text"
+                    placeholder="Vehicle Make"
+                    value={roadsideVehicleMake}
+                    onChange={(e) => setRoadsideVehicleMake(e.target.value)}
+                    className="w-full px-3 py-2 rounded-lg border border-border/60 bg-background text-foreground text-xs placeholder:text-muted-foreground focus:outline-none focus:border-primary transition-colors"
+                  />
+                  <input
+                    type="text"
+                    placeholder="Model"
+                    value={roadsideVehicleModel}
+                    onChange={(e) => setRoadsideVehicleModel(e.target.value)}
+                    className="w-full px-3 py-2 rounded-lg border border-border/60 bg-background text-foreground text-xs placeholder:text-muted-foreground focus:outline-none focus:border-primary transition-colors"
+                  />
+                  <input
+                    type="text"
+                    placeholder="Color"
+                    value={roadsideVehicleColor}
+                    onChange={(e) => setRoadsideVehicleColor(e.target.value)}
+                    className="w-full px-3 py-2 rounded-lg border border-border/60 bg-background text-foreground text-xs placeholder:text-muted-foreground focus:outline-none focus:border-primary transition-colors"
+                  />
+                  <input
+                    type="text"
+                    placeholder="License Plate"
+                    value={roadsideLicensePlate}
+                    onChange={(e) => setRoadsideLicensePlate(e.target.value)}
+                    className="w-full px-3 py-2 rounded-lg border border-border/60 bg-background text-foreground text-xs placeholder:text-muted-foreground focus:outline-none focus:border-primary transition-colors"
+                  />
+                </div>
+                <div>
+                  <span className="text-xs font-medium text-muted-foreground">Is the vehicle in a safe location?</span>
+                  <div className="flex gap-3 mt-1.5">
+                    <button
+                      onClick={() => setRoadsideSafeLocation(true)}
+                      className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[11px] font-normal border transition-all leading-none ${roadsideSafeLocation === true ? "border-primary text-foreground" : "border-border/60 text-foreground hover:border-foreground/50"}`}
+                    >
+                      <div className={`w-3.5 h-3.5 rounded border flex items-center justify-center ${roadsideSafeLocation === true ? "border-primary bg-primary" : "border-border"}`}>
+                        {roadsideSafeLocation === true && <Check className="w-2.5 h-2.5 text-primary-foreground" />}
+                      </div>
+                      Yes
+                    </button>
+                    <button
+                      onClick={() => setRoadsideSafeLocation(false)}
+                      className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[11px] font-normal border transition-all leading-none ${roadsideSafeLocation === false ? "border-primary text-foreground" : "border-border/60 text-foreground hover:border-foreground/50"}`}
+                    >
+                      <div className={`w-3.5 h-3.5 rounded border flex items-center justify-center ${roadsideSafeLocation === false ? "border-primary bg-primary" : "border-border"}`}>
+                        {roadsideSafeLocation === false && <Check className="w-2.5 h-2.5 text-primary-foreground" />}
+                      </div>
+                      No
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
+
             {/* Preferred Language for Concierge */}
             {selectedService === "concierge" && conciergeSubCategory && (
               <div className="mb-4 mt-4">
