@@ -1,4 +1,5 @@
 import React, { useState, useCallback, useEffect, useMemo, useRef } from "react";
+import { getSavedAddresses } from "@/components/SavedAddressModal";
 import { useCourialSocket, type CourialDriver } from "@/hooks/useCourialSocket";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
@@ -126,6 +127,9 @@ const Book = () => {
   const [conciergeCategory, setConciergeCategory] = useState<string | null>(null);
   const [conciergeSubCategory, setConciergeSubCategory] = useState<string | null>(null);
   const [conciergeIsRemote, setConciergeIsRemote] = useState(false);
+  const [wfhSearchPhase, setWfhSearchPhase] = useState<"home" | "work" | "area_code" | "exhausted" | null>(null);
+  const [showKeepSearching, setShowKeepSearching] = useState(false);
+  const wfhTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [conciergeAddressToggles, setConciergeAddressToggles] = useState({ start: false, stop: false, final: false });
   const [conciergeStartAddress, setConciergeStartAddress] = useState("");
   const [conciergeStopAddress, setConciergeStopAddress] = useState("");
@@ -503,10 +507,26 @@ const Book = () => {
       let concPickup = { address: "N/A", lat: 0, lng: 0 };
       let concDropoff = { address: "N/A", lat: 0, lng: 0 };
       if (isConcierge) {
-        if (conciergeIsRemote) {
-          // Remote/WFH — send "Remote" label, no real coords needed
-          concPickup = { address: "Remote / WFH", lat: 0, lng: 0 };
-          concDropoff = { address: "Remote / WFH", lat: 0, lng: 0 };
+         if (conciergeIsRemote) {
+           // Remote/WFH — cascading location search: Home → Work → Area Code city
+           const saved = getSavedAddresses();
+           const homeAddr = saved.find(a => a.type === "home");
+           const workAddr = saved.find(a => a.type === "work");
+           
+           if (homeAddr && homeAddr.lat && homeAddr.lng) {
+             concPickup = { address: `Remote / WFH — ${homeAddr.name}`, lat: homeAddr.lat, lng: homeAddr.lng };
+             concDropoff = { ...concPickup };
+             setWfhSearchPhase("home");
+           } else if (workAddr && workAddr.lat && workAddr.lng) {
+             concPickup = { address: `Remote / WFH — ${workAddr.name}`, lat: workAddr.lat, lng: workAddr.lng };
+             concDropoff = { ...concPickup };
+             setWfhSearchPhase("work");
+           } else {
+             // Fallback to area code / user location
+             concPickup = { address: "Remote / WFH", lat: 0, lng: 0 };
+             concDropoff = { address: "Remote / WFH", lat: 0, lng: 0 };
+             setWfhSearchPhase("area_code");
+           }
         } else {
           // Collect all available addresses in order
           const available: { address: string; lat: number; lng: number }[] = [];
@@ -681,7 +701,128 @@ const Book = () => {
     setDeliveryStep(0);
     setSocketEnabled(false);
     setAcceptedCourial(null);
+    setWfhSearchPhase(null);
+    setShowKeepSearching(false);
+    if (wfhTimerRef.current) clearTimeout(wfhTimerRef.current);
   }, []);
+
+  // Re-submit booking with new location coords for WFH cascading search
+  const resubmitWithLocation = useCallback(async (loc: { address: string; lat: number; lng: number }) => {
+    if (!user) return;
+    const courialToken = localStorage.getItem("courial_api_token");
+    if (!courialToken) return;
+
+    setLoadingProgress(0);
+    setSocketEnabled(false);
+
+    const cat = conciergeCategories.find(c => c.id === conciergeCategory);
+    const payload: Record<string, any> = {
+      scheduleType: timeMode === "now" ? "now" : "later",
+      serviceType: "concierge",
+      notes: conciergeDescription,
+      pickup: loc,
+      dropoff: loc,
+      userId: user.id,
+      isRemote: true,
+      conciergeCategory: cat?.label || conciergeCategory,
+      conciergeSubCategory: conciergeSubCategory === "__direct__" ? cat?.label : conciergeSubCategory,
+    };
+    if (conciergeOrderValue) payload.orderValue = Number(conciergeOrderValue.replace(/,/g, ''));
+    if (conciergeLanguage) payload.preferredLanguage = conciergeLanguage;
+    if (conciergeServiceMode) payload.serviceMode = conciergeServiceMode;
+    if (conciergeHasExpenses && conciergeExpenseItems.length > 0) {
+      payload.expenseItems = conciergeExpenseItems.filter(e => e.description.trim());
+      payload.allowOverage = conciergeAllowOverage;
+      if (conciergeAllowOverage && conciergeOverageLimit !== "0") {
+        payload.overageLimit = Number(conciergeOverageLimit);
+      }
+    }
+    if (timeMode === "later" && selectedDate) {
+      payload.date = format(selectedDate, "yyyy-MM-dd");
+      payload.time = selectedTime;
+    }
+
+    try {
+      const { data, error } = await supabase.functions.invoke("book-delivery", {
+        body: payload,
+        headers: { Authorization: `Bearer ${courialToken}` },
+      });
+      if (!error && data?.success === 1 && data?.data?.deliveryId) {
+        deliveryIdRef.current = data.data.deliveryId;
+        if (data.data.nearbyCourials?.length) setNearbyCourials(data.data.nearbyCourials);
+        setSocketEnabled(true);
+        console.log("[WFH cascade] Re-submitted with location:", loc.address, "deliveryId:", data.data.deliveryId);
+      }
+    } catch (err) {
+      console.error("[WFH cascade] resubmit error:", err);
+    }
+  }, [user, conciergeCategory, conciergeSubCategory, conciergeDescription, conciergeOrderValue, conciergeLanguage, conciergeServiceMode, conciergeHasExpenses, conciergeExpenseItems, conciergeAllowOverage, conciergeOverageLimit, timeMode, selectedDate, selectedTime]);
+
+  // WFH cascading search timer — 30s per phase
+  useEffect(() => {
+    if (bookingState !== "loading" || !conciergeIsRemote || !wfhSearchPhase) return;
+    // Don't set timer if already accepted
+    if (acceptedCourial) return;
+
+    const WFH_PHASE_TIMEOUT = 30000; // 30 seconds per phase
+
+    wfhTimerRef.current = setTimeout(() => {
+      const saved = getSavedAddresses();
+      const homeAddr = saved.find(a => a.type === "home");
+      const workAddr = saved.find(a => a.type === "work");
+
+      if (wfhSearchPhase === "home") {
+        // Move to Work
+        if (workAddr && workAddr.lat && workAddr.lng) {
+          setWfhSearchPhase("work");
+          setLoadingProgress(0);
+          resubmitWithLocation({ address: `Remote / WFH — ${workAddr.name}`, lat: workAddr.lat, lng: workAddr.lng });
+        } else {
+          // Skip to area code
+          setWfhSearchPhase("area_code");
+          setLoadingProgress(0);
+          // Use user's phone area for geocoding — send with lat:0 lng:0 to let backend handle
+          const phone = user?.user_metadata?.phone || user?.phone || "";
+          resubmitWithLocation({ address: `Remote / WFH — ${phone ? "Phone area" : "General area"}`, lat: 0, lng: 0 });
+        }
+      } else if (wfhSearchPhase === "work") {
+        // Move to area code
+        setWfhSearchPhase("area_code");
+        setLoadingProgress(0);
+        const phone = user?.user_metadata?.phone || user?.phone || "";
+        resubmitWithLocation({ address: `Remote / WFH — ${phone ? "Phone area" : "General area"}`, lat: 0, lng: 0 });
+      } else if (wfhSearchPhase === "area_code") {
+        // All phases exhausted — show "keep searching?" dialog
+        setWfhSearchPhase("exhausted");
+        setShowKeepSearching(true);
+      }
+    }, WFH_PHASE_TIMEOUT);
+
+    return () => {
+      if (wfhTimerRef.current) clearTimeout(wfhTimerRef.current);
+    };
+  }, [bookingState, conciergeIsRemote, wfhSearchPhase, acceptedCourial, user, resubmitWithLocation]);
+
+  // Handle "keep searching" responses
+  const handleKeepSearchingYes = useCallback(() => {
+    setShowKeepSearching(false);
+    setWfhSearchPhase("home");
+    setLoadingProgress(0);
+    // Re-start the cascade from home
+    const saved = getSavedAddresses();
+    const homeAddr = saved.find(a => a.type === "home");
+    if (homeAddr && homeAddr.lat && homeAddr.lng) {
+      resubmitWithLocation({ address: `Remote / WFH — ${homeAddr.name}`, lat: homeAddr.lat, lng: homeAddr.lng });
+    } else {
+      resubmitWithLocation({ address: "Remote / WFH", lat: 0, lng: 0 });
+    }
+  }, [resubmitWithLocation]);
+
+  const handleKeepSearchingNo = useCallback(() => {
+    setShowKeepSearching(false);
+    handleCancelBooking();
+    toast.info("Booking cancelled. You can try again anytime.");
+  }, [handleCancelBooking]);
 
   const deliveryStepsMap: Record<string, { label: string; desc: string }[]> = {
     deliver: [
@@ -2746,13 +2887,23 @@ const Book = () => {
           if (showSidebarAnimation) {
             return (
               <div className="p-6 flex flex-col items-center justify-center h-full gap-6">
-                {/* Remote banner */}
+                {/* Remote banner with current search phase */}
                 <div className="w-full rounded-2xl bg-muted/60 border border-border px-5 py-4 text-center mb-2">
                   <div className="flex items-center justify-center gap-2 mb-1">
                     <div className="w-2 h-2 rounded-full bg-primary animate-pulse" />
                     <span className="text-xs font-semibold text-primary uppercase tracking-wider">Remote Task</span>
                   </div>
                   <p className="text-sm text-muted-foreground">This is a Work-From-Home Concierge service. No travel required.</p>
+                  {wfhSearchPhase && (
+                    <div className="mt-2 pt-2 border-t border-border/50">
+                      <p className="text-[11px] text-muted-foreground">
+                        {wfhSearchPhase === "home" && "🏠 Searching near your Home address…"}
+                        {wfhSearchPhase === "work" && "🏢 Searching near your Work address…"}
+                        {wfhSearchPhase === "area_code" && "📍 Searching your general area…"}
+                        {wfhSearchPhase === "exhausted" && "No Concierges found nearby."}
+                      </p>
+                    </div>
+                  )}
                 </div>
 
                 {/* Circular Progress with flashing profile photos */}
@@ -2784,6 +2935,23 @@ const Book = () => {
                     </AnimatePresence>
                   </div>
                 </div>
+
+                {/* Phase indicator dots */}
+                {wfhSearchPhase && (
+                  <div className="flex items-center gap-2">
+                    {["home", "work", "area_code"].map((phase) => (
+                      <div
+                        key={phase}
+                        className={cn(
+                          "w-2 h-2 rounded-full transition-colors duration-300",
+                          wfhSearchPhase === phase ? "bg-primary" :
+                          (["home", "work", "area_code"].indexOf(phase) < ["home", "work", "area_code"].indexOf(wfhSearchPhase)) ? "bg-primary/40" : "bg-muted-foreground/20"
+                        )}
+                      />
+                    ))}
+                  </div>
+                )}
+
                 <div className="text-center">
                   <h2 className="text-lg font-bold text-foreground mb-1">Finding the perfect Concierge for your request.</h2>
                 </div>
@@ -3459,6 +3627,31 @@ const Book = () => {
           >
             Got it
           </Button>
+        </DialogContent>
+      </Dialog>
+
+      {/* Keep Searching? Dialog for WFH cascading search */}
+      <Dialog open={showKeepSearching} onOpenChange={setShowKeepSearching}>
+        <DialogContent className="max-w-xs rounded-2xl text-center p-7 bg-foreground/90 backdrop-blur-sm border-none">
+          <DialogTitle className="text-lg font-bold text-background">No Concierges found yet</DialogTitle>
+          <p className="text-sm text-background/60 leading-relaxed mt-1">
+            We've searched your Home, Work, and general area but no one has accepted yet. Would you like us to keep searching?
+          </p>
+          <div className="flex gap-3 mt-5">
+            <Button
+              variant="outline"
+              className="flex-1 rounded-xl border-background/20 text-background hover:bg-background/10"
+              onClick={handleKeepSearchingNo}
+            >
+              Cancel
+            </Button>
+            <Button
+              className="flex-1 rounded-xl bg-primary text-primary-foreground hover:bg-primary/90"
+              onClick={handleKeepSearchingYes}
+            >
+              Keep Searching
+            </Button>
+          </div>
         </DialogContent>
       </Dialog>
     </div>
