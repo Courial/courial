@@ -3529,12 +3529,14 @@ const Book = () => {
 
               {/* Action Buttons */}
               <div className="space-y-2 mb-3">
-                {deliveryStep < 5 && (
+                {deliveryStep < (isWfhConcierge ? 3 : 5) && (
                   <button
-                    onClick={() => setDeliveryStep((s) => Math.min(s + 1, 5))}
+                    onClick={() => setDeliveryStep((s) => Math.min(s + 1, isWfhConcierge ? 3 : 5))}
                     className="w-full py-3 rounded-full text-sm font-semibold text-background bg-foreground hover:bg-foreground/90 transition-colors"
                   >
-                    {selectedService === "concierge"
+                    {isWfhConcierge
+                      ? ["Begin Task", "Complete Task", "Finish"][deliveryStep]
+                      : selectedService === "concierge"
                       ? ["En Route", "Arrive", "Begin Task", "Complete Task", "Finish"][deliveryStep]
                       : selectedService === "valet"
                       ? ["En Route", "Arrive", "Take Vehicle", "Park Vehicle", "Finish"][deliveryStep]
