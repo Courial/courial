@@ -42,6 +42,7 @@ import conciergeServiceIcon from "@/assets/service-icons/concierge.png";
 import chauffeurServiceIcon from "@/assets/service-icons/chauffeur.png";
 import valetServiceIcon from "@/assets/service-icons/valet.png";
 import vehicleWalker from "@/assets/vehicle-walker.png";
+import noVehicleIcon from "@/assets/no-vehicle-icon.png";
 import vehicleScooter from "@/assets/vehicle-scooter.png";
 import vehicleCar from "@/assets/vehicle-car.png";
 import vehicleVan from "@/assets/vehicle-van.png";
@@ -1365,18 +1366,7 @@ const Book = () => {
                               : conciergeVehicle === null ? "grayscale-0 opacity-100 scale-100"
                               : "grayscale opacity-40 scale-100"
                           )}>
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none" className="max-h-[28px] w-[28px]">
-                              <g opacity="0.6">
-                                <path d="M10 28l3-6h22l3 6" fill="#888" stroke="#888" strokeWidth="1.5"/>
-                                <rect x="10" y="28" width="28" height="6" rx="1" fill="#888"/>
-                                <circle cx="16" cy="34" r="2.5" fill="#555"/>
-                                <circle cx="32" cy="34" r="2.5" fill="#555"/>
-                                <path d="M15 23l2-4h5v4z" fill="#bbb"/>
-                                <path d="M24 19h5l2 4H24z" fill="#bbb"/>
-                              </g>
-                              <circle cx="24" cy="24" r="18" stroke="hsl(var(--destructive))" strokeWidth="3" fill="none"/>
-                              <line x1="11" y1="11" x2="37" y2="37" stroke="hsl(var(--destructive))" strokeWidth="3"/>
-                            </svg>
+                            <img src={noVehicleIcon} alt="No vehicle needed" className="max-h-[30px] object-contain" />
                           </div>
                         </button>
                       );
