@@ -856,7 +856,9 @@ const Book = () => {
       { label: "Order Complete", desc: "Invoice sent — thank you!" },
     ],
   };
-  const deliverySteps = deliveryStepsMap[selectedService || "deliver"] || deliveryStepsMap.deliver;
+  const isWfhConcierge = selectedService === "concierge" && conciergeIsRemote;
+  const deliveryStepsKey = isWfhConcierge ? "concierge_wfh" : (selectedService || "deliver");
+  const deliverySteps = deliveryStepsMap[deliveryStepsKey] || deliveryStepsMap.deliver;
 
   const handlePickupSelect = useCallback((place: any) => {
     if (place.geometry?.location) {
