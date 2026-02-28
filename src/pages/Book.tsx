@@ -3329,6 +3329,155 @@ const Book = () => {
                 )}
               </div>
 
+              {/* Order Details */}
+              <div className="rounded-xl border border-border bg-muted/50 p-4 mb-4">
+                <p className="text-xs font-bold uppercase tracking-wider text-muted-foreground mb-2">Order Details</p>
+                <div className="space-y-1.5 text-sm">
+                  {/* Service */}
+                  <div className="flex justify-between">
+                    <span className="text-muted-foreground">Service</span>
+                    <span className="text-foreground capitalize">{selectedService}</span>
+                  </div>
+                  {/* Vehicle */}
+                  {selectedService === "deliver" && selectedVehicle && (
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Vehicle</span>
+                      <span className="text-foreground capitalize">{selectedVehicle}</span>
+                    </div>
+                  )}
+                  {selectedService === "concierge" && conciergeVehicle && (
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Vehicle</span>
+                      <span className="text-foreground capitalize">{conciergeVehicle === "none" ? "No vehicle" : conciergeVehicle}</span>
+                    </div>
+                  )}
+                  {/* Concierge category */}
+                  {selectedService === "concierge" && conciergeCategory && (
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Category</span>
+                      <span className="text-foreground capitalize">{conciergeCategory.replace(/-/g, " ")}</span>
+                    </div>
+                  )}
+                  {selectedService === "concierge" && conciergeSubCategory && (
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Task</span>
+                      <span className="text-foreground capitalize">{conciergeSubCategory.replace(/-/g, " ")}</span>
+                    </div>
+                  )}
+                  {/* Service mode */}
+                  {selectedService === "concierge" && conciergeServiceMode && (
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Rate</span>
+                      <span className="text-foreground capitalize">{conciergeServiceMode}</span>
+                    </div>
+                  )}
+                  {/* Remote/WFH */}
+                  {selectedService === "concierge" && conciergeIsRemote && (
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Remote</span>
+                      <span className="text-foreground">Yes (WFH)</span>
+                    </div>
+                  )}
+                  {/* Scheduled date/time */}
+                  {selectedDate && (
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Scheduled</span>
+                      <span className="text-foreground">{selectedDate.toLocaleDateString()} at {selectedTime}</span>
+                    </div>
+                  )}
+                  {/* Order value */}
+                  {(deliverOrderValue || conciergeOrderValue) && (
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Order value</span>
+                      <span className="text-foreground">${deliverOrderValue || conciergeOrderValue}</span>
+                    </div>
+                  )}
+                  {/* Heavy items */}
+                  {over70lbs && (
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Heavy items</span>
+                      <span className="text-foreground">{heavyWeight} lbs / {heavyItems} {parseInt(heavyItems) === 1 ? "item" : "items"}</span>
+                    </div>
+                  )}
+                  {/* 2 Courials */}
+                  {twoCourials && (
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">2 Courials</span>
+                      <span className="text-foreground">Yes</span>
+                    </div>
+                  )}
+                  {/* Stairs */}
+                  {hasStairs && (
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Stairs</span>
+                      <span className="text-foreground">Yes</span>
+                    </div>
+                  )}
+                  {/* Language */}
+                  {(deliverLanguage || conciergeLanguage) && (
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Language</span>
+                      <span className="text-foreground">{deliverLanguage || conciergeLanguage}</span>
+                    </div>
+                  )}
+                  {/* Declined protection */}
+                  {Number(deliverOrderValue) > 100 && declineProtection && (
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Protection</span>
+                      <span className="text-foreground">Declined</span>
+                    </div>
+                  )}
+                  {/* Expenses */}
+                  {deliverHasExpenses && deliverExpenseItems.some(e => e.description.trim()) && (
+                    <>
+                      <div className="flex justify-between">
+                        <span className="text-muted-foreground">Expenses</span>
+                        <span className="text-foreground">${deliverExpenseItems.filter(e => e.description.trim()).reduce((sum, e) => sum + Number(e.amount || 0), 0)}</span>
+                      </div>
+                      {deliverExpenseItems.filter(e => e.description.trim()).map((e, i) => (
+                        <div key={i} className="flex justify-between pl-3">
+                          <span className="text-muted-foreground text-xs">{e.description}</span>
+                          <span className="text-foreground text-xs">${e.amount}</span>
+                        </div>
+                      ))}
+                    </>
+                  )}
+                  {conciergeHasExpenses && conciergeExpenseItems.some(e => e.description.trim()) && (
+                    <>
+                      <div className="flex justify-between">
+                        <span className="text-muted-foreground">Expenses</span>
+                        <span className="text-foreground">${conciergeExpenseItems.filter(e => e.description.trim()).reduce((sum, e) => sum + Number(e.amount || 0), 0)}</span>
+                      </div>
+                      {conciergeExpenseItems.filter(e => e.description.trim()).map((e, i) => (
+                        <div key={i} className="flex justify-between pl-3">
+                          <span className="text-muted-foreground text-xs">{e.description}</span>
+                          <span className="text-foreground text-xs">${e.amount}</span>
+                        </div>
+                      ))}
+                    </>
+                  )}
+                  {/* Notes */}
+                  {notes.trim() && (
+                    <div className="border-t border-border pt-1.5 mt-1">
+                      <p className="text-xs text-muted-foreground mb-0.5">Notes</p>
+                      <p className="text-xs text-foreground whitespace-pre-wrap">{notes}</p>
+                    </div>
+                  )}
+                  {/* Concierge description */}
+                  {selectedService === "concierge" && conciergeDescription.trim() && (
+                    <div className="border-t border-border pt-1.5 mt-1">
+                      <p className="text-xs text-muted-foreground mb-0.5">Task Description</p>
+                      <p className="text-xs text-foreground whitespace-pre-wrap">{conciergeDescription}</p>
+                    </div>
+                  )}
+                  {/* Payment */}
+                  <div className="border-t border-border pt-1.5 mt-1 flex justify-between">
+                    <span className="text-muted-foreground">Payment</span>
+                    <span className="text-foreground">{activePayment.label}</span>
+                  </div>
+                </div>
+              </div>
+
               {/* Price / Receipt */}
               {deliveryStep >= (isWfhConcierge ? 3 : 5) ? (
                 <div className="rounded-xl border border-border bg-muted/50 p-4 mb-4">
