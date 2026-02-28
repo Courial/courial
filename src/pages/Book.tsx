@@ -515,6 +515,7 @@ const Book = () => {
         const cat = conciergeCategories.find(c => c.id === conciergeCategory);
         payload.conciergeCategory = cat?.label || conciergeCategory;
         payload.conciergeSubCategory = conciergeSubCategory === "__direct__" ? cat?.label : conciergeSubCategory;
+        if (conciergeOrderValue) payload.orderValue = Number(conciergeOrderValue.replace(/,/g, ''));
         if (conciergeStopAddress) payload.stopAddress = conciergeStopAddress;
         if (conciergeLanguage) payload.preferredLanguage = conciergeLanguage;
         if (conciergeServiceMode) payload.serviceMode = conciergeServiceMode;
