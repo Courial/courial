@@ -3179,7 +3179,8 @@ const Book = () => {
                   )}
                 </div>
 
-                {/* Trip Summary */}
+                {/* Trip Summary — hidden for WFH concierge */}
+                {!isWfhConcierge && (
                 <div className="space-y-3 pt-2">
                   <div className="flex items-start gap-3">
                     <div className="flex-shrink-0 w-2.5 h-2.5 rounded-full bg-green-500 mt-[5px]" />
@@ -3205,6 +3206,7 @@ const Book = () => {
                     </div>
                   </div>
                 </div>
+                )}
               </div>
 
               {/* Price / Receipt */}
