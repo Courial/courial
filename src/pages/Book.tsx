@@ -3152,6 +3152,7 @@ const Book = () => {
                       const isCompleted = i < deliveryStep;
                       const isCurrent = i === deliveryStep;
                       const isFuture = i > deliveryStep;
+                      const isTaskInProgress = isWfhConcierge && step.label === "Task In Progress";
                       return (
                         <div key={step.label} className="flex gap-3">
                           {/* Vertical line + dot */}
@@ -3175,25 +3176,60 @@ const Book = () => {
                               />
                             )}
                           </div>
-                          {/* Label */}
-                          <div className={cn("pb-3", i === deliverySteps.length - 1 && "pb-0")}>
-                            <p
-                              className={cn(
-                                "text-sm font-semibold leading-tight transition-colors",
-                                isCurrent ? "text-foreground" : isCompleted ? "text-muted-foreground" : "text-muted-foreground/50"
-                              )}
-                            >
-                              {step.label}
-                              {isCompleted && <span className="ml-1.5 text-primary">✓</span>}
-                            </p>
-                            {isCurrent && (
-                              <motion.p
-                                initial={{ opacity: 0, y: -4 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                className="text-xs text-muted-foreground mt-0.5"
+                          {/* Label + Clock */}
+                          <div className={cn("pb-3 flex-1 flex items-start justify-between", i === deliverySteps.length - 1 && "pb-0")}>
+                            <div>
+                              <p
+                                className={cn(
+                                  "text-sm font-semibold leading-tight transition-colors",
+                                  isCurrent ? "text-foreground" : isCompleted ? "text-muted-foreground" : "text-muted-foreground/50"
+                                )}
                               >
-                                {step.desc}
-                              </motion.p>
+                                {step.label}
+                                {isCompleted && <span className="ml-1.5 text-primary">✓</span>}
+                              </p>
+                              {isCurrent && (
+                                <motion.p
+                                  initial={{ opacity: 0, y: -4 }}
+                                  animate={{ opacity: 1, y: 0 }}
+                                  className="text-xs text-muted-foreground mt-0.5"
+                                >
+                                  {step.desc}
+                                </motion.p>
+                              )}
+                            </div>
+                            {/* Large clock with timer inside, across from Task In Progress */}
+                            {isTaskInProgress && (
+                              <div className="flex flex-col items-center gap-1">
+                                <div className={cn(
+                                  "relative flex items-center justify-center transition-colors",
+                                  wfhTaskRunning && !wfhTaskPaused ? "text-primary" : "text-muted-foreground/30"
+                                )}>
+                                  <Clock className="w-16 h-16" strokeWidth={1.2} />
+                                  <span className={cn(
+                                    "absolute text-[10px] font-mono font-bold tabular-nums tracking-tight transition-colors",
+                                    wfhTaskRunning && !wfhTaskPaused ? "text-foreground" : "text-muted-foreground/40"
+                                  )}>
+                                    {String(Math.floor(wfhTaskElapsed / 3600)).padStart(2, "0")}
+                                    :{String(Math.floor((wfhTaskElapsed % 3600) / 60)).padStart(2, "0")}
+                                    :{String(wfhTaskElapsed % 60).padStart(2, "0")}
+                                  </span>
+                                </div>
+                                {wfhTaskRunning && (
+                                  <button
+                                    onClick={() => setWfhTaskPaused(p => !p)}
+                                    className={cn(
+                                      "flex items-center gap-1 text-[10px] font-semibold px-2.5 py-1 rounded-full border transition-colors",
+                                      wfhTaskPaused
+                                        ? "border-primary text-primary hover:bg-primary/10"
+                                        : "border-border text-muted-foreground hover:text-foreground hover:border-foreground/30"
+                                    )}
+                                  >
+                                    {wfhTaskPaused ? <Play className="w-2.5 h-2.5" /> : <Pause className="w-2.5 h-2.5" />}
+                                    {wfhTaskPaused ? "Resume" : "Pause"}
+                                  </button>
+                                )}
+                              </div>
                             )}
                           </div>
                         </div>
