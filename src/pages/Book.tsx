@@ -1261,6 +1261,7 @@ const Book = () => {
                       onChange={(e) => setRoadsideVehicleColor(e.target.value)}
                       className="flex-1 px-3 py-2 rounded-lg border border-border/60 bg-background text-foreground text-xs placeholder:text-muted-foreground focus:outline-none focus:border-primary transition-colors"
                     />
+                  </div>
                   <input
                     type="text"
                     placeholder="License Plate"
