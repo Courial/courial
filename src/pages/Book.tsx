@@ -336,7 +336,25 @@ const Book = () => {
     ? conciergeReady
     : isBaseFormValid && deliverOrderValue.trim().length > 0 && Number(deliverOrderValue.replace(/,/g, '')) > 0;
 
-  // Fetch vehicle models from AI when make changes
+  // Sync booking state to localStorage for Navbar
+  const formStarted = selectedService !== null && (
+    selectedService === "concierge"
+      ? (conciergeCategory !== null)
+      : (pickup.trim().length > 0 || dropoff.trim().length > 0)
+  );
+
+  useEffect(() => {
+    localStorage.setItem("courial_booking_state", bookingState);
+    localStorage.setItem("courial_form_started", formStarted ? "true" : "false");
+    window.dispatchEvent(new Event("courial-booking-update"));
+    return () => {
+      // Clean up on unmount only if we're leaving the page in input state
+      if (bookingState === "input") {
+        // Keep formStarted so navbar still shows orange if user navigates away mid-form
+      }
+    };
+  }, [bookingState, formStarted]);
+
   const fetchVehicleModels = useCallback(async (make: string) => {
     if (!make || roadsideCustomModel) return;
     setRoadsideModelsLoading(true);

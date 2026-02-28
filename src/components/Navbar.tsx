@@ -24,21 +24,36 @@ export const Navbar = () => {
   const { user, isAdmin, loading: authLoading, signOut } = useAuth();
   const navigate = useNavigate();
   const [hasOrders, setHasOrders] = useState(false);
-
-  const [hasActiveOrder, setHasActiveOrder] = useState(false);
+  const [bookingPulse, setBookingPulse] = useState(false);
+  const [formStarted, setFormStarted] = useState(false);
 
   useEffect(() => {
-    if (!user) { setHasOrders(false); setHasActiveOrder(false); return; }
+    if (!user) { setHasOrders(false); return; }
     supabase
       .from("orders")
       .select("id, status", { count: "exact" })
       .eq("user_id", user.id)
-      .then(({ data, count }) => {
+      .then(({ count }) => {
         setHasOrders((count ?? 0) > 0);
-        const active = data?.some(o => ["pending", "confirmed", "in_transit", "scheduled", "active"].includes(o.status));
-        setHasActiveOrder(!!active);
       });
   }, [user]);
+
+  // Listen for booking state updates from Book page
+  useEffect(() => {
+    const sync = () => {
+      const state = localStorage.getItem("courial_booking_state");
+      const started = localStorage.getItem("courial_form_started") === "true";
+      setBookingPulse(state === "loading" || state === "active");
+      setFormStarted(started && state === "input");
+    };
+    sync();
+    window.addEventListener("courial-booking-update", sync);
+    window.addEventListener("storage", sync);
+    return () => {
+      window.removeEventListener("courial-booking-update", sync);
+      window.removeEventListener("storage", sync);
+    };
+  }, []);
 
 
 
@@ -113,7 +128,11 @@ export const Navbar = () => {
               <div className="w-[70px]" />
             )}
             <Link to="/book">
-              <Button variant={isActive("/book") ? "secondary" : "hero"} size="sm" className={hasActiveOrder ? "animate-pulse-gentle border border-destructive" : ""}>
+              <Button
+                variant={isActive("/book") ? "secondary" : formStarted ? "default" : "hero"}
+                size="sm"
+                className={`${bookingPulse ? "animate-pulse-gentle border border-destructive" : ""} ${formStarted && !bookingPulse ? "bg-primary text-primary-foreground hover:bg-primary/90" : ""}`}
+              >
                 Book Now
               </Button>
             </Link>
@@ -188,7 +207,12 @@ export const Navbar = () => {
                   </Link>
                 )}
                 <Link to="/book" onClick={() => setIsOpen(false)}>
-                  <Button variant={isActive("/book") ? "secondary" : "hero"} className={`w-full ${hasActiveOrder ? "animate-pulse-gentle border border-destructive" : ""}`}>Book Now</Button>
+                  <Button
+                    variant={isActive("/book") ? "secondary" : formStarted ? "default" : "hero"}
+                    className={`w-full ${bookingPulse ? "animate-pulse-gentle border border-destructive" : ""} ${formStarted && !bookingPulse ? "bg-primary text-primary-foreground hover:bg-primary/90" : ""}`}
+                  >
+                    Book Now
+                  </Button>
                 </Link>
               </div>
             </div>
