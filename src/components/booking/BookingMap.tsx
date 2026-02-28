@@ -680,17 +680,17 @@ const BookingMap: React.FC<BookingMapProps> = ({ pickupCoords, dropoffCoords, st
           >
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="black" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 2v4m0 12v4M2 12h4m12 0h4"/></svg>
           </button>
-          <div className="flex flex-col rounded-full bg-white border border-black/10 shadow-sm overflow-hidden">
+          <div className="flex flex-col rounded-full border border-black overflow-hidden">
             <button
               onClick={() => { const m = mapInstanceRef.current; if (m) m.setZoom((m.getZoom() || 12) + 1); }}
-              className="w-7 h-7 flex items-center justify-center hover:bg-black/5 transition-colors border-b border-black/10"
+              className="w-7 h-7 flex items-center justify-center bg-black hover:bg-black/80 transition-colors"
               title="Zoom in"
             >
-              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="black" strokeWidth="2.5" strokeLinecap="round"><path d="M12 5v14M5 12h14"/></svg>
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round"><path d="M12 5v14M5 12h14"/></svg>
             </button>
             <button
               onClick={() => { const m = mapInstanceRef.current; if (m) m.setZoom((m.getZoom() || 12) - 1); }}
-              className="w-7 h-7 flex items-center justify-center hover:bg-black/5 transition-colors"
+              className="w-7 h-7 flex items-center justify-center bg-white hover:bg-black/5 transition-colors border-t border-black"
               title="Zoom out"
             >
               <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="black" strokeWidth="2.5" strokeLinecap="round"><path d="M5 12h14"/></svg>
