@@ -1302,6 +1302,18 @@ const Book = () => {
               {selectedService === "concierge" && (
                 <div className="mb-6">
                   <div className="flex items-end justify-center gap-4">
+                    {/* "None" icon - no vehicle selected */}
+                    <button
+                      onClick={() => setConciergeVehicle(null)}
+                      className="bg-transparent border-none outline-none cursor-pointer flex items-center"
+                    >
+                      <div className={cn(
+                        "h-[36px] flex items-end justify-center transition-all duration-300",
+                        conciergeVehicle === null ? "grayscale-0 opacity-100 scale-110" : "grayscale opacity-40 scale-100"
+                      )}>
+                        <img src={noVehicleIcon} alt="No vehicle" className="max-h-[28px] object-contain" />
+                      </div>
+                    </button>
                     {vehicleOptions.map((v) => {
                       const isActive = conciergeVehicle === v.id;
                       return (
@@ -1321,7 +1333,18 @@ const Book = () => {
                     })}
                   </div>
                   <AnimatePresence mode="wait">
-                    {conciergeVehicle && (
+                    {conciergeVehicle === null ? (
+                      <motion.p
+                        key="none"
+                        initial={{ opacity: 0, y: -4 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -4 }}
+                        transition={{ duration: 0.15 }}
+                        className="text-xs text-destructive text-center mt-2"
+                      >
+                        Please select a vehicle type
+                      </motion.p>
+                    ) : (
                       <motion.p
                         key={conciergeVehicle}
                         initial={{ opacity: 0, y: -4 }}
