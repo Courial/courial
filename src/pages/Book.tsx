@@ -335,7 +335,7 @@ const Book = () => {
     ? conciergeReady
     : pickup.trim().length > 0 && dropoff.trim().length > 0 && (!needsVehicle || selectedVehicle !== null) && notes.trim().length > 0;
   const isFormValid = selectedService === "concierge"
-    ? conciergeReady
+    ? conciergeReady && conciergeOrderValue.trim().length > 0 && Number(conciergeOrderValue.replace(/,/g, '')) > 0
     : isBaseFormValid && deliverOrderValue.trim().length > 0 && Number(deliverOrderValue.replace(/,/g, '')) > 0;
 
   // Sync booking state to localStorage for Navbar
