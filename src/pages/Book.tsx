@@ -1395,7 +1395,7 @@ const Book = () => {
                       ) : (
                         <>
                           <button
-                            onClick={() => setRoadsideColorOpen(!roadsideColorOpen)}
+                            onClick={(e) => { e.stopPropagation(); setRoadsideColorOpen(!roadsideColorOpen); setRoadsideMakeOpen(false); setRoadsideModelOpen(false); }}
                             className="w-full px-2 py-2 rounded-lg border border-border/60 bg-background text-foreground text-xs text-left flex items-center justify-between hover:border-foreground/30 transition-colors"
                           >
                             <span className={roadsideVehicleColor ? "text-foreground" : "text-muted-foreground"}>{roadsideVehicleColor || "Color"}</span>
