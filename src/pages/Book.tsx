@@ -3527,6 +3527,30 @@ const Book = () => {
                 </button>
               </div>
 
+              {/* Action Buttons */}
+              <div className="space-y-2 mb-3">
+                {deliveryStep < 5 && (
+                  <button
+                    onClick={() => setDeliveryStep((s) => Math.min(s + 1, 5))}
+                    className="w-full py-3 rounded-full text-sm font-semibold text-primary-foreground bg-primary hover:bg-primary/90 transition-colors"
+                  >
+                    {selectedService === "concierge"
+                      ? ["En Route", "Arrive", "Begin Task", "Complete Task", "Finish"][deliveryStep]
+                      : selectedService === "valet"
+                      ? ["En Route", "Arrive", "Take Vehicle", "Park Vehicle", "Finish"][deliveryStep]
+                      : ["Arrive at Pickup", "Pick Up Package", "Arrive at Drop-off", "Drop Off Package", "Complete Order"][deliveryStep]}
+                  </button>
+                )}
+                {deliveryStep < (isWfhConcierge ? 3 : 5) && (
+                  <button
+                    onClick={handleCancelBooking}
+                    className="w-full py-3 rounded-full text-sm font-semibold text-muted-foreground bg-muted hover:bg-muted/80 transition-colors"
+                  >
+                    Cancel {selectedService === "concierge" ? "Concierge" : selectedService === "valet" ? "Valet" : "Delivery"}
+                  </button>
+                )}
+              </div>
+
               {deliveryStep >= (isWfhConcierge ? 3 : 5) && (
                 <button
                   onClick={handleCancelBooking}
