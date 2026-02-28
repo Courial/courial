@@ -8,7 +8,7 @@ import { Link, useSearchParams } from "react-router-dom";
 import { ActivityPanel } from "@/components/booking/ActivityPanel";
 import { motion, AnimatePresence } from "framer-motion";
 import { Helmet } from "react-helmet-async";
-import { MapPin, Search, CarFront, ParkingCircle, Leaf, Box, ConciergeBell, Clock, CalendarIcon, ChevronDown, ChevronLeft, Info, Plus, Trash2, CreditCard, Star, X, Weight, Sparkles, Zap, ArrowLeft, Shield, Eye, EyeOff, MessageCircle, Headset, Send, Phone, Mail, Check, Home } from "lucide-react";
+import { MapPin, Search, CarFront, ParkingCircle, Leaf, Box, ConciergeBell, Clock, CalendarIcon, ChevronDown, ChevronLeft, Info, Plus, Trash2, CreditCard, Star, X, Weight, Sparkles, Zap, ArrowLeft, Shield, Eye, EyeOff, MessageCircle, Headset, Send, Phone, Mail, Check } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import visaIcon from "@/assets/card-icons/visa.svg";
@@ -3053,7 +3053,7 @@ const Book = () => {
                 </div>
                 <p className="text-[15px] font-medium text-muted-foreground flex items-center gap-1.5">
                   {isWfhConcierge
-                    ? <Home className="w-5 h-5" />
+                    ? <span className="text-base">🏠</span>
                     : <img src={deliverBox} alt="" className="w-5 h-5" />
                   }
                   {isWfhConcierge ? "WFH Service" : "4 mins away • 2:01 AM dropoff"}
@@ -3089,10 +3089,17 @@ const Book = () => {
                     <div className="text-xs font-bold text-foreground mt-0.5">Plate No. {acceptedCourial?.licensePlate || "ABC1234"}</div>
                   </div>
                   {isWfhConcierge ? (
-                    <svg viewBox="0 0 48 48" className="h-10 w-10 shrink-0">
-                      <circle cx="24" cy="24" r="22" fill="none" stroke="currentColor" strokeWidth="3" className="text-destructive" />
-                      <line x1="8" y1="8" x2="40" y2="40" stroke="currentColor" strokeWidth="3" strokeLinecap="round" className="text-destructive" />
-                      <path d="M24 14 L32 22 L32 32 L16 32 L16 22 Z" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinejoin="round" className="text-muted-foreground" />
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none" className="h-10 w-10 shrink-0">
+                      <g opacity="0.6">
+                        <path d="M10 28l3-6h22l3 6" fill="#888" stroke="#888" strokeWidth="1.5"/>
+                        <rect x="10" y="28" width="28" height="6" rx="1" fill="#888"/>
+                        <circle cx="16" cy="34" r="2.5" fill="#555"/>
+                        <circle cx="32" cy="34" r="2.5" fill="#555"/>
+                        <path d="M15 23l2-4h5v4z" fill="#bbb"/>
+                        <path d="M24 19h5l2 4H24z" fill="#bbb"/>
+                      </g>
+                      <circle cx="24" cy="24" r="18" stroke="hsl(var(--destructive))" strokeWidth="3" fill="none"/>
+                      <line x1="11" y1="11" x2="37" y2="37" stroke="hsl(var(--destructive))" strokeWidth="3"/>
                     </svg>
                   ) : selectedVehicle ? (
                     <img
