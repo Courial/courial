@@ -157,6 +157,12 @@ const Book = () => {
   const [deliverRedraftSuggestion, setDeliverRedraftSuggestion] = useState<string | null>(null);
   const [isDeliverRedrafting, setIsDeliverRedrafting] = useState(false);
 
+  // WFH task timer state
+  const [wfhTaskElapsed, setWfhTaskElapsed] = useState(0); // seconds elapsed
+  const [wfhTaskPaused, setWfhTaskPaused] = useState(false);
+  const [wfhTaskRunning, setWfhTaskRunning] = useState(false);
+  const wfhTaskIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
   // Roadside Assistance vehicle details
   const [roadsideVehicleMake, setRoadsideVehicleMake] = useState("");
   const [roadsideVehicleModel, setRoadsideVehicleModel] = useState("");
