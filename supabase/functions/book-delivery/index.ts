@@ -35,17 +35,22 @@ serve(async (req) => {
 
     // Validate required fields
     const { pickup, dropoff, vehicleType, userId, serviceType } = payload;
-    if (!pickup?.address || !pickup?.lat || !pickup?.lng) {
-      return new Response(
-        JSON.stringify({ error: "Missing pickup address or coordinates" }),
-        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-      );
-    }
-    if (!dropoff?.address || !dropoff?.lat || !dropoff?.lng) {
-      return new Response(
-        JSON.stringify({ error: "Missing dropoff address or coordinates" }),
-        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-      );
+    const isConcierge = serviceType === "concierge";
+
+    // For concierge, addresses/coords are optional; for deliver/valet they're required
+    if (!isConcierge) {
+      if (!pickup?.address || !pickup?.lat || !pickup?.lng) {
+        return new Response(
+          JSON.stringify({ error: "Missing pickup address or coordinates" }),
+          { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        );
+      }
+      if (!dropoff?.address || !dropoff?.lat || !dropoff?.lng) {
+        return new Response(
+          JSON.stringify({ error: "Missing dropoff address or coordinates" }),
+          { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        );
+      }
     }
     // vehicleType is required only for deliver service
     if ((!serviceType || serviceType === "deliver") && !vehicleType) {
