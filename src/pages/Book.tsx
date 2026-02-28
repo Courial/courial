@@ -8,7 +8,7 @@ import { Link, useSearchParams } from "react-router-dom";
 import { ActivityPanel } from "@/components/booking/ActivityPanel";
 import { motion, AnimatePresence } from "framer-motion";
 import { Helmet } from "react-helmet-async";
-import { MapPin, Search, CarFront, ParkingCircle, Leaf, Box, ConciergeBell, Clock, CalendarIcon, ChevronDown, ChevronLeft, Info, Plus, Trash2, CreditCard, Star, X, Weight, Sparkles, Zap, ArrowLeft, Shield, Eye, EyeOff, MessageCircle, Headset, Send, Phone, Mail, Check } from "lucide-react";
+import { MapPin, Search, CarFront, ParkingCircle, Leaf, Box, ConciergeBell, Clock, CalendarIcon, ChevronDown, ChevronLeft, Info, Plus, Trash2, CreditCard, Star, X, Weight, Sparkles, Zap, ArrowLeft, Shield, Eye, EyeOff, MessageCircle, Headset, Send, Phone, Mail, Check, Home } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import visaIcon from "@/assets/card-icons/visa.svg";
@@ -3052,7 +3052,10 @@ const Book = () => {
                   <span className="text-sm font-semibold text-primary uppercase tracking-wider">Live</span>
                 </div>
                 <p className="text-[15px] font-medium text-muted-foreground flex items-center gap-1.5">
-                  <img src={deliverBox} alt="" className="w-5 h-5" />
+                  {isWfhConcierge
+                    ? <Home className="w-5 h-5" />
+                    : <img src={deliverBox} alt="" className="w-5 h-5" />
+                  }
                   {isWfhConcierge ? "WFH Service" : "4 mins away • 2:01 AM dropoff"}
                 </p>
               </div>
@@ -3085,13 +3088,19 @@ const Book = () => {
                     </div>
                     <div className="text-xs font-bold text-foreground mt-0.5">Plate No. {acceptedCourial?.licensePlate || "ABC1234"}</div>
                   </div>
-                  {selectedVehicle && (
+                  {isWfhConcierge ? (
+                    <svg viewBox="0 0 48 48" className="h-10 w-10 shrink-0">
+                      <circle cx="24" cy="24" r="22" fill="none" stroke="currentColor" strokeWidth="3" className="text-destructive" />
+                      <line x1="8" y1="8" x2="40" y2="40" stroke="currentColor" strokeWidth="3" strokeLinecap="round" className="text-destructive" />
+                      <path d="M24 14 L32 22 L32 32 L16 32 L16 22 Z" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinejoin="round" className="text-muted-foreground" />
+                    </svg>
+                  ) : selectedVehicle ? (
                     <img
                       src={vehicleOptions.find(v => v.id === selectedVehicle)?.image}
                       alt={selectedVehicle}
                       className="h-10 object-contain"
                     />
-                  )}
+                  ) : null}
                 </div>
 
                 {/* Delivery Status Stepper */}
