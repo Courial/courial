@@ -819,13 +819,14 @@ const Book = () => {
 
   // WFH task timer — start on "Task In Progress" (step 1), stop on "Task Completed" (step 2+)
   useEffect(() => {
-    if (!isWfhConcierge) return;
+    const isWfh = selectedService === "concierge" && conciergeIsRemote;
+    if (!isWfh) return;
     if (deliveryStep >= 1 && deliveryStep < 2) {
       setWfhTaskRunning(true);
     } else if (deliveryStep >= 2) {
       setWfhTaskRunning(false);
     }
-  }, [isWfhConcierge, deliveryStep]);
+  }, [selectedService, conciergeIsRemote, deliveryStep]);
 
   useEffect(() => {
     if (wfhTaskRunning && !wfhTaskPaused) {
