@@ -1350,7 +1350,7 @@ const Book = () => {
               )}
 
               {/* Concierge Category Drill-Down */}
-              {selectedService === "concierge" && (
+              {selectedService === "concierge" && conciergeVehicle && (
                 <div className="mb-4">
                   <AnimatePresence mode="wait">
                     {!conciergeCategory ? (
