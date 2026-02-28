@@ -3211,7 +3211,7 @@ const Book = () => {
                       const progress = (wfhTaskElapsed % 60) / 60;
                       const dashOffset = circumference * (1 - progress);
                       return (
-                        <div className="absolute top-1/2 flex flex-col items-center gap-1.5" style={{ right: '0', left: 'auto', transform: 'translate(0, -50%)', marginRight: 'calc((100% - 200px) / 4)' }}>
+                        <div className="absolute top-1/2 flex flex-col items-center gap-1.5" style={{ left: '75%', transform: 'translate(-50%, -50%)' }}>
                           <div className="relative flex items-center justify-center" style={{ width: size, height: size }}>
                             {/* Background ring */}
                             <svg width={size} height={size} className="absolute inset-0 -rotate-90">
