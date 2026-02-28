@@ -34,7 +34,7 @@ serve(async (req) => {
           },
           {
             role: "user",
-            content: `List the 5 most popular models currently sold by "${make}" in the US market (2015-2025). Return as a JSON array of model name strings only. Example: ["Camry","Corolla","RAV4","Highlander","Tacoma"]`
+            content: `List ALL current and recent models (2015-2025) sold by "${make}" in the US market. Include every sedan, SUV, truck, coupe, convertible, wagon, and electric model. For BMW include 3 Series, 5 Series, 7 Series, X1, X3, X5, X7, i4, iX, M3, M5, Z4, etc. Return as a JSON array of model name strings. Be comprehensive — include at least 15 models for major brands.`
           }
         ],
         tools: [
