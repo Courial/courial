@@ -336,6 +336,26 @@ const Book = () => {
     ? conciergeReady
     : isBaseFormValid && deliverOrderValue.trim().length > 0 && Number(deliverOrderValue.replace(/,/g, '')) > 0;
 
+  // Fetch vehicle models from AI when make changes
+  const fetchVehicleModels = useCallback(async (make: string) => {
+    if (!make || roadsideCustomModel) return;
+    setRoadsideModelsLoading(true);
+    setRoadsideModelSuggestions([]);
+    try {
+      const { data, error } = await supabase.functions.invoke("vehicle-models", {
+        body: { make },
+      });
+      if (error) throw error;
+      if (data?.models && Array.isArray(data.models)) {
+        setRoadsideModelSuggestions(data.models);
+      }
+    } catch (e) {
+      console.error("Failed to fetch vehicle models:", e);
+    } finally {
+      setRoadsideModelsLoading(false);
+    }
+  }, [roadsideCustomModel]);
+
   // Redraft with AI handler
   const handleRedraft = useCallback(async () => {
     if (conciergeDescription.trim().length < 10 || isRedrafting) return;
