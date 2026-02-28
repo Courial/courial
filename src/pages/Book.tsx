@@ -1347,7 +1347,7 @@ const Book = () => {
                       ) : (
                         <>
                           <button
-                            onClick={() => { if (roadsideVehicleMake) setRoadsideModelOpen(!roadsideModelOpen); }}
+                            onClick={(e) => { e.stopPropagation(); if (roadsideVehicleMake) { setRoadsideModelOpen(!roadsideModelOpen); setRoadsideMakeOpen(false); setRoadsideColorOpen(false); } }}
                             className={`w-full px-2 py-2 rounded-lg border border-border/60 bg-background text-xs text-left flex items-center justify-between transition-colors ${roadsideVehicleMake ? "text-foreground hover:border-foreground/30" : "text-muted-foreground opacity-60 cursor-not-allowed"}`}
                           >
                             <span className={roadsideVehicleModel ? "text-foreground" : "text-muted-foreground"}>
