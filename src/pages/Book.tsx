@@ -77,6 +77,7 @@ const conciergeCategories: ConciergeCategory[] = [
   { id: "waiting", label: "Waiting", desc: "We wait so you don't", subs: ["Wait in Line", "Wait for Service Provider", "Be Somewhere for Me", "Get Documents Signed"] },
   { id: "notary", label: "Notary Services", desc: "Official notary support", subs: ["Certified Notary", "Notary Assistance"] },
   { id: "travel", label: "Travel", desc: "Trips, flights & logistics", subs: ["Plan Custom Itinerary", "Arrange Private Drivers", "Coordinate Multi-city Travel", "Book Activities & Reservations"] },
+  { id: "roadside-assistance", label: "Roadside Assistance", desc: "Help when you need it most", subs: ["Towing", "Flat Tire", "Dead Battery / Jump Start", "Out of Gas", "Locked Out", "Something Else"] },
   { id: "something-else", label: "Something Else?", desc: "Whatever the task, consider it handled.", subs: [] },
 ];
 
