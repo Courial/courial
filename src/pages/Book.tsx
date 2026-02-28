@@ -1297,7 +1297,7 @@ const Book = () => {
                       ) : (
                         <>
                           <button
-                            onClick={() => setRoadsideMakeOpen(!roadsideMakeOpen)}
+                            onClick={(e) => { e.stopPropagation(); setRoadsideMakeOpen(!roadsideMakeOpen); setRoadsideModelOpen(false); setRoadsideColorOpen(false); }}
                             className="w-full px-2 py-2 rounded-lg border border-border/60 bg-background text-foreground text-xs text-left flex items-center justify-between hover:border-foreground/30 transition-colors"
                           >
                             <span className={roadsideVehicleMake ? "text-foreground" : "text-muted-foreground"}>{roadsideVehicleMake || "Make"}</span>
