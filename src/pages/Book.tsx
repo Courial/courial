@@ -142,6 +142,7 @@ const Book = () => {
   const [conciergeExpenseItems, setConciergeExpenseItems] = useState<Array<{ description: string; amount: string }>>([{ description: "", amount: "0" }]);
   const [conciergeAllowOverage, setConciergeAllowOverage] = useState(false);
   const [conciergeOverageLimit, setConciergeOverageLimit] = useState("0");
+  const [conciergeOrderValue, setConciergeOrderValue] = useState("");
   const [expenseCapWarning, setExpenseCapWarning] = useState<number | null>(null);
   const [overageCapWarning, setOverageCapWarning] = useState(false);
   const [redraftSuggestion, setRedraftSuggestion] = useState<string | null>(null);
@@ -334,7 +335,7 @@ const Book = () => {
     ? conciergeReady
     : pickup.trim().length > 0 && dropoff.trim().length > 0 && (!needsVehicle || selectedVehicle !== null) && notes.trim().length > 0;
   const isFormValid = selectedService === "concierge"
-    ? conciergeReady
+    ? conciergeReady && conciergeOrderValue.trim().length > 0 && Number(conciergeOrderValue.replace(/,/g, '')) > 0
     : isBaseFormValid && deliverOrderValue.trim().length > 0 && Number(deliverOrderValue.replace(/,/g, '')) > 0;
 
   // Sync booking state to localStorage for Navbar
@@ -514,6 +515,7 @@ const Book = () => {
         const cat = conciergeCategories.find(c => c.id === conciergeCategory);
         payload.conciergeCategory = cat?.label || conciergeCategory;
         payload.conciergeSubCategory = conciergeSubCategory === "__direct__" ? cat?.label : conciergeSubCategory;
+        if (conciergeOrderValue) payload.orderValue = Number(conciergeOrderValue.replace(/,/g, ''));
         if (conciergeStopAddress) payload.stopAddress = conciergeStopAddress;
         if (conciergeLanguage) payload.preferredLanguage = conciergeLanguage;
         if (conciergeServiceMode) payload.serviceMode = conciergeServiceMode;
@@ -629,7 +631,7 @@ const Book = () => {
       toast.error("Something went wrong — please try again.");
       setBookingState("input");
     }
-  }, [isFormValid, user, timeMode, selectedService, selectedVehicle, notes, pickup, pickupCoords, dropoff, dropoffCoords, selectedDate, selectedTime, over70lbs, heavyWeight, heavyItems, twoCourials, hasStairs, conciergeDescription, conciergeCategory, conciergeSubCategory, conciergeStartAddress, conciergeStopAddress, conciergeFinalAddress, conciergeLanguage, conciergeServiceMode, conciergeHasExpenses, conciergeExpenseItems, conciergeAllowOverage, conciergeOverageLimit, deliverLanguage, deliverMultiStop, deliverExtraStops, deliverHasExpenses, deliverExpenseItems, deliverAllowOverage, deliverOverageLimit]);
+  }, [isFormValid, user, timeMode, selectedService, selectedVehicle, notes, pickup, pickupCoords, dropoff, dropoffCoords, selectedDate, selectedTime, over70lbs, heavyWeight, heavyItems, twoCourials, hasStairs, conciergeDescription, conciergeCategory, conciergeSubCategory, conciergeStartAddress, conciergeStopAddress, conciergeFinalAddress, conciergeLanguage, conciergeServiceMode, conciergeHasExpenses, conciergeExpenseItems, conciergeAllowOverage, conciergeOverageLimit, conciergeOrderValue, deliverLanguage, deliverMultiStop, deliverExtraStops, deliverHasExpenses, deliverExpenseItems, deliverAllowOverage, deliverOverageLimit]);
 
   // Animate loading progress — caps at 95% and waits for socket AcceptOrder_listener
   useEffect(() => {
@@ -1889,6 +1891,100 @@ const Book = () => {
                   )}
                 </AnimatePresence>
 
+                {/* Order Value — only show when concierge form is ready */}
+                {conciergeReady && (
+                <div className="mb-3 mt-4">
+                  <div className="flex items-baseline gap-2">
+                    <h4 className="text-xs font-medium text-foreground leading-none">Order Value</h4>
+                    <div className="relative">
+                      <span className="absolute left-2 top-1/2 -translate-y-1/2 text-xs text-muted-foreground">$</span>
+                      <input
+                        type="text"
+                        inputMode="decimal"
+                        value={conciergeOrderValue ? Number(conciergeOrderValue.replace(/,/g, '')).toLocaleString('en-US') : ''}
+                        onChange={(e) => {
+                          const raw = e.target.value.replace(/,/g, '');
+                          if (raw === '' || /^\d+$/.test(raw)) {
+                            setConciergeOrderValue(raw);
+                          }
+                        }}
+                        placeholder="0"
+                        onFocus={(e) => e.target.select()}
+                        className="w-20 rounded-lg border border-border/60 bg-background pl-5 pr-2 py-0.5 text-xs text-foreground placeholder:text-muted-foreground/60 focus:outline-none focus:ring-0"
+                      />
+                    </div>
+                  </div>
+                  <p className="text-[10px] text-muted-foreground mt-1 leading-relaxed">
+                    Estimated value of the task or items involved. Complimentary coverage is included for values up to $100.
+                  </p>
+
+                  <AnimatePresence>
+                    {Number(conciergeOrderValue) > 100 && Number(conciergeOrderValue) <= 200 && (
+                      <motion.div
+                        initial={{ opacity: 0, height: 0 }}
+                        animate={{ opacity: 1, height: "auto" }}
+                        exit={{ opacity: 0, height: 0 }}
+                        transition={{ duration: 0.2 }}
+                        className="overflow-hidden"
+                      >
+                        <div className="mt-2 p-3 rounded-lg border border-border/60 bg-muted/30 space-y-1.5">
+                          <p className="text-[11px] font-medium text-foreground">For tasks exceeding $100 in declared value:</p>
+                          <ul className="text-[10px] text-muted-foreground leading-relaxed space-y-0.5">
+                            <li>• $101–$200: Protection fee added at 5% of value.</li>
+                            <li>• Supporting documentation verifying value will be required.</li>
+                            <li>• For eligible high-value tasks over $200, the Concierge must physically verify items prior to starting the task.</li>
+                          </ul>
+                          <p className="text-[10px] text-muted-foreground mt-1">All protection is subject to Courial's Service Protection & Coverage Policy.</p>
+                          <label className="flex items-center gap-2 mt-2 cursor-pointer">
+                            <input
+                              type="checkbox"
+                              checked={declineProtection}
+                              onChange={(e) => setDeclineProtection(e.target.checked)}
+                              className="h-3 w-3 rounded border border-border/60 accent-foreground cursor-pointer appearance-none checked:appearance-auto bg-background"
+                            />
+                            <span className="text-[10px] text-muted-foreground">I decline additional protection coverage and wish to proceed without it.</span>
+                          </label>
+                        </div>
+                      </motion.div>
+                    )}
+                    {Number(conciergeOrderValue) > 200 && (
+                      <motion.div
+                        initial={{ opacity: 0, height: 0 }}
+                        animate={{ opacity: 1, height: "auto" }}
+                        exit={{ opacity: 0, height: 0 }}
+                        transition={{ duration: 0.2 }}
+                        className="overflow-hidden"
+                      >
+                        <div className="mt-2 p-3 rounded-lg border border-destructive/30 bg-destructive/5 space-y-2">
+                          <p className="text-[11px] font-medium text-foreground">
+                            For tasks valued at $200 or more, please contact{" "}
+                            <Link to="/help" className="text-primary hover:opacity-80">Courial Support</Link>{" "}
+                            to complete this booking.
+                          </p>
+                          <Button
+                            variant="hero"
+                            size="sm"
+                            className="text-xs h-8"
+                            onClick={() => setShowHighValueDialog(true)}
+                          >
+                            Send to Courial
+                          </Button>
+                          <label className="flex items-center gap-2 mt-1 cursor-pointer">
+                            <input
+                              type="checkbox"
+                              checked={declineProtection}
+                              onChange={(e) => setDeclineProtection(e.target.checked)}
+                              className="h-3 w-3 rounded border border-border/60 accent-foreground cursor-pointer appearance-none checked:appearance-auto bg-background"
+                            />
+                            <span className="text-[10px] text-muted-foreground">I decline additional protection coverage and wish to proceed without it.</span>
+                          </label>
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
+                )}
+
                 {/* Concierge Service Requirements */}
                 <Collapsible className="mt-5 text-xs text-foreground">
                   <CollapsibleTrigger className="flex items-center gap-1 font-semibold cursor-pointer hover:opacity-70 transition-opacity">
@@ -1938,10 +2034,10 @@ const Book = () => {
                       <ChevronDown className="w-3 h-3 text-muted-foreground" />
                     </button>
                     <Button
-                      disabled={!isFormValid}
+                      disabled={!isFormValid || (Number(conciergeOrderValue) > 200 && !declineProtection)}
                       onClick={handleBookingSubmit}
                       className="rounded h-10 text-lg font-semibold px-6"
-                      variant={isFormValid ? "hero" : "secondary"}
+                      variant={isFormValid && !(Number(conciergeOrderValue) > 200 && !declineProtection) ? "hero" : "secondary"}
                     >
                       Book Concierge
                     </Button>
