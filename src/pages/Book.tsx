@@ -2033,10 +2033,10 @@ const Book = () => {
                       <ChevronDown className="w-3 h-3 text-muted-foreground" />
                     </button>
                     <Button
-                      disabled={!isFormValid}
+                      disabled={!isFormValid || (Number(conciergeOrderValue) > 200 && !declineProtection)}
                       onClick={handleBookingSubmit}
                       className="rounded h-10 text-lg font-semibold px-6"
-                      variant={isFormValid ? "hero" : "secondary"}
+                      variant={isFormValid && !(Number(conciergeOrderValue) > 200 && !declineProtection) ? "hero" : "secondary"}
                     >
                       Book Concierge
                     </Button>
