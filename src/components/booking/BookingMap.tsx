@@ -362,6 +362,33 @@ const BookingMap: React.FC<BookingMapProps> = ({ pickupCoords, dropoffCoords, st
         (result, status) => {
           if (status === "OK" && result) {
             directionsRenderer.setDirections(result);
+
+            // Extract total distance & duration across all legs
+            const legs = result.routes[0].legs;
+            let totalDistMeters = 0;
+            let totalDurSeconds = 0;
+            legs.forEach(leg => {
+              totalDistMeters += leg.distance?.value || 0;
+              totalDurSeconds += leg.duration?.value || 0;
+            });
+            const miles = (totalDistMeters / 1609.34).toFixed(1);
+            const mins = Math.round(totalDurSeconds / 60);
+
+            // Find midpoint of overview_path
+            const overviewPath = result.routes[0].overview_path;
+            const midIdx = Math.floor(overviewPath.length / 2);
+            const midPoint = overviewPath[midIdx];
+
+            const tripStyle = "font-family:'Avenir','Avenir Next','Nunito Sans',system-ui,sans-serif;padding:4px 8px;line-height:1.35;max-width:160px;text-align:center;";
+            const tripContent = `<div style="${tripStyle}"><div style="font-size:10px;font-weight:600;color:rgba(0,0,0,0.85);margin-bottom:1px;">Trip Info</div><div style="font-size:9px;font-weight:400;color:rgba(0,0,0,0.6);">${mins} mins · ${miles} mi</div></div>`;
+
+            const tripInfoWindow = new google.maps.InfoWindow({
+              content: tripContent,
+              position: midPoint,
+              disableAutoPan: true,
+            });
+            tripInfoWindow.open(map);
+            tripInfoWindowRef.current = tripInfoWindow;
           }
         }
       );
