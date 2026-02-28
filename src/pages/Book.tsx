@@ -3193,7 +3193,9 @@ const Book = () => {
                                 animate={{ opacity: 1, y: 0 }}
                                 className="text-xs text-muted-foreground mt-0.5"
                               >
-                                {step.desc}
+                                {step.label === "Task Completed" && wfhTaskElapsed > 0
+                                  ? `${Math.floor(wfhTaskElapsed / 3600)} hrs • ${Math.floor((wfhTaskElapsed % 3600) / 60)} mins Task completed`
+                                  : step.desc}
                               </motion.p>
                             )}
                           </div>
