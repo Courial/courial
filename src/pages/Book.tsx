@@ -356,6 +356,15 @@ const Book = () => {
     }
   }, [roadsideCustomModel]);
 
+  // Close roadside dropdowns on outside click
+  useEffect(() => {
+    const handler = () => { setRoadsideMakeOpen(false); setRoadsideModelOpen(false); setRoadsideColorOpen(false); };
+    if (roadsideMakeOpen || roadsideModelOpen || roadsideColorOpen) {
+      document.addEventListener("click", handler);
+      return () => document.removeEventListener("click", handler);
+    }
+  }, [roadsideMakeOpen, roadsideModelOpen, roadsideColorOpen]);
+
   // Redraft with AI handler
   const handleRedraft = useCallback(async () => {
     if (conciergeDescription.trim().length < 10 || isRedrafting) return;
