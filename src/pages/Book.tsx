@@ -1333,18 +1333,7 @@ const Book = () => {
                     })}
                   </div>
                   <AnimatePresence mode="wait">
-                    {conciergeVehicle === null ? (
-                      <motion.p
-                        key="none"
-                        initial={{ opacity: 0, y: -4 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: -4 }}
-                        transition={{ duration: 0.15 }}
-                        className="text-xs text-destructive text-center mt-2"
-                      >
-                        Please select a vehicle type
-                      </motion.p>
-                    ) : (
+                    {conciergeVehicle && (
                       <motion.p
                         key={conciergeVehicle}
                         initial={{ opacity: 0, y: -4 }}
