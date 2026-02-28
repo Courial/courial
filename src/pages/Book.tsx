@@ -123,7 +123,7 @@ const Book = () => {
   const [hasStairs, setHasStairs] = useState<boolean | null>(null);
 
   // Concierge-specific state
-  const [conciergeVehicle, setConciergeVehicle] = useState<VehicleId | null>(null);
+  const [conciergeVehicle, setConciergeVehicle] = useState<VehicleId | "none" | null>(null);
   const [conciergeCategory, setConciergeCategory] = useState<string | null>(null);
   const [conciergeSubCategory, setConciergeSubCategory] = useState<string | null>(null);
   const [conciergeIsRemote, setConciergeIsRemote] = useState(false);
