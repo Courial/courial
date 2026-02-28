@@ -172,7 +172,7 @@ const BookingMap: React.FC<BookingMapProps> = ({ pickupCoords, dropoffCoords, st
       center: defaultCenter,
       zoom: 12,
       disableDefaultUI: true,
-      zoomControl: true,
+      zoomControl: false,
       styles: [
         { featureType: "poi", stylers: [{ visibility: "off" }] },
         { featureType: "transit", stylers: [{ visibility: "off" }] },
