@@ -3210,7 +3210,7 @@ const Book = () => {
               </div>
 
               {/* Price / Receipt */}
-              {deliveryStep >= 5 ? (
+              {deliveryStep >= (isWfhConcierge ? 3 : 5) ? (
                 <div className="rounded-xl border border-border bg-muted/50 p-4 mb-4">
                   <p className="text-xs font-bold uppercase tracking-wider text-muted-foreground mb-2">Receipt</p>
                   <div className="space-y-1.5 text-sm">
