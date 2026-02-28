@@ -1304,7 +1304,7 @@ const Book = () => {
                             <ChevronDown className="w-3 h-3 text-muted-foreground" />
                           </button>
                           {roadsideMakeOpen && (
-                            <div className="absolute z-50 mt-1 w-full max-h-48 overflow-y-auto rounded-lg border border-border/60 bg-background shadow-lg">
+                            <div onClick={(e) => e.stopPropagation()} className="absolute z-50 mt-1 w-full max-h-48 overflow-y-auto rounded-lg border border-border/60 bg-background shadow-lg">
                               {["Acura","Audi","BMW","Buick","Cadillac","Chevrolet","Chrysler","Dodge","Ford","Genesis","GMC","Honda","Hyundai","Infiniti","Jaguar","Jeep","Kia","Land Rover","Lexus","Lincoln","Mazda","Mercedes-Benz","Mini","Mitsubishi","Nissan","Porsche","Ram","Rivian","Subaru","Tesla","Toyota","Volkswagen","Volvo"].map((make) => (
                                 <button
                                   key={make}
