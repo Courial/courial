@@ -885,7 +885,7 @@ const Book = () => {
     ],
     concierge_wfh: [
       { label: "Request Accepted", desc: "Concierge confirmed" },
-      { label: "Task In Progress", desc: "Your concierge is working on your request" },
+      { label: "Task In Progress", desc: "Task has begun" },
       { label: "Task Completed", desc: "Your request has been fulfilled" },
       { label: "Order Complete", desc: "Invoice sent — thank you!" },
     ],
