@@ -150,6 +150,13 @@ const Book = () => {
   const [deliverRedraftSuggestion, setDeliverRedraftSuggestion] = useState<string | null>(null);
   const [isDeliverRedrafting, setIsDeliverRedrafting] = useState(false);
 
+  // Roadside Assistance vehicle details
+  const [roadsideVehicleMake, setRoadsideVehicleMake] = useState("");
+  const [roadsideVehicleModel, setRoadsideVehicleModel] = useState("");
+  const [roadsideVehicleColor, setRoadsideVehicleColor] = useState("");
+  const [roadsideLicensePlate, setRoadsideLicensePlate] = useState("");
+  const [roadsideSafeLocation, setRoadsideSafeLocation] = useState<boolean | null>(null);
+
   // Deliver-specific: multi-stop
   const [deliverMultiStop, setDeliverMultiStop] = useState(false);
   const [deliverExtraStops, setDeliverExtraStops] = useState<Array<{ address: string; placeName: string | null; coords: { lat: number; lng: number } | null }>>([]);
