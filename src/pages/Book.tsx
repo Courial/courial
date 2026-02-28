@@ -3422,9 +3422,8 @@ const Book = () => {
                   )}
                   {conciergeHasExpenses && conciergeExpenseItems.some(e => e.description.trim()) && (
                     <>
-                      <div className="flex justify-between">
+                       <div className="flex justify-between">
                         <span className="text-muted-foreground">Expenses</span>
-                        <span className="text-foreground">${conciergeExpenseItems.filter(e => e.description.trim()).reduce((sum, e) => sum + Number(e.amount || 0), 0)}</span>
                       </div>
                       {conciergeExpenseItems.filter(e => e.description.trim()).map((e, i) => (
                         <div key={i} className="flex justify-between pl-3">
