@@ -3342,7 +3342,7 @@ const Book = () => {
                   )}
                   {selectedService === "concierge" && conciergeSubCategory && (
                     <div className="flex justify-between">
-                      <span className="text-muted-foreground">Task</span>
+                      <span className="text-muted-foreground">Sub-Category</span>
                       <span className="text-foreground capitalize">{conciergeSubCategory.replace(/-/g, " ")}</span>
                     </div>
                   )}
@@ -3402,11 +3402,18 @@ const Book = () => {
                       <span className="text-foreground">{deliverLanguage || conciergeLanguage}</span>
                     </div>
                   )}
-                  {/* Declined protection */}
-                  {Number(deliverOrderValue) > 100 && declineProtection && (
+                  {/* Protection / Insurance */}
+                  {(Number(deliverOrderValue) > 100 || Number(conciergeOrderValue) > 100) && (
                     <div className="flex justify-between">
                       <span className="text-muted-foreground">Protection</span>
-                      <span className="text-foreground">Declined</span>
+                      <span className="text-foreground">
+                        {declineProtection ? "Declined" : (() => {
+                          const val = Number(deliverOrderValue) || Number(conciergeOrderValue);
+                          if (val > 200) return "High-value (>$200)";
+                          if (val > 100) return "5% fee ($101–$200)";
+                          return "Included ($100)";
+                        })()}
+                      </span>
                     </div>
                   )}
                   {/* Expenses */}
