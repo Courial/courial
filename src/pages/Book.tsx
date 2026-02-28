@@ -507,10 +507,26 @@ const Book = () => {
       let concPickup = { address: "N/A", lat: 0, lng: 0 };
       let concDropoff = { address: "N/A", lat: 0, lng: 0 };
       if (isConcierge) {
-        if (conciergeIsRemote) {
-          // Remote/WFH — send "Remote" label, no real coords needed
-          concPickup = { address: "Remote / WFH", lat: 0, lng: 0 };
-          concDropoff = { address: "Remote / WFH", lat: 0, lng: 0 };
+         if (conciergeIsRemote) {
+           // Remote/WFH — cascading location search: Home → Work → Area Code city
+           const saved = getSavedAddresses();
+           const homeAddr = saved.find(a => a.type === "home");
+           const workAddr = saved.find(a => a.type === "work");
+           
+           if (homeAddr && homeAddr.lat && homeAddr.lng) {
+             concPickup = { address: `Remote / WFH — ${homeAddr.name}`, lat: homeAddr.lat, lng: homeAddr.lng };
+             concDropoff = { ...concPickup };
+             setWfhSearchPhase("home");
+           } else if (workAddr && workAddr.lat && workAddr.lng) {
+             concPickup = { address: `Remote / WFH — ${workAddr.name}`, lat: workAddr.lat, lng: workAddr.lng };
+             concDropoff = { ...concPickup };
+             setWfhSearchPhase("work");
+           } else {
+             // Fallback to area code / user location
+             concPickup = { address: "Remote / WFH", lat: 0, lng: 0 };
+             concDropoff = { address: "Remote / WFH", lat: 0, lng: 0 };
+             setWfhSearchPhase("area_code");
+           }
         } else {
           // Collect all available addresses in order
           const available: { address: string; lat: number; lng: number }[] = [];
