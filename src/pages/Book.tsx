@@ -3332,8 +3332,14 @@ const Book = () => {
 
               {/* Order Details */}
               <div className="rounded-xl border border-border bg-background p-4 mb-4">
-                <p className="text-xs font-bold uppercase tracking-wider text-muted-foreground mb-2">Order Details</p>
-                <div className="space-y-1.5 text-sm">
+                <button
+                  onClick={() => setShowOrderDetails(p => !p)}
+                  className="flex items-center justify-between w-full"
+                >
+                  <p className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Order Details</p>
+                  <ChevronDown className={cn("w-3.5 h-3.5 text-muted-foreground transition-transform", showOrderDetails && "rotate-180")} />
+                </button>
+                {showOrderDetails && <div className="space-y-1.5 text-sm mt-2">
                   {/* Service */}
                   <div className="flex justify-between">
                     <span className="text-muted-foreground">Service</span>
