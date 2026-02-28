@@ -880,7 +880,7 @@ const Book = () => {
       { label: "Concierge En Route", desc: "Your concierge is on the way" },
       { label: "Concierge Arrived", desc: "Your concierge has arrived" },
       { label: "Task In Progress", desc: "Task has begun" },
-      { label: "Task Completed", desc: "Your request has been fulfilled" },
+      { label: "Task Completed", desc: "Task completed" },
       { label: "Order Complete", desc: "Invoice sent — thank you!" },
     ],
     concierge_wfh: [
