@@ -3629,6 +3629,31 @@ const Book = () => {
           </Button>
         </DialogContent>
       </Dialog>
+
+      {/* Keep Searching? Dialog for WFH cascading search */}
+      <Dialog open={showKeepSearching} onOpenChange={setShowKeepSearching}>
+        <DialogContent className="max-w-xs rounded-2xl text-center p-7 bg-foreground/90 backdrop-blur-sm border-none">
+          <DialogTitle className="text-lg font-bold text-background">No Concierges found yet</DialogTitle>
+          <p className="text-sm text-background/60 leading-relaxed mt-1">
+            We've searched your Home, Work, and general area but no one has accepted yet. Would you like us to keep searching?
+          </p>
+          <div className="flex gap-3 mt-5">
+            <Button
+              variant="outline"
+              className="flex-1 rounded-xl border-background/20 text-background hover:bg-background/10"
+              onClick={handleKeepSearchingNo}
+            >
+              Cancel
+            </Button>
+            <Button
+              className="flex-1 rounded-xl bg-primary text-primary-foreground hover:bg-primary/90"
+              onClick={handleKeepSearchingYes}
+            >
+              Keep Searching
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
