@@ -3200,39 +3200,75 @@ const Book = () => {
                       );
                     })}
 
-                    {/* WFH Clock - centered between stepper content and right margin */}
-                    {isWfhConcierge && (
-                      <div className="absolute top-1/2 -translate-y-1/2 flex flex-col items-center gap-1.5" style={{ left: 'calc(50% + 40px)', transform: 'translate(-50%, -50%)' }}>
-                        <div className={cn(
-                          "relative flex items-center justify-center transition-colors",
-                          wfhTaskRunning && !wfhTaskPaused ? "text-primary" : "text-muted-foreground/30"
-                        )}>
-                          <Clock className="w-24 h-24" strokeWidth={1} />
-                          <span className={cn(
-                            "absolute text-sm font-mono font-bold tabular-nums tracking-tight transition-colors",
-                            wfhTaskRunning && !wfhTaskPaused ? "text-foreground" : "text-muted-foreground/40"
-                          )}>
-                            {String(Math.floor(wfhTaskElapsed / 3600)).padStart(2, "0")}
-                            :{String(Math.floor((wfhTaskElapsed % 3600) / 60)).padStart(2, "0")}
-                            :{String(wfhTaskElapsed % 60).padStart(2, "0")}
-                          </span>
+                    {/* WFH Clock - circular arc timer */}
+                    {isWfhConcierge && (() => {
+                      const isActive = wfhTaskRunning && !wfhTaskPaused;
+                      const size = 110;
+                      const stroke = 6;
+                      const radius = (size - stroke) / 2;
+                      const circumference = 2 * Math.PI * radius;
+                      // Animate arc: full circle over 60s per minute cycle
+                      const progress = (wfhTaskElapsed % 60) / 60;
+                      const dashOffset = circumference * (1 - progress);
+                      return (
+                        <div className="absolute top-1/2 flex flex-col items-center gap-1.5" style={{ left: 'calc(50% + 40px)', transform: 'translate(-50%, -50%)' }}>
+                          <div className="relative flex items-center justify-center" style={{ width: size, height: size }}>
+                            {/* Background ring */}
+                            <svg width={size} height={size} className="absolute inset-0 -rotate-90">
+                              <circle
+                                cx={size / 2} cy={size / 2} r={radius}
+                                fill="none"
+                                strokeWidth={stroke}
+                                className={isActive ? "stroke-primary/20" : "stroke-muted-foreground/10"}
+                                strokeLinecap="round"
+                              />
+                              {/* Active arc */}
+                              <circle
+                                cx={size / 2} cy={size / 2} r={radius}
+                                fill="none"
+                                strokeWidth={stroke}
+                                className={isActive ? "stroke-primary" : "stroke-muted-foreground/20"}
+                                strokeLinecap="round"
+                                strokeDasharray={circumference}
+                                strokeDashoffset={dashOffset}
+                                style={{ transition: 'stroke-dashoffset 1s linear' }}
+                              />
+                            </svg>
+                            {/* Time text */}
+                            <div className="flex flex-col items-center z-10">
+                              <span className={cn(
+                                "text-xl font-bold tabular-nums tracking-tight font-mono transition-colors",
+                                isActive ? "text-foreground" : "text-muted-foreground/40"
+                              )}>
+                                {String(Math.floor(wfhTaskElapsed / 3600)).padStart(2, "0")}
+                                :{String(Math.floor((wfhTaskElapsed % 3600) / 60)).padStart(2, "0")}
+                                :{String(wfhTaskElapsed % 60).padStart(2, "0")}
+                              </span>
+                              <span className={cn(
+                                "text-[8px] font-medium uppercase tracking-wider transition-colors",
+                                isActive ? "text-muted-foreground" : "text-muted-foreground/30"
+                              )}>
+                                Elapsed
+                              </span>
+                            </div>
+                          </div>
+                          {wfhTaskRunning && (
+                            <button
+                              onClick={() => setWfhTaskPaused(p => !p)}
+                              className={cn(
+                                "flex items-center gap-1 text-[10px] font-semibold px-2.5 py-1 rounded-full border transition-colors",
+                                wfhTaskPaused
+                                  ? "border-primary text-primary hover:bg-primary/10"
+                                  : "border-border text-muted-foreground hover:text-foreground hover:border-foreground/30"
+                              )}
+                            >
+                              {wfhTaskPaused ? <Play className="w-2.5 h-2.5" /> : <Pause className="w-2.5 h-2.5" />}
+                              {wfhTaskPaused ? "Resume" : "Pause"}
+                            </button>
+                          )}
                         </div>
-                        {wfhTaskRunning && (
-                          <button
-                            onClick={() => setWfhTaskPaused(p => !p)}
-                            className={cn(
-                              "flex items-center gap-1 text-[10px] font-semibold px-2.5 py-1 rounded-full border transition-colors",
-                              wfhTaskPaused
-                                ? "border-primary text-primary hover:bg-primary/10"
-                                : "border-border text-muted-foreground hover:text-foreground hover:border-foreground/30"
-                            )}
-                          >
-                            {wfhTaskPaused ? <Play className="w-2.5 h-2.5" /> : <Pause className="w-2.5 h-2.5" />}
-                            {wfhTaskPaused ? "Resume" : "Pause"}
-                          </button>
-                        )}
-                      </div>
-                    )}
+                      );
+                    })()}
                   </div>
                 </div>
 
