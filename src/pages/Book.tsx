@@ -142,6 +142,7 @@ const Book = () => {
   const [conciergeExpenseItems, setConciergeExpenseItems] = useState<Array<{ description: string; amount: string }>>([{ description: "", amount: "0" }]);
   const [conciergeAllowOverage, setConciergeAllowOverage] = useState(false);
   const [conciergeOverageLimit, setConciergeOverageLimit] = useState("0");
+  const [conciergeOrderValue, setConciergeOrderValue] = useState("");
   const [expenseCapWarning, setExpenseCapWarning] = useState<number | null>(null);
   const [overageCapWarning, setOverageCapWarning] = useState(false);
   const [redraftSuggestion, setRedraftSuggestion] = useState<string | null>(null);
