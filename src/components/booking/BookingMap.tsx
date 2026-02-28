@@ -658,7 +658,46 @@ const BookingMap: React.FC<BookingMapProps> = ({ pickupCoords, dropoffCoords, st
         .pac-logo::after { display: none !important; }
         .gm-style .gmnoprint, .gm-style .gm-style-cc, .gm-style a[href*="google"], .gm-style a[href*="maps"], .gm-style .gm-style > div > a { display: none !important; }
       `}</style>
-      <div ref={mapRef} className="w-full h-full" />
+      <div className="relative w-full h-full">
+        <div ref={mapRef} className="w-full h-full" />
+        {/* Custom zoom + recenter controls */}
+        <div className="absolute bottom-4 right-4 flex flex-col gap-2 z-10">
+          <button
+            onClick={() => {
+              const map = mapInstanceRef.current;
+              if (!map) return;
+              const bounds = new google.maps.LatLngBounds();
+              let hasPoints = false;
+              [pickupCoords, dropoffCoords, stopCoords].forEach(c => { if (c) { bounds.extend(c); hasPoints = true; } });
+              (extraStops || []).forEach(s => { if (s.coords) { bounds.extend(s.coords); hasPoints = true; } });
+              if (hasPoints) {
+                if (bounds.getNorthEast().equals(bounds.getSouthWest())) { map.setCenter(bounds.getCenter()); map.setZoom(14); }
+                else map.fitBounds(bounds, { top: 80, bottom: 40, left: 40, right: 40 });
+              }
+            }}
+            className="w-7 h-7 rounded-full bg-white border border-black/10 shadow-sm flex items-center justify-center hover:bg-black/5 transition-colors"
+            title="Re-center"
+          >
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="black" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 2v4m0 12v4M2 12h4m12 0h4"/></svg>
+          </button>
+          <div className="flex flex-col rounded-full bg-white border border-black/10 shadow-sm overflow-hidden">
+            <button
+              onClick={() => { const m = mapInstanceRef.current; if (m) m.setZoom((m.getZoom() || 12) + 1); }}
+              className="w-7 h-7 flex items-center justify-center hover:bg-black/5 transition-colors border-b border-black/10"
+              title="Zoom in"
+            >
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="black" strokeWidth="2.5" strokeLinecap="round"><path d="M12 5v14M5 12h14"/></svg>
+            </button>
+            <button
+              onClick={() => { const m = mapInstanceRef.current; if (m) m.setZoom((m.getZoom() || 12) - 1); }}
+              className="w-7 h-7 flex items-center justify-center hover:bg-black/5 transition-colors"
+              title="Zoom out"
+            >
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="black" strokeWidth="2.5" strokeLinecap="round"><path d="M5 12h14"/></svg>
+            </button>
+          </div>
+        </div>
+      </div>
     </>
   );
 };
