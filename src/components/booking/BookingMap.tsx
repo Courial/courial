@@ -675,10 +675,10 @@ const BookingMap: React.FC<BookingMapProps> = ({ pickupCoords, dropoffCoords, st
               else map.fitBounds(bounds, { top: 80, bottom: 40, left: 40, right: 40 });
             }
           }}
-          className="absolute top-4 left-4 z-10 w-7 h-7 rounded-full bg-white border border-black flex items-center justify-center hover:bg-black/5 transition-colors"
+          className="absolute top-8 left-4 z-10 w-7 h-7 rounded-full flex items-center justify-center hover:opacity-80 transition-opacity"
           title="Re-center"
         >
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="black" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 2v4m0 12v4M2 12h4m12 0h4"/></svg>
+          <img src="/map-icons/recenter.png" alt="Re-center" className="w-7 h-7 rounded-full" />
         </button>
         {/* Zoom controls - bottom right */}
         <div className="absolute bottom-4 right-4 z-10 flex flex-col rounded-full border border-black overflow-hidden">
