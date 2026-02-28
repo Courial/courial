@@ -193,6 +193,7 @@ const Book = () => {
   const [deliverOverageLimit, setDeliverOverageLimit] = useState("0");
   const [deliverExpenseCapWarning, setDeliverExpenseCapWarning] = useState<number | null>(null);
   const [deliverOverageCapWarning, setDeliverOverageCapWarning] = useState(false);
+  const [showOrderDetails, setShowOrderDetails] = useState(false);
   const [deliverExpenseRedraftSuggestion, setDeliverExpenseRedraftSuggestion] = useState<{ index: number; text: string } | null>(null);
   const [isDeliverExpenseRedrafting, setIsDeliverExpenseRedrafting] = useState<number | null>(null);
 
