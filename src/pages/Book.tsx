@@ -3194,7 +3194,7 @@ const Book = () => {
                                 className="text-xs text-muted-foreground mt-0.5"
                               >
                                 {step.label === "Task Completed" && wfhTaskElapsed > 0
-                                  ? `${Math.floor(wfhTaskElapsed / 3600)} hrs • ${Math.floor((wfhTaskElapsed % 3600) / 60)} mins Task completed`
+                                  ? `${Math.floor(wfhTaskElapsed / 3600) > 0 && Math.floor((wfhTaskElapsed % 3600) / 60) > 0 ? `${Math.floor(wfhTaskElapsed / 3600)} hrs • ${Math.floor((wfhTaskElapsed % 3600) / 60)} mins` : Math.floor(wfhTaskElapsed / 3600) > 0 ? `${Math.floor(wfhTaskElapsed / 3600)} hrs` : `${Math.floor((wfhTaskElapsed % 3600) / 60)} mins`} task`
                                   : step.desc}
                               </motion.p>
                             )}
