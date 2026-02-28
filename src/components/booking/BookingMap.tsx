@@ -203,6 +203,12 @@ const BookingMap: React.FC<BookingMapProps> = ({ pickupCoords, dropoffCoords, st
       directionsRendererRef.current = null;
     }
 
+    // Clear trip info bubble
+    if (tripInfoWindowRef.current) {
+      tripInfoWindowRef.current.close();
+      tripInfoWindowRef.current = null;
+    }
+
     const bounds = new google.maps.LatLngBounds();
 
     if (pickupCoords) {
