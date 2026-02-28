@@ -156,6 +156,14 @@ const Book = () => {
   const [roadsideVehicleColor, setRoadsideVehicleColor] = useState("");
   const [roadsideLicensePlate, setRoadsideLicensePlate] = useState("");
   const [roadsideSafeLocation, setRoadsideSafeLocation] = useState<boolean | null>(null);
+  const [roadsideCustomMake, setRoadsideCustomMake] = useState(false);
+  const [roadsideCustomModel, setRoadsideCustomModel] = useState(false);
+  const [roadsideCustomColor, setRoadsideCustomColor] = useState(false);
+  const [roadsideModelSuggestions, setRoadsideModelSuggestions] = useState<string[]>([]);
+  const [roadsideModelsLoading, setRoadsideModelsLoading] = useState(false);
+  const [roadsideMakeOpen, setRoadsideMakeOpen] = useState(false);
+  const [roadsideModelOpen, setRoadsideModelOpen] = useState(false);
+  const [roadsideColorOpen, setRoadsideColorOpen] = useState(false);
 
   // Deliver-specific: multi-stop
   const [deliverMultiStop, setDeliverMultiStop] = useState(false);
@@ -327,6 +335,35 @@ const Book = () => {
   const isFormValid = selectedService === "concierge"
     ? conciergeReady
     : isBaseFormValid && deliverOrderValue.trim().length > 0 && Number(deliverOrderValue.replace(/,/g, '')) > 0;
+
+  // Fetch vehicle models from AI when make changes
+  const fetchVehicleModels = useCallback(async (make: string) => {
+    if (!make || roadsideCustomModel) return;
+    setRoadsideModelsLoading(true);
+    setRoadsideModelSuggestions([]);
+    try {
+      const { data, error } = await supabase.functions.invoke("vehicle-models", {
+        body: { make },
+      });
+      if (error) throw error;
+      if (data?.models && Array.isArray(data.models)) {
+        setRoadsideModelSuggestions(data.models);
+      }
+    } catch (e) {
+      console.error("Failed to fetch vehicle models:", e);
+    } finally {
+      setRoadsideModelsLoading(false);
+    }
+  }, [roadsideCustomModel]);
+
+  // Close roadside dropdowns on outside click
+  useEffect(() => {
+    const handler = () => { setRoadsideMakeOpen(false); setRoadsideModelOpen(false); setRoadsideColorOpen(false); };
+    if (roadsideMakeOpen || roadsideModelOpen || roadsideColorOpen) {
+      document.addEventListener("click", handler);
+      return () => document.removeEventListener("click", handler);
+    }
+  }, [roadsideMakeOpen, roadsideModelOpen, roadsideColorOpen]);
 
   // Redraft with AI handler
   const handleRedraft = useCallback(async () => {
@@ -1240,29 +1277,152 @@ const Book = () => {
                 <span className="text-xs font-medium text-muted-foreground">Vehicle Details</span>
                 <div className="space-y-2">
                   <div className="flex gap-1.5 w-full min-w-0">
-                    <input
-                      type="text"
-                      placeholder="Make"
-                      value={roadsideVehicleMake}
-                      onChange={(e) => setRoadsideVehicleMake(e.target.value)}
-                      className="w-1/2 min-w-0 px-2 py-2 rounded-lg border border-border/60 bg-background text-foreground text-xs placeholder:text-muted-foreground focus:outline-none focus:border-border transition-colors"
-                    />
-                    <input
-                      type="text"
-                      placeholder="Model"
-                      value={roadsideVehicleModel}
-                      onChange={(e) => setRoadsideVehicleModel(e.target.value)}
-                      className="w-1/2 min-w-0 px-2 py-2 rounded-lg border border-border/60 bg-background text-foreground text-xs placeholder:text-muted-foreground focus:outline-none focus:border-border transition-colors"
-                    />
+                    {/* Make dropdown or custom input */}
+                    <div className="w-1/2 min-w-0 relative">
+                      {roadsideCustomMake ? (
+                        <div className="flex gap-1">
+                          <input
+                            type="text"
+                            placeholder="Enter make"
+                            value={roadsideVehicleMake}
+                            onChange={(e) => {
+                              setRoadsideVehicleMake(e.target.value);
+                              setRoadsideVehicleModel("");
+                              setRoadsideModelSuggestions([]);
+                            }}
+                            className="flex-1 min-w-0 px-2 py-2 rounded-lg border border-border/60 bg-background text-foreground text-xs placeholder:text-muted-foreground focus:outline-none focus:border-border transition-colors"
+                          />
+                          <button onClick={() => { setRoadsideCustomMake(false); setRoadsideVehicleMake(""); setRoadsideVehicleModel(""); }} className="text-[10px] text-muted-foreground hover:text-foreground px-1">✕</button>
+                        </div>
+                      ) : (
+                        <>
+                          <button
+                            onClick={(e) => { e.stopPropagation(); setRoadsideMakeOpen(!roadsideMakeOpen); setRoadsideModelOpen(false); setRoadsideColorOpen(false); }}
+                            className="w-full px-2 py-2 rounded-lg border border-border/60 bg-background text-foreground text-xs text-left flex items-center justify-between hover:border-foreground/30 transition-colors"
+                          >
+                            <span className={roadsideVehicleMake ? "text-foreground" : "text-muted-foreground"}>{roadsideVehicleMake || "Make"}</span>
+                            <ChevronDown className="w-3 h-3 text-muted-foreground" />
+                          </button>
+                          {roadsideMakeOpen && (
+                            <div onClick={(e) => e.stopPropagation()} className="absolute z-50 mt-1 w-full max-h-48 overflow-y-auto rounded-lg border border-border/60 bg-background shadow-lg">
+                              {["Acura","Audi","BMW","Buick","Cadillac","Chevrolet","Chrysler","Dodge","Ford","Genesis","GMC","Honda","Hyundai","Infiniti","Jaguar","Jeep","Kia","Land Rover","Lexus","Lincoln","Mazda","Mercedes-Benz","Mini","Mitsubishi","Nissan","Porsche","Ram","Rivian","Subaru","Tesla","Toyota","Volkswagen","Volvo"].map((make) => (
+                                <button
+                                  key={make}
+                                  onClick={() => {
+                                    setRoadsideVehicleMake(make);
+                                    setRoadsideMakeOpen(false);
+                                    setRoadsideVehicleModel("");
+                                    setRoadsideCustomModel(false);
+                                    fetchVehicleModels(make);
+                                  }}
+                                  className="w-full px-2 py-1.5 text-xs text-left text-foreground hover:bg-muted transition-colors"
+                                >
+                                  {make}
+                                </button>
+                              ))}
+                              <button
+                                onClick={() => { setRoadsideCustomMake(true); setRoadsideMakeOpen(false); setRoadsideVehicleMake(""); setRoadsideVehicleModel(""); }}
+                                className="w-full px-2 py-1.5 text-xs text-left text-primary hover:bg-muted transition-colors border-t border-border/40"
+                              >
+                                Other (type manually)
+                              </button>
+                            </div>
+                          )}
+                        </>
+                      )}
+                    </div>
+                    {/* Model dropdown or custom input */}
+                    <div className="w-1/2 min-w-0 relative">
+                      {roadsideCustomModel ? (
+                        <div className="flex gap-1">
+                          <input
+                            type="text"
+                            placeholder="Enter model"
+                            value={roadsideVehicleModel}
+                            onChange={(e) => setRoadsideVehicleModel(e.target.value)}
+                            className="flex-1 min-w-0 px-2 py-2 rounded-lg border border-border/60 bg-background text-foreground text-xs placeholder:text-muted-foreground focus:outline-none focus:border-border transition-colors"
+                          />
+                          <button onClick={() => { setRoadsideCustomModel(false); setRoadsideVehicleModel(""); }} className="text-[10px] text-muted-foreground hover:text-foreground px-1">✕</button>
+                        </div>
+                      ) : (
+                        <>
+                          <button
+                            onClick={(e) => { e.stopPropagation(); if (roadsideVehicleMake) { setRoadsideModelOpen(!roadsideModelOpen); setRoadsideMakeOpen(false); setRoadsideColorOpen(false); } }}
+                            className={`w-full px-2 py-2 rounded-lg border border-border/60 bg-background text-xs text-left flex items-center justify-between transition-colors ${roadsideVehicleMake ? "text-foreground hover:border-foreground/30" : "text-muted-foreground opacity-60 cursor-not-allowed"}`}
+                          >
+                            <span className={roadsideVehicleModel ? "text-foreground" : "text-muted-foreground"}>
+                              {roadsideModelsLoading ? "Loading..." : roadsideVehicleModel || "Model"}
+                            </span>
+                            <ChevronDown className="w-3 h-3 text-muted-foreground" />
+                          </button>
+                          {roadsideModelOpen && roadsideModelSuggestions.length > 0 && (
+                            <div onClick={(e) => e.stopPropagation()} className="absolute z-50 mt-1 w-full max-h-48 overflow-y-auto rounded-lg border border-border/60 bg-background shadow-lg">
+                              {roadsideModelSuggestions.map((model) => (
+                                <button
+                                  key={model}
+                                  onClick={() => { setRoadsideVehicleModel(model); setRoadsideModelOpen(false); }}
+                                  className="w-full px-2 py-1.5 text-xs text-left text-foreground hover:bg-muted transition-colors"
+                                >
+                                  {model}
+                                </button>
+                              ))}
+                              <button
+                                onClick={() => { setRoadsideCustomModel(true); setRoadsideModelOpen(false); setRoadsideVehicleModel(""); }}
+                                className="w-full px-2 py-1.5 text-xs text-left text-primary hover:bg-muted transition-colors border-t border-border/40"
+                              >
+                                Other (type manually)
+                              </button>
+                            </div>
+                          )}
+                        </>
+                      )}
+                    </div>
                   </div>
                   <div className="flex gap-1.5 w-full min-w-0">
-                    <input
-                      type="text"
-                      placeholder="Color"
-                      value={roadsideVehicleColor}
-                      onChange={(e) => setRoadsideVehicleColor(e.target.value)}
-                      className="w-1/2 min-w-0 px-2 py-2 rounded-lg border border-border/60 bg-background text-foreground text-xs placeholder:text-muted-foreground focus:outline-none focus:border-border transition-colors"
-                    />
+                    {/* Color dropdown or custom input */}
+                    <div className="w-1/2 min-w-0 relative">
+                      {roadsideCustomColor ? (
+                        <div className="flex gap-1">
+                          <input
+                            type="text"
+                            placeholder="Enter color"
+                            value={roadsideVehicleColor}
+                            onChange={(e) => setRoadsideVehicleColor(e.target.value)}
+                            className="flex-1 min-w-0 px-2 py-2 rounded-lg border border-border/60 bg-background text-foreground text-xs placeholder:text-muted-foreground focus:outline-none focus:border-border transition-colors"
+                          />
+                          <button onClick={() => { setRoadsideCustomColor(false); setRoadsideVehicleColor(""); }} className="text-[10px] text-muted-foreground hover:text-foreground px-1">✕</button>
+                        </div>
+                      ) : (
+                        <>
+                          <button
+                            onClick={(e) => { e.stopPropagation(); setRoadsideColorOpen(!roadsideColorOpen); setRoadsideMakeOpen(false); setRoadsideModelOpen(false); }}
+                            className="w-full px-2 py-2 rounded-lg border border-border/60 bg-background text-foreground text-xs text-left flex items-center justify-between hover:border-foreground/30 transition-colors"
+                          >
+                            <span className={roadsideVehicleColor ? "text-foreground" : "text-muted-foreground"}>{roadsideVehicleColor || "Color"}</span>
+                            <ChevronDown className="w-3 h-3 text-muted-foreground" />
+                          </button>
+                          {roadsideColorOpen && (
+                            <div onClick={(e) => e.stopPropagation()} className="absolute z-50 mt-1 w-full max-h-48 overflow-y-auto rounded-lg border border-border/60 bg-background shadow-lg">
+                              {["White","Black","Gray","Silver","Blue","Red","Brown","Green","Beige","Orange"].map((color) => (
+                                <button
+                                  key={color}
+                                  onClick={() => { setRoadsideVehicleColor(color); setRoadsideColorOpen(false); }}
+                                  className="w-full px-2 py-1.5 text-xs text-left text-foreground hover:bg-muted transition-colors"
+                                >
+                                  {color}
+                                </button>
+                              ))}
+                              <button
+                                onClick={() => { setRoadsideCustomColor(true); setRoadsideColorOpen(false); setRoadsideVehicleColor(""); }}
+                                className="w-full px-2 py-1.5 text-xs text-left text-primary hover:bg-muted transition-colors border-t border-border/40"
+                              >
+                                Other (type manually)
+                              </button>
+                            </div>
+                          )}
+                        </>
+                      )}
+                    </div>
                     <input
                       type="text"
                       placeholder="License Plate"
