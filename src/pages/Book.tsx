@@ -3367,6 +3367,15 @@ const Book = () => {
                 </button>
               </div>
 
+              {deliveryStep >= (isWfhConcierge ? 3 : 5) && (
+                <button
+                  onClick={handleCancelBooking}
+                  className="w-full py-3 rounded-full text-sm font-semibold text-black bg-primary hover:bg-primary/90 transition-colors mb-3"
+                >
+                  Done
+                </button>
+              )}
+
               {/* Chat Box */}
               <AnimatePresence>
                 {showChat && (
@@ -3437,14 +3446,7 @@ const Book = () => {
                       : ["Arrive at Pickup", "Pick Up Package", "Arrive at Drop-off", "Drop Off Package", "Complete Order"][deliveryStep]}
                   </button>
                 )}
-                {deliveryStep >= (isWfhConcierge ? 3 : 5) ? (
-                  <button
-                    onClick={handleCancelBooking}
-                    className="w-full py-3 rounded-full text-sm font-semibold text-primary-foreground bg-primary hover:bg-primary/90 transition-colors"
-                  >
-                    Done
-                  </button>
-                ) : (
+                {deliveryStep < (isWfhConcierge ? 3 : 5) && (
                   <button
                     onClick={handleCancelBooking}
                     className="w-full py-3 rounded-full text-sm font-semibold text-muted-foreground bg-muted hover:bg-muted/80 transition-colors"
