@@ -678,7 +678,7 @@ const BookingMap: React.FC<BookingMapProps> = ({ pickupCoords, dropoffCoords, st
           className="absolute top-8 left-4 z-10 w-7 h-7 rounded-full flex items-center justify-center hover:opacity-80 transition-opacity"
           title="Re-center"
         >
-          <img src="/map-icons/recenter.png" alt="Re-center" className="w-7 h-7 rounded-full" />
+          <img src="/map-icons/recenter.png" alt="Re-center" className="w-7 h-7 rounded-full bg-white" />
         </button>
         {/* Zoom controls - bottom right */}
         <div className="absolute bottom-4 right-4 z-10 flex flex-col rounded-full border border-black overflow-hidden">
