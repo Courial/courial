@@ -1356,7 +1356,7 @@ const Book = () => {
                             <ChevronDown className="w-3 h-3 text-muted-foreground" />
                           </button>
                           {roadsideModelOpen && roadsideModelSuggestions.length > 0 && (
-                            <div className="absolute z-50 mt-1 w-full max-h-48 overflow-y-auto rounded-lg border border-border/60 bg-background shadow-lg">
+                            <div onClick={(e) => e.stopPropagation()} className="absolute z-50 mt-1 w-full max-h-48 overflow-y-auto rounded-lg border border-border/60 bg-background shadow-lg">
                               {roadsideModelSuggestions.map((model) => (
                                 <button
                                   key={model}
