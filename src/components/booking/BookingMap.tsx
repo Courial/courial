@@ -656,6 +656,7 @@ const BookingMap: React.FC<BookingMapProps> = ({ pickupCoords, dropoffCoords, st
         .pac-matched { font-weight: 600 !important; }
         .pac-icon { display: none !important; }
         .pac-logo::after { display: none !important; }
+        .gm-style .gmnoprint, .gm-style .gm-style-cc, .gm-style a[href*="google"], .gm-style a[href*="maps"], .gm-style .gm-style > div > a { display: none !important; }
       `}</style>
       <div ref={mapRef} className="w-full h-full" />
     </>
