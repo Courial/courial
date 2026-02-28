@@ -208,7 +208,12 @@ const AddressAutocomplete: React.FC<AddressAutocompleteProps> = ({
   }, [refreshData]);
 
   const handleBlur = useCallback(() => {
-    setIsFocused(false);
+    // Delay blur so Google autocomplete's place_changed fires before overlay swap
+    setTimeout(() => {
+      if (!isSelectingRef.current) {
+        setIsFocused(false);
+      }
+    }, 300);
   }, []);
 
   const handleItemClick = useCallback((address: string, name: string | undefined, lat: number, lng: number) => {
