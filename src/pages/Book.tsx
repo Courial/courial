@@ -278,18 +278,26 @@ const Book = () => {
 
   const handleStatusChange = useCallback((status: string) => {
     console.log("[Book] Delivery status changed:", status);
-    const statusStepMap: Record<string, number> = {
-      "Courial at Pickup": 1,
-      "Courial Picked Up": 2,
-      "Courial at Drop-off": 3,
-      "Order Complete": 5,
-    };
+    const isWfh = selectedService === "concierge" && conciergeIsRemote;
+    const statusStepMap: Record<string, number> = isWfh
+      ? {
+          "Courial at Pickup": 1, // maps to "Task In Progress"
+          "Courial Picked Up": 1,
+          "Courial at Drop-off": 2, // maps to "Task Completed"
+          "Order Complete": 3,
+        }
+      : {
+          "Courial at Pickup": 1,
+          "Courial Picked Up": 2,
+          "Courial at Drop-off": 3,
+          "Order Complete": 5,
+        };
     const stepIndex = statusStepMap[status];
     if (stepIndex !== undefined) {
       setDeliveryStep(stepIndex);
       toast.info(status);
     }
-  }, []);
+  }, [selectedService, conciergeIsRemote]);
 
   useCourialSocket({
     token: courialToken,
@@ -841,6 +849,12 @@ const Book = () => {
       { label: "Task Completed", desc: "Your request has been fulfilled" },
       { label: "Order Complete", desc: "Invoice sent — thank you!" },
     ],
+    concierge_wfh: [
+      { label: "Request Accepted", desc: "Your concierge request has been confirmed" },
+      { label: "Task In Progress", desc: "Your concierge is working on your request" },
+      { label: "Task Completed", desc: "Your request has been fulfilled" },
+      { label: "Order Complete", desc: "Invoice sent — thank you!" },
+    ],
     valet: [
       { label: "Request Accepted", desc: "Your valet request has been confirmed" },
       { label: "Valet En Route", desc: "Your valet is on the way" },
@@ -850,7 +864,9 @@ const Book = () => {
       { label: "Order Complete", desc: "Invoice sent — thank you!" },
     ],
   };
-  const deliverySteps = deliveryStepsMap[selectedService || "deliver"] || deliveryStepsMap.deliver;
+  const isWfhConcierge = selectedService === "concierge" && conciergeIsRemote;
+  const deliveryStepsKey = isWfhConcierge ? "concierge_wfh" : (selectedService || "deliver");
+  const deliverySteps = deliveryStepsMap[deliveryStepsKey] || deliveryStepsMap.deliver;
 
   const handlePickupSelect = useCallback((place: any) => {
     if (place.geometry?.location) {
@@ -3037,7 +3053,7 @@ const Book = () => {
                 </div>
                 <p className="text-[15px] font-medium text-muted-foreground flex items-center gap-1.5">
                   <img src={deliverBox} alt="" className="w-5 h-5" />
-                  4 mins away • 2:01 AM dropoff
+                  {isWfhConcierge ? "WFH Service" : "4 mins away • 2:01 AM dropoff"}
                 </p>
               </div>
 
@@ -3163,7 +3179,8 @@ const Book = () => {
                   )}
                 </div>
 
-                {/* Trip Summary */}
+                {/* Trip Summary — hidden for WFH concierge */}
+                {!isWfhConcierge && (
                 <div className="space-y-3 pt-2">
                   <div className="flex items-start gap-3">
                     <div className="flex-shrink-0 w-2.5 h-2.5 rounded-full bg-green-500 mt-[5px]" />
@@ -3189,10 +3206,11 @@ const Book = () => {
                     </div>
                   </div>
                 </div>
+                )}
               </div>
 
               {/* Price / Receipt */}
-              {deliveryStep >= 5 ? (
+              {deliveryStep >= (isWfhConcierge ? 3 : 5) ? (
                 <div className="rounded-xl border border-border bg-muted/50 p-4 mb-4">
                   <p className="text-xs font-bold uppercase tracking-wider text-muted-foreground mb-2">Receipt</p>
                   <div className="space-y-1.5 text-sm">
@@ -3330,7 +3348,7 @@ const Book = () => {
                       : ["Arrive at Pickup", "Pick Up Package", "Arrive at Drop-off", "Drop Off Package", "Complete Order"][deliveryStep]}
                   </button>
                 )}
-                {deliveryStep >= 5 ? (
+                {deliveryStep >= (isWfhConcierge ? 3 : 5) ? (
                   <button
                     onClick={handleCancelBooking}
                     className="w-full py-3 rounded-full text-sm font-semibold text-primary-foreground bg-primary hover:bg-primary/90 transition-colors"
