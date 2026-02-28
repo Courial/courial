@@ -1312,7 +1312,7 @@ const Book = () => {
                           <div className={cn(
                             "h-[36px] flex items-end justify-center transition-all duration-300",
                             isNoneActive ? "grayscale-0 opacity-100 scale-110"
-                              : conciergeVehicle === null ? "grayscale-0 opacity-70 scale-100"
+                              : conciergeVehicle === null ? "grayscale-0 opacity-100 scale-100"
                               : "grayscale opacity-40 scale-100"
                           )}>
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none" className="max-h-[28px] w-[28px]">
@@ -1342,7 +1342,7 @@ const Book = () => {
                           <div className={cn(
                             "h-[36px] flex items-end justify-center transition-all duration-300",
                             isActive ? "grayscale-0 opacity-100 scale-110"
-                              : conciergeVehicle === null ? "grayscale-0 opacity-70 scale-100"
+                              : conciergeVehicle === null ? "grayscale-0 opacity-100 scale-100"
                               : "grayscale opacity-40 scale-100"
                           )}>
                             <img src={v.image} alt={v.label} className={cn("object-contain", v.imgClass)} />
