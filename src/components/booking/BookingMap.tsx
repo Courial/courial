@@ -379,8 +379,8 @@ const BookingMap: React.FC<BookingMapProps> = ({ pickupCoords, dropoffCoords, st
             const midIdx = Math.floor(overviewPath.length / 2);
             const midPoint = overviewPath[midIdx];
 
-            const tripStyle = "font-family:'Avenir','Avenir Next','Nunito Sans',system-ui,sans-serif;padding:6px 10px;line-height:1.4;text-align:left;white-space:nowrap;";
-            const tripContent = `<div class="trip-info-root" style="${tripStyle}"><div style="font-size:10px;font-weight:600;color:rgba(0,0,0,0.85);margin-bottom:1px;">Trip Info</div><div style="font-size:9px;font-weight:400;color:#000;">${mins} mins · ${miles} mi</div></div>`;
+            const tripStyle = "font-family:'Avenir','Avenir Next','Nunito Sans',system-ui,sans-serif;padding:2px 4px;line-height:1.4;text-align:left;white-space:nowrap;";
+            const tripContent = `<div class="trip-info-root" style="${tripStyle}"><div style="font-size:11px;font-weight:600;color:rgba(0,0,0,0.85);margin-bottom:0;">Trip Info</div><div style="font-size:10px;font-weight:400;color:rgba(0,0,0,0.45);">${mins} mins · ${miles} mi</div></div>`;
 
             const tripInfoWindow = new google.maps.InfoWindow({
               content: tripContent,
