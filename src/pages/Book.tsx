@@ -2887,13 +2887,23 @@ const Book = () => {
           if (showSidebarAnimation) {
             return (
               <div className="p-6 flex flex-col items-center justify-center h-full gap-6">
-                {/* Remote banner */}
+                {/* Remote banner with current search phase */}
                 <div className="w-full rounded-2xl bg-muted/60 border border-border px-5 py-4 text-center mb-2">
                   <div className="flex items-center justify-center gap-2 mb-1">
                     <div className="w-2 h-2 rounded-full bg-primary animate-pulse" />
                     <span className="text-xs font-semibold text-primary uppercase tracking-wider">Remote Task</span>
                   </div>
                   <p className="text-sm text-muted-foreground">This is a Work-From-Home Concierge service. No travel required.</p>
+                  {wfhSearchPhase && (
+                    <div className="mt-2 pt-2 border-t border-border/50">
+                      <p className="text-[11px] text-muted-foreground">
+                        {wfhSearchPhase === "home" && "🏠 Searching near your Home address…"}
+                        {wfhSearchPhase === "work" && "🏢 Searching near your Work address…"}
+                        {wfhSearchPhase === "area_code" && "📍 Searching your general area…"}
+                        {wfhSearchPhase === "exhausted" && "No Concierges found nearby."}
+                      </p>
+                    </div>
+                  )}
                 </div>
 
                 {/* Circular Progress with flashing profile photos */}
@@ -2925,6 +2935,23 @@ const Book = () => {
                     </AnimatePresence>
                   </div>
                 </div>
+
+                {/* Phase indicator dots */}
+                {wfhSearchPhase && (
+                  <div className="flex items-center gap-2">
+                    {["home", "work", "area_code"].map((phase) => (
+                      <div
+                        key={phase}
+                        className={cn(
+                          "w-2 h-2 rounded-full transition-colors duration-300",
+                          wfhSearchPhase === phase ? "bg-primary" :
+                          (["home", "work", "area_code"].indexOf(phase) < ["home", "work", "area_code"].indexOf(wfhSearchPhase)) ? "bg-primary/40" : "bg-muted-foreground/20"
+                        )}
+                      />
+                    ))}
+                  </div>
+                )}
+
                 <div className="text-center">
                   <h2 className="text-lg font-bold text-foreground mb-1">Finding the perfect Concierge for your request.</h2>
                 </div>
