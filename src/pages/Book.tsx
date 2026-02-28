@@ -2737,14 +2737,76 @@ const Book = () => {
           </div>
           )}
 
-        {/* Loading state moved to map overlay */}
-        {bookingState === "loading" && (
-          <div className="p-8 flex flex-col items-center justify-center h-full">
-            <div className="text-center text-muted-foreground text-sm">
-              {selectedService === "concierge" ? "Finding your Concierge…" : selectedService === "valet" ? "Connecting with a Valet…" : "Searching nearby Courials…"}
+        {/* Loading state — full animation in sidebar when no map (remote/WFH) */}
+        {bookingState === "loading" && (() => {
+          const isConcierge = selectedService === "concierge";
+          const hasAnyConciergeCoords = conciergeStartCoords || conciergeStopCoords || conciergeFinalCoords;
+          const showSidebarAnimation = isConcierge && !hasAnyConciergeCoords;
+          
+          if (showSidebarAnimation) {
+            return (
+              <div className="p-6 flex flex-col items-center justify-center h-full gap-6">
+                {/* Remote banner */}
+                <div className="w-full rounded-2xl bg-muted/60 border border-border px-5 py-4 text-center mb-2">
+                  <div className="flex items-center justify-center gap-2 mb-1">
+                    <div className="w-2 h-2 rounded-full bg-primary animate-pulse" />
+                    <span className="text-xs font-semibold text-primary uppercase tracking-wider">Remote Task</span>
+                  </div>
+                  <p className="text-sm text-muted-foreground">This is a Work-From-Home Concierge service. No travel required.</p>
+                </div>
+
+                {/* Circular Progress with flashing profile photos */}
+                <div className="relative w-28 h-28">
+                  <svg className="w-28 h-28 -rotate-90" viewBox="0 0 112 112">
+                    <circle cx="56" cy="56" r="50" fill="none" stroke="hsl(var(--muted))" strokeWidth="4" />
+                    <circle
+                      cx="56" cy="56" r="50" fill="none"
+                      stroke="hsl(var(--primary))"
+                      strokeWidth="4"
+                      strokeLinecap="round"
+                      strokeDasharray={2 * Math.PI * 50}
+                      strokeDashoffset={2 * Math.PI * 50 * (1 - loadingProgress / 100)}
+                      className="transition-all duration-100"
+                    />
+                  </svg>
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <AnimatePresence mode="wait">
+                      <motion.img
+                        key={currentProfileIndex}
+                        src={activeProfiles[currentProfileIndex]}
+                        alt="Concierge nearby"
+                        initial={{ opacity: 0, scale: 0.8 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        exit={{ opacity: 0, scale: 0.8 }}
+                        transition={{ duration: 0.25 }}
+                        className="w-[92px] h-[92px] rounded-full object-cover"
+                      />
+                    </AnimatePresence>
+                  </div>
+                </div>
+                <div className="text-center">
+                  <h2 className="text-lg font-bold text-foreground mb-1">Finding the perfect Concierge for your request.</h2>
+                </div>
+                <Button
+                  variant="outline"
+                  size="lg"
+                  onClick={handleCancelBooking}
+                  className="rounded-full px-10 bg-muted text-foreground border-border hover:bg-muted/80"
+                >
+                  Cancel
+                </Button>
+              </div>
+            );
+          }
+
+          return (
+            <div className="p-8 flex flex-col items-center justify-center h-full">
+              <div className="text-center text-muted-foreground text-sm">
+                {isConcierge ? "Finding your Concierge…" : selectedService === "valet" ? "Connecting with a Valet…" : "Searching nearby Courials…"}
+              </div>
             </div>
-          </div>
-        )}
+          );
+        })()}
 
         {/* Active Tracking State */}
         {bookingState === "active" && (
