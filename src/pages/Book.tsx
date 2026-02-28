@@ -3367,6 +3367,15 @@ const Book = () => {
                 </button>
               </div>
 
+              {deliveryStep >= (isWfhConcierge ? 3 : 5) && (
+                <button
+                  onClick={handleCancelBooking}
+                  className="w-full py-3 rounded-full text-sm font-semibold text-black bg-primary hover:bg-primary/90 transition-colors mb-3"
+                >
+                  Done
+                </button>
+              )}
+
               {/* Chat Box */}
               <AnimatePresence>
                 {showChat && (
