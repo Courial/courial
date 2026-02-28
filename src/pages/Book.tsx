@@ -3348,7 +3348,7 @@ const Book = () => {
                       : ["Arrive at Pickup", "Pick Up Package", "Arrive at Drop-off", "Drop Off Package", "Complete Order"][deliveryStep]}
                   </button>
                 )}
-                {deliveryStep >= 5 ? (
+                {deliveryStep >= (isWfhConcierge ? 3 : 5) ? (
                   <button
                     onClick={handleCancelBooking}
                     className="w-full py-3 rounded-full text-sm font-semibold text-primary-foreground bg-primary hover:bg-primary/90 transition-colors"
