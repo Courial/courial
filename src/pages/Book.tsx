@@ -1664,10 +1664,12 @@ const Book = () => {
                 {/* Service Mode Toggle */}
                 <div className="flex items-center gap-2 mb-3 pt-2">
                   <span className="text-xs font-medium text-muted-foreground">Service Type</span>
-                  {[
+                  {(conciergeCategory === "roadside-assistance" ? [
+                    { value: "hourly" as const, label: conciergeSubCategory === "Towing" ? "Hourly (+ truck fees)" : conciergeSubCategory === "Flat Tire" ? "Hourly (+ new tire if required)" : conciergeSubCategory === "Dead Battery / Jump Start" ? "Hourly (+ new battery if required)" : conciergeSubCategory === "Out of Gas" ? "Hourly (+ price of gas)" : "Hourly" },
+                  ] : [
                     { value: "hourly" as const, label: "Hourly" },
                     { value: "daily" as const, label: "Daily (8 Hrs)" },
-                  ].map((mode) => (
+                  ]).map((mode) => (
                     <button
                       key={mode.value}
                       onClick={() => setConciergeServiceMode(mode.value)}
