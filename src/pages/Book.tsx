@@ -3143,45 +3143,7 @@ const Book = () => {
                   ) : null}
                 </div>
 
-                {/* WFH Task Timer */}
-                {isWfhConcierge && (
-                  <div className={cn(
-                    "flex items-center justify-between rounded-xl border border-border px-4 py-3 mb-4 transition-colors",
-                    wfhTaskRunning && !wfhTaskPaused ? "bg-primary/5" : "bg-muted/50"
-                  )}>
-                    <div className="flex items-center gap-2.5">
-                      <Clock className={cn(
-                        "w-4 h-4 transition-colors",
-                        wfhTaskRunning && !wfhTaskPaused ? "text-primary" : "text-muted-foreground/40"
-                      )} />
-                      <div>
-                        <p className="text-[11px] text-muted-foreground font-medium">Task Timer</p>
-                        <p className={cn(
-                          "text-lg font-mono font-bold tabular-nums tracking-wider transition-colors",
-                          wfhTaskRunning && !wfhTaskPaused ? "text-foreground" : "text-muted-foreground/40"
-                        )}>
-                          {String(Math.floor(wfhTaskElapsed / 3600)).padStart(2, "0")}
-                          :{String(Math.floor((wfhTaskElapsed % 3600) / 60)).padStart(2, "0")}
-                          :{String(wfhTaskElapsed % 60).padStart(2, "0")}
-                        </p>
-                      </div>
-                    </div>
-                    {wfhTaskRunning && (
-                      <button
-                        onClick={() => setWfhTaskPaused(p => !p)}
-                        className={cn(
-                          "flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-full border transition-colors",
-                          wfhTaskPaused
-                            ? "border-primary text-primary hover:bg-primary/10"
-                            : "border-border text-muted-foreground hover:text-foreground hover:border-foreground/30"
-                        )}
-                      >
-                        {wfhTaskPaused ? <Play className="w-3 h-3" /> : <Pause className="w-3 h-3" />}
-                        {wfhTaskPaused ? "Resume" : "Pause"}
-                      </button>
-                    )}
-                  </div>
-                )}
+                {/* WFH Task Timer - moved inline with stepper */}
 
                 {/* Delivery Status Stepper */}
                 <div className="mb-4">
