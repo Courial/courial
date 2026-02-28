@@ -156,6 +156,14 @@ const Book = () => {
   const [roadsideVehicleColor, setRoadsideVehicleColor] = useState("");
   const [roadsideLicensePlate, setRoadsideLicensePlate] = useState("");
   const [roadsideSafeLocation, setRoadsideSafeLocation] = useState<boolean | null>(null);
+  const [roadsideCustomMake, setRoadsideCustomMake] = useState(false);
+  const [roadsideCustomModel, setRoadsideCustomModel] = useState(false);
+  const [roadsideCustomColor, setRoadsideCustomColor] = useState(false);
+  const [roadsideModelSuggestions, setRoadsideModelSuggestions] = useState<string[]>([]);
+  const [roadsideModelsLoading, setRoadsideModelsLoading] = useState(false);
+  const [roadsideMakeOpen, setRoadsideMakeOpen] = useState(false);
+  const [roadsideModelOpen, setRoadsideModelOpen] = useState(false);
+  const [roadsideColorOpen, setRoadsideColorOpen] = useState(false);
 
   // Deliver-specific: multi-stop
   const [deliverMultiStop, setDeliverMultiStop] = useState(false);
