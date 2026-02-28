@@ -123,7 +123,7 @@ const Book = () => {
   const [hasStairs, setHasStairs] = useState<boolean | null>(null);
 
   // Concierge-specific state
-  const [conciergeVehicle, setConciergeVehicle] = useState<VehicleId | null>(null);
+  const [conciergeVehicle, setConciergeVehicle] = useState<VehicleId | "none" | null>(null);
   const [conciergeCategory, setConciergeCategory] = useState<string | null>(null);
   const [conciergeSubCategory, setConciergeSubCategory] = useState<string | null>(null);
   const [conciergeIsRemote, setConciergeIsRemote] = useState(false);
@@ -1301,29 +1301,36 @@ const Book = () => {
               {selectedService === "concierge" && (
                 <div className="mb-6">
                   <div className="flex items-end justify-center gap-4">
-                    {/* "None" icon - no vehicle selected */}
-                    <button
-                      onClick={() => setConciergeVehicle(null)}
-                      className="bg-transparent border-none outline-none cursor-pointer flex items-center"
-                    >
-                      <div className={cn(
-                        "h-[36px] flex items-end justify-center transition-all duration-300",
-                        conciergeVehicle === null ? "opacity-70 scale-100" : "grayscale opacity-40 scale-100"
-                      )}>
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none" className="max-h-[28px] w-[28px]">
-                          <g opacity="0.6">
-                            <path d="M10 28l3-6h22l3 6" fill="#888" stroke="#888" strokeWidth="1.5"/>
-                            <rect x="10" y="28" width="28" height="6" rx="1" fill="#888"/>
-                            <circle cx="16" cy="34" r="2.5" fill="#555"/>
-                            <circle cx="32" cy="34" r="2.5" fill="#555"/>
-                            <path d="M15 23l2-4h5v4z" fill="#bbb"/>
-                            <path d="M24 19h5l2 4H24z" fill="#bbb"/>
-                          </g>
-                          <circle cx="24" cy="24" r="18" stroke="hsl(var(--destructive))" strokeWidth="3" fill="none"/>
-                          <line x1="11" y1="11" x2="37" y2="37" stroke="hsl(var(--destructive))" strokeWidth="3"/>
-                        </svg>
-                      </div>
-                    </button>
+                    {/* "None" icon - no vehicle needed */}
+                    {(() => {
+                      const isNoneActive = conciergeVehicle === "none";
+                      return (
+                        <button
+                          onClick={() => setConciergeVehicle(isNoneActive ? null : "none")}
+                          className="bg-transparent border-none outline-none cursor-pointer flex items-center"
+                        >
+                          <div className={cn(
+                            "h-[36px] flex items-end justify-center transition-all duration-300",
+                            isNoneActive ? "grayscale-0 opacity-100 scale-110"
+                              : conciergeVehicle === null ? "grayscale-0 opacity-70 scale-100"
+                              : "grayscale opacity-40 scale-100"
+                          )}>
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none" className="max-h-[28px] w-[28px]">
+                              <g opacity="0.6">
+                                <path d="M10 28l3-6h22l3 6" fill="#888" stroke="#888" strokeWidth="1.5"/>
+                                <rect x="10" y="28" width="28" height="6" rx="1" fill="#888"/>
+                                <circle cx="16" cy="34" r="2.5" fill="#555"/>
+                                <circle cx="32" cy="34" r="2.5" fill="#555"/>
+                                <path d="M15 23l2-4h5v4z" fill="#bbb"/>
+                                <path d="M24 19h5l2 4H24z" fill="#bbb"/>
+                              </g>
+                              <circle cx="24" cy="24" r="18" stroke="hsl(var(--destructive))" strokeWidth="3" fill="none"/>
+                              <line x1="11" y1="11" x2="37" y2="37" stroke="hsl(var(--destructive))" strokeWidth="3"/>
+                            </svg>
+                          </div>
+                        </button>
+                      );
+                    })()}
                     {vehicleOptions.map((v) => {
                       const isActive = conciergeVehicle === v.id;
                       return (
@@ -1334,7 +1341,9 @@ const Book = () => {
                         >
                           <div className={cn(
                             "h-[36px] flex items-end justify-center transition-all duration-300",
-                            isActive ? "grayscale-0 opacity-100 scale-110" : conciergeVehicle === null ? "opacity-70 scale-100" : "grayscale opacity-40 scale-100"
+                            isActive ? "grayscale-0 opacity-100 scale-110"
+                              : conciergeVehicle === null ? "grayscale-0 opacity-70 scale-100"
+                              : "grayscale opacity-40 scale-100"
                           )}>
                             <img src={v.image} alt={v.label} className={cn("object-contain", v.imgClass)} />
                           </div>
@@ -1343,7 +1352,7 @@ const Book = () => {
                     })}
                   </div>
                   <AnimatePresence mode="wait">
-                    {conciergeVehicle && (
+                    {conciergeVehicle && conciergeVehicle !== "none" && (
                       <motion.p
                         key={conciergeVehicle}
                         initial={{ opacity: 0, y: -4 }}
@@ -1352,7 +1361,19 @@ const Book = () => {
                         transition={{ duration: 0.15 }}
                         className="text-xs text-muted-foreground text-center mt-2"
                       >
-                        {vehicleCaptions[conciergeVehicle]}
+                        {vehicleCaptions[conciergeVehicle as VehicleId]}
+                      </motion.p>
+                    )}
+                    {conciergeVehicle === "none" && (
+                      <motion.p
+                        key="none"
+                        initial={{ opacity: 0, y: -4 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -4 }}
+                        transition={{ duration: 0.15 }}
+                        className="text-xs text-muted-foreground text-center mt-2"
+                      >
+                        No vehicle needed
                       </motion.p>
                     )}
                   </AnimatePresence>
