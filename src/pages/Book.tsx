@@ -3052,7 +3052,10 @@ const Book = () => {
                   <span className="text-sm font-semibold text-primary uppercase tracking-wider">Live</span>
                 </div>
                 <p className="text-[15px] font-medium text-muted-foreground flex items-center gap-1.5">
-                  <img src={deliverBox} alt="" className="w-5 h-5" />
+                  {isWfhConcierge
+                    ? <Home className="w-5 h-5" />
+                    : <img src={deliverBox} alt="" className="w-5 h-5" />
+                  }
                   {isWfhConcierge ? "WFH Service" : "4 mins away • 2:01 AM dropoff"}
                 </p>
               </div>
