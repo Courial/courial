@@ -8,7 +8,7 @@ import { Link, useSearchParams } from "react-router-dom";
 import { ActivityPanel } from "@/components/booking/ActivityPanel";
 import { motion, AnimatePresence } from "framer-motion";
 import { Helmet } from "react-helmet-async";
-import { MapPin, Search, CarFront, ParkingCircle, Leaf, Box, ConciergeBell, Clock, CalendarIcon, ChevronDown, ChevronLeft, Info, Plus, Trash2, CreditCard, Star, X, Weight, Sparkles, Zap, ArrowLeft, Shield, Eye, EyeOff, MessageCircle, Headset, Send, Phone, Mail, Check } from "lucide-react";
+import { MapPin, Search, CarFront, ParkingCircle, Leaf, Box, ConciergeBell, Clock, CalendarIcon, ChevronDown, ChevronLeft, Info, Plus, Trash2, CreditCard, Star, X, Weight, Sparkles, Zap, ArrowLeft, Shield, Eye, EyeOff, MessageCircle, Headset, Send, Phone, Mail, Check, Pause, Play } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import visaIcon from "@/assets/card-icons/visa.svg";
@@ -156,6 +156,12 @@ const Book = () => {
   const [isExpenseRedrafting, setIsExpenseRedrafting] = useState<number | null>(null);
   const [deliverRedraftSuggestion, setDeliverRedraftSuggestion] = useState<string | null>(null);
   const [isDeliverRedrafting, setIsDeliverRedrafting] = useState(false);
+
+  // WFH task timer state
+  const [wfhTaskElapsed, setWfhTaskElapsed] = useState(0); // seconds elapsed
+  const [wfhTaskPaused, setWfhTaskPaused] = useState(false);
+  const [wfhTaskRunning, setWfhTaskRunning] = useState(false);
+  const wfhTaskIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   // Roadside Assistance vehicle details
   const [roadsideVehicleMake, setRoadsideVehicleMake] = useState("");
@@ -810,6 +816,33 @@ const Book = () => {
       if (wfhTimerRef.current) clearTimeout(wfhTimerRef.current);
     };
   }, [bookingState, conciergeIsRemote, wfhSearchPhase, acceptedCourial, user, resubmitWithLocation]);
+
+  // WFH task timer — start on "Task In Progress" (step 1), stop on "Task Completed" (step 2+)
+  useEffect(() => {
+    const isWfh = selectedService === "concierge" && conciergeIsRemote;
+    if (!isWfh) return;
+    if (deliveryStep >= 1 && deliveryStep < 2) {
+      setWfhTaskRunning(true);
+    } else if (deliveryStep >= 2) {
+      setWfhTaskRunning(false);
+    }
+  }, [selectedService, conciergeIsRemote, deliveryStep]);
+
+  useEffect(() => {
+    if (wfhTaskRunning && !wfhTaskPaused) {
+      wfhTaskIntervalRef.current = setInterval(() => {
+        setWfhTaskElapsed(prev => prev + 1);
+      }, 1000);
+    } else {
+      if (wfhTaskIntervalRef.current) {
+        clearInterval(wfhTaskIntervalRef.current);
+        wfhTaskIntervalRef.current = null;
+      }
+    }
+    return () => {
+      if (wfhTaskIntervalRef.current) clearInterval(wfhTaskIntervalRef.current);
+    };
+  }, [wfhTaskRunning, wfhTaskPaused]);
 
   // Handle "keep searching" responses
   const handleKeepSearchingYes = useCallback(() => {
@@ -3109,6 +3142,46 @@ const Book = () => {
                     />
                   ) : null}
                 </div>
+
+                {/* WFH Task Timer */}
+                {isWfhConcierge && (
+                  <div className={cn(
+                    "flex items-center justify-between rounded-xl border border-border px-4 py-3 mb-4 transition-colors",
+                    wfhTaskRunning && !wfhTaskPaused ? "bg-primary/5" : "bg-muted/50"
+                  )}>
+                    <div className="flex items-center gap-2.5">
+                      <Clock className={cn(
+                        "w-4 h-4 transition-colors",
+                        wfhTaskRunning && !wfhTaskPaused ? "text-primary" : "text-muted-foreground/40"
+                      )} />
+                      <div>
+                        <p className="text-[11px] text-muted-foreground font-medium">Task Timer</p>
+                        <p className={cn(
+                          "text-lg font-mono font-bold tabular-nums tracking-wider transition-colors",
+                          wfhTaskRunning && !wfhTaskPaused ? "text-foreground" : "text-muted-foreground/40"
+                        )}>
+                          {String(Math.floor(wfhTaskElapsed / 3600)).padStart(2, "0")}
+                          :{String(Math.floor((wfhTaskElapsed % 3600) / 60)).padStart(2, "0")}
+                          :{String(wfhTaskElapsed % 60).padStart(2, "0")}
+                        </p>
+                      </div>
+                    </div>
+                    {wfhTaskRunning && (
+                      <button
+                        onClick={() => setWfhTaskPaused(p => !p)}
+                        className={cn(
+                          "flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-full border transition-colors",
+                          wfhTaskPaused
+                            ? "border-primary text-primary hover:bg-primary/10"
+                            : "border-border text-muted-foreground hover:text-foreground hover:border-foreground/30"
+                        )}
+                      >
+                        {wfhTaskPaused ? <Play className="w-3 h-3" /> : <Pause className="w-3 h-3" />}
+                        {wfhTaskPaused ? "Resume" : "Pause"}
+                      </button>
+                    )}
+                  </div>
+                )}
 
                 {/* Delivery Status Stepper */}
                 <div className="mb-4">
