@@ -3053,11 +3053,8 @@ const Book = () => {
                 </div>
                 <p className="text-[15px] font-medium text-muted-foreground flex items-center gap-1.5">
                   <img src={deliverBox} alt="" className="w-5 h-5" />
-                  4 mins away • 2:01 AM dropoff
+                  {isWfhConcierge ? "WFH Service" : "4 mins away • 2:01 AM dropoff"}
                 </p>
-              </div>
-
-              {/* Driver Card */}
               <div className="rounded-2xl border border-border bg-background p-5 mb-4">
                 <div className="flex items-center gap-4 mb-4">
                   {acceptedCourial?.image ? (
