@@ -207,7 +207,12 @@ export const Navbar = () => {
                   </Link>
                 )}
                 <Link to="/book" onClick={() => setIsOpen(false)}>
-                  <Button variant={isActive("/book") ? "secondary" : "hero"} className={`w-full ${hasActiveOrder ? "animate-pulse-gentle border border-destructive" : ""}`}>Book Now</Button>
+                  <Button
+                    variant={isActive("/book") ? "secondary" : formStarted ? "default" : "hero"}
+                    className={`w-full ${bookingPulse ? "animate-pulse-gentle border border-destructive" : ""} ${formStarted && !bookingPulse ? "bg-primary text-primary-foreground hover:bg-primary/90" : ""}`}
+                  >
+                    Book Now
+                  </Button>
                 </Link>
               </div>
             </div>
