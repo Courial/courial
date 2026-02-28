@@ -784,15 +784,6 @@ const Book = () => {
                                 </h3>
                                 <p className="text-sm text-muted-foreground leading-snug whitespace-pre-line">{item.desc}</p>
                               </div>
-                              {item.icons.length > 1 && (
-                                <div className="flex gap-1.5 flex-shrink-0">
-                                  {item.icons.slice(1).map((Icon, idx) => (
-                                    <div key={idx} className="w-14 h-14 rounded-xl bg-muted flex items-center justify-center group-hover:bg-muted/80 transition-colors">
-                                      <Icon className="w-7 h-7 text-foreground" />
-                                    </div>
-                                  ))}
-                                </div>
-                              )}
                             </div>
                           </>
                         );
