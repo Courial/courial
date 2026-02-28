@@ -3200,16 +3200,16 @@ const Book = () => {
                       );
                     })}
 
-                    {/* WFH Clock - absolutely positioned on the right, vertically centered between Task In Progress & Task Completed */}
+                    {/* WFH Clock - centered between stepper content and right margin */}
                     {isWfhConcierge && (
-                      <div className="absolute right-0 top-1/2 -translate-y-1/2 flex flex-col items-center gap-1">
+                      <div className="absolute top-1/2 -translate-y-1/2 flex flex-col items-center gap-1.5" style={{ left: 'calc(50% + 40px)', transform: 'translate(-50%, -50%)' }}>
                         <div className={cn(
                           "relative flex items-center justify-center transition-colors",
                           wfhTaskRunning && !wfhTaskPaused ? "text-primary" : "text-muted-foreground/30"
                         )}>
-                          <Clock className="w-16 h-16" strokeWidth={1.2} />
+                          <Clock className="w-24 h-24" strokeWidth={1} />
                           <span className={cn(
-                            "absolute text-[10px] font-mono font-bold tabular-nums tracking-tight transition-colors",
+                            "absolute text-sm font-mono font-bold tabular-nums tracking-tight transition-colors",
                             wfhTaskRunning && !wfhTaskPaused ? "text-foreground" : "text-muted-foreground/40"
                           )}>
                             {String(Math.floor(wfhTaskElapsed / 3600)).padStart(2, "0")}
