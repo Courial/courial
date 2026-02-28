@@ -817,6 +817,32 @@ const Book = () => {
     };
   }, [bookingState, conciergeIsRemote, wfhSearchPhase, acceptedCourial, user, resubmitWithLocation]);
 
+  // WFH task timer — start on "Task In Progress" (step 1), stop on "Task Completed" (step 2+)
+  useEffect(() => {
+    if (!isWfhConcierge) return;
+    if (deliveryStep >= 1 && deliveryStep < 2) {
+      setWfhTaskRunning(true);
+    } else if (deliveryStep >= 2) {
+      setWfhTaskRunning(false);
+    }
+  }, [isWfhConcierge, deliveryStep]);
+
+  useEffect(() => {
+    if (wfhTaskRunning && !wfhTaskPaused) {
+      wfhTaskIntervalRef.current = setInterval(() => {
+        setWfhTaskElapsed(prev => prev + 1);
+      }, 1000);
+    } else {
+      if (wfhTaskIntervalRef.current) {
+        clearInterval(wfhTaskIntervalRef.current);
+        wfhTaskIntervalRef.current = null;
+      }
+    }
+    return () => {
+      if (wfhTaskIntervalRef.current) clearInterval(wfhTaskIntervalRef.current);
+    };
+  }, [wfhTaskRunning, wfhTaskPaused]);
+
   // Handle "keep searching" responses
   const handleKeepSearchingYes = useCallback(() => {
     setShowKeepSearching(false);
