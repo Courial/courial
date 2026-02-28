@@ -1352,7 +1352,7 @@ const Book = () => {
                     })}
                   </div>
                   <AnimatePresence mode="wait">
-                    {conciergeVehicle && (
+                    {conciergeVehicle && conciergeVehicle !== "none" && (
                       <motion.p
                         key={conciergeVehicle}
                         initial={{ opacity: 0, y: -4 }}
@@ -1361,7 +1361,19 @@ const Book = () => {
                         transition={{ duration: 0.15 }}
                         className="text-xs text-muted-foreground text-center mt-2"
                       >
-                        {vehicleCaptions[conciergeVehicle]}
+                        {vehicleCaptions[conciergeVehicle as VehicleId]}
+                      </motion.p>
+                    )}
+                    {conciergeVehicle === "none" && (
+                      <motion.p
+                        key="none"
+                        initial={{ opacity: 0, y: -4 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -4 }}
+                        transition={{ duration: 0.15 }}
+                        className="text-xs text-muted-foreground text-center mt-2"
+                      >
+                        No vehicle needed
                       </motion.p>
                     )}
                   </AnimatePresence>
