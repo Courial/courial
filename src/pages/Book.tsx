@@ -3086,7 +3086,7 @@ const Book = () => {
                         ? `${acceptedCourial.vehicleYear ? acceptedCourial.vehicleYear + " " : ""}${acceptedCourial.vehicleMake} ${acceptedCourial.vehicleModel}`.trim() || "Vehicle info pending"
                         : "Black Toyota Corolla"}
                     </div>
-                    <div className="text-xs font-bold text-foreground mt-0.5">Plate No. {acceptedCourial?.licensePlate || "ABC1234"}</div>
+                    <div className="text-xs text-foreground mt-0.5"><span className="font-normal text-muted-foreground">Plate No.</span> <span className="font-bold">{acceptedCourial?.licensePlate || "ABC1234"}</span></div>
                   </div>
                   {isWfhConcierge ? (
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none" className="h-10 w-10 shrink-0">
