@@ -3370,7 +3370,7 @@ const Book = () => {
               {deliveryStep >= (isWfhConcierge ? 3 : 5) && (
                 <button
                   onClick={handleCancelBooking}
-                  className="w-full py-3 rounded-full text-sm font-semibold text-black bg-primary hover:bg-primary/90 transition-colors mb-3"
+                  className="w-full py-3 rounded-full text-sm font-semibold text-background bg-foreground hover:bg-foreground/90 transition-colors mb-3"
                 >
                   Done
                 </button>
