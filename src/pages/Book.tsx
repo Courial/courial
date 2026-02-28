@@ -278,18 +278,26 @@ const Book = () => {
 
   const handleStatusChange = useCallback((status: string) => {
     console.log("[Book] Delivery status changed:", status);
-    const statusStepMap: Record<string, number> = {
-      "Courial at Pickup": 1,
-      "Courial Picked Up": 2,
-      "Courial at Drop-off": 3,
-      "Order Complete": 5,
-    };
+    const isWfh = selectedService === "concierge" && conciergeIsRemote;
+    const statusStepMap: Record<string, number> = isWfh
+      ? {
+          "Courial at Pickup": 1, // maps to "Task In Progress"
+          "Courial Picked Up": 1,
+          "Courial at Drop-off": 2, // maps to "Task Completed"
+          "Order Complete": 3,
+        }
+      : {
+          "Courial at Pickup": 1,
+          "Courial Picked Up": 2,
+          "Courial at Drop-off": 3,
+          "Order Complete": 5,
+        };
     const stepIndex = statusStepMap[status];
     if (stepIndex !== undefined) {
       setDeliveryStep(stepIndex);
       toast.info(status);
     }
-  }, []);
+  }, [selectedService, conciergeIsRemote]);
 
   useCourialSocket({
     token: courialToken,
