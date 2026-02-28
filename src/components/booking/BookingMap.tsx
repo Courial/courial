@@ -148,6 +148,7 @@ const BookingMap: React.FC<BookingMapProps> = ({ pickupCoords, dropoffCoords, st
   const markersRef = useRef<google.maps.Marker[]>([]);
   const infoWindowsRef = useRef<google.maps.InfoWindow[]>([]);
   const polylineRef = useRef<google.maps.Polyline | null>(null);
+  const tripInfoWindowRef = useRef<google.maps.InfoWindow | null>(null);
   const directionsRendererRef = useRef<google.maps.DirectionsRenderer | null>(null);
   const carMarkersRef = useRef<google.maps.Marker[]>([]);
   const carAnimationRef = useRef<number | null>(null);
