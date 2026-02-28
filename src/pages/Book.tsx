@@ -503,10 +503,10 @@ const Book = () => {
         vehicleType: selectedVehicle || undefined,
         notes: isConcierge ? conciergeDescription : notes,
         pickup: isConcierge
-          ? { address: conciergeStartAddress || "N/A", lat: 0, lng: 0 }
+          ? { address: conciergeStartAddress || "N/A", lat: conciergeStartCoords?.lat || 0, lng: conciergeStartCoords?.lng || 0 }
           : { address: pickup, lat: pickupCoords?.lat, lng: pickupCoords?.lng },
         dropoff: isConcierge
-          ? { address: conciergeFinalAddress || "N/A", lat: 0, lng: 0 }
+          ? { address: conciergeFinalAddress || "N/A", lat: conciergeFinalCoords?.lat || 0, lng: conciergeFinalCoords?.lng || 0 }
           : { address: dropoff, lat: dropoffCoords?.lat, lng: dropoffCoords?.lng },
         userId: user.id,
       };
