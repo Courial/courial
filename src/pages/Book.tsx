@@ -3532,7 +3532,7 @@ const Book = () => {
                 {deliveryStep < 5 && (
                   <button
                     onClick={() => setDeliveryStep((s) => Math.min(s + 1, 5))}
-                    className="w-full py-3 rounded-full text-sm font-semibold text-primary-foreground bg-primary hover:bg-primary/90 transition-colors"
+                    className="w-full py-3 rounded-full text-sm font-semibold text-background bg-foreground hover:bg-foreground/90 transition-colors"
                   >
                     {selectedService === "concierge"
                       ? ["En Route", "Arrive", "Begin Task", "Complete Task", "Finish"][deliveryStep]
