@@ -346,12 +346,13 @@
 
 /* Ensure Google Places autocomplete dropdown appears above all UI */
 .pac-container {
-  z-index: 10000 !important;
+  z-index: 100000 !important;
   border-radius: 12px !important;
   border: 1px solid hsl(var(--border)) !important;
   box-shadow: 0 4px 12px rgba(0,0,0,0.08) !important;
   margin-top: 4px !important;
   background: hsl(var(--background)) !important;
+  pointer-events: auto !important;
 }
 
 .pac-container::after {

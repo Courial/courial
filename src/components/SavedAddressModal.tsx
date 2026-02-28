@@ -97,7 +97,22 @@ export const SavedAddressModal = ({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[19.2rem] bg-transparent border-none !rounded-[20px] p-0 overflow-y-auto max-h-[90vh] [&>button]:hidden shadow-none">
+      <DialogContent
+        className="sm:max-w-[19.2rem] bg-transparent border-none !rounded-[20px] p-0 overflow-y-auto max-h-[90vh] [&>button]:hidden shadow-none"
+        onPointerDownOutside={(e) => {
+          // Prevent Dialog from intercepting clicks on Google Places autocomplete
+          const target = e.target as HTMLElement;
+          if (target.closest('.pac-container') || target.classList.contains('pac-item') || target.closest('.pac-item')) {
+            e.preventDefault();
+          }
+        }}
+        onInteractOutside={(e) => {
+          const target = e.target as HTMLElement;
+          if (target.closest('.pac-container') || target.classList.contains('pac-item') || target.closest('.pac-item')) {
+            e.preventDefault();
+          }
+        }}
+      >
         <motion.div
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
