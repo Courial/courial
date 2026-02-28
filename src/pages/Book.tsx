@@ -774,8 +774,8 @@ const Book = () => {
                             <div className="absolute inset-0 bg-gradient-to-t from-background via-background/70 to-background/30" />
                             <div className="relative z-10 flex items-center gap-5 h-full">
                               <div className="flex gap-1.5 flex-shrink-0">
-                                <div className="w-14 h-14 rounded-xl bg-muted flex items-center justify-center group-hover:bg-muted/80 transition-colors">
-                                  {(() => { const FirstIcon = item.icons[0]; return <FirstIcon className="w-7 h-7 text-foreground" />; })()}
+                                <div className="w-14 h-14 rounded-xl bg-muted flex items-center justify-center group-hover:bg-muted/80 transition-colors overflow-hidden">
+                                  <img src={item.serviceIcon} alt={item.label} className="w-10 h-10 object-contain" />
                                 </div>
                               </div>
                               <div className="flex-1 min-w-0">
