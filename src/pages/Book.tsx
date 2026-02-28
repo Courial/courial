@@ -1239,27 +1239,28 @@ const Book = () => {
               <div className="mb-4 mt-4 space-y-3">
                 <span className="text-xs font-medium text-muted-foreground">Vehicle Details</span>
                 <div className="space-y-2">
-                  <input
-                    type="text"
-                    placeholder="Vehicle Make"
-                    value={roadsideVehicleMake}
-                    onChange={(e) => setRoadsideVehicleMake(e.target.value)}
-                    className="w-full px-3 py-2 rounded-lg border border-border/60 bg-background text-foreground text-xs placeholder:text-muted-foreground focus:outline-none focus:border-primary transition-colors"
-                  />
-                  <input
-                    type="text"
-                    placeholder="Model"
-                    value={roadsideVehicleModel}
-                    onChange={(e) => setRoadsideVehicleModel(e.target.value)}
-                    className="w-full px-3 py-2 rounded-lg border border-border/60 bg-background text-foreground text-xs placeholder:text-muted-foreground focus:outline-none focus:border-primary transition-colors"
-                  />
-                  <input
-                    type="text"
-                    placeholder="Color"
-                    value={roadsideVehicleColor}
-                    onChange={(e) => setRoadsideVehicleColor(e.target.value)}
-                    className="w-full px-3 py-2 rounded-lg border border-border/60 bg-background text-foreground text-xs placeholder:text-muted-foreground focus:outline-none focus:border-primary transition-colors"
-                  />
+                  <div className="flex gap-2">
+                    <input
+                      type="text"
+                      placeholder="Make"
+                      value={roadsideVehicleMake}
+                      onChange={(e) => setRoadsideVehicleMake(e.target.value)}
+                      className="flex-1 px-3 py-2 rounded-lg border border-border/60 bg-background text-foreground text-xs placeholder:text-muted-foreground focus:outline-none focus:border-primary transition-colors"
+                    />
+                    <input
+                      type="text"
+                      placeholder="Model"
+                      value={roadsideVehicleModel}
+                      onChange={(e) => setRoadsideVehicleModel(e.target.value)}
+                      className="flex-1 px-3 py-2 rounded-lg border border-border/60 bg-background text-foreground text-xs placeholder:text-muted-foreground focus:outline-none focus:border-primary transition-colors"
+                    />
+                    <input
+                      type="text"
+                      placeholder="Color"
+                      value={roadsideVehicleColor}
+                      onChange={(e) => setRoadsideVehicleColor(e.target.value)}
+                      className="flex-1 px-3 py-2 rounded-lg border border-border/60 bg-background text-foreground text-xs placeholder:text-muted-foreground focus:outline-none focus:border-primary transition-colors"
+                    />
                   <input
                     type="text"
                     placeholder="License Plate"
