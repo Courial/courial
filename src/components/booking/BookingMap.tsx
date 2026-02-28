@@ -681,20 +681,20 @@ const BookingMap: React.FC<BookingMapProps> = ({ pickupCoords, dropoffCoords, st
           <img src="/map-icons/recenter.png" alt="Re-center" className="w-7 h-7 rounded-full bg-white" />
         </button>
         {/* Zoom controls - bottom right */}
-        <div className="absolute bottom-4 right-4 z-10 flex flex-col rounded-full border border-black overflow-hidden">
-          <button
-            onClick={() => { const m = mapInstanceRef.current; if (m) m.setZoom((m.getZoom() || 12) + 1); }}
-            className="w-7 h-7 flex items-center justify-center bg-black hover:bg-black/80 transition-colors"
-            title="Zoom in"
-          >
-            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round"><path d="M12 5v14M5 12h14"/></svg>
-          </button>
+        <div className="absolute bottom-4 right-4 z-10 flex flex-row rounded-full border border-black overflow-hidden">
           <button
             onClick={() => { const m = mapInstanceRef.current; if (m) m.setZoom((m.getZoom() || 12) - 1); }}
-            className="w-7 h-7 flex items-center justify-center bg-white hover:bg-black/5 transition-colors border-t border-black"
+            className="w-7 h-7 flex items-center justify-center bg-white hover:bg-black/5 transition-colors"
             title="Zoom out"
           >
             <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="black" strokeWidth="2.5" strokeLinecap="round"><path d="M5 12h14"/></svg>
+          </button>
+          <button
+            onClick={() => { const m = mapInstanceRef.current; if (m) m.setZoom((m.getZoom() || 12) + 1); }}
+            className="w-7 h-7 flex items-center justify-center bg-black hover:bg-black/80 transition-colors border-l border-black"
+            title="Zoom in"
+          >
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round"><path d="M12 5v14M5 12h14"/></svg>
           </button>
         </div>
       </div>
