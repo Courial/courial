@@ -3482,7 +3482,7 @@ const Book = () => {
                     <span className="text-muted-foreground">Payment</span>
                     <span className="text-foreground">{activePayment.label}</span>
                   </div>
-                </div>
+                </div>}
               </div>
 
               {/* Price / Receipt */}
