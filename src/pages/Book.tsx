@@ -46,6 +46,7 @@ import vehicleScooter from "@/assets/vehicle-scooter.png";
 import vehicleCar from "@/assets/vehicle-car.png";
 import vehicleVan from "@/assets/vehicle-van.png";
 import vehicleTruck from "@/assets/vehicle-truck.png";
+import noVehicleIcon from "@/assets/no-vehicle-icon.svg";
 
 
 type VehicleId = "walker" | "scooter" | "car" | "van" | "truck";
