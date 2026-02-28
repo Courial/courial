@@ -3242,7 +3242,6 @@ const Book = () => {
                               )}>
                                 {String(Math.floor(wfhTaskElapsed / 3600)).padStart(2, "0")}
                                 :{String(Math.floor((wfhTaskElapsed % 3600) / 60)).padStart(2, "0")}
-                                :{String(wfhTaskElapsed % 60).padStart(2, "0")}
                               </span>
                               <span className={cn(
                                 "text-[8px] font-medium uppercase tracking-wider transition-colors",
