@@ -125,6 +125,7 @@ const Book = () => {
   const [conciergeVehicle, setConciergeVehicle] = useState<VehicleId | null>(null);
   const [conciergeCategory, setConciergeCategory] = useState<string | null>(null);
   const [conciergeSubCategory, setConciergeSubCategory] = useState<string | null>(null);
+  const [conciergeIsRemote, setConciergeIsRemote] = useState(false);
   const [conciergeAddressToggles, setConciergeAddressToggles] = useState({ start: false, stop: false, final: false });
   const [conciergeStartAddress, setConciergeStartAddress] = useState("");
   const [conciergeStopAddress, setConciergeStopAddress] = useState("");
@@ -497,19 +498,45 @@ const Book = () => {
       }
 
       const isConcierge = selectedService === "concierge";
+
+      // For concierge: resolve best pickup/dropoff from available addresses, duplicating if only one exists
+      let concPickup = { address: "N/A", lat: 0, lng: 0 };
+      let concDropoff = { address: "N/A", lat: 0, lng: 0 };
+      if (isConcierge) {
+        if (conciergeIsRemote) {
+          // Remote/WFH — send "Remote" label, no real coords needed
+          concPickup = { address: "Remote / WFH", lat: 0, lng: 0 };
+          concDropoff = { address: "Remote / WFH", lat: 0, lng: 0 };
+        } else {
+          // Collect all available addresses in order
+          const available: { address: string; lat: number; lng: number }[] = [];
+          if (conciergeStartAddress && conciergeStartCoords) available.push({ address: conciergeStartAddress, ...conciergeStartCoords });
+          if (conciergeStopAddress && conciergeStopCoords) available.push({ address: conciergeStopAddress, ...conciergeStopCoords });
+          if (conciergeFinalAddress && conciergeFinalCoords) available.push({ address: conciergeFinalAddress, ...conciergeFinalCoords });
+
+          if (available.length >= 2) {
+            concPickup = available[0];
+            concDropoff = available[available.length - 1];
+          } else if (available.length === 1) {
+            // Duplicate the single address for both pickup and dropoff
+            concPickup = available[0];
+            concDropoff = available[0];
+          }
+        }
+      }
+
       const payload: Record<string, any> = {
         scheduleType: timeMode === "now" ? "now" : "later",
         serviceType: selectedService || "deliver",
         vehicleType: selectedVehicle || undefined,
         notes: isConcierge ? conciergeDescription : notes,
-        pickup: isConcierge
-          ? { address: conciergeStartAddress || "N/A", lat: conciergeStartCoords?.lat || 0, lng: conciergeStartCoords?.lng || 0 }
-          : { address: pickup, lat: pickupCoords?.lat, lng: pickupCoords?.lng },
-        dropoff: isConcierge
-          ? { address: conciergeFinalAddress || "N/A", lat: conciergeFinalCoords?.lat || 0, lng: conciergeFinalCoords?.lng || 0 }
-          : { address: dropoff, lat: dropoffCoords?.lat, lng: dropoffCoords?.lng },
+        pickup: isConcierge ? concPickup : { address: pickup, lat: pickupCoords?.lat, lng: pickupCoords?.lng },
+        dropoff: isConcierge ? concDropoff : { address: dropoff, lat: dropoffCoords?.lat, lng: dropoffCoords?.lng },
         userId: user.id,
       };
+      if (isConcierge && conciergeIsRemote) {
+        payload.isRemote = true;
+      }
 
       if (isConcierge) {
         const cat = conciergeCategories.find(c => c.id === conciergeCategory);
@@ -631,7 +658,7 @@ const Book = () => {
       toast.error("Something went wrong — please try again.");
       setBookingState("input");
     }
-  }, [isFormValid, user, timeMode, selectedService, selectedVehicle, notes, pickup, pickupCoords, dropoff, dropoffCoords, selectedDate, selectedTime, over70lbs, heavyWeight, heavyItems, twoCourials, hasStairs, conciergeDescription, conciergeCategory, conciergeSubCategory, conciergeStartAddress, conciergeStopAddress, conciergeFinalAddress, conciergeLanguage, conciergeServiceMode, conciergeHasExpenses, conciergeExpenseItems, conciergeAllowOverage, conciergeOverageLimit, conciergeOrderValue, deliverLanguage, deliverMultiStop, deliverExtraStops, deliverHasExpenses, deliverExpenseItems, deliverAllowOverage, deliverOverageLimit]);
+  }, [isFormValid, user, timeMode, selectedService, selectedVehicle, notes, pickup, pickupCoords, dropoff, dropoffCoords, selectedDate, selectedTime, over70lbs, heavyWeight, heavyItems, twoCourials, hasStairs, conciergeDescription, conciergeCategory, conciergeSubCategory, conciergeIsRemote, conciergeStartAddress, conciergeStartCoords, conciergeStopAddress, conciergeStopCoords, conciergeFinalAddress, conciergeFinalCoords, conciergeLanguage, conciergeServiceMode, conciergeHasExpenses, conciergeExpenseItems, conciergeAllowOverage, conciergeOverageLimit, conciergeOrderValue, deliverLanguage, deliverMultiStop, deliverExtraStops, deliverHasExpenses, deliverExpenseItems, deliverAllowOverage, deliverOverageLimit]);
 
   // Animate loading progress — caps at 95% and waits for socket AcceptOrder_listener
   useEffect(() => {
@@ -1503,7 +1530,34 @@ const Book = () => {
                 transition={{ duration: 0.2 }}
                 className="overflow-hidden"
               >
-                {/* Address Toggle Pills */}
+                {/* Remote / WFH Toggle */}
+                <div className="flex items-center justify-center mb-3">
+                  <button
+                    onClick={() => {
+                      setConciergeIsRemote(prev => {
+                        if (!prev) {
+                          // Turning on remote — clear all addresses
+                          setConciergeAddressToggles({ start: false, stop: false, final: false });
+                          setConciergeStartAddress(""); setConciergeStartPlaceName(null); setConciergeStartCoords(null);
+                          setConciergeStopAddress(""); setConciergeStopPlaceName(null); setConciergeStopCoords(null);
+                          setConciergeFinalAddress(""); setConciergeFinalPlaceName(null); setConciergeFinalCoords(null);
+                        }
+                        return !prev;
+                      });
+                    }}
+                    className={cn(
+                      "px-3 py-1.5 rounded-full text-[11px] font-medium transition-all leading-none flex items-center gap-1.5",
+                      conciergeIsRemote
+                        ? "border border-primary text-foreground bg-primary/10"
+                        : "border border-border/60 bg-background text-foreground/75 hover:border-foreground/50"
+                    )}
+                  >
+                    🏠 Remote / WFH
+                  </button>
+                </div>
+
+                {/* Address Toggle Pills — hidden when Remote is on */}
+                {!conciergeIsRemote && (<>
                 <div className="flex items-center justify-center gap-2 mb-3">
                   {(["start", "stop", "final"] as const).map((type) => (
                     <button
@@ -1618,6 +1672,17 @@ const Book = () => {
                     </motion.div>
                   )}
                 </AnimatePresence>
+                </>)}
+                {/* Remote indicator text */}
+                {conciergeIsRemote && (
+                  <div className="flex items-center gap-2 px-4 py-3 border border-border rounded-xl bg-muted/50 mb-3">
+                    <span className="text-sm">🏠</span>
+                    <div>
+                      <p className="text-sm font-semibold text-foreground">Remote Task</p>
+                      <p className="text-xs text-muted-foreground">The Courial will complete this task from their own location — no travel required.</p>
+                    </div>
+                  </div>
+                )}
 
                 {/* Task Description Textarea with Redraft */}
                 <div className="relative mb-1">
