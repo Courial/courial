@@ -3544,7 +3544,7 @@ const Book = () => {
                 {deliveryStep < (isWfhConcierge ? 3 : 5) && (
                   <button
                     onClick={handleCancelBooking}
-                    className="w-full py-3 rounded-full text-sm font-semibold text-muted-foreground bg-background border border-border hover:bg-muted/50 transition-colors"
+                    className="w-full py-3 rounded-full text-sm font-semibold text-muted-foreground bg-background border border-foreground/20 hover:bg-muted/50 transition-colors"
                   >
                     Cancel {selectedService === "concierge" ? "Concierge" : selectedService === "valet" ? "Valet" : "Delivery"}
                   </button>
