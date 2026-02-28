@@ -42,6 +42,7 @@ import conciergeServiceIcon from "@/assets/service-icons/concierge.png";
 import chauffeurServiceIcon from "@/assets/service-icons/chauffeur.png";
 import valetServiceIcon from "@/assets/service-icons/valet.png";
 import vehicleWalker from "@/assets/vehicle-walker.png";
+import noVehicleIcon from "@/assets/no-vehicle-icon.png";
 import vehicleScooter from "@/assets/vehicle-scooter.png";
 import vehicleCar from "@/assets/vehicle-car.png";
 import vehicleVan from "@/assets/vehicle-van.png";
