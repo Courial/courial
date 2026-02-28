@@ -1239,27 +1239,27 @@ const Book = () => {
               <div className="mb-4 mt-4 space-y-3">
                 <span className="text-xs font-medium text-muted-foreground">Vehicle Details</span>
                 <div className="space-y-2">
-                  <div className="flex gap-2">
+                  <div className="flex gap-1.5 w-full min-w-0">
                     <input
                       type="text"
                       placeholder="Make"
                       value={roadsideVehicleMake}
                       onChange={(e) => setRoadsideVehicleMake(e.target.value)}
-                      className="flex-1 px-3 py-2 rounded-lg border border-border/60 bg-background text-foreground text-xs placeholder:text-muted-foreground focus:outline-none focus:border-primary transition-colors"
+                      className="w-1/3 min-w-0 px-2 py-2 rounded-lg border border-border/60 bg-background text-foreground text-xs placeholder:text-muted-foreground focus:outline-none focus:border-border transition-colors"
                     />
                     <input
                       type="text"
                       placeholder="Model"
                       value={roadsideVehicleModel}
                       onChange={(e) => setRoadsideVehicleModel(e.target.value)}
-                      className="flex-1 px-3 py-2 rounded-lg border border-border/60 bg-background text-foreground text-xs placeholder:text-muted-foreground focus:outline-none focus:border-primary transition-colors"
+                      className="w-1/3 min-w-0 px-2 py-2 rounded-lg border border-border/60 bg-background text-foreground text-xs placeholder:text-muted-foreground focus:outline-none focus:border-border transition-colors"
                     />
                     <input
                       type="text"
                       placeholder="Color"
                       value={roadsideVehicleColor}
                       onChange={(e) => setRoadsideVehicleColor(e.target.value)}
-                      className="flex-1 px-3 py-2 rounded-lg border border-border/60 bg-background text-foreground text-xs placeholder:text-muted-foreground focus:outline-none focus:border-primary transition-colors"
+                      className="w-1/3 min-w-0 px-2 py-2 rounded-lg border border-border/60 bg-background text-foreground text-xs placeholder:text-muted-foreground focus:outline-none focus:border-border transition-colors"
                     />
                   </div>
                   <input
@@ -1267,27 +1267,27 @@ const Book = () => {
                     placeholder="License Plate"
                     value={roadsideLicensePlate}
                     onChange={(e) => setRoadsideLicensePlate(e.target.value)}
-                    className="w-full px-3 py-2 rounded-lg border border-border/60 bg-background text-foreground text-xs placeholder:text-muted-foreground focus:outline-none focus:border-primary transition-colors"
+                    className="w-full px-2 py-2 rounded-lg border border-border/60 bg-background text-foreground text-xs placeholder:text-muted-foreground focus:outline-none focus:border-border transition-colors"
                   />
                 </div>
                 <div>
                   <span className="text-xs font-medium text-muted-foreground">Is the vehicle in a safe location?</span>
-                  <div className="flex gap-3 mt-1.5">
+                  <div className="flex gap-2 mt-1.5">
                     <button
                       onClick={() => setRoadsideSafeLocation(true)}
-                      className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[11px] font-normal border transition-all leading-none ${roadsideSafeLocation === true ? "border-primary text-foreground" : "border-border/60 text-foreground hover:border-foreground/50"}`}
+                      className={`flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-normal border transition-all leading-none ${roadsideSafeLocation === true ? "border-primary text-foreground" : "border-border/60 text-foreground hover:border-foreground/50"}`}
                     >
-                      <div className={`w-3.5 h-3.5 rounded border flex items-center justify-center ${roadsideSafeLocation === true ? "border-primary bg-primary" : "border-border"}`}>
-                        {roadsideSafeLocation === true && <Check className="w-2.5 h-2.5 text-primary-foreground" />}
+                      <div className={`w-3 h-3 rounded border flex items-center justify-center ${roadsideSafeLocation === true ? "border-primary bg-primary" : "border-border"}`}>
+                        {roadsideSafeLocation === true && <Check className="w-2 h-2 text-primary-foreground" />}
                       </div>
                       Yes
                     </button>
                     <button
                       onClick={() => setRoadsideSafeLocation(false)}
-                      className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[11px] font-normal border transition-all leading-none ${roadsideSafeLocation === false ? "border-primary text-foreground" : "border-border/60 text-foreground hover:border-foreground/50"}`}
+                      className={`flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-normal border transition-all leading-none ${roadsideSafeLocation === false ? "border-primary text-foreground" : "border-border/60 text-foreground hover:border-foreground/50"}`}
                     >
-                      <div className={`w-3.5 h-3.5 rounded border flex items-center justify-center ${roadsideSafeLocation === false ? "border-primary bg-primary" : "border-border"}`}>
-                        {roadsideSafeLocation === false && <Check className="w-2.5 h-2.5 text-primary-foreground" />}
+                      <div className={`w-3 h-3 rounded border flex items-center justify-center ${roadsideSafeLocation === false ? "border-primary bg-primary" : "border-border"}`}>
+                        {roadsideSafeLocation === false && <Check className="w-2 h-2 text-primary-foreground" />}
                       </div>
                       No
                     </button>
