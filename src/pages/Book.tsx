@@ -78,6 +78,7 @@ const conciergeCategories: ConciergeCategory[] = [
   { id: "notary", label: "Notary Services", desc: "Official notary support", subs: ["Certified Notary", "Notary Assistance"] },
   { id: "travel", label: "Travel", desc: "Trips, flights & logistics", subs: ["Plan Custom Itinerary", "Arrange Private Drivers", "Coordinate Multi-city Travel", "Book Activities & Reservations"] },
   { id: "roadside-assistance", label: "Roadside Assistance", desc: "Help when you need it most", subs: ["Towing", "Flat Tire", "Dead Battery / Jump Start", "Out of Gas", "Locked Out", "Something Else"] },
+  { id: "home-support", label: "Home Support", desc: "Professional home services", subs: ["Locksmith", "Plumbing", "Electrical", "Appliance Installation", "Handyman Services", "Mounting Services (TVs & Art)", "Home Cleaning", "Event Cleanup", "Yard Cleanup", "Heavy Item Moving", "Furniture Assembly", "Junk Removal", "Donation Drop-Off"] },
   { id: "something-else", label: "Something Else?", desc: "Whatever the task, consider it handled.", subs: [] },
 ];
 
