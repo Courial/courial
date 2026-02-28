@@ -701,7 +701,128 @@ const Book = () => {
     setDeliveryStep(0);
     setSocketEnabled(false);
     setAcceptedCourial(null);
+    setWfhSearchPhase(null);
+    setShowKeepSearching(false);
+    if (wfhTimerRef.current) clearTimeout(wfhTimerRef.current);
   }, []);
+
+  // Re-submit booking with new location coords for WFH cascading search
+  const resubmitWithLocation = useCallback(async (loc: { address: string; lat: number; lng: number }) => {
+    if (!user) return;
+    const courialToken = localStorage.getItem("courial_api_token");
+    if (!courialToken) return;
+
+    setLoadingProgress(0);
+    setSocketEnabled(false);
+
+    const cat = conciergeCategories.find(c => c.id === conciergeCategory);
+    const payload: Record<string, any> = {
+      scheduleType: timeMode === "now" ? "now" : "later",
+      serviceType: "concierge",
+      notes: conciergeDescription,
+      pickup: loc,
+      dropoff: loc,
+      userId: user.id,
+      isRemote: true,
+      conciergeCategory: cat?.label || conciergeCategory,
+      conciergeSubCategory: conciergeSubCategory === "__direct__" ? cat?.label : conciergeSubCategory,
+    };
+    if (conciergeOrderValue) payload.orderValue = Number(conciergeOrderValue.replace(/,/g, ''));
+    if (conciergeLanguage) payload.preferredLanguage = conciergeLanguage;
+    if (conciergeServiceMode) payload.serviceMode = conciergeServiceMode;
+    if (conciergeHasExpenses && conciergeExpenseItems.length > 0) {
+      payload.expenseItems = conciergeExpenseItems.filter(e => e.description.trim());
+      payload.allowOverage = conciergeAllowOverage;
+      if (conciergeAllowOverage && conciergeOverageLimit !== "0") {
+        payload.overageLimit = Number(conciergeOverageLimit);
+      }
+    }
+    if (timeMode === "later" && selectedDate) {
+      payload.date = format(selectedDate, "yyyy-MM-dd");
+      payload.time = selectedTime;
+    }
+
+    try {
+      const { data, error } = await supabase.functions.invoke("book-delivery", {
+        body: payload,
+        headers: { Authorization: `Bearer ${courialToken}` },
+      });
+      if (!error && data?.success === 1 && data?.data?.deliveryId) {
+        deliveryIdRef.current = data.data.deliveryId;
+        if (data.data.nearbyCourials?.length) setNearbyCourials(data.data.nearbyCourials);
+        setSocketEnabled(true);
+        console.log("[WFH cascade] Re-submitted with location:", loc.address, "deliveryId:", data.data.deliveryId);
+      }
+    } catch (err) {
+      console.error("[WFH cascade] resubmit error:", err);
+    }
+  }, [user, conciergeCategory, conciergeSubCategory, conciergeDescription, conciergeOrderValue, conciergeLanguage, conciergeServiceMode, conciergeHasExpenses, conciergeExpenseItems, conciergeAllowOverage, conciergeOverageLimit, timeMode, selectedDate, selectedTime]);
+
+  // WFH cascading search timer — 30s per phase
+  useEffect(() => {
+    if (bookingState !== "loading" || !conciergeIsRemote || !wfhSearchPhase) return;
+    // Don't set timer if already accepted
+    if (acceptedCourial) return;
+
+    const WFH_PHASE_TIMEOUT = 30000; // 30 seconds per phase
+
+    wfhTimerRef.current = setTimeout(() => {
+      const saved = getSavedAddresses();
+      const homeAddr = saved.find(a => a.type === "home");
+      const workAddr = saved.find(a => a.type === "work");
+
+      if (wfhSearchPhase === "home") {
+        // Move to Work
+        if (workAddr && workAddr.lat && workAddr.lng) {
+          setWfhSearchPhase("work");
+          setLoadingProgress(0);
+          resubmitWithLocation({ address: `Remote / WFH — ${workAddr.name}`, lat: workAddr.lat, lng: workAddr.lng });
+        } else {
+          // Skip to area code
+          setWfhSearchPhase("area_code");
+          setLoadingProgress(0);
+          // Use user's phone area for geocoding — send with lat:0 lng:0 to let backend handle
+          const phone = user?.user_metadata?.phone || user?.phone || "";
+          resubmitWithLocation({ address: `Remote / WFH — ${phone ? "Phone area" : "General area"}`, lat: 0, lng: 0 });
+        }
+      } else if (wfhSearchPhase === "work") {
+        // Move to area code
+        setWfhSearchPhase("area_code");
+        setLoadingProgress(0);
+        const phone = user?.user_metadata?.phone || user?.phone || "";
+        resubmitWithLocation({ address: `Remote / WFH — ${phone ? "Phone area" : "General area"}`, lat: 0, lng: 0 });
+      } else if (wfhSearchPhase === "area_code") {
+        // All phases exhausted — show "keep searching?" dialog
+        setWfhSearchPhase("exhausted");
+        setShowKeepSearching(true);
+      }
+    }, WFH_PHASE_TIMEOUT);
+
+    return () => {
+      if (wfhTimerRef.current) clearTimeout(wfhTimerRef.current);
+    };
+  }, [bookingState, conciergeIsRemote, wfhSearchPhase, acceptedCourial, user, resubmitWithLocation]);
+
+  // Handle "keep searching" responses
+  const handleKeepSearchingYes = useCallback(() => {
+    setShowKeepSearching(false);
+    setWfhSearchPhase("home");
+    setLoadingProgress(0);
+    // Re-start the cascade from home
+    const saved = getSavedAddresses();
+    const homeAddr = saved.find(a => a.type === "home");
+    if (homeAddr && homeAddr.lat && homeAddr.lng) {
+      resubmitWithLocation({ address: `Remote / WFH — ${homeAddr.name}`, lat: homeAddr.lat, lng: homeAddr.lng });
+    } else {
+      resubmitWithLocation({ address: "Remote / WFH", lat: 0, lng: 0 });
+    }
+  }, [resubmitWithLocation]);
+
+  const handleKeepSearchingNo = useCallback(() => {
+    setShowKeepSearching(false);
+    handleCancelBooking();
+    toast.info("Booking cancelled. You can try again anytime.");
+  }, [handleCancelBooking]);
 
   const deliveryStepsMap: Record<string, { label: string; desc: string }[]> = {
     deliver: [
