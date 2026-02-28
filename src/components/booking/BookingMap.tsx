@@ -641,7 +641,7 @@ const BookingMap: React.FC<BookingMapProps> = ({ pickupCoords, dropoffCoords, st
   return (
     <>
       <style>{`
-        .gm-style-iw { background: white !important; box-shadow: 0 2px 8px rgba(0,0,0,0.15) !important; border: none !important; border-radius: 8px !important; font-family: 'Avenir', 'Avenir Next', 'Nunito Sans', system-ui, sans-serif !important; }
+        .gm-style-iw { background: white !important; box-shadow: 0 2px 8px rgba(0,0,0,0.15) !important; border: 1px solid rgba(255,255,255,0.9) !important; border-radius: 8px !important; font-family: 'Avenir', 'Avenir Next', 'Nunito Sans', system-ui, sans-serif !important; }
         .gm-style-iw-d { overflow: hidden !important; }
         button.gm-ui-hover-effect { display: none !important; }
         .gm-style-iw-chr { display: none !important; }
