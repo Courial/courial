@@ -725,11 +725,9 @@ const Book = () => {
                         <div className="absolute inset-0 bg-gradient-to-r from-background via-background/80 to-background/40" />
                         <div className="relative z-10 flex items-center gap-3 flex-1">
                           <div className="flex gap-1.5">
-                            {item.icons.map((Icon, idx) => (
-                              <div key={idx} className="w-9 h-9 rounded-xl bg-muted flex items-center justify-center">
-                                <Icon className="w-4 h-4 text-foreground" />
+                              <div className="w-9 h-9 rounded-xl bg-muted flex items-center justify-center overflow-hidden">
+                                <img src={item.serviceIcon} alt={item.label} className="w-7 h-7 object-contain" />
                               </div>
-                            ))}
                           </div>
                           <div>
                             <h3 className="text-sm font-bold text-foreground">{item.label}</h3>
