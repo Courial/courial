@@ -643,8 +643,8 @@ const BookingMap: React.FC<BookingMapProps> = ({ pickupCoords, dropoffCoords, st
       <style>{`
         .gm-style-iw { background: white !important; box-shadow: 0 2px 8px rgba(0,0,0,0.15) !important; border: none !important; border-radius: 8px !important; font-family: 'Avenir', 'Avenir Next', 'Nunito Sans', system-ui, sans-serif !important; }
         .gm-style-iw-d { overflow: hidden !important; }
-        .gm-style-iw:has(.trip-info-root) { padding: 4px !important; }
-        .gm-style-iw:has(.trip-info-root) .gm-style-iw-d { padding: 0 !important; margin: 0 !important; }
+        .gm-style-iw:has(.trip-info-root) { padding: 2px !important; min-height: 0 !important; }
+        .gm-style-iw:has(.trip-info-root) .gm-style-iw-d { padding: 0 !important; margin: 0 !important; overflow: hidden !important; }
         button.gm-ui-hover-effect { display: none !important; }
         .gm-style-iw-chr { display: none !important; }
         .gm-style-iw-tc { display: none !important; }
