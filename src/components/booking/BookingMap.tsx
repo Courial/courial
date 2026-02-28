@@ -379,8 +379,8 @@ const BookingMap: React.FC<BookingMapProps> = ({ pickupCoords, dropoffCoords, st
             const midIdx = Math.floor(overviewPath.length / 2);
             const midPoint = overviewPath[midIdx];
 
-            const tripStyle = "font-family:'Avenir','Avenir Next','Nunito Sans',system-ui,sans-serif;padding:4px 8px;line-height:1.35;max-width:160px;text-align:center;";
-            const tripContent = `<div style="${tripStyle}"><div style="font-size:10px;font-weight:600;color:rgba(0,0,0,0.85);margin-bottom:1px;">Trip Info</div><div style="font-size:9px;font-weight:400;color:rgba(0,0,0,0.6);">${mins} mins · ${miles} mi</div></div>`;
+            const tripStyle = "font-family:'Avenir','Avenir Next','Nunito Sans',system-ui,sans-serif;padding:5px 8px;line-height:1.4;text-align:left;";
+            const tripContent = `<div style="${tripStyle}"><div style="font-size:10px;font-weight:600;color:rgba(0,0,0,0.85);margin-bottom:1px;">Trip Info</div><div style="font-size:9px;font-weight:400;color:#000;">${mins} mins · ${miles} mi</div></div>`;
 
             const tripInfoWindow = new google.maps.InfoWindow({
               content: tripContent,
@@ -641,7 +641,7 @@ const BookingMap: React.FC<BookingMapProps> = ({ pickupCoords, dropoffCoords, st
   return (
     <>
       <style>{`
-        .gm-style-iw { background: white !important; box-shadow: 0 2px 8px rgba(0,0,0,0.15) !important; border: none !important; border-radius: 8px !important; font-family: 'Avenir', 'Avenir Next', 'Nunito Sans', system-ui, sans-serif !important; }
+        .gm-style-iw { background: white !important; box-shadow: 0 2px 8px rgba(0,0,0,0.15) !important; border: 1px solid rgba(255,255,255,0.9) !important; border-radius: 8px !important; font-family: 'Avenir', 'Avenir Next', 'Nunito Sans', system-ui, sans-serif !important; }
         .gm-style-iw-d { overflow: hidden !important; }
         button.gm-ui-hover-effect { display: none !important; }
         .gm-style-iw-chr { display: none !important; }
