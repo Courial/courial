@@ -3088,13 +3088,19 @@ const Book = () => {
                     </div>
                     <div className="text-xs font-bold text-foreground mt-0.5">Plate No. {acceptedCourial?.licensePlate || "ABC1234"}</div>
                   </div>
-                  {selectedVehicle && (
+                  {isWfhConcierge ? (
+                    <svg viewBox="0 0 48 48" className="h-10 w-10 shrink-0">
+                      <circle cx="24" cy="24" r="22" fill="none" stroke="currentColor" strokeWidth="3" className="text-destructive" />
+                      <line x1="8" y1="8" x2="40" y2="40" stroke="currentColor" strokeWidth="3" strokeLinecap="round" className="text-destructive" />
+                      <path d="M24 14 L32 22 L32 32 L16 32 L16 22 Z" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinejoin="round" className="text-muted-foreground" />
+                    </svg>
+                  ) : selectedVehicle ? (
                     <img
                       src={vehicleOptions.find(v => v.id === selectedVehicle)?.image}
                       alt={selectedVehicle}
                       className="h-10 object-contain"
                     />
-                  )}
+                  ) : null}
                 </div>
 
                 {/* Delivery Status Stepper */}
