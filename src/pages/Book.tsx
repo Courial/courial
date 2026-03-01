@@ -3393,7 +3393,7 @@ const Book = () => {
               </div>
 
               {/* Order Details */}
-              <div className="rounded-xl border border-border bg-background p-4 mb-4">
+              <div className="rounded-xl border border-border bg-background px-4 py-2.5 mb-4">
                 <button
                   onClick={() => setShowOrderDetails(p => !p)}
                   className="flex items-center justify-between w-full"
