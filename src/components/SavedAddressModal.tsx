@@ -324,7 +324,7 @@ export const SavedAddressModal = ({
                       )}
                     </>
                   ) : (
-                    {addressFormJSX(replacingId ? "Replace" : "Save", handleSave)}
+                    <>{addressFormJSX(replacingId ? "Replace" : "Save", handleSave)}</>
                   )}
                 </>
               )}
