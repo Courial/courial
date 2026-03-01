@@ -3434,6 +3434,7 @@ const Book = () => {
                       </div>
                     )}
                     {/* Row: Rate & Vehicle (same row for concierge, skip for roadside) */}
+                    {((selectedService === "concierge" && conciergeCategory !== "roadside-assistance" && (conciergeServiceMode || conciergeVehicle)) || (selectedService !== "concierge" && selectedVehicle)) && (
                     <div className="grid grid-cols-3 gap-4 py-2.5">
                       {selectedService === "concierge" && conciergeCategory !== "roadside-assistance" && conciergeServiceMode && (
                         <div>
@@ -3456,9 +3457,10 @@ const Book = () => {
                         </div>
                       )}
                     </div>
+                    )}
                     {/* Roadside vehicle details */}
                     {selectedService === "concierge" && conciergeCategory === "roadside-assistance" && (roadsideVehicleMake || roadsideVehicleModel || roadsideVehicleColor || roadsideLicensePlate) && (
-                      <div className="grid grid-cols-2 gap-4 pb-2.5 !border-t-0">
+                      <div className="grid grid-cols-2 gap-4 pt-0 pb-2.5 !border-t-0 -mt-px">
                         {roadsideVehicleMake && (
                           <div>
                             <p className="text-xs font-medium text-foreground mb-0.5">Make</p>
