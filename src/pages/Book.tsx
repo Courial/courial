@@ -3391,20 +3391,36 @@ const Book = () => {
                 </button>
                 {showOrderDetails && (
                   <div className="mt-3 space-y-0 divide-y divide-border text-sm">
-                    {/* Row: Language, Rate/Vehicle */}
-                    <div className="grid grid-cols-3 gap-4 py-2.5">
-                      {(deliverLanguage || conciergeLanguage) && (
+                    {/* Row: Language */}
+                    {(deliverLanguage || conciergeLanguage) && (
+                      <div className="grid grid-cols-3 gap-4 py-2.5">
                         <div>
                           <p className="text-xs font-medium text-foreground mb-0.5">Language</p>
                           <p className="text-[11px] text-muted-foreground">{deliverLanguage || conciergeLanguage}</p>
                         </div>
-                      )}
+                      </div>
+                    )}
+                    {/* Concierge Task Description — right after Language */}
+                    {selectedService === "concierge" && conciergeDescription.trim() && (
+                      <div className="py-2.5">
+                        <p className="text-xs font-medium text-foreground mb-0.5">Task Description</p>
+                        <p className="text-[11px] text-muted-foreground whitespace-pre-wrap">{conciergeDescription}</p>
+                      </div>
+                    )}
+                    {/* Row: Rate & Vehicle (same row for concierge) */}
+                    <div className="grid grid-cols-3 gap-4 py-2.5">
                       {selectedService === "concierge" && conciergeServiceMode && (
                         <div>
                           <p className="text-xs font-medium text-foreground mb-0.5">Rate</p>
                           <p className="text-[11px] text-muted-foreground">
                             {conciergeServiceMode === "hourly" ? "$65 per Hour" : conciergeServiceMode === "daily" ? "$480 Daily" : conciergeServiceMode}
                           </p>
+                        </div>
+                      )}
+                      {selectedService === "concierge" && conciergeVehicle && (
+                        <div>
+                          <p className="text-xs font-medium text-foreground mb-0.5">Vehicle</p>
+                          <p className="text-[11px] text-muted-foreground capitalize">{conciergeVehicle === "none" ? "None" : conciergeVehicle}</p>
                         </div>
                       )}
                       {selectedService !== "concierge" && selectedVehicle && (
@@ -3414,15 +3430,6 @@ const Book = () => {
                         </div>
                       )}
                     </div>
-                    {/* Row: Concierge Vehicle */}
-                    {selectedService === "concierge" && conciergeVehicle && (
-                      <div className="grid grid-cols-3 gap-4 py-2.5">
-                        <div>
-                          <p className="text-xs font-medium text-foreground mb-0.5">Vehicle</p>
-                          <p className="text-[11px] text-muted-foreground capitalize">{conciergeVehicle === "none" ? "None" : conciergeVehicle}</p>
-                        </div>
-                      </div>
-                    )}
                     {/* Roadside vehicle details */}
                     {selectedService === "concierge" && conciergeCategory === "roadside-assistance" && (roadsideVehicleMake || roadsideVehicleModel || roadsideVehicleColor || roadsideLicensePlate) && (
                       <div className="grid grid-cols-2 gap-4 py-2.5">
