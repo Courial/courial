@@ -130,7 +130,7 @@ const Book = () => {
   const [conciergeCategory, setConciergeCategory] = useState<string | null>(null);
   const [conciergeSubCategory, setConciergeSubCategory] = useState<string | null>(null);
   const [conciergeIsRemote, setConciergeIsRemote] = useState(false);
-  const [wfhSearchPhase, setWfhSearchPhase] = useState<"home" | "work" | "area_code" | "exhausted" | null>(null);
+  const [wfhSearchPhase, setWfhSearchPhase] = useState<"home" | "work" | "area_code" | "address_initial" | "address_retry" | "exhausted" | null>(null);
   const [showKeepSearching, setShowKeepSearching] = useState(false);
   const wfhTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [conciergeAddressToggles, setConciergeAddressToggles] = useState({ start: false, stop: false, final: false });
