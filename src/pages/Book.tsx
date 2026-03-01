@@ -3491,6 +3491,33 @@ const Book = () => {
                         )}
                       </div>
                     )}
+                    {/* Expenses */}
+                    {deliverHasExpenses && deliverExpenseItems.some(e => e.description.trim()) && (
+                      <div className="py-2.5">
+                        <div className="flex items-center justify-between mb-1">
+                          <p className="text-xs font-medium text-foreground">Expenses</p>
+                          <span className="text-[11px] text-muted-foreground">
+                            ${deliverExpenseItems.filter(e => e.description.trim()).reduce((sum, e) => sum + Number(e.amount), 0).toLocaleString()}{deliverAllowOverage && Number(deliverOverageLimit) > 0 ? ` ($${deliverOverageLimit})` : ""}
+                          </span>
+                        </div>
+                        {deliverExpenseItems.filter(e => e.description.trim()).map((e, i) => (
+                          <p key={i} className="text-[11px] text-muted-foreground leading-relaxed">{e.description}</p>
+                        ))}
+                      </div>
+                    )}
+                    {conciergeHasExpenses && conciergeExpenseItems.some(e => e.description.trim()) && (
+                      <div className="py-2.5">
+                        <div className="flex items-center justify-between mb-1">
+                          <p className="text-xs font-medium text-foreground">Expenses</p>
+                          <span className="text-[11px] text-muted-foreground">
+                            ${conciergeExpenseItems.filter(e => e.description.trim()).reduce((sum, e) => sum + Number(e.amount), 0).toLocaleString()}{conciergeAllowOverage && Number(conciergeOverageLimit) > 0 ? ` ($${conciergeOverageLimit})` : ""}
+                          </span>
+                        </div>
+                        {conciergeExpenseItems.filter(e => e.description.trim()).map((e, i) => (
+                          <p key={i} className="text-[11px] text-muted-foreground leading-relaxed">{e.description}</p>
+                        ))}
+                      </div>
+                    )}
                     {/* Row: Order Value & Protection */}
                     {(deliverOrderValue || conciergeOrderValue) && (
                       <div className="grid grid-cols-3 gap-4 py-2.5">
@@ -3548,34 +3575,6 @@ const Book = () => {
                             <p className="text-[11px] text-muted-foreground">Yes</p>
                           </div>
                         )}
-                      </div>
-                    )}
-                    
-                    {/* Expenses */}
-                    {deliverHasExpenses && deliverExpenseItems.some(e => e.description.trim()) && (
-                      <div className="py-2.5">
-                        <div className="flex items-center justify-between mb-1">
-                          <p className="text-xs font-medium text-foreground">Expenses</p>
-                          <span className="text-[11px] text-muted-foreground">
-                            ${deliverExpenseItems.filter(e => e.description.trim()).reduce((sum, e) => sum + Number(e.amount), 0).toLocaleString()}{deliverAllowOverage && Number(deliverOverageLimit) > 0 ? ` ($${deliverOverageLimit})` : ""}
-                          </span>
-                        </div>
-                        {deliverExpenseItems.filter(e => e.description.trim()).map((e, i) => (
-                          <p key={i} className="text-[11px] text-muted-foreground leading-relaxed">{e.description}</p>
-                        ))}
-                      </div>
-                    )}
-                    {conciergeHasExpenses && conciergeExpenseItems.some(e => e.description.trim()) && (
-                      <div className="py-2.5">
-                        <div className="flex items-center justify-between mb-1">
-                          <p className="text-xs font-medium text-foreground">Expenses</p>
-                          <span className="text-[11px] text-muted-foreground">
-                            ${conciergeExpenseItems.filter(e => e.description.trim()).reduce((sum, e) => sum + Number(e.amount), 0).toLocaleString()}{conciergeAllowOverage && Number(conciergeOverageLimit) > 0 ? ` ($${conciergeOverageLimit})` : ""}
-                          </span>
-                        </div>
-                        {conciergeExpenseItems.filter(e => e.description.trim()).map((e, i) => (
-                          <p key={i} className="text-[11px] text-muted-foreground leading-relaxed">{e.description}</p>
-                        ))}
                       </div>
                     )}
                     {/* Notes */}
