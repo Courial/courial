@@ -3460,31 +3460,14 @@ const Book = () => {
                     )}
                     {/* Roadside vehicle details */}
                     {selectedService === "concierge" && conciergeCategory === "roadside-assistance" && (roadsideVehicleMake || roadsideVehicleModel || roadsideVehicleColor || roadsideLicensePlate) && (
-                      <div className="grid grid-cols-2 gap-4 pt-0 pb-2.5 !border-t-0 -mt-px">
-                        {roadsideVehicleMake && (
-                          <div>
-                            <p className="text-xs font-medium text-foreground mb-0.5">Make</p>
-                            <p className="text-[11px] text-muted-foreground">{roadsideVehicleMake}</p>
-                          </div>
-                        )}
-                        {roadsideVehicleModel && (
-                          <div>
-                            <p className="text-xs font-medium text-foreground mb-0.5">Model</p>
-                            <p className="text-[11px] text-muted-foreground">{roadsideVehicleModel}</p>
-                          </div>
-                        )}
-                        {roadsideVehicleColor && (
-                          <div>
-                            <p className="text-xs font-medium text-foreground mb-0.5">Color</p>
-                            <p className="text-[11px] text-muted-foreground">{roadsideVehicleColor}</p>
-                          </div>
-                        )}
-                        {roadsideLicensePlate && (
-                          <div>
-                            <p className="text-xs font-medium text-foreground mb-0.5">Plate</p>
-                            <p className="text-[11px] text-muted-foreground">{roadsideLicensePlate}</p>
-                          </div>
-                        )}
+                      <div className="pt-0 pb-2.5 !border-t-0 -mt-px">
+                        <div>
+                          <p className="text-xs font-medium text-foreground mb-0.5">Service Vehicle</p>
+                          <p className="text-[11px] text-muted-foreground">
+                            {[roadsideVehicleColor, roadsideVehicleMake, roadsideVehicleModel].filter(Boolean).join(" ")}
+                            {roadsideLicensePlate ? ` • Lic. #${roadsideLicensePlate}` : ""}
+                          </p>
+                        </div>
                         {roadsideSafeLocation !== null && (
                           <div>
                             <p className="text-xs font-medium text-foreground mb-0.5">Safe Location</p>
