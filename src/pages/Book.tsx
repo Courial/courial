@@ -3335,13 +3335,29 @@ const Book = () => {
                           <p className="text-sm font-semibold text-foreground capitalize">{selectedVehicle}</p>
                         </div>
                       )}
-                      {(deliverOrderValue || conciergeOrderValue) && (
+                    </div>
+                    {/* Row: Order Value & Protection */}
+                    {(deliverOrderValue || conciergeOrderValue) && (
+                      <div className="grid grid-cols-2 gap-4 py-2.5">
                         <div>
                           <p className="text-[11px] text-muted-foreground mb-0.5">Order Value</p>
                           <p className="text-sm font-semibold text-foreground">${deliverOrderValue || conciergeOrderValue}</p>
                         </div>
-                      )}
-                    </div>
+                        {(Number(deliverOrderValue) > 100 || Number(conciergeOrderValue) > 100) && (
+                          <div>
+                            <p className="text-[11px] text-muted-foreground mb-0.5">Protection</p>
+                            <p className="text-sm font-semibold text-foreground">
+                              {declineProtection ? "Declined ($0)" : (() => {
+                                const val = Number(deliverOrderValue) || Number(conciergeOrderValue);
+                                if (val > 200) return "Accepted (Contact Support)";
+                                if (val > 100) return `Accepted ($${(val * 0.05).toFixed(0)})`;
+                                return "Accepted ($0)";
+                              })()}
+                            </p>
+                          </div>
+                        )}
+                      </div>
+                    )}
                     {/* Row: Scheduled */}
                     {selectedDate && (
                       <div className="py-2.5">
