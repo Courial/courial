@@ -272,11 +272,12 @@ const Auth = () => {
         await syncUserToCourial(authId);
       }
 
-      // Navigate without full reload to avoid white flash
-      // Keep blurred overlay visible while AuthProvider picks up the session
-      setTimeout(() => {
-        navigate("/", { replace: true });
-      }, 600);
+      // Step 4: Hydrate the Supabase client — this triggers onAuthStateChange → SIGNED_IN
+      // which navigates to "/" and gives AuthProvider the full user object (incl. avatar_url)
+      await supabase.auth.setSession({
+        access_token: session.access_token,
+        refresh_token: session.refresh_token,
+      });
     } catch (err) {
       console.error("verify-otp fetch error:", err);
       setSigningIn(false);
