@@ -3435,26 +3435,26 @@ const Book = () => {
                 </div>
               )}
 
-              {/* Contact & Chat */}
+              {/* Contact & Chat - icon buttons */}
               <div className="flex gap-2 mb-3">
                 <button
                   onClick={() => setShowContactSupport(true)}
-                  className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl border border-green-600 bg-green-600 hover:bg-green-700 transition-colors text-sm font-semibold text-white"
+                  className="w-10 h-10 flex items-center justify-center rounded-full border border-border hover:bg-muted transition-colors"
+                  aria-label="Contact Support"
                 >
-                  <Headset className="w-4 h-4" />
-                  Contact Support
+                  <Headset className="w-4.5 h-4.5 text-foreground" />
                 </button>
                 <button
                   onClick={() => setShowChat(prev => !prev)}
                   className={cn(
-                    "flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl border transition-colors text-sm font-semibold",
+                    "w-10 h-10 flex items-center justify-center rounded-full border transition-colors",
                     showChat
                       ? "border-primary bg-primary text-primary-foreground"
-                      : "border-primary bg-primary hover:bg-primary/90 text-primary-foreground"
+                      : "border-border hover:bg-muted"
                   )}
+                  aria-label="Message Courial"
                 >
-                  <MessageCircle className="w-4 h-4" />
-                  Message Courial
+                  <MessageCircle className={cn("w-4.5 h-4.5", showChat ? "text-primary-foreground" : "text-foreground")} />
                 </button>
               </div>
 
