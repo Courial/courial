@@ -3305,7 +3305,7 @@ const Book = () => {
                         <div className="flex-shrink-0 w-2.5 h-2.5 rounded-full bg-green-500 mt-[5px]" />
                         <div className="min-w-0">
                           {conciergeStartPlaceName && <p className="text-sm font-semibold text-foreground leading-tight">{conciergeStartPlaceName}</p>}
-                          <p className="text-xs text-muted-foreground truncate">{conciergeStartAddress}</p>
+                          <p className="text-xs text-muted-foreground">{conciergeStartPlaceName ? `${conciergeStartPlaceName}, ${conciergeStartAddress}` : conciergeStartAddress}</p>
                         </div>
                       </div>
                     )}
@@ -3313,8 +3313,7 @@ const Book = () => {
                       <div className="flex items-start gap-3">
                         <div className="flex-shrink-0 w-2.5 h-2.5 rounded-sm bg-primary/60 mt-[5px]" />
                         <div className="min-w-0">
-                          {conciergeStopPlaceName && <p className="text-sm font-semibold text-foreground leading-tight">{conciergeStopPlaceName}</p>}
-                          <p className="text-xs text-muted-foreground truncate">{conciergeStopAddress}</p>
+                          <p className="text-xs text-muted-foreground">{conciergeStopPlaceName ? `${conciergeStopPlaceName}, ${conciergeStopAddress}` : conciergeStopAddress}</p>
                         </div>
                       </div>
                     )}
@@ -3322,8 +3321,7 @@ const Book = () => {
                       <div className="flex items-start gap-3">
                         <div className="flex-shrink-0 w-2.5 h-2.5 bg-red-500 mt-[5px]" />
                         <div className="min-w-0">
-                          {conciergeFinalPlaceName && <p className="text-sm font-semibold text-foreground leading-tight">{conciergeFinalPlaceName}</p>}
-                          <p className="text-xs text-muted-foreground truncate">{conciergeFinalAddress}</p>
+                          <p className="text-xs text-muted-foreground">{conciergeFinalPlaceName ? `${conciergeFinalPlaceName}, ${conciergeFinalAddress}` : conciergeFinalAddress}</p>
                         </div>
                       </div>
                     )}
