@@ -139,7 +139,7 @@ const Auth = () => {
       } else {
         setDeviceID(data.deviceID || "");
         setView("otp");
-        setSuccessMessage("Sent to " + formatDisplayPhone(countryCode, nationalNumber));
+        setSuccessMessage("Sent to\n" + formatDisplayPhone(countryCode, nationalNumber));
       }
     } catch (err) {
       setError("Network error. Please try again.");
@@ -207,7 +207,7 @@ const Auth = () => {
       } else {
         setDeviceID(data.deviceID || "");
         setView("otp");
-        setSuccessMessage("Sent to " + formatDisplayPhone(countryCode, nationalNumber));
+        setSuccessMessage("Sent to\n" + formatDisplayPhone(countryCode, nationalNumber));
       }
     } catch (err) {
       setError("Network error. Please try again.");
@@ -441,7 +441,7 @@ const Auth = () => {
                       </div>
                     )}
                     {forgotPasswordSent && successMessage && <p className="text-xs text-primary text-center">{successMessage}</p>}
-                    {!forgotPasswordSent && successMessage && <p className="text-xs text-primary text-center">{successMessage}</p>}
+                    {!forgotPasswordSent && successMessage && <p className="text-xs text-primary text-center whitespace-pre-line">{successMessage}</p>}
                     <div className="flex justify-center">
                       <Button type="submit" disabled={loading} className="rounded-lg h-11 w-full text-sm font-medium bg-foreground text-background border border-background/30 hover:bg-foreground/90">
                         {loading ? "Sending…" : "Send Code"}
@@ -506,7 +506,7 @@ const Auth = () => {
                         <p className="text-xs text-red-400">{error}</p>
                       </div>
                     )}
-                    {successMessage && <p className="text-xs text-primary text-center">{successMessage}</p>}
+                    {successMessage && <p className="text-xs text-primary text-center whitespace-pre-line">{successMessage}</p>}
                     <div className="flex justify-center pt-1">
                       <Button type="submit" disabled={loading} className="rounded-lg h-11 w-full text-sm font-medium bg-foreground text-background border border-background/30 hover:bg-foreground/90">
                         {loading ? "Creating…" : "Create Account"}
@@ -571,7 +571,7 @@ const Auth = () => {
                           ))}
                         </div>
                         {error && <p className="text-xs text-red-400 text-center">{error}</p>}
-                        {successMessage && <p className="text-xs text-primary text-center">{successMessage}</p>}
+                        {successMessage && <p className="text-xs text-primary text-center whitespace-pre-line">{successMessage}</p>}
                         {loginAttempts >= 2 && !forgotPasswordSent && (
                           <p className="text-center">
                             <button type="button" onClick={handleForgotPassword} disabled={loading} className="text-xs text-background/60 hover:text-background hover:underline transition-colors">
