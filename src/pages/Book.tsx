@@ -3433,8 +3433,8 @@ const Book = () => {
                     {/* Concierge description */}
                     {selectedService === "concierge" && conciergeDescription.trim() && (
                       <div className="py-2.5">
-                        <p className="text-[11px] text-muted-foreground mb-0.5">Task Description</p>
-                        <p className="text-xs text-foreground whitespace-pre-wrap">{conciergeDescription}</p>
+                        <p className="text-xs font-medium text-foreground mb-0.5">Task Description</p>
+                        <p className="text-[11px] text-muted-foreground whitespace-pre-wrap">{conciergeDescription}</p>
                       </div>
                     )}
                     {/* Address Information */}
