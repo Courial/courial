@@ -3063,18 +3063,7 @@ const Book = () => {
                 </div>
 
                 <p className="text-sm font-medium text-background text-center max-w-[260px]">
-                  {wfhSearchPhase === "home"
-                    ? "Searching near your home address..."
-                    : wfhSearchPhase === "work"
-                      ? "Searching near your work address..."
-                      : wfhSearchPhase === "area_code"
-                        ? "Searching your phone area..."
-                        : wfhSearchPhase === "address_initial"
-                          ? "Searching near the task address..."
-                          : wfhSearchPhase === "address_retry"
-                            ? "Expanding search near the task address..."
-                            : "Stand by, we're finding the best Courial for this task."
-                  }
+                  Finding the best Courial for this task.
                 </p>
 
                 {/* Progress bar */}
