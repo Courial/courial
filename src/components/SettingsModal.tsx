@@ -7,7 +7,7 @@ import { motion } from "framer-motion";
 import { Settings, Home, Building2, Heart, Bell, ChevronDown, ChevronUp, Star } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import profileIcon from "@/assets/profile-icon.png";
-import { SavedAddressModal, getSavedAddresses, type SavedAddress } from "@/components/SavedAddressModal";
+import { SavedAddressModal, getSavedAddresses, loadSavedAddressesFromDB, type SavedAddress } from "@/components/SavedAddressModal";
 import { FavoritePartnersModal } from "@/components/FavoritePartnersModal";
 
 interface SettingsModalProps {
