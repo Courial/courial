@@ -70,9 +70,9 @@ const Auth = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
-  const [verifySuccess, setVerifySuccess] = useState(false);
   const [loginAttempts, setLoginAttempts] = useState(0);
   const [forgotPasswordSent, setForgotPasswordSent] = useState(false);
+  const [signingIn, setSigningIn] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
 
