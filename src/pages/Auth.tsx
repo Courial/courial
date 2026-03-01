@@ -586,7 +586,7 @@ const Auth = () => {
             </AnimatePresence>
           </div>
         </motion.div>
-      </div>
+      </div>}
     </>
   );
 };
