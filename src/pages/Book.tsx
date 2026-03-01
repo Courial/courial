@@ -3298,10 +3298,10 @@ const Book = () => {
                 </button>
                 <button
                   onClick={() => setShowChat(prev => !prev)}
-                  className="w-10 h-10 flex items-center justify-center rounded-full bg-primary hover:bg-primary/80 transition-colors"
+                  className="w-10 h-10 flex items-center justify-center rounded-full bg-foreground hover:bg-foreground/80 transition-colors"
                   aria-label="Message Courial"
                 >
-                  <MessageCircle className="w-4.5 h-4.5 text-primary-foreground" />
+                  <MessageCircle className="w-4.5 h-4.5 text-background" />
                 </button>
                 {deliveryStep < (isWfhConcierge ? 3 : 5) && (
                   <button
