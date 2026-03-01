@@ -88,9 +88,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setUser(session?.user ?? null);
 
       if (session?.user) {
-        // Use setTimeout to avoid Supabase client deadlock
         checkAdmin(session.user.id);
         syncSocialLogin(session, event);
+        // Load saved addresses from DB into localStorage cache
+        loadSavedAddressesFromDB().catch(() => {});
       } else {
         setIsAdmin(false);
       }
