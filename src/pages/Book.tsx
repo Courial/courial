@@ -3414,6 +3414,50 @@ const Book = () => {
                         </div>
                       )}
                     </div>
+                    {/* Row: Concierge Vehicle */}
+                    {selectedService === "concierge" && conciergeVehicle && (
+                      <div className="grid grid-cols-3 gap-4 py-2.5">
+                        <div>
+                          <p className="text-xs font-medium text-foreground mb-0.5">Vehicle</p>
+                          <p className="text-[11px] text-muted-foreground capitalize">{conciergeVehicle === "none" ? "None" : conciergeVehicle}</p>
+                        </div>
+                      </div>
+                    )}
+                    {/* Roadside vehicle details */}
+                    {selectedService === "concierge" && conciergeCategory === "roadside-assistance" && (roadsideVehicleMake || roadsideVehicleModel || roadsideVehicleColor || roadsideLicensePlate) && (
+                      <div className="grid grid-cols-2 gap-4 py-2.5">
+                        {roadsideVehicleMake && (
+                          <div>
+                            <p className="text-xs font-medium text-foreground mb-0.5">Make</p>
+                            <p className="text-[11px] text-muted-foreground">{roadsideVehicleMake}</p>
+                          </div>
+                        )}
+                        {roadsideVehicleModel && (
+                          <div>
+                            <p className="text-xs font-medium text-foreground mb-0.5">Model</p>
+                            <p className="text-[11px] text-muted-foreground">{roadsideVehicleModel}</p>
+                          </div>
+                        )}
+                        {roadsideVehicleColor && (
+                          <div>
+                            <p className="text-xs font-medium text-foreground mb-0.5">Color</p>
+                            <p className="text-[11px] text-muted-foreground">{roadsideVehicleColor}</p>
+                          </div>
+                        )}
+                        {roadsideLicensePlate && (
+                          <div>
+                            <p className="text-xs font-medium text-foreground mb-0.5">Plate</p>
+                            <p className="text-[11px] text-muted-foreground">{roadsideLicensePlate}</p>
+                          </div>
+                        )}
+                        {roadsideSafeLocation !== null && (
+                          <div>
+                            <p className="text-xs font-medium text-foreground mb-0.5">Safe Location</p>
+                            <p className="text-[11px] text-muted-foreground">{roadsideSafeLocation ? "Yes" : "No"}</p>
+                          </div>
+                        )}
+                      </div>
+                    )}
                     {/* Row: Order Value & Protection */}
                     {(deliverOrderValue || conciergeOrderValue) && (
                       <div className="grid grid-cols-3 gap-4 py-2.5">
