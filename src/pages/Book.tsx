@@ -1827,34 +1827,56 @@ const Book = () => {
                   </button>
                 </div>
 
-                {/* Address Toggle Pills — hidden when Remote is on */}
-                {!conciergeIsRemote && (<>
+                {/* Address Toggle Pills + WFH — all on same row */}
                 <div className="flex items-center justify-center gap-2 mb-3">
-                  {(["start", "stop", "final"] as const).map((type) => (
-                    <button
-                      key={type}
-                      onClick={() => {
-                        setConciergeAddressToggles(prev => {
-                          const newVal = !prev[type];
-                          if (!newVal) {
-                            // Clear address data when toggle is turned off
-                            if (type === "start") { setConciergeStartAddress(""); setConciergeStartPlaceName(null); setConciergeStartCoords(null); }
-                            if (type === "stop") { setConciergeStopAddress(""); setConciergeStopPlaceName(null); setConciergeStopCoords(null); }
-                            if (type === "final") { setConciergeFinalAddress(""); setConciergeFinalPlaceName(null); setConciergeFinalCoords(null); }
-                          }
-                          return { ...prev, [type]: newVal };
-                        });
-                      }}
-                      className={cn(
-                        "px-2.5 py-1 rounded-full text-[11px] font-normal transition-all leading-none",
-                        conciergeAddressToggles[type]
-                          ? "border border-primary text-foreground"
-                          : "border border-border/60 bg-background text-foreground hover:border-foreground/50"
-                      )}
-                    >
-                      + {type.charAt(0).toUpperCase() + type.slice(1)} address
-                    </button>
-                  ))}
+                  <button
+                    onClick={() => {
+                      setConciergeIsRemote(prev => {
+                        if (!prev) {
+                          setConciergeAddressToggles({ start: false, stop: false, final: false });
+                          setConciergeStartAddress(""); setConciergeStartPlaceName(null); setConciergeStartCoords(null);
+                          setConciergeStopAddress(""); setConciergeStopPlaceName(null); setConciergeStopCoords(null);
+                          setConciergeFinalAddress(""); setConciergeFinalPlaceName(null); setConciergeFinalCoords(null);
+                        }
+                        return !prev;
+                      });
+                    }}
+                    className={cn(
+                      "flex-1 py-1 rounded-full text-[11px] font-normal transition-all leading-none text-center",
+                      conciergeIsRemote
+                        ? "border border-primary text-foreground"
+                        : "border border-border/60 bg-background text-foreground hover:border-foreground/50"
+                    )}
+                  >
+                    🏠 WFH
+                  </button>
+                  {!conciergeIsRemote && (["start", "stop", "final"] as const).map((type) => {
+                    const labels: Record<string, string> = { start: "Start here", stop: "Stop here", final: "Finish here" };
+                    return (
+                      <button
+                        key={type}
+                        onClick={() => {
+                          setConciergeAddressToggles(prev => {
+                            const newVal = !prev[type];
+                            if (!newVal) {
+                              if (type === "start") { setConciergeStartAddress(""); setConciergeStartPlaceName(null); setConciergeStartCoords(null); }
+                              if (type === "stop") { setConciergeStopAddress(""); setConciergeStopPlaceName(null); setConciergeStopCoords(null); }
+                              if (type === "final") { setConciergeFinalAddress(""); setConciergeFinalPlaceName(null); setConciergeFinalCoords(null); }
+                            }
+                            return { ...prev, [type]: newVal };
+                          });
+                        }}
+                        className={cn(
+                          "flex-1 py-1 rounded-full text-[11px] font-normal transition-all leading-none text-center",
+                          conciergeAddressToggles[type]
+                            ? "border border-primary text-foreground"
+                            : "border border-border/60 bg-background text-foreground hover:border-foreground/50"
+                        )}
+                      >
+                        {labels[type]}
+                      </button>
+                    );
+                  })}
                 </div>
 
                 {/* Address Inputs for enabled toggles — Draggable to swap */}
