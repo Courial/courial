@@ -2951,7 +2951,7 @@ const Book = () => {
           </div>
           )}
 
-        {/* Loading state — same layout as active, with bento grid of Courial photos */}
+        {/* Loading state — single cycling circle photo */}
         {bookingState === "loading" && (
           <div className="p-8 h-full">
             <motion.div
@@ -2972,43 +2972,44 @@ const Book = () => {
                 </p>
               </div>
 
-              {/* Bento grid of Courial photos */}
-              <div className="grid grid-cols-3 gap-2 mb-5">
-                {activeProfiles.slice(0, 9).map((img, i) => (
+              {/* Cycling circle avatar */}
+              <div className="flex flex-col items-center justify-center flex-1">
+                <div className="relative mb-6">
+                  {/* Pulsing ring behind avatar */}
                   <motion.div
-                    key={i}
-                    initial={{ opacity: 0, scale: 0.85 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    transition={{ duration: 0.35, delay: i * 0.06 }}
-                    className={cn(
-                      "relative overflow-hidden rounded-xl aspect-square",
-                      i === currentProfileIndex && "ring-2 ring-primary ring-offset-2 ring-offset-background"
-                    )}
-                  >
-                    <img
-                      src={img}
-                      alt="Courial"
-                      className="w-full h-full object-cover"
-                    />
-                    {/* Scanning shimmer overlay on active photo */}
-                    {i === currentProfileIndex && (
-                      <motion.div
-                        className="absolute inset-0 bg-gradient-to-b from-primary/20 via-transparent to-primary/20"
-                        animate={{ opacity: [0.3, 0.7, 0.3] }}
-                        transition={{ duration: 1.5, repeat: Infinity }}
+                    className="absolute inset-[-8px] rounded-full border-2 border-primary/40"
+                    animate={{ scale: [1, 1.15, 1], opacity: [0.5, 0, 0.5] }}
+                    transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+                  />
+                  <motion.div
+                    className="absolute inset-[-16px] rounded-full border border-primary/20"
+                    animate={{ scale: [1, 1.2, 1], opacity: [0.3, 0, 0.3] }}
+                    transition={{ duration: 2, repeat: Infinity, ease: "easeInOut", delay: 0.3 }}
+                  />
+                  <AnimatePresence mode="wait">
+                    <motion.div
+                      key={currentProfileIndex}
+                      initial={{ opacity: 0, scale: 0.8 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      exit={{ opacity: 0, scale: 0.8 }}
+                      transition={{ duration: 0.4 }}
+                      className="w-28 h-28 rounded-full overflow-hidden border-2 border-primary"
+                    >
+                      <img
+                        src={activeProfiles[currentProfileIndex % activeProfiles.length]}
+                        alt="Courial"
+                        className="w-full h-full object-cover"
                       />
-                    )}
-                  </motion.div>
-                ))}
-              </div>
+                    </motion.div>
+                  </AnimatePresence>
+                </div>
 
-              {/* Standby text */}
-              <div className="text-center mb-6">
-                <p className="text-sm text-muted-foreground">
+                <p className="text-sm text-muted-foreground text-center max-w-[240px]">
                   Stand by, we're finding the best Courial for this task.
                 </p>
+
                 {/* Progress bar */}
-                <div className="mt-4 w-full h-1 rounded-full bg-muted overflow-hidden">
+                <div className="mt-4 w-full max-w-[200px] h-1 rounded-full bg-muted overflow-hidden">
                   <motion.div
                     className="h-full bg-primary rounded-full"
                     style={{ width: `${loadingProgress}%` }}
