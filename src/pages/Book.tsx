@@ -3313,18 +3313,18 @@ const Book = () => {
                 </button>
                 {showOrderDetails && (
                   <div className="mt-3 space-y-0 divide-y divide-border text-sm">
-                    {/* Row: Language, Rate/Vehicle, Order Value */}
+                    {/* Row: Language, Rate/Vehicle */}
                     <div className="grid grid-cols-3 gap-4 py-2.5">
                       {(deliverLanguage || conciergeLanguage) && (
                         <div>
                           <p className="text-[11px] text-muted-foreground mb-0.5">Language</p>
-                          <p className="text-sm font-semibold text-foreground">{deliverLanguage || conciergeLanguage}</p>
+                          <p className="text-sm font-medium text-foreground">{deliverLanguage || conciergeLanguage}</p>
                         </div>
                       )}
                       {selectedService === "concierge" && conciergeServiceMode && (
                         <div>
                           <p className="text-[11px] text-muted-foreground mb-0.5">Rate</p>
-                          <p className="text-sm font-semibold text-foreground">
+                          <p className="text-sm font-medium text-foreground">
                             {conciergeServiceMode === "hourly" ? "$65 per Hour" : conciergeServiceMode === "daily" ? "$480 Daily" : conciergeServiceMode}
                           </p>
                         </div>
@@ -3332,7 +3332,7 @@ const Book = () => {
                       {selectedService !== "concierge" && selectedVehicle && (
                         <div>
                           <p className="text-[11px] text-muted-foreground mb-0.5">Vehicle</p>
-                          <p className="text-sm font-semibold text-foreground capitalize">{selectedVehicle}</p>
+                          <p className="text-sm font-medium text-foreground capitalize">{selectedVehicle}</p>
                         </div>
                       )}
                     </div>
@@ -3341,12 +3341,12 @@ const Book = () => {
                       <div className="grid grid-cols-2 gap-4 py-2.5">
                         <div>
                           <p className="text-[11px] text-muted-foreground mb-0.5">Order Value</p>
-                          <p className="text-sm font-semibold text-foreground">${deliverOrderValue || conciergeOrderValue}</p>
+                          <p className="text-sm font-medium text-foreground">${deliverOrderValue || conciergeOrderValue}</p>
                         </div>
                         {(Number(deliverOrderValue) > 100 || Number(conciergeOrderValue) > 100) && (
                           <div>
                             <p className="text-[11px] text-muted-foreground mb-0.5">Protection</p>
-                            <p className="text-sm font-semibold text-foreground">
+                            <p className="text-sm font-medium text-foreground">
                               {declineProtection ? "Declined ($0)" : (() => {
                                 const val = Number(deliverOrderValue) || Number(conciergeOrderValue);
                                 if (val > 200) return "Accepted (Contact Support)";
@@ -3364,7 +3364,7 @@ const Book = () => {
                         <div className="grid grid-cols-2 gap-4">
                           <div>
                             <p className="text-[11px] text-muted-foreground mb-0.5">Scheduled</p>
-                            <p className="text-sm font-semibold text-foreground">{selectedDate.toLocaleDateString()} at {selectedTime}</p>
+                            <p className="text-sm font-medium text-foreground">{selectedDate.toLocaleDateString()} at {selectedTime}</p>
                           </div>
                         </div>
                       </div>
@@ -3374,7 +3374,7 @@ const Book = () => {
                       <div className="grid grid-cols-2 gap-4 py-2.5">
                         <div>
                           <p className="text-[11px] text-muted-foreground mb-0.5">Heavy Items</p>
-                          <p className="text-sm font-semibold text-foreground">{heavyWeight} lbs / {heavyItems} {parseInt(heavyItems) === 1 ? "item" : "items"}</p>
+                          <p className="text-sm font-medium text-foreground">{heavyWeight} lbs / {heavyItems} {parseInt(heavyItems) === 1 ? "item" : "items"}</p>
                         </div>
                       </div>
                     )}
@@ -3384,13 +3384,13 @@ const Book = () => {
                         {twoCourials && (
                           <div>
                             <p className="text-[11px] text-muted-foreground mb-0.5">2 Courials</p>
-                            <p className="text-sm font-semibold text-foreground">Yes</p>
+                            <p className="text-sm font-medium text-foreground">Yes</p>
                           </div>
                         )}
                         {hasStairs && (
                           <div>
                             <p className="text-[11px] text-muted-foreground mb-0.5">Stairs</p>
-                            <p className="text-sm font-semibold text-foreground">Yes</p>
+                            <p className="text-sm font-medium text-foreground">Yes</p>
                           </div>
                         )}
                       </div>
@@ -3403,7 +3403,7 @@ const Book = () => {
                         {deliverExpenseItems.filter(e => e.description.trim()).map((e, i) => (
                           <div key={i} className="flex justify-between">
                             <span className="text-xs text-muted-foreground">{e.description}</span>
-                            <span className="text-xs font-semibold text-foreground">
+                            <span className="text-xs font-medium text-foreground">
                               ${e.amount}{deliverAllowOverage && Number(deliverOverageLimit) > 0 ? ` ($${deliverOverageLimit})` : ""}
                             </span>
                           </div>
@@ -3416,7 +3416,7 @@ const Book = () => {
                         {conciergeExpenseItems.filter(e => e.description.trim()).map((e, i) => (
                           <div key={i} className="flex justify-between">
                             <span className="text-xs text-muted-foreground">{e.description}</span>
-                            <span className="text-xs font-semibold text-foreground">
+                            <span className="text-xs font-medium text-foreground">
                               ${e.amount}{conciergeAllowOverage && Number(conciergeOverageLimit) > 0 ? ` ($${conciergeOverageLimit})` : ""}
                             </span>
                           </div>
@@ -3446,19 +3446,19 @@ const Book = () => {
                         <div className="space-y-1">
                           {conciergeStartAddress && (
                             <div className="flex items-start gap-2">
-                              <span className="text-[10px] font-semibold text-muted-foreground uppercase w-8 shrink-0 pt-0.5">Start</span>
+                              <span className="text-[10px] font-medium text-muted-foreground uppercase w-8 shrink-0 pt-0.5">Start</span>
                               <span className="text-xs text-foreground">{conciergeStartPlaceName ? `${conciergeStartPlaceName}, ${conciergeStartAddress}` : conciergeStartAddress}</span>
                             </div>
                           )}
                           {conciergeStopAddress && (
                             <div className="flex items-start gap-2">
-                              <span className="text-[10px] font-semibold text-muted-foreground uppercase w-8 shrink-0 pt-0.5">Stop</span>
+                              <span className="text-[10px] font-medium text-muted-foreground uppercase w-8 shrink-0 pt-0.5">Stop</span>
                               <span className="text-xs text-foreground">{conciergeStopPlaceName ? `${conciergeStopPlaceName}, ${conciergeStopAddress}` : conciergeStopAddress}</span>
                             </div>
                           )}
                           {conciergeFinalAddress && (
                             <div className="flex items-start gap-2">
-                              <span className="text-[10px] font-semibold text-muted-foreground uppercase w-8 shrink-0 pt-0.5">Final</span>
+                              <span className="text-[10px] font-medium text-muted-foreground uppercase w-8 shrink-0 pt-0.5">Final</span>
                               <span className="text-xs text-foreground">{conciergeFinalPlaceName ? `${conciergeFinalPlaceName}, ${conciergeFinalAddress}` : conciergeFinalAddress}</span>
                             </div>
                           )}
@@ -3470,19 +3470,19 @@ const Book = () => {
                         <div className="space-y-1">
                           {pickup && (
                             <div className="flex items-start gap-2">
-                              <span className="text-[10px] font-semibold text-muted-foreground uppercase w-10 shrink-0 pt-0.5">Pickup</span>
+                              <span className="text-[10px] font-medium text-muted-foreground uppercase w-10 shrink-0 pt-0.5">Pickup</span>
                               <span className="text-xs text-foreground">{pickupPlaceName ? `${pickupPlaceName}, ${pickup}` : pickup}</span>
                             </div>
                           )}
                           {deliverMultiStop && deliverExtraStops.filter(s => s.address).map((stop, i) => (
                             <div key={i} className="flex items-start gap-2">
-                              <span className="text-[10px] font-semibold text-muted-foreground uppercase w-10 shrink-0 pt-0.5">Stop {i + 1}</span>
+                              <span className="text-[10px] font-medium text-muted-foreground uppercase w-10 shrink-0 pt-0.5">Stop {i + 1}</span>
                               <span className="text-xs text-foreground">{stop.placeName ? `${stop.placeName}, ${stop.address}` : stop.address}</span>
                             </div>
                           ))}
                           {dropoff && (
                             <div className="flex items-start gap-2">
-                              <span className="text-[10px] font-semibold text-muted-foreground uppercase w-10 shrink-0 pt-0.5">Dropoff</span>
+                              <span className="text-[10px] font-medium text-muted-foreground uppercase w-10 shrink-0 pt-0.5">Dropoff</span>
                               <span className="text-xs text-foreground">{dropoffPlaceName ? `${dropoffPlaceName}, ${dropoff}` : dropoff}</span>
                             </div>
                           )}
@@ -3491,9 +3491,12 @@ const Book = () => {
                     </div>
                     {/* Estimated Fare */}
                     {deliveryStep < (isWfhConcierge ? 3 : 5) && (
-                      <div className="flex items-center justify-between py-2.5">
-                        <span className="text-[11px] text-muted-foreground">Estimated Fare</span>
-                        <span className="text-sm font-bold text-foreground">$21.59</span>
+                      <div className="flex items-center justify-between py-3">
+                        <span className="text-sm font-bold text-foreground">Estimated Fare</span>
+                        <div className="flex items-center gap-2">
+                          <img src={activePayment.icon} alt={activePayment.label} className="w-8 h-auto" />
+                          <span className="text-sm font-bold text-foreground">$21.59</span>
+                        </div>
                       </div>
                     )}
                     
