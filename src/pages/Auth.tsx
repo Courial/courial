@@ -257,9 +257,14 @@ const Auth = () => {
         return;
       }
 
-      // Step 2: Store session in localStorage
+      // Step 2: Hydrate the Supabase client with the new session
       const projectRef = SUPABASE_URL.match(/\/\/([^.]+)\./)?.[1] || "";
       localStorage.setItem(`sb-${projectRef}-auth-token`, JSON.stringify(session));
+      // Also set the session on the client so AuthProvider picks up the full user object
+      await supabase.auth.setSession({
+        access_token: session.access_token,
+        refresh_token: session.refresh_token,
+      });
 
       // Step 2b: Store Courial API token for booking calls
       if (data.courial_data?.data?.token) {
