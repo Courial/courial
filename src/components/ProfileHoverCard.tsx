@@ -26,7 +26,7 @@ const menuItems = [
 ];
 
 export const ProfileHoverCard = () => {
-  const { user } = useAuth();
+  const { user, signOut } = useAuth();
   const navigate = useNavigate();
   const [showPaymentModal, setShowPaymentModal] = useState(false);
   const [showProfileModal, setShowProfileModal] = useState(false);
