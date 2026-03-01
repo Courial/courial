@@ -790,50 +790,65 @@ const Book = () => {
     }
   }, [user, conciergeCategory, conciergeSubCategory, conciergeDescription, conciergeOrderValue, conciergeLanguage, conciergeServiceMode, conciergeHasExpenses, conciergeExpenseItems, conciergeAllowOverage, conciergeOverageLimit, timeMode, selectedDate, selectedTime]);
 
-  // WFH cascading search timer — 30s per phase
+  // Concierge cascading search timer
   useEffect(() => {
-    if (bookingState !== "loading" || !conciergeIsRemote || !wfhSearchPhase) return;
-    // Don't set timer if already accepted
+    if (bookingState !== "loading" || !wfhSearchPhase) return;
     if (acceptedCourial) return;
 
-    const WFH_PHASE_TIMEOUT = 30000; // 30 seconds per phase
+    // Determine timeout based on phase
+    let phaseTimeout = 30000; // 30s default
+    if (wfhSearchPhase === "address_retry") phaseTimeout = 60000; // 60s retry
 
     wfhTimerRef.current = setTimeout(() => {
-      const saved = getSavedAddresses();
-      const homeAddr = saved.find(a => a.type === "home");
-      const workAddr = saved.find(a => a.type === "work");
-
-      if (wfhSearchPhase === "home") {
-        // Move to Work
-        if (workAddr && workAddr.lat && workAddr.lng) {
-          setWfhSearchPhase("work");
-          setLoadingProgress(0);
-          resubmitWithLocation({ address: `Remote / WFH — ${workAddr.name}`, lat: workAddr.lat, lng: workAddr.lng });
-        } else {
-          // Skip to area code
-          setWfhSearchPhase("area_code");
-          setLoadingProgress(0);
-          // Use user's phone area for geocoding — send with lat:0 lng:0 to let backend handle
-          const phone = user?.user_metadata?.phone || user?.phone || "";
-          resubmitWithLocation({ address: `Remote / WFH — ${phone ? "Phone area" : "General area"}`, lat: 0, lng: 0 });
-        }
-      } else if (wfhSearchPhase === "work") {
-        // Move to area code
-        setWfhSearchPhase("area_code");
+      if (wfhSearchPhase === "address_initial") {
+        // In-person concierge: retry same address for 60s
+        setWfhSearchPhase("address_retry");
         setLoadingProgress(0);
-        const phone = user?.user_metadata?.phone || user?.phone || "";
-        resubmitWithLocation({ address: `Remote / WFH — ${phone ? "Phone area" : "General area"}`, lat: 0, lng: 0 });
-      } else if (wfhSearchPhase === "area_code") {
-        // All phases exhausted — show "keep searching?" dialog
+        // Resubmit with same address
+        const available: { address: string; lat: number; lng: number }[] = [];
+        if (conciergeStartAddress && conciergeStartCoords) available.push({ address: conciergeStartAddress, ...conciergeStartCoords });
+        if (conciergeStopAddress && conciergeStopCoords) available.push({ address: conciergeStopAddress, ...conciergeStopCoords });
+        if (conciergeFinalAddress && conciergeFinalCoords) available.push({ address: conciergeFinalAddress, ...conciergeFinalCoords });
+        if (available.length > 0) {
+          resubmitWithLocation(available[0]);
+        }
+      } else if (wfhSearchPhase === "address_retry") {
+        // Exhausted in-person search
         setWfhSearchPhase("exhausted");
         setShowKeepSearching(true);
+      } else if (conciergeIsRemote) {
+        // WFH cascading: home → work → area_code → exhausted
+        const saved = getSavedAddresses();
+        const homeAddr = saved.find(a => a.type === "home");
+        const workAddr = saved.find(a => a.type === "work");
+
+        if (wfhSearchPhase === "home") {
+          if (workAddr && workAddr.lat && workAddr.lng) {
+            setWfhSearchPhase("work");
+            setLoadingProgress(0);
+            resubmitWithLocation({ address: `Remote / WFH — ${workAddr.name}`, lat: workAddr.lat, lng: workAddr.lng });
+          } else {
+            setWfhSearchPhase("area_code");
+            setLoadingProgress(0);
+            const phone = user?.user_metadata?.phone || user?.phone || "";
+            resubmitWithLocation({ address: `Remote / WFH — ${phone ? "Phone area" : "General area"}`, lat: 0, lng: 0 });
+          }
+        } else if (wfhSearchPhase === "work") {
+          setWfhSearchPhase("area_code");
+          setLoadingProgress(0);
+          const phone = user?.user_metadata?.phone || user?.phone || "";
+          resubmitWithLocation({ address: `Remote / WFH — ${phone ? "Phone area" : "General area"}`, lat: 0, lng: 0 });
+        } else if (wfhSearchPhase === "area_code") {
+          setWfhSearchPhase("exhausted");
+          setShowKeepSearching(true);
+        }
       }
-    }, WFH_PHASE_TIMEOUT);
+    }, phaseTimeout);
 
     return () => {
       if (wfhTimerRef.current) clearTimeout(wfhTimerRef.current);
     };
-  }, [bookingState, conciergeIsRemote, wfhSearchPhase, acceptedCourial, user, resubmitWithLocation]);
+  }, [bookingState, conciergeIsRemote, wfhSearchPhase, acceptedCourial, user, resubmitWithLocation, conciergeStartAddress, conciergeStartCoords, conciergeStopAddress, conciergeStopCoords, conciergeFinalAddress, conciergeFinalCoords]);
 
   // WFH task timer — start on "Task In Progress" (step 1), stop on "Task Completed" (step 2+)
   useEffect(() => {
