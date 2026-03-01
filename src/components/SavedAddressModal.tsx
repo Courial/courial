@@ -308,13 +308,21 @@ export const SavedAddressModal = ({
                     <p className="text-xs text-background/40 text-center mb-4">No favorite places saved yet</p>
                   )}
 
-                  {/* Add button */}
-                  <Button
-                    onClick={() => setAddModalOpen(true)}
-                    className="w-full rounded-lg h-10 text-sm font-semibold bg-transparent border border-background/30 text-background hover:bg-background/10"
-                  >
-                    Add
-                  </Button>
+                  {/* Add + Back buttons */}
+                  <div className="flex gap-2">
+                    <Button
+                      onClick={() => onOpenChange(false)}
+                      className="flex-1 rounded-lg h-10 text-sm font-semibold bg-transparent border border-background/30 text-background hover:bg-background/10"
+                    >
+                      Back
+                    </Button>
+                    <Button
+                      onClick={() => setAddModalOpen(true)}
+                      className="flex-1 rounded-lg h-10 text-sm font-semibold bg-transparent border border-background/30 text-background hover:bg-background/10"
+                    >
+                      Add
+                    </Button>
+                  </div>
                 </>
               )}
             </div>
