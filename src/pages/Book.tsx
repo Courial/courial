@@ -3277,8 +3277,38 @@ const Book = () => {
                 </div>
 
 
-                {/* Trip Summary — hidden for WFH concierge */}
-                {!isWfhConcierge && (
+                {/* Trip Summary — addresses with colored dots */}
+                {selectedService === "concierge" && !isWfhConcierge ? (
+                  <div className="space-y-3 pt-2">
+                    {conciergeStartAddress && (
+                      <div className="flex items-start gap-3">
+                        <div className="flex-shrink-0 w-2.5 h-2.5 rounded-full bg-green-500 mt-[5px]" />
+                        <div className="min-w-0">
+                          {conciergeStartPlaceName && <p className="text-sm font-semibold text-foreground leading-tight">{conciergeStartPlaceName}</p>}
+                          <p className="text-xs text-muted-foreground truncate">{conciergeStartAddress}</p>
+                        </div>
+                      </div>
+                    )}
+                    {conciergeStopAddress && (
+                      <div className="flex items-start gap-3">
+                        <div className="flex-shrink-0 w-2.5 h-2.5 rounded-sm bg-primary/60 mt-[5px]" />
+                        <div className="min-w-0">
+                          {conciergeStopPlaceName && <p className="text-sm font-semibold text-foreground leading-tight">{conciergeStopPlaceName}</p>}
+                          <p className="text-xs text-muted-foreground truncate">{conciergeStopAddress}</p>
+                        </div>
+                      </div>
+                    )}
+                    {conciergeFinalAddress && (
+                      <div className="flex items-start gap-3">
+                        <div className="flex-shrink-0 w-2.5 h-2.5 bg-red-500 mt-[5px]" />
+                        <div className="min-w-0">
+                          {conciergeFinalPlaceName && <p className="text-sm font-semibold text-foreground leading-tight">{conciergeFinalPlaceName}</p>}
+                          <p className="text-xs text-muted-foreground truncate">{conciergeFinalAddress}</p>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                ) : selectedService !== "concierge" && (
                 <div className="space-y-3 pt-2">
                   <div className="flex items-start gap-3">
                     <div className="flex-shrink-0 w-2.5 h-2.5 rounded-full bg-green-500 mt-[5px]" />
