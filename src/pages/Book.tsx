@@ -3491,7 +3491,7 @@ const Book = () => {
                     </div>
                     {/* Estimated Fare */}
                     {deliveryStep < (isWfhConcierge ? 3 : 5) && (
-                      <div className="flex items-center justify-between py-3">
+                      <div className="flex items-center justify-between py-2.5">
                         <span className="text-sm font-bold text-foreground">Estimated Fare</span>
                         <div className="flex items-center gap-2">
                           <img src={activePayment.icon} alt={activePayment.label} className="w-8 h-auto" />
@@ -3499,7 +3499,6 @@ const Book = () => {
                         </div>
                       </div>
                     )}
-                    
                   </div>
                 )}
               </div>
