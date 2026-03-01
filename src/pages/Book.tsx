@@ -3281,7 +3281,7 @@ const Book = () => {
                 {deliveryStep < (isWfhConcierge ? 3 : 5) && (
                   <button
                     onClick={() => setDeliveryStep((s) => Math.min(s + 1, isWfhConcierge ? 3 : 5))}
-                    className="flex-1 py-2.5 rounded-full text-sm font-semibold text-background bg-foreground hover:bg-foreground/90 transition-colors"
+                    className="flex-1 py-2.5 rounded-full text-sm font-semibold text-primary-foreground bg-primary hover:bg-primary/90 transition-colors"
                   >
                     {isWfhConcierge
                       ? ["Begin Task", "Complete Task", "Finish"][deliveryStep]
