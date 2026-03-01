@@ -26,6 +26,7 @@ export const Navbar = () => {
   const [hasOrders, setHasOrders] = useState(false);
   const [bookingPulse, setBookingPulse] = useState(false);
   const [formStarted, setFormStarted] = useState(false);
+  const [bookingActive, setBookingActive] = useState(false);
 
   useEffect(() => {
     if (!user) { setHasOrders(false); return; }
