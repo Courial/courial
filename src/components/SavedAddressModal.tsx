@@ -324,7 +324,7 @@ export const SavedAddressModal = ({
                       )}
                     </>
                   ) : (
-                    <AddressForm onSubmit={handleSave} submitLabel={replacingId ? "Replace" : "Save"} />
+                    {addressFormJSX(replacingId ? "Replace" : "Save", handleSave)}
                   )}
                 </>
               )}
