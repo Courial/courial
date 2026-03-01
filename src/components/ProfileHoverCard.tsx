@@ -26,7 +26,7 @@ const menuItems = [
 ];
 
 export const ProfileHoverCard = () => {
-  const { user } = useAuth();
+  const { user, signOut } = useAuth();
   const navigate = useNavigate();
   const [showPaymentModal, setShowPaymentModal] = useState(false);
   const [showProfileModal, setShowProfileModal] = useState(false);
@@ -129,17 +129,12 @@ export const ProfileHoverCard = () => {
           {/* Sign Out */}
           <div className="px-5 pb-5 pt-2">
             <button
-              onClick={() => {
-                console.log("[Navbar] Sign out - nuking session");
-                // Show blur overlay before clearing to avoid white flash
-                const overlay = document.createElement("div");
-                overlay.style.cssText = "position:fixed;inset:0;z-index:9999;backdrop-filter:blur(12px);background:rgba(0,0,0,0.3);transition:opacity 0.3s;";
-                document.body.appendChild(overlay);
-                setTimeout(() => {
-                  localStorage.clear();
-                  sessionStorage.clear();
-                  window.location.replace("/");
-                }, 400);
+              onClick={async () => {
+                console.log("[ProfileHoverCard] Sign out - client-side");
+                localStorage.clear();
+                sessionStorage.clear();
+                await signOut();
+                navigate("/", { replace: true });
               }}
               className="w-full rounded-lg h-9 text-sm font-semibold bg-transparent border border-background/30 text-background hover:bg-background/10 transition-colors flex items-center justify-center gap-2"
             >
