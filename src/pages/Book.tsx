@@ -3406,7 +3406,7 @@ const Book = () => {
                           </span>
                         </div>
                         {deliverExpenseItems.filter(e => e.description.trim()).map((e, i) => (
-                          <p key={i} className="text-xs text-muted-foreground leading-relaxed">{e.description}</p>
+                          <p key={i} className="text-[11px] text-muted-foreground leading-relaxed">{e.description}</p>
                         ))}
                       </div>
                     )}
