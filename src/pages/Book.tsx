@@ -1967,7 +1967,8 @@ const Book = () => {
                     </motion.div>
                   )}
                 </AnimatePresence>
-                </>)}
+                </>
+                )}
                 {/* Remote indicator text */}
                 {conciergeIsRemote && (
                   <div className="flex items-center gap-2 px-4 py-3 border border-border rounded-xl bg-muted/50 mb-3">
