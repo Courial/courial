@@ -22,6 +22,7 @@ const buttonVariants = cva(
         // Courial-specific variants - Uber style
         hero: "bg-foreground text-background font-semibold hover:bg-foreground/90 hover:-translate-y-0.5",
         "hero-outline": "border border-foreground text-foreground bg-transparent hover:bg-foreground hover:text-background",
+        "hero-green": "bg-green-600 text-white font-semibold hover:bg-green-700",
         "hero-orange": "bg-primary text-primary-foreground font-semibold hover:bg-primary/90",
         glass: "bg-background/80 backdrop-blur-sm text-foreground hover:bg-muted border border-border",
         nav: "text-muted-foreground hover:text-foreground active:text-foreground bg-transparent font-medium",

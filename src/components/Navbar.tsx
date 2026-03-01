@@ -26,6 +26,7 @@ export const Navbar = () => {
   const [hasOrders, setHasOrders] = useState(false);
   const [bookingPulse, setBookingPulse] = useState(false);
   const [formStarted, setFormStarted] = useState(false);
+  const [bookingActive, setBookingActive] = useState(false);
 
   useEffect(() => {
     if (!user) { setHasOrders(false); return; }
@@ -43,7 +44,8 @@ export const Navbar = () => {
     const sync = () => {
       const state = localStorage.getItem("courial_booking_state");
       const started = localStorage.getItem("courial_form_started") === "true";
-      setBookingPulse(state === "loading" || state === "active");
+      setBookingPulse(state === "loading");
+      setBookingActive(state === "active");
       setFormStarted(started && state === "input");
     };
     sync();
@@ -129,9 +131,9 @@ export const Navbar = () => {
             )}
             <Link to="/book">
               <Button
-                variant={isActive("/book") ? "secondary" : formStarted ? "default" : "hero"}
+                variant={bookingActive ? "hero-green" : isActive("/book") ? "secondary" : formStarted ? "hero-orange" : "hero"}
                 size="sm"
-                className={`${bookingPulse ? "animate-pulse-gentle border border-destructive" : ""} ${formStarted && !bookingPulse ? "bg-primary text-primary-foreground hover:bg-primary/90" : ""}`}
+                className={bookingPulse ? "animate-pulse-gentle" : ""}
               >
                 Book Now
               </Button>
@@ -208,8 +210,8 @@ export const Navbar = () => {
                 )}
                 <Link to="/book" onClick={() => setIsOpen(false)}>
                   <Button
-                    variant={isActive("/book") ? "secondary" : formStarted ? "default" : "hero"}
-                    className={`w-full ${bookingPulse ? "animate-pulse-gentle border border-destructive" : ""} ${formStarted && !bookingPulse ? "bg-primary text-primary-foreground hover:bg-primary/90" : ""}`}
+                    variant={bookingActive ? "hero-green" : isActive("/book") ? "secondary" : formStarted ? "hero-orange" : "hero"}
+                    className={`w-full ${bookingPulse ? "animate-pulse-gentle" : ""}`}
                   >
                     Book Now
                   </Button>

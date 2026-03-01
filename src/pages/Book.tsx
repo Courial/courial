@@ -3458,7 +3458,7 @@ const Book = () => {
                     </div>
                     {/* Roadside vehicle details */}
                     {selectedService === "concierge" && conciergeCategory === "roadside-assistance" && (roadsideVehicleMake || roadsideVehicleModel || roadsideVehicleColor || roadsideLicensePlate) && (
-                      <div className="grid grid-cols-2 gap-4 py-2.5 !border-t-0">
+                      <div className="grid grid-cols-2 gap-4 pb-2.5 !border-t-0">
                         {roadsideVehicleMake && (
                           <div>
                             <p className="text-xs font-medium text-foreground mb-0.5">Make</p>
@@ -3584,58 +3584,6 @@ const Book = () => {
                         <p className="text-[11px] text-muted-foreground whitespace-pre-wrap">{notes}</p>
                       </div>
                     )}
-                    {/* Address Information */}
-                    <div className="py-2.5">
-                      <p className="text-xs font-medium text-foreground mb-1">Address</p>
-                      {selectedService === "concierge" && isWfhConcierge ? (
-                        <p className="text-xs text-foreground">🏠 WFH Service (No Address required)</p>
-                      ) : selectedService === "concierge" ? (
-                        <div className="space-y-1">
-                          {conciergeStartAddress && (
-                            <div className="flex items-start gap-2">
-                              <span className="text-[10px] font-medium text-muted-foreground uppercase w-8 shrink-0 pt-0.5">Start</span>
-                              <span className="text-xs text-foreground">{conciergeStartPlaceName ? `${conciergeStartPlaceName}, ${conciergeStartAddress}` : conciergeStartAddress}</span>
-                            </div>
-                          )}
-                          {conciergeStopAddress && (
-                            <div className="flex items-start gap-2">
-                              <span className="text-[10px] font-medium text-muted-foreground uppercase w-8 shrink-0 pt-0.5">Stop</span>
-                              <span className="text-xs text-foreground">{conciergeStopPlaceName ? `${conciergeStopPlaceName}, ${conciergeStopAddress}` : conciergeStopAddress}</span>
-                            </div>
-                          )}
-                          {conciergeFinalAddress && (
-                            <div className="flex items-start gap-2">
-                              <span className="text-[10px] font-medium text-muted-foreground uppercase w-8 shrink-0 pt-0.5">Final</span>
-                              <span className="text-xs text-foreground">{conciergeFinalPlaceName ? `${conciergeFinalPlaceName}, ${conciergeFinalAddress}` : conciergeFinalAddress}</span>
-                            </div>
-                          )}
-                          {!conciergeStartAddress && !conciergeStopAddress && !conciergeFinalAddress && (
-                            <p className="text-xs text-foreground">🏠 WFH Service (No Address required)</p>
-                          )}
-                        </div>
-                      ) : (
-                        <div className="space-y-1">
-                          {pickup && (
-                            <div className="flex items-start gap-2">
-                              <span className="text-[10px] font-medium text-muted-foreground uppercase w-10 shrink-0 pt-0.5">Pickup</span>
-                              <span className="text-xs text-foreground">{pickupPlaceName ? `${pickupPlaceName}, ${pickup}` : pickup}</span>
-                            </div>
-                          )}
-                          {deliverMultiStop && deliverExtraStops.filter(s => s.address).map((stop, i) => (
-                            <div key={i} className="flex items-start gap-2">
-                              <span className="text-[10px] font-medium text-muted-foreground uppercase w-10 shrink-0 pt-0.5">Stop {i + 1}</span>
-                              <span className="text-xs text-foreground">{stop.placeName ? `${stop.placeName}, ${stop.address}` : stop.address}</span>
-                            </div>
-                          ))}
-                          {dropoff && (
-                            <div className="flex items-start gap-2">
-                              <span className="text-[10px] font-medium text-muted-foreground uppercase w-10 shrink-0 pt-0.5">Dropoff</span>
-                              <span className="text-xs text-foreground">{dropoffPlaceName ? `${dropoffPlaceName}, ${dropoff}` : dropoff}</span>
-                            </div>
-                          )}
-                        </div>
-                      )}
-                    </div>
                     {/* Estimated Fare */}
                     {deliveryStep < (isWfhConcierge ? 3 : 5) && (
                       <div className="flex items-center justify-between py-2.5">
