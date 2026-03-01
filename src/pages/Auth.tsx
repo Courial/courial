@@ -257,14 +257,9 @@ const Auth = () => {
         return;
       }
 
-      // Step 2: Hydrate the Supabase client with the new session
+      // Step 2: Store session in localStorage
       const projectRef = SUPABASE_URL.match(/\/\/([^.]+)\./)?.[1] || "";
       localStorage.setItem(`sb-${projectRef}-auth-token`, JSON.stringify(session));
-      // Also set the session on the client so AuthProvider picks up the full user object
-      await supabase.auth.setSession({
-        access_token: session.access_token,
-        refresh_token: session.refresh_token,
-      });
 
       // Step 2b: Store Courial API token for booking calls
       if (data.courial_data?.data?.token) {
@@ -277,11 +272,12 @@ const Auth = () => {
         await syncUserToCourial(authId);
       }
 
-      // Navigate without full reload to avoid white flash
-      // Keep blurred overlay visible while AuthProvider picks up the session
-      setTimeout(() => {
-        navigate("/", { replace: true });
-      }, 600);
+      // Step 4: Hydrate the Supabase client — this triggers onAuthStateChange → SIGNED_IN
+      // which navigates to "/" and gives AuthProvider the full user object (incl. avatar_url)
+      await supabase.auth.setSession({
+        access_token: session.access_token,
+        refresh_token: session.refresh_token,
+      });
     } catch (err) {
       console.error("verify-otp fetch error:", err);
       setSigningIn(false);
