@@ -3089,7 +3089,7 @@ const Book = () => {
                     <div className="text-xs text-foreground mt-0.5"><span className="font-normal text-muted-foreground">Plate No.</span> <span className="font-bold">{acceptedCourial?.licensePlate || "ABC1234"}</span></div>
                   </div>
                   {isWfhConcierge ? (
-                    <img src={noVehicleIcon} alt="No vehicle needed" className="h-10 w-10 shrink-0 object-contain" />
+                    <img src={noVehicleIcon} alt="No vehicle needed" className="h-[60px] w-[60px] shrink-0 object-contain" />
                   ) : selectedVehicle ? (
                     <img
                       src={vehicleOptions.find(v => v.id === selectedVehicle)?.image}
