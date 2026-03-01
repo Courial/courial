@@ -1801,32 +1801,6 @@ const Book = () => {
                 transition={{ duration: 0.2 }}
                 className="overflow-hidden"
               >
-                {/* Remote / WFH Toggle */}
-                <div className="flex items-center justify-center mb-3">
-                  <button
-                    onClick={() => {
-                      setConciergeIsRemote(prev => {
-                        if (!prev) {
-                          // Turning on remote — clear all addresses
-                          setConciergeAddressToggles({ start: false, stop: false, final: false });
-                          setConciergeStartAddress(""); setConciergeStartPlaceName(null); setConciergeStartCoords(null);
-                          setConciergeStopAddress(""); setConciergeStopPlaceName(null); setConciergeStopCoords(null);
-                          setConciergeFinalAddress(""); setConciergeFinalPlaceName(null); setConciergeFinalCoords(null);
-                        }
-                        return !prev;
-                      });
-                    }}
-                    className={cn(
-                      "px-3 py-1.5 rounded-full text-[11px] font-medium transition-all leading-none flex items-center gap-1.5",
-                      conciergeIsRemote
-                        ? "border border-primary text-foreground bg-primary/10"
-                        : "border border-border/60 bg-background text-foreground/75 hover:border-foreground/50"
-                    )}
-                  >
-                    🏠 WFH
-                  </button>
-                </div>
-
                 {/* Address Toggle Pills + WFH — all on same row */}
                 <div className="flex items-center justify-center gap-2 mb-3">
                   <button
