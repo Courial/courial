@@ -27,7 +27,9 @@ export const SettingsModal = ({ open, onOpenChange }: SettingsModalProps) => {
   const [favoritesOpen, setFavoritesOpen] = useState(false);
 
   useEffect(() => {
-    if (open) setSavedAddresses(getSavedAddresses());
+    if (open) {
+      loadSavedAddressesFromDB().then(setSavedAddresses);
+    }
   }, [open]);
 
   const displayName =
