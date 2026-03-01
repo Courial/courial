@@ -361,8 +361,8 @@ const Auth = () => {
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-background/60 backdrop-blur-sm" />
       )}
 
-      {/* Modal overlay */}
-      <div className="fixed inset-0 z-50 flex items-center justify-center">
+      {/* Modal overlay — hidden during sign-in transition */}
+      {!signingIn && <div className="fixed inset-0 z-50 flex items-center justify-center">
         {/* Backdrop — click to dismiss */}
         <div
           className="absolute inset-0 bg-foreground/25 backdrop-blur-md"
