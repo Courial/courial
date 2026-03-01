@@ -858,13 +858,17 @@ const Book = () => {
     };
   }, [bookingState, conciergeIsRemote, wfhSearchPhase, acceptedCourial, user, resubmitWithLocation, conciergeStartAddress, conciergeStartCoords, conciergeStopAddress, conciergeStopCoords, conciergeFinalAddress, conciergeFinalCoords]);
 
-  // WFH task timer — start on "Task In Progress" (step 1), stop on "Task Completed" (step 2+)
+   // Concierge task timer — start on "Task In Progress", stop on "Task Completed"
   useEffect(() => {
-    const isWfh = selectedService === "concierge" && conciergeIsRemote;
-    if (!isWfh) return;
-    if (deliveryStep >= 1 && deliveryStep < 2) {
+    if (selectedService !== "concierge") return;
+    const isWfh = conciergeIsRemote;
+    // WFH: step 1 = Task In Progress, step 2 = completed
+    // In-person: step 3 = Task In Progress, step 4 = completed
+    const startStep = isWfh ? 1 : 3;
+    const stopStep = isWfh ? 2 : 4;
+    if (deliveryStep >= startStep && deliveryStep < stopStep) {
       setWfhTaskRunning(true);
-    } else if (deliveryStep >= 2) {
+    } else if (deliveryStep >= stopStep) {
       setWfhTaskRunning(false);
     }
   }, [selectedService, conciergeIsRemote, deliveryStep]);
