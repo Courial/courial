@@ -179,6 +179,7 @@ const BookingMap: React.FC<BookingMapProps> = ({ pickupCoords, dropoffCoords, st
         { featureType: "transit", stylers: [{ visibility: "off" }] },
       ],
     });
+    setMapReady(true);
   }, [ready, defaultCenter]);
 
   // Update markers and route
