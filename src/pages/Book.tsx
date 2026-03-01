@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useEffect, useMemo, useRef } from "react";
-import { getSavedAddresses } from "@/components/SavedAddressModal";
+import { getSavedAddresses, loadSavedAddressesFromDB } from "@/components/SavedAddressModal";
 import { useCourialSocket, type CourialDriver } from "@/hooks/useCourialSocket";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
@@ -537,10 +537,10 @@ const Book = () => {
       let concDropoff = { address: "N/A", lat: 0, lng: 0 };
       if (isConcierge) {
          if (conciergeIsRemote) {
-           // Remote/WFH — cascading location search: Home → Work → Area Code city
-           const saved = getSavedAddresses();
-           const homeAddr = saved.find(a => a.type === "home");
-           const workAddr = saved.find(a => a.type === "work");
+           // Remote/WFH — refresh addresses from DB first, then cascade: Home → Work → Area Code
+           const freshAddresses = await loadSavedAddressesFromDB();
+           const homeAddr = freshAddresses.find(a => a.type === "home");
+           const workAddr = freshAddresses.find(a => a.type === "work");
            
            if (homeAddr && homeAddr.lat && homeAddr.lng) {
              concPickup = { address: `Remote / WFH — ${homeAddr.name}`, lat: homeAddr.lat, lng: homeAddr.lng };
@@ -3004,8 +3004,17 @@ const Book = () => {
                   </AnimatePresence>
                 </div>
 
-                <p className="text-sm text-muted-foreground text-center max-w-[240px]">
-                  Stand by, we're finding the best Courial for this task.
+                <p className="text-sm text-muted-foreground text-center max-w-[260px]">
+                  {conciergeIsRemote && wfhSearchPhase
+                    ? wfhSearchPhase === "home"
+                      ? "Searching near your home address..."
+                      : wfhSearchPhase === "work"
+                        ? "Searching near your work address..."
+                        : wfhSearchPhase === "area_code"
+                          ? "Searching your phone area..."
+                          : "Stand by, we're finding the best Courial for this task."
+                    : "Stand by, we're finding the best Courial for this task."
+                  }
                 </p>
 
                 {/* Progress bar */}
