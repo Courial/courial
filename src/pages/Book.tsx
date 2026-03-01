@@ -1806,13 +1806,13 @@ const Book = () => {
                   <button
                     onClick={() => {
                       setConciergeIsRemote(prev => {
-                        if (!prev) {
-                          setConciergeAddressToggles({ start: false, stop: false, final: false });
-                          setConciergeStartAddress(""); setConciergeStartPlaceName(null); setConciergeStartCoords(null);
-                          setConciergeStopAddress(""); setConciergeStopPlaceName(null); setConciergeStopCoords(null);
-                          setConciergeFinalAddress(""); setConciergeFinalPlaceName(null); setConciergeFinalCoords(null);
-                        }
-                        return !prev;
+                        const newVal = !prev;
+                        // Always clear all address toggles and data
+                        setConciergeAddressToggles({ start: false, stop: false, final: false });
+                        setConciergeStartAddress(""); setConciergeStartPlaceName(null); setConciergeStartCoords(null);
+                        setConciergeStopAddress(""); setConciergeStopPlaceName(null); setConciergeStopCoords(null);
+                        setConciergeFinalAddress(""); setConciergeFinalPlaceName(null); setConciergeFinalCoords(null);
+                        return newVal;
                       });
                     }}
                     className={cn(
