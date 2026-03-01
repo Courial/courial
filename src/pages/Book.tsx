@@ -557,7 +557,7 @@ const Book = () => {
              setWfhSearchPhase("area_code");
            }
         } else {
-          // Collect all available addresses in order
+          // In-person concierge — collect addresses and start address-based search
           const available: { address: string; lat: number; lng: number }[] = [];
           if (conciergeStartAddress && conciergeStartCoords) available.push({ address: conciergeStartAddress, ...conciergeStartCoords });
           if (conciergeStopAddress && conciergeStopCoords) available.push({ address: conciergeStopAddress, ...conciergeStopCoords });
@@ -567,9 +567,12 @@ const Book = () => {
             concPickup = available[0];
             concDropoff = available[available.length - 1];
           } else if (available.length === 1) {
-            // Duplicate the single address for both pickup and dropoff
             concPickup = available[0];
             concDropoff = available[0];
+          }
+          // Start address search phase: 30s initial, then 60s retry
+          if (available.length > 0) {
+            setWfhSearchPhase("address_initial");
           }
         }
       }
