@@ -155,6 +155,7 @@ const BookingMap: React.FC<BookingMapProps> = ({ pickupCoords, dropoffCoords, st
   const trackingMarkerRef = useRef<google.maps.Marker | null>(null);
   const trackingAnimationRef = useRef<number | null>(null);
   
+  const [mapReady, setMapReady] = useState(false);
   const [ready, setReady] = useState(false);
 
   const defaultCenter = useMemo(() => ({ lat: 34.0522, lng: -118.2437 }), []);
@@ -178,6 +179,7 @@ const BookingMap: React.FC<BookingMapProps> = ({ pickupCoords, dropoffCoords, st
         { featureType: "transit", stylers: [{ visibility: "off" }] },
       ],
     });
+    setMapReady(true);
   }, [ready, defaultCenter]);
 
   // Update markers and route
@@ -395,7 +397,7 @@ const BookingMap: React.FC<BookingMapProps> = ({ pickupCoords, dropoffCoords, st
       map.setCenter(coords);
       map.setZoom(14);
     }
-  }, [pickupCoords, dropoffCoords, stopCoords, stableExtraStops, pickupAddress, dropoffAddress, stopAddress, pickupPlaceName, dropoffPlaceName, stopPlaceName]);
+  }, [mapReady, pickupCoords, dropoffCoords, stopCoords, stableExtraStops, pickupAddress, dropoffAddress, stopAddress, pickupPlaceName, dropoffPlaceName, stopPlaceName]);
 
   // --- Loading phase: multiple cars converge toward pickup along real roads ---
   useEffect(() => {
