@@ -98,6 +98,7 @@ const Book = () => {
   const { user } = useAuth();
   const [searchParams, setSearchParams] = useSearchParams();
   const showActivity = searchParams.get("view") === "activity";
+  const sidebarRef = useRef<HTMLDivElement>(null);
   const deliveryIdRef = useRef<string | null>(null);
   const [selectedService, setSelectedService] = useState<ServiceId | null>(null);
   const [pickup, setPickup] = useState("");
@@ -712,6 +713,13 @@ const Book = () => {
     }
   }, [isFormValid, user, timeMode, selectedService, selectedVehicle, notes, pickup, pickupCoords, dropoff, dropoffCoords, selectedDate, selectedTime, over70lbs, heavyWeight, heavyItems, twoCourials, hasStairs, conciergeDescription, conciergeCategory, conciergeSubCategory, conciergeIsRemote, conciergeStartAddress, conciergeStartCoords, conciergeStopAddress, conciergeStopCoords, conciergeFinalAddress, conciergeFinalCoords, conciergeLanguage, conciergeServiceMode, conciergeHasExpenses, conciergeExpenseItems, conciergeAllowOverage, conciergeOverageLimit, conciergeOrderValue, deliverLanguage, deliverMultiStop, deliverExtraStops, deliverHasExpenses, deliverExpenseItems, deliverAllowOverage, deliverOverageLimit]);
 
+  // Scroll sidebar to top when entering loading/active states or toggling chat
+  useEffect(() => {
+    if (bookingState === "loading" || bookingState === "active") {
+      sidebarRef.current?.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  }, [bookingState, showChat]);
+
   // Animate loading progress — caps at 95% and waits for socket AcceptOrder_listener
   useEffect(() => {
     if (bookingState !== "loading") return;
@@ -1011,7 +1019,7 @@ const Book = () => {
 
       <div className="flex h-[calc(100vh-64px)] mt-16">
         {/* Left Column — Booking Card */}
-        <div className="w-full max-w-[440px] flex-shrink-0 border-r border-border overflow-y-auto bg-black/[0.025]">
+        <div ref={sidebarRef} className="w-full max-w-[440px] flex-shrink-0 border-r border-border overflow-y-auto bg-black/[0.025]">
           {showActivity ? (
             <ActivityPanel onBack={() => setSearchParams({})} />
           ) : bookingState === "input" && (
