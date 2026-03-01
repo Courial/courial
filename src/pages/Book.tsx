@@ -212,9 +212,15 @@ const Book = () => {
       }
     }
   }, [over70lbs, heavyWeight, heavyItems]);
-  const [bookingState, setBookingState] = useState<"input" | "loading" | "active">("input");
+  const [bookingState, setBookingState] = useState<"input" | "loading" | "active">(() => {
+    const saved = localStorage.getItem("courial_booking_state");
+    return saved === "active" ? "active" : "input";
+  });
   const [loadingProgress, setLoadingProgress] = useState(0);
-  const [deliveryStep, setDeliveryStep] = useState(0);
+  const [deliveryStep, setDeliveryStep] = useState(() => {
+    const saved = localStorage.getItem("courial_delivery_step");
+    return saved ? parseInt(saved, 10) : 0;
+  });
   const [nearbyCourials, setNearbyCourials] = useState<{ id: number; name: string; image: string; distance: string }[]>([]);
   const [currentProfileIndex, setCurrentProfileIndex] = useState(0);
   const [showChat, setShowChat] = useState(false);
