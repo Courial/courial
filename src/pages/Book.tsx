@@ -2972,9 +2972,10 @@ const Book = () => {
                 </p>
               </div>
 
-              {/* Cycling circle avatar */}
-              <div className="flex flex-col items-center justify-center flex-1">
-                <div className="relative mb-6">
+              {/* Bento-style search box */}
+              <div className="rounded-2xl border border-border p-6 flex flex-col items-center mb-6">
+                {/* Cycling circle avatar */}
+                <div className="relative mb-5 mt-2">
                   {/* Pulsing ring behind avatar */}
                   <motion.div
                     className="absolute inset-[-8px] rounded-full border-2 border-primary/40"
