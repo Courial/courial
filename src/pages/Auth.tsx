@@ -272,8 +272,11 @@ const Auth = () => {
         await syncUserToCourial(authId);
       }
 
-      // Navigate immediately
-      window.location.href = "/";
+      // Navigate without full reload to avoid white flash
+      // Keep blurred overlay visible while AuthProvider picks up the session
+      setTimeout(() => {
+        navigate("/", { replace: true });
+      }, 600);
     } catch (err) {
       console.error("verify-otp fetch error:", err);
       setSigningIn(false);
