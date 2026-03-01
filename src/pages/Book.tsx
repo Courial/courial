@@ -3048,17 +3048,15 @@ const Book = () => {
               className="flex flex-col h-full"
             >
               {/* Active header */}
-              <div className="flex items-center justify-between mb-6">
-                <div className="flex items-center gap-2">
-                  <div className="w-2 h-2 rounded-full bg-primary animate-pulse" />
-                  <span className="text-sm font-semibold text-primary uppercase tracking-wider">Live</span>
-                </div>
-                <p className="text-[15px] font-medium text-muted-foreground flex items-center gap-1.5">
-                  {isWfhConcierge
-                    ? <span className="text-base">🏠</span>
-                    : <img src={deliverBox} alt="" className="w-5 h-5" />
+              <div className="text-center mb-6">
+                <h2 className="text-lg font-bold text-foreground">
+                  {selectedService === "concierge" ? "Concierge Task" : selectedService === "valet" ? "Valet Service" : "Delivery"}
+                </h2>
+                <p className="text-sm text-muted-foreground mt-0.5">
+                  {selectedService === "concierge" && conciergeCategory
+                    ? `${conciergeCategory.replace(/-/g, " ").replace(/\b\w/g, c => c.toUpperCase())}${conciergeSubCategory ? ` • ${conciergeSubCategory}` : ""}${isWfhConcierge ? " • WFH Service" : ""}`
+                    : !isWfhConcierge ? "4 mins away • 2:01 AM dropoff" : "WFH Service"
                   }
-                  {isWfhConcierge ? "WFH Service" : "4 mins away • 2:01 AM dropoff"}
                 </p>
               </div>
 
@@ -3091,7 +3089,7 @@ const Book = () => {
                     <div className="text-xs text-foreground mt-0.5"><span className="font-normal text-muted-foreground">Plate No.</span> <span className="font-bold">{acceptedCourial?.licensePlate || "ABC1234"}</span></div>
                   </div>
                   {isWfhConcierge ? (
-                    <img src={noVehicleIcon} alt="No vehicle needed" className="h-10 w-10 shrink-0 object-contain" />
+                    <img src={noVehicleIcon} alt="No vehicle needed" className="h-[60px] w-[60px] shrink-0 object-contain" />
                   ) : selectedVehicle ? (
                     <img
                       src={vehicleOptions.find(v => v.id === selectedVehicle)?.image}
@@ -3262,6 +3260,29 @@ const Book = () => {
                 )}
               </div>
 
+              {/* Contact & Chat - icon buttons */}
+              <div className="flex gap-2 mb-3">
+                <button
+                  onClick={() => setShowContactSupport(true)}
+                  className="w-10 h-10 flex items-center justify-center rounded-full border border-border hover:bg-muted transition-colors"
+                  aria-label="Contact Support"
+                >
+                  <Headset className="w-4.5 h-4.5 text-foreground" />
+                </button>
+                <button
+                  onClick={() => setShowChat(prev => !prev)}
+                  className={cn(
+                    "w-10 h-10 flex items-center justify-center rounded-full border transition-colors",
+                    showChat
+                      ? "border-primary bg-primary text-primary-foreground"
+                      : "border-border hover:bg-muted"
+                  )}
+                  aria-label="Message Courial"
+                >
+                  <MessageCircle className={cn("w-4.5 h-4.5", showChat ? "text-primary-foreground" : "text-foreground")} />
+                </button>
+              </div>
+
               {/* Order Details */}
               <div className="rounded-xl border border-border bg-background p-4 mb-4">
                 <button
@@ -3272,37 +3293,6 @@ const Book = () => {
                   <ChevronDown className={cn("w-3.5 h-3.5 text-muted-foreground transition-transform", showOrderDetails && "rotate-180")} />
                 </button>
                 {showOrderDetails && <div className="space-y-1.5 text-sm mt-2">
-                  {/* Service */}
-                  <div className="flex justify-between">
-                    <span className="text-muted-foreground">Service</span>
-                    <span className="text-foreground capitalize">{selectedService}</span>
-                  </div>
-                  {/* Vehicle */}
-                  {selectedService === "deliver" && selectedVehicle && (
-                    <div className="flex justify-between">
-                      <span className="text-muted-foreground">Vehicle</span>
-                      <span className="text-foreground capitalize">{selectedVehicle}</span>
-                    </div>
-                  )}
-                  {selectedService === "concierge" && conciergeVehicle && (
-                    <div className="flex justify-between">
-                      <span className="text-muted-foreground">Vehicle</span>
-                      <span className="text-foreground capitalize">{conciergeVehicle === "none" ? "No vehicle" : conciergeVehicle}</span>
-                    </div>
-                  )}
-                  {/* Concierge category */}
-                  {selectedService === "concierge" && conciergeCategory && (
-                    <div className="flex justify-between">
-                      <span className="text-muted-foreground">Category</span>
-                      <span className="text-foreground capitalize">{conciergeCategory.replace(/-/g, " ")}</span>
-                    </div>
-                  )}
-                  {selectedService === "concierge" && conciergeSubCategory && (
-                    <div className="flex justify-between">
-                      <span className="text-muted-foreground">Sub-Category</span>
-                      <span className="text-foreground capitalize">{conciergeSubCategory.replace(/-/g, " ")}</span>
-                    </div>
-                  )}
                   {/* Service mode */}
                   {selectedService === "concierge" && conciergeServiceMode && (
                     <div className="flex justify-between">
@@ -3468,28 +3458,6 @@ const Book = () => {
                 </div>
               )}
 
-              {/* Contact & Chat */}
-              <div className="flex gap-2 mb-3">
-                <button
-                  onClick={() => setShowContactSupport(true)}
-                  className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl border border-green-600 bg-green-600 hover:bg-green-700 transition-colors text-sm font-semibold text-white"
-                >
-                  <Headset className="w-4 h-4" />
-                  Contact Support
-                </button>
-                <button
-                  onClick={() => setShowChat(prev => !prev)}
-                  className={cn(
-                    "flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl border transition-colors text-sm font-semibold",
-                    showChat
-                      ? "border-primary bg-primary text-primary-foreground"
-                      : "border-primary bg-primary hover:bg-primary/90 text-primary-foreground"
-                  )}
-                >
-                  <MessageCircle className="w-4 h-4" />
-                  Message Courial
-                </button>
-              </div>
 
               {/* Action Buttons */}
               <div className="space-y-2 mb-3">
