@@ -3418,9 +3418,9 @@ const Book = () => {
                         <p className="text-[11px] text-muted-foreground whitespace-pre-wrap">{conciergeDescription}</p>
                       </div>
                     )}
-                    {/* Row: Rate & Vehicle (same row for concierge) */}
+                    {/* Row: Rate & Vehicle (same row for concierge, skip for roadside) */}
                     <div className="grid grid-cols-3 gap-4 py-2.5">
-                      {selectedService === "concierge" && conciergeServiceMode && (
+                      {selectedService === "concierge" && conciergeCategory !== "roadside-assistance" && conciergeServiceMode && (
                         <div>
                           <p className="text-xs font-medium text-foreground mb-0.5">Rate</p>
                           <p className="text-[11px] text-muted-foreground">
@@ -3428,7 +3428,7 @@ const Book = () => {
                           </p>
                         </div>
                       )}
-                      {selectedService === "concierge" && conciergeVehicle && (
+                      {selectedService === "concierge" && conciergeCategory !== "roadside-assistance" && conciergeVehicle && (
                         <div>
                           <p className="text-xs font-medium text-foreground mb-0.5">Vehicle</p>
                           <p className="text-[11px] text-muted-foreground capitalize">{conciergeVehicle === "none" ? "None" : conciergeVehicle}</p>
