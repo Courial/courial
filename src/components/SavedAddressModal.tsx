@@ -314,7 +314,7 @@ export const SavedAddressModal = ({
                       onClick={() => onOpenChange(false)}
                       className="flex-1 rounded-lg h-10 text-sm font-semibold bg-transparent border border-background/30 text-background hover:bg-background/10"
                     >
-                      Back
+                      Close
                     </Button>
                     <Button
                       onClick={() => setAddModalOpen(true)}
