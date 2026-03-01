@@ -207,7 +207,7 @@ const Auth = () => {
       } else {
         setDeviceID(data.deviceID || "");
         setView("otp");
-        setSuccessMessage("Sent to " + formatDisplayPhone(countryCode, nationalNumber));
+        setSuccessMessage("Sent to\n" + formatDisplayPhone(countryCode, nationalNumber));
       }
     } catch (err) {
       setError("Network error. Please try again.");
