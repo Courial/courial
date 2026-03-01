@@ -441,7 +441,7 @@ const Auth = () => {
                       </div>
                     )}
                     {forgotPasswordSent && successMessage && <p className="text-xs text-primary text-center">{successMessage}</p>}
-                    {!forgotPasswordSent && successMessage && <p className="text-xs text-primary text-center">{successMessage}</p>}
+                    {!forgotPasswordSent && successMessage && <p className="text-xs text-primary text-center whitespace-pre-line">{successMessage}</p>}
                     <div className="flex justify-center">
                       <Button type="submit" disabled={loading} className="rounded-lg h-11 w-full text-sm font-medium bg-foreground text-background border border-background/30 hover:bg-foreground/90">
                         {loading ? "Sending…" : "Send Code"}
