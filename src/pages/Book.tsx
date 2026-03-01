@@ -3426,8 +3426,8 @@ const Book = () => {
                     {/* Notes */}
                     {notes.trim() && (
                       <div className="py-2.5">
-                        <p className="text-[11px] text-muted-foreground mb-0.5">Notes</p>
-                        <p className="text-xs text-foreground whitespace-pre-wrap">{notes}</p>
+                        <p className="text-xs font-medium text-foreground mb-0.5">Notes</p>
+                        <p className="text-[11px] text-muted-foreground whitespace-pre-wrap">{notes}</p>
                       </div>
                     )}
                     {/* Concierge description */}
