@@ -132,7 +132,7 @@ const Auth = () => {
       if (!res.ok || data.success === 0 || data.success === false) {
         const errMsg = (data.msg || data.error || "Failed to send OTP").toLowerCase();
         if (errMsg.includes("not found") || errMsg.includes("no user") || errMsg.includes("does not exist")) {
-          setError("No account found. Create one to get started.");
+          setError("No account found.\nCreate one to get started.");
         } else {
           setError(data.msg || data.error || "Failed to send OTP");
         }
