@@ -3317,22 +3317,22 @@ const Book = () => {
                     <div className="grid grid-cols-3 gap-4 py-2.5">
                       {(deliverLanguage || conciergeLanguage) && (
                         <div>
-                          <p className="text-[11px] text-muted-foreground mb-0.5">Language</p>
-                          <p className="text-sm font-medium text-foreground">{deliverLanguage || conciergeLanguage}</p>
+                          <p className="text-xs font-medium text-foreground mb-0.5">Language</p>
+                          <p className="text-[11px] text-muted-foreground">{deliverLanguage || conciergeLanguage}</p>
                         </div>
                       )}
                       {selectedService === "concierge" && conciergeServiceMode && (
                         <div>
-                          <p className="text-[11px] text-muted-foreground mb-0.5">Rate</p>
-                          <p className="text-sm font-medium text-foreground">
+                          <p className="text-xs font-medium text-foreground mb-0.5">Rate</p>
+                          <p className="text-[11px] text-muted-foreground">
                             {conciergeServiceMode === "hourly" ? "$65 per Hour" : conciergeServiceMode === "daily" ? "$480 Daily" : conciergeServiceMode}
                           </p>
                         </div>
                       )}
                       {selectedService !== "concierge" && selectedVehicle && (
                         <div>
-                          <p className="text-[11px] text-muted-foreground mb-0.5">Vehicle</p>
-                          <p className="text-sm font-medium text-foreground capitalize">{selectedVehicle}</p>
+                          <p className="text-xs font-medium text-foreground mb-0.5">Vehicle</p>
+                          <p className="text-[11px] text-muted-foreground capitalize">{selectedVehicle}</p>
                         </div>
                       )}
                     </div>
@@ -3340,13 +3340,13 @@ const Book = () => {
                     {(deliverOrderValue || conciergeOrderValue) && (
                       <div className="grid grid-cols-3 gap-4 py-2.5">
                         <div>
-                          <p className="text-[11px] text-muted-foreground mb-0.5">Order Value</p>
-                          <p className="text-sm font-medium text-foreground">${deliverOrderValue || conciergeOrderValue}</p>
+                          <p className="text-xs font-medium text-foreground mb-0.5">Order Value</p>
+                          <p className="text-[11px] text-muted-foreground">${deliverOrderValue || conciergeOrderValue}</p>
                         </div>
                         {(Number(deliverOrderValue) > 100 || Number(conciergeOrderValue) > 100) && (
                           <div>
-                            <p className="text-[11px] text-muted-foreground mb-0.5">Protection</p>
-                            <p className="text-sm font-medium text-foreground">
+                            <p className="text-xs font-medium text-foreground mb-0.5">Protection</p>
+                            <p className="text-[11px] text-muted-foreground">
                               {declineProtection ? "Declined ($0)" : (() => {
                                 const val = Number(deliverOrderValue) || Number(conciergeOrderValue);
                                 if (val > 200) return "Accepted (Contact Support)";
@@ -3363,8 +3363,8 @@ const Book = () => {
                       <div className="py-2.5">
                         <div className="grid grid-cols-2 gap-4">
                           <div>
-                            <p className="text-[11px] text-muted-foreground mb-0.5">Scheduled</p>
-                            <p className="text-sm font-medium text-foreground">{selectedDate.toLocaleDateString()} at {selectedTime}</p>
+                            <p className="text-xs font-medium text-foreground mb-0.5">Scheduled</p>
+                            <p className="text-[11px] text-muted-foreground">{selectedDate.toLocaleDateString()} at {selectedTime}</p>
                           </div>
                         </div>
                       </div>
@@ -3373,8 +3373,8 @@ const Book = () => {
                     {over70lbs && (
                       <div className="grid grid-cols-2 gap-4 py-2.5">
                         <div>
-                          <p className="text-[11px] text-muted-foreground mb-0.5">Heavy Items</p>
-                          <p className="text-sm font-medium text-foreground">{heavyWeight} lbs / {heavyItems} {parseInt(heavyItems) === 1 ? "item" : "items"}</p>
+                          <p className="text-xs font-medium text-foreground mb-0.5">Heavy Items</p>
+                          <p className="text-[11px] text-muted-foreground">{heavyWeight} lbs / {heavyItems} {parseInt(heavyItems) === 1 ? "item" : "items"}</p>
                         </div>
                       </div>
                     )}
@@ -3383,14 +3383,14 @@ const Book = () => {
                       <div className="grid grid-cols-2 gap-4 py-2.5">
                         {twoCourials && (
                           <div>
-                            <p className="text-[11px] text-muted-foreground mb-0.5">2 Courials</p>
-                            <p className="text-sm font-medium text-foreground">Yes</p>
+                            <p className="text-xs font-medium text-foreground mb-0.5">2 Courials</p>
+                            <p className="text-[11px] text-muted-foreground">Yes</p>
                           </div>
                         )}
                         {hasStairs && (
                           <div>
-                            <p className="text-[11px] text-muted-foreground mb-0.5">Stairs</p>
-                            <p className="text-sm font-medium text-foreground">Yes</p>
+                            <p className="text-xs font-medium text-foreground mb-0.5">Stairs</p>
+                            <p className="text-[11px] text-muted-foreground">Yes</p>
                           </div>
                         )}
                       </div>
@@ -3400,46 +3400,46 @@ const Book = () => {
                     {deliverHasExpenses && deliverExpenseItems.some(e => e.description.trim()) && (
                       <div className="py-2.5">
                         <div className="flex items-center justify-between mb-1">
-                          <p className="text-[11px] text-muted-foreground">Expenses</p>
-                          <span className="text-xs font-medium text-foreground">
+                          <p className="text-xs font-medium text-foreground">Expenses</p>
+                          <span className="text-[11px] text-muted-foreground">
                             ${deliverExpenseItems.filter(e => e.description.trim()).reduce((sum, e) => sum + Number(e.amount), 0).toLocaleString()}{deliverAllowOverage && Number(deliverOverageLimit) > 0 ? ` ($${deliverOverageLimit})` : ""}
                           </span>
                         </div>
                         {deliverExpenseItems.filter(e => e.description.trim()).map((e, i) => (
-                          <p key={i} className="text-xs text-muted-foreground leading-relaxed">{e.description}</p>
+                          <p key={i} className="text-[11px] text-muted-foreground leading-relaxed">{e.description}</p>
                         ))}
                       </div>
                     )}
                     {conciergeHasExpenses && conciergeExpenseItems.some(e => e.description.trim()) && (
                       <div className="py-2.5">
                         <div className="flex items-center justify-between mb-1">
-                          <p className="text-[11px] text-muted-foreground">Expenses</p>
-                          <span className="text-xs font-medium text-foreground">
+                          <p className="text-xs font-medium text-foreground">Expenses</p>
+                          <span className="text-[11px] text-muted-foreground">
                             ${conciergeExpenseItems.filter(e => e.description.trim()).reduce((sum, e) => sum + Number(e.amount), 0).toLocaleString()}{conciergeAllowOverage && Number(conciergeOverageLimit) > 0 ? ` ($${conciergeOverageLimit})` : ""}
                           </span>
                         </div>
                         {conciergeExpenseItems.filter(e => e.description.trim()).map((e, i) => (
-                          <p key={i} className="text-xs text-muted-foreground leading-relaxed">{e.description}</p>
+                          <p key={i} className="text-[11px] text-muted-foreground leading-relaxed">{e.description}</p>
                         ))}
                       </div>
                     )}
                     {/* Notes */}
                     {notes.trim() && (
                       <div className="py-2.5">
-                        <p className="text-[11px] text-muted-foreground mb-0.5">Notes</p>
-                        <p className="text-xs text-foreground whitespace-pre-wrap">{notes}</p>
+                        <p className="text-xs font-medium text-foreground mb-0.5">Notes</p>
+                        <p className="text-[11px] text-muted-foreground whitespace-pre-wrap">{notes}</p>
                       </div>
                     )}
                     {/* Concierge description */}
                     {selectedService === "concierge" && conciergeDescription.trim() && (
                       <div className="py-2.5">
-                        <p className="text-[11px] text-muted-foreground mb-0.5">Task Description</p>
-                        <p className="text-xs text-foreground whitespace-pre-wrap">{conciergeDescription}</p>
+                        <p className="text-xs font-medium text-foreground mb-0.5">Task Description</p>
+                        <p className="text-[11px] text-muted-foreground whitespace-pre-wrap">{conciergeDescription}</p>
                       </div>
                     )}
                     {/* Address Information */}
                     <div className="py-2.5">
-                      <p className="text-[11px] text-muted-foreground mb-1">Address</p>
+                      <p className="text-xs font-medium text-foreground mb-1">Address</p>
                       {selectedService === "concierge" && isWfhConcierge ? (
                         <p className="text-xs text-foreground">🏠 WFH Service (No Address required)</p>
                       ) : selectedService === "concierge" ? (
