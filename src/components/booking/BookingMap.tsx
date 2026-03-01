@@ -155,6 +155,7 @@ const BookingMap: React.FC<BookingMapProps> = ({ pickupCoords, dropoffCoords, st
   const trackingMarkerRef = useRef<google.maps.Marker | null>(null);
   const trackingAnimationRef = useRef<number | null>(null);
   
+  const [mapReady, setMapReady] = useState(false);
   const [ready, setReady] = useState(false);
 
   const defaultCenter = useMemo(() => ({ lat: 34.0522, lng: -118.2437 }), []);
