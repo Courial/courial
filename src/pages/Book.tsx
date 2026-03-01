@@ -3465,7 +3465,7 @@ const Book = () => {
                           <p className="text-xs font-medium text-foreground mb-0.5">Service Vehicle</p>
                           <p className="text-[11px] text-muted-foreground">
                             {[roadsideVehicleColor, roadsideVehicleMake, roadsideVehicleModel].filter(Boolean).join(" ")}
-                            {roadsideLicensePlate ? ` • Lic. #${roadsideLicensePlate}` : ""}
+                            {roadsideLicensePlate ? ` • Plate #${roadsideLicensePlate}` : ""}
                           </p>
                         </div>
                         {roadsideSafeLocation !== null && (
