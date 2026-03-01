@@ -3048,17 +3048,15 @@ const Book = () => {
               className="flex flex-col h-full"
             >
               {/* Active header */}
-              <div className="flex items-center justify-between mb-6">
-                <div className="flex items-center gap-2">
-                  <div className="w-2 h-2 rounded-full bg-primary animate-pulse" />
-                  <span className="text-sm font-semibold text-primary uppercase tracking-wider">Live</span>
-                </div>
-                <p className="text-[15px] font-medium text-muted-foreground flex items-center gap-1.5">
-                  {isWfhConcierge
-                    ? <span className="text-base">🏠</span>
-                    : <img src={deliverBox} alt="" className="w-5 h-5" />
+              <div className="text-center mb-6">
+                <h2 className="text-lg font-bold text-foreground">
+                  {selectedService === "concierge" ? "Concierge Task" : selectedService === "valet" ? "Valet Service" : "Delivery"}
+                </h2>
+                <p className="text-sm text-muted-foreground mt-0.5">
+                  {selectedService === "concierge" && conciergeCategory
+                    ? `${conciergeCategory.replace(/-/g, " ").replace(/\b\w/g, c => c.toUpperCase())}${conciergeSubCategory ? ` • ${conciergeSubCategory}` : ""}${isWfhConcierge ? " • WFH Service" : ""}`
+                    : !isWfhConcierge ? "4 mins away • 2:01 AM dropoff" : "WFH Service"
                   }
-                  {isWfhConcierge ? "WFH Service" : "4 mins away • 2:01 AM dropoff"}
                 </p>
               </div>
 
