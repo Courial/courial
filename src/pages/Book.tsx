@@ -3095,6 +3095,9 @@ const Book = () => {
                     : !isWfhConcierge ? "4 mins away • 2:01 AM dropoff" : "WFH Service"
                   }
                 </p>
+                {selectedService === "concierge" && !isWfhConcierge && (
+                  <p className="text-sm font-semibold text-muted-foreground mt-0.5">4 mins away • 2.3 mi</p>
+                )}
               </div>
 
               {/* Driver Card */}
