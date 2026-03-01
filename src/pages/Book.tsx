@@ -3670,75 +3670,7 @@ const Book = () => {
              <div className="flex-1 relative">
                <BookingMap pickupCoords={mapPickup} dropoffCoords={mapPickup !== mapDropoff ? mapDropoff : null} stopCoords={mapStop} extraStops={mapExtraStops} pickupAddress={mapPickupAddr} dropoffAddress={mapDropoffAddr} stopAddress={mapStopAddr} pickupPlaceName={mapPickupName} dropoffPlaceName={mapDropoffName} stopPlaceName={mapStopName} bookingState={bookingState} vehicleType={mapVehicle} courialCoords={courialCoords} />
               
-              {/* Loading Overlay Popup */}
-              <AnimatePresence>
-                {bookingState === "loading" && (
-                  <motion.div
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                    transition={{ duration: 0.3 }}
-                    className="absolute inset-0 z-20 flex items-center justify-center"
-                    style={{ backgroundColor: "hsla(0, 0%, 0%, 0.35)", backdropFilter: "blur(6px)" }}
-                  >
-                    <motion.div
-                      initial={{ opacity: 0, scale: 0.9 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      exit={{ opacity: 0, scale: 0.9 }}
-                      transition={{ duration: 0.3, delay: 0.1 }}
-                      className="rounded-3xl p-10 flex flex-col items-center gap-6 max-w-sm mx-4"
-                      style={{ backgroundColor: "hsla(0, 0%, 0%, 0.3)", backdropFilter: "blur(20px)" }}
-                    >
-                      {/* Circular Progress with flashing profile photos */}
-                      <div className="relative w-28 h-28">
-                        <svg className="w-28 h-28 -rotate-90" viewBox="0 0 112 112">
-                          <circle cx="56" cy="56" r="50" fill="none" stroke="hsla(0,0%,100%,0.15)" strokeWidth="4" />
-                          <circle
-                            cx="56" cy="56" r="50" fill="none"
-                            stroke="hsl(var(--primary))"
-                            strokeWidth="4"
-                            strokeLinecap="round"
-                            strokeDasharray={2 * Math.PI * 50}
-                            strokeDashoffset={2 * Math.PI * 50 * (1 - loadingProgress / 100)}
-                            className="transition-all duration-100"
-                          />
-                        </svg>
-                        <div className="absolute inset-0 flex items-center justify-center">
-                          <AnimatePresence mode="wait">
-                            <motion.img
-                              key={currentProfileIndex}
-                              src={activeProfiles[currentProfileIndex]}
-                              alt="Courial nearby"
-                              initial={{ opacity: 0, scale: 0.8 }}
-                              animate={{ opacity: 1, scale: 1 }}
-                              exit={{ opacity: 0, scale: 0.8 }}
-                              transition={{ duration: 0.25 }}
-                              className="w-[92px] h-[92px] rounded-full object-cover"
-                            />
-                          </AnimatePresence>
-                        </div>
-                      </div>
-                      <div className="text-center">
-                        <h2 className="text-xl font-bold text-white mb-1">
-                          {selectedService === "concierge"
-                            ? "Finding the perfect Concierge for your request."
-                            : selectedService === "valet"
-                            ? "Connecting you with a nearby Valet—right now."
-                            : "Connecting you with the best available Courial—right now."}
-                        </h2>
-                      </div>
-                      <Button
-                        variant="outline"
-                        size="lg"
-                        onClick={handleCancelBooking}
-                        className="mt-2 rounded-full px-10 bg-black/75 text-white border-0 hover:bg-black/90 hover:text-white"
-                      >
-                        Cancel
-                      </Button>
-                    </motion.div>
-                  </motion.div>
-                )}
-              </AnimatePresence>
+              {/* Loading Overlay removed — searching UI is now in sidebar */}
             </div>
           ) : (
             <div className="flex-1 overflow-y-auto">
