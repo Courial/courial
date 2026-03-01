@@ -212,9 +212,15 @@ const Book = () => {
       }
     }
   }, [over70lbs, heavyWeight, heavyItems]);
-  const [bookingState, setBookingState] = useState<"input" | "loading" | "active">("input");
+  const [bookingState, setBookingState] = useState<"input" | "loading" | "active">(() => {
+    const saved = localStorage.getItem("courial_booking_state");
+    return saved === "active" ? "active" : "input";
+  });
   const [loadingProgress, setLoadingProgress] = useState(0);
-  const [deliveryStep, setDeliveryStep] = useState(0);
+  const [deliveryStep, setDeliveryStep] = useState(() => {
+    const saved = localStorage.getItem("courial_delivery_step");
+    return saved ? parseInt(saved, 10) : 0;
+  });
   const [nearbyCourials, setNearbyCourials] = useState<{ id: number; name: string; image: string; distance: string }[]>([]);
   const [currentProfileIndex, setCurrentProfileIndex] = useState(0);
   const [showChat, setShowChat] = useState(false);
@@ -371,6 +377,7 @@ const Book = () => {
   useEffect(() => {
     localStorage.setItem("courial_booking_state", bookingState);
     localStorage.setItem("courial_form_started", formStarted ? "true" : "false");
+    localStorage.setItem("courial_delivery_step", String(deliveryStep));
     window.dispatchEvent(new Event("courial-booking-update"));
     return () => {
       // Clean up on unmount only if we're leaving the page in input state
@@ -717,6 +724,7 @@ const Book = () => {
     setBookingState("input");
     setLoadingProgress(0);
     setDeliveryStep(0);
+    localStorage.removeItem("courial_delivery_step");
     setSocketEnabled(false);
     setAcceptedCourial(null);
     setWfhSearchPhase(null);
@@ -3272,7 +3280,13 @@ const Book = () => {
                   <Headset className="w-4.5 h-4.5 text-white" />
                 </button>
                 <button
-                  onClick={() => setShowChat(prev => !prev)}
+                  onClick={() => {
+                    setShowChat(prev => {
+                      const next = !prev;
+                      if (next) setShowOrderDetails(false);
+                      return next;
+                    });
+                  }}
                   className="w-10 h-10 flex items-center justify-center rounded-full bg-primary hover:bg-primary/80 transition-colors"
                   aria-label="Message Courial"
                 >
@@ -3305,12 +3319,74 @@ const Book = () => {
               {/* Order Details */}
               <div className="rounded-xl border border-border bg-background p-4 mb-4">
                 <button
-                  onClick={() => setShowOrderDetails(p => !p)}
+                  onClick={() => {
+                    if (showChat) {
+                      setShowChat(false);
+                      setShowOrderDetails(p => !p);
+                    } else {
+                      setShowOrderDetails(p => !p);
+                    }
+                  }}
                   className="flex items-center justify-between w-full"
                 >
                   <p className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Order Details</p>
                   <ChevronDown className={cn("w-3.5 h-3.5 text-muted-foreground transition-transform", showOrderDetails && "rotate-180")} />
                 </button>
+                {/* Inline Chat (replaces order details when open) */}
+                <AnimatePresence>
+                  {showChat && (
+                    <motion.div
+                      initial={{ opacity: 0, height: 0 }}
+                      animate={{ opacity: 1, height: "auto" }}
+                      exit={{ opacity: 0, height: 0 }}
+                      transition={{ duration: 0.25 }}
+                      className="overflow-hidden mt-3"
+                    >
+                      <div className="rounded-xl border border-border bg-background">
+                        <div className="p-3 border-b border-border">
+                          <p className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Chat with Marcus</p>
+                        </div>
+                        <div className="p-3 space-y-2.5 max-h-[200px] overflow-y-auto">
+                          {chatMessages.map((msg, i) => (
+                            <div key={i} className={cn("flex", msg.from === "user" ? "justify-end" : "justify-start")}>
+                              <div
+                                className={cn(
+                                  "max-w-[75%] rounded-2xl px-3 py-2",
+                                  msg.from === "user"
+                                    ? "bg-primary text-primary-foreground rounded-br-md"
+                                    : "bg-muted text-foreground rounded-bl-md"
+                                )}
+                              >
+                                <p className="text-sm leading-snug">{msg.text}</p>
+                                <p className={cn(
+                                  "text-[10px] mt-0.5",
+                                  msg.from === "user" ? "text-primary-foreground/60" : "text-muted-foreground"
+                                )}>{msg.time}</p>
+                              </div>
+                            </div>
+                          ))}
+                          <div ref={chatEndRef} />
+                        </div>
+                        <div className="p-2 border-t border-border flex gap-2">
+                          <Input
+                            value={chatInput}
+                            onChange={(e) => setChatInput(e.target.value)}
+                            onKeyDown={(e) => e.key === "Enter" && handleSendChat()}
+                            placeholder="Type a message..."
+                            className="text-sm h-9"
+                          />
+                          <button
+                            onClick={handleSendChat}
+                            disabled={!chatInput.trim()}
+                            className="shrink-0 w-9 h-9 rounded-lg bg-primary text-primary-foreground flex items-center justify-center hover:bg-primary/90 transition-colors disabled:opacity-40"
+                          >
+                            <Send className="w-4 h-4" />
+                          </button>
+                        </div>
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
                 {showOrderDetails && (
                   <div className="mt-3 space-y-0 divide-y divide-border text-sm">
                     {/* Row: Language, Rate/Vehicle */}
@@ -3557,63 +3633,7 @@ const Book = () => {
                 </div>
               )}
 
-              {/* Chat Box */}
-              <AnimatePresence>
-                {showChat && (
-                  <motion.div
-                    initial={{ opacity: 0, height: 0 }}
-                    animate={{ opacity: 1, height: "auto" }}
-                    exit={{ opacity: 0, height: 0 }}
-                    transition={{ duration: 0.25 }}
-                    className="overflow-hidden mb-3"
-                  >
-                    <div className="rounded-xl border border-border bg-background">
-                      <div className="p-3 border-b border-border">
-                        <p className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Chat with Marcus</p>
-                      </div>
-                      <div className="p-3 space-y-2.5 max-h-[200px] overflow-y-auto">
-                        {chatMessages.map((msg, i) => (
-                          <div key={i} className={cn("flex", msg.from === "user" ? "justify-end" : "justify-start")}>
-                            <div
-                              className={cn(
-                                "max-w-[75%] rounded-2xl px-3 py-2",
-                                msg.from === "user"
-                                  ? "bg-primary text-primary-foreground rounded-br-md"
-                                  : "bg-muted text-foreground rounded-bl-md"
-                              )}
-                            >
-                              <p className="text-sm leading-snug">{msg.text}</p>
-                              <p className={cn(
-                                "text-[10px] mt-0.5",
-                                msg.from === "user" ? "text-primary-foreground/60" : "text-muted-foreground"
-                              )}>{msg.time}</p>
-                            </div>
-                          </div>
-                        ))}
-                        <div ref={chatEndRef} />
-                      </div>
-                      <div className="p-2 border-t border-border flex gap-2">
-                        <Input
-                          value={chatInput}
-                          onChange={(e) => setChatInput(e.target.value)}
-                          onKeyDown={(e) => e.key === "Enter" && handleSendChat()}
-                          placeholder="Type a message..."
-                          className="text-sm h-9"
-                        />
-                        <button
-                          onClick={handleSendChat}
-                          disabled={!chatInput.trim()}
-                          className="shrink-0 w-9 h-9 rounded-lg bg-primary text-primary-foreground flex items-center justify-center hover:bg-primary/90 transition-colors disabled:opacity-40"
-                        >
-                          <Send className="w-4 h-4" />
-                        </button>
-                      </div>
-                    </div>
-                  </motion.div>
-                )}
-              </AnimatePresence>
 
-              
             </motion.div>
           </div>
         )}
