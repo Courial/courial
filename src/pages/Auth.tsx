@@ -352,9 +352,14 @@ const Auth = () => {
   return (
     <>
       {/* Render the home page behind */}
-      <div className="pointer-events-none">
+      <div className={`pointer-events-none ${signingIn ? 'blur-md' : ''}`}>
         <Index />
       </div>
+
+      {/* Signing-in overlay — blurred home, no modal */}
+      {signingIn && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-background/60 backdrop-blur-sm" />
+      )}
 
       {/* Modal overlay */}
       <div className="fixed inset-0 z-50 flex items-center justify-center">
