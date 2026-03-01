@@ -98,6 +98,7 @@ const Book = () => {
   const { user } = useAuth();
   const [searchParams, setSearchParams] = useSearchParams();
   const showActivity = searchParams.get("view") === "activity";
+  const sidebarRef = useRef<HTMLDivElement>(null);
   const deliveryIdRef = useRef<string | null>(null);
   const [selectedService, setSelectedService] = useState<ServiceId | null>(null);
   const [pickup, setPickup] = useState("");
