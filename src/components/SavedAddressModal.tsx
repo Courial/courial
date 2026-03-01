@@ -441,9 +441,9 @@ const AddFavoriteModal = ({
 
   const canSave = address.trim() && coords;
 
-  const handleAdd = () => {
+  const handleAdd = async () => {
     if (!canSave) return;
-    saveSavedAddress({
+    await saveSavedAddress({
       type: "favorite",
       name: name.trim() || "Favorite",
       address: address.trim(),
