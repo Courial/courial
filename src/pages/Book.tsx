@@ -3510,7 +3510,7 @@ const Book = () => {
               </div>
 
               {/* Price / Receipt */}
-              {deliveryStep >= (isWfhConcierge ? 3 : 5) ? (
+              {deliveryStep >= (isWfhConcierge ? 3 : 5) && (
                 <div className="rounded-xl border border-border bg-muted/50 p-4 mb-4">
                   <p className="text-xs font-bold uppercase tracking-wider text-muted-foreground mb-2">Receipt</p>
                   <div className="space-y-1.5 text-sm">
@@ -3547,11 +3547,6 @@ const Book = () => {
                       <span className="text-foreground">$29.31</span>
                     </div>
                   </div>
-                </div>
-              ) : (
-                <div className="flex items-center justify-between px-1 mb-4">
-                  <span className="text-sm text-muted-foreground">Estimated fare</span>
-                  <span className="text-sm font-bold text-foreground">$21.59</span>
                 </div>
               )}
 
