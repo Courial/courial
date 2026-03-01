@@ -1078,6 +1078,9 @@ const Book = () => {
                   {selectedService === "concierge" && (
                     <img src={conciergeBox} alt="Concierge" className="w-10 h-10" />
                   )}
+                  {selectedService === "valet" && (
+                    <img src={valetBox} alt="Valet" className="w-10 h-10" />
+                  )}
                   <h1 className="text-3xl font-bold text-foreground">
                     {serviceCards.find(s => s.id === selectedService)!.label}
                   </h1>
