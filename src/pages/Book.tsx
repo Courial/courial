@@ -3040,371 +3040,391 @@ const Book = () => {
 
         {/* Active Tracking State */}
         {bookingState === "active" && (
-          <div className="h-full overflow-y-auto">
+          <div className="p-8 h-full">
             <motion.div
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.4 }}
-              className="flex flex-col"
+              className="flex flex-col h-full"
             >
-              {/* ── Header ── */}
-              <div className="px-8 pt-8 pb-4">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <div className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
-                    <span className="text-xs font-bold text-red-500 uppercase tracking-wider">Live</span>
-                  </div>
-                  <button
-                    onClick={() => setShowChat(prev => !prev)}
-                    className="w-9 h-9 rounded-full border border-border flex items-center justify-center hover:bg-muted transition-colors"
-                  >
-                    <MessageCircle className="w-4 h-4 text-foreground" />
-                  </button>
+              {/* Active header */}
+              <div className="flex items-center justify-between mb-6">
+                <div className="flex items-center gap-2">
+                  <div className="w-2 h-2 rounded-full bg-primary animate-pulse" />
+                  <span className="text-sm font-semibold text-primary uppercase tracking-wider">Live</span>
                 </div>
-                <h2 className="text-xl font-bold text-foreground mt-1">
-                  {selectedService === "concierge" ? "Concierge Task" : selectedService === "valet" ? "Valet Service" : "Delivery"}
-                </h2>
-                {selectedService === "concierge" && conciergeCategory && (
-                  <p className="text-xs text-muted-foreground mt-0.5">
-                    {conciergeSubCategory && conciergeSubCategory !== "__direct__" ? `${conciergeSubCategory} · ` : ""}
-                    {conciergeCategories.find(c => c.id === conciergeCategory)?.label || ""}
-                  </p>
-                )}
+                <p className="text-[15px] font-medium text-muted-foreground flex items-center gap-1.5">
+                  {isWfhConcierge
+                    ? <span className="text-base">🏠</span>
+                    : <img src={deliverBox} alt="" className="w-5 h-5" />
+                  }
+                  {isWfhConcierge ? "WFH Service" : "4 mins away • 2:01 AM dropoff"}
+                </p>
               </div>
 
-              {/* ── Driver / Courial Card ── */}
-              <div className="mx-6 rounded-2xl border border-border bg-background p-5 mb-3">
-                <div className="flex items-start gap-4">
-                  {/* Profile photo */}
+              {/* Driver Card */}
+              <div className="rounded-2xl border border-border bg-background p-5 mb-4">
+                <div className="flex items-center gap-4 mb-4">
                   {acceptedCourial?.image ? (
-                    <img src={acceptedCourial.image} alt={acceptedCourial.name} className="w-14 h-14 rounded-full object-cover border-2 border-border" />
+                    <img src={acceptedCourial.image} alt={acceptedCourial.name} className="w-[60px] h-[60px] rounded-full object-cover border border-border" />
                   ) : (
-                    <div className="rounded-full bg-muted flex items-center justify-center text-xl font-bold text-foreground border-2 border-border" style={{ width: 56, height: 56 }}>
+                    <div className="rounded-full bg-muted flex items-center justify-center text-xl font-bold text-foreground" style={{ width: 60, height: 60 }}>
                       {(acceptedCourial?.name || "M").charAt(0)}
                     </div>
                   )}
-
-                  <div className="flex-1 min-w-0">
-                    {/* Name + rating */}
+                  <div className="flex-1">
                     <div className="flex items-center gap-2">
-                      <h3 className="text-lg font-bold text-foreground">{(acceptedCourial?.name || "Marcus").split(" ")[0]}</h3>
+                      <h3 className="text-base font-bold text-foreground">{(acceptedCourial?.name || "Marcus").split(" ")[0]}</h3>
                       <Star className="w-3.5 h-3.5 text-primary fill-primary" />
-                      <span className="text-sm font-semibold text-foreground">{acceptedCourial?.rating?.toFixed(2) || "5.00"}</span>
+                      <span className="text-sm text-muted-foreground">{acceptedCourial?.rating?.toFixed(2) || "4.68"}</span>
                     </div>
-
-                    {/* Verified badge + communication */}
-                    <div className="flex items-center gap-2 mt-1">
-                      <span className="inline-flex items-center gap-1 text-[10px] font-semibold text-green-700 bg-green-50 border border-green-200 rounded-full px-2 py-0.5">
-                        <Check className="w-2.5 h-2.5" /> Verified <Check className="w-2.5 h-2.5" />
-                      </span>
-                      <button
-                        onClick={() => setShowChat(prev => !prev)}
-                        className="w-7 h-7 rounded-full border border-border flex items-center justify-center hover:bg-muted transition-colors"
-                      >
-                        <MessageCircle className="w-3 h-3 text-foreground" />
-                      </button>
-                      <a
-                        href="tel:+14152754707"
-                        className="w-7 h-7 rounded-full border border-border flex items-center justify-center hover:bg-muted transition-colors"
-                      >
-                        <Phone className="w-3 h-3 text-foreground" />
-                      </a>
-                    </div>
-
-                    {/* Member since + trusted */}
-                    <p className="text-xs text-muted-foreground mt-1.5">
+                    <div className="text-xs text-muted-foreground mt-0.5">
                       {acceptedCourial?.memberSince
                         ? `Courial Since ${acceptedCourial.memberSince}`
-                        : "Courial Since '25"}{" "}
-                      · <span className="text-primary font-semibold">Trusted {selectedService === "concierge" ? "Concierge" : "Courial"}</span>
-                    </p>
+                        : "Courial Since '25"}
+                    </div>
+                    <div className="text-xs text-muted-foreground mt-0.5">
+                      {acceptedCourial
+                        ? `${acceptedCourial.vehicleYear ? acceptedCourial.vehicleYear + " " : ""}${acceptedCourial.vehicleMake} ${acceptedCourial.vehicleModel}`.trim() || "Vehicle info pending"
+                        : "Black Toyota Corolla"}
+                    </div>
+                    <div className="text-xs text-foreground mt-0.5"><span className="font-normal text-muted-foreground">Plate No.</span> <span className="font-bold">{acceptedCourial?.licensePlate || "ABC1234"}</span></div>
+                  </div>
+                  {isWfhConcierge ? (
+                    <img src={noVehicleIcon} alt="No vehicle needed" className="h-10 w-10 shrink-0 object-contain" />
+                  ) : selectedVehicle ? (
+                    <img
+                      src={vehicleOptions.find(v => v.id === selectedVehicle)?.image}
+                      alt={selectedVehicle}
+                      className="h-10 object-contain"
+                    />
+                  ) : null}
+                </div>
+
+                {/* WFH Task Timer - moved inline with stepper */}
+
+                {/* Delivery Status Stepper */}
+                <div className="mb-4">
+                  <div className="space-y-0 relative">
+                    {deliverySteps.map((step, i) => {
+                      const isCompleted = i < deliveryStep;
+                      const isCurrent = i === deliveryStep;
+                      const isFuture = i > deliveryStep;
+                      return (
+                        <div key={step.label} className="flex gap-3">
+                          {/* Vertical line + dot */}
+                          <div className="flex flex-col items-center">
+                            <div
+                              className={cn(
+                                "w-3 h-3 rounded-full border-2 shrink-0 transition-all duration-300",
+                                isCompleted
+                                  ? "bg-primary border-primary"
+                                  : isCurrent
+                                  ? "bg-primary border-primary ring-4 ring-primary/20"
+                                  : "bg-muted border-border"
+                              )}
+                            />
+                            {i < deliverySteps.length - 1 && (
+                              <div
+                                className={cn(
+                                  "w-0.5 flex-1 min-h-[24px] transition-colors duration-300",
+                                  isCompleted ? "bg-primary" : "bg-border"
+                                )}
+                              />
+                            )}
+                          </div>
+                          {/* Label */}
+                          <div className={cn("pb-3", i === deliverySteps.length - 1 && "pb-0")}>
+                            <p
+                              className={cn(
+                                "text-sm font-semibold leading-tight transition-colors",
+                                isCurrent ? "text-foreground" : isCompleted ? "text-muted-foreground" : "text-muted-foreground/50"
+                              )}
+                            >
+                              {step.label}
+                              {isCompleted && <span className="ml-1.5 text-primary">✓</span>}
+                            </p>
+                            {isCurrent && (
+                              <motion.p
+                                initial={{ opacity: 0, y: -4 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                className="text-xs text-muted-foreground mt-0.5"
+                              >
+                                {step.label === "Task Completed" && wfhTaskElapsed > 0
+                                  ? `${Math.floor(wfhTaskElapsed / 3600) > 0 && Math.floor((wfhTaskElapsed % 3600) / 60) > 0 ? `${Math.floor(wfhTaskElapsed / 3600)} hrs • ${Math.floor((wfhTaskElapsed % 3600) / 60)} mins` : Math.floor(wfhTaskElapsed / 3600) > 0 ? `${Math.floor(wfhTaskElapsed / 3600)} hrs` : `${Math.floor((wfhTaskElapsed % 3600) / 60)} mins`} task`
+                                  : step.desc}
+                              </motion.p>
+                            )}
+                          </div>
+                        </div>
+                      );
+                    })}
+
+                    {/* WFH Clock - circular arc timer */}
+                    {isWfhConcierge && (() => {
+                      const isActive = wfhTaskRunning && !wfhTaskPaused;
+                      const size = 110;
+                      const stroke = 6;
+                      const radius = (size - stroke) / 2;
+                      const circumference = 2 * Math.PI * radius;
+                      // Animate arc: full circle over 60s per minute cycle
+                      const progress = (wfhTaskElapsed % 60) / 60;
+                      const dashOffset = circumference * (1 - progress);
+                      return (
+                        <div className="absolute top-1/2 flex flex-col items-center gap-1.5" style={{ left: '75%', transform: 'translate(-50%, -50%)' }}>
+                          <div className="relative flex items-center justify-center" style={{ width: size, height: size }}>
+                            {/* Background ring */}
+                            <svg width={size} height={size} className="absolute inset-0 -rotate-90">
+                              <circle
+                                cx={size / 2} cy={size / 2} r={radius}
+                                fill="none"
+                                strokeWidth={stroke}
+                                className={isActive ? "stroke-primary/20" : "stroke-muted-foreground/10"}
+                                strokeLinecap="round"
+                              />
+                              {/* Active arc */}
+                              <circle
+                                cx={size / 2} cy={size / 2} r={radius}
+                                fill="none"
+                                strokeWidth={stroke}
+                                className={isActive ? "stroke-primary" : "stroke-muted-foreground/20"}
+                                strokeLinecap="round"
+                                strokeDasharray={circumference}
+                                strokeDashoffset={dashOffset}
+                                style={{ transition: 'stroke-dashoffset 1s linear' }}
+                              />
+                            </svg>
+                            {/* Time text */}
+                            <div className="flex flex-col items-center z-10">
+                              <span className={cn(
+                                "text-xl font-bold tabular-nums tracking-tight font-mono transition-colors",
+                                isActive ? "text-foreground" : "text-muted-foreground/40"
+                              )}>
+                                {String(Math.floor(wfhTaskElapsed / 3600)).padStart(2, "0")}
+                                :{String(Math.floor((wfhTaskElapsed % 3600) / 60)).padStart(2, "0")}
+                              </span>
+                              <span className={cn(
+                                "text-[8px] font-medium uppercase tracking-wider transition-colors",
+                                isActive ? "text-muted-foreground" : "text-muted-foreground/30"
+                              )}>
+                                Elapsed
+                              </span>
+                            </div>
+                          </div>
+                          {wfhTaskRunning && (
+                            <button
+                              onClick={() => setWfhTaskPaused(p => !p)}
+                              className={cn(
+                                "flex items-center gap-1 text-[10px] font-semibold px-2.5 py-1 rounded-full border transition-colors",
+                                wfhTaskPaused
+                                  ? "border-primary text-primary hover:bg-primary/10"
+                                  : "border-border text-muted-foreground hover:text-foreground hover:border-foreground/30"
+                              )}
+                            >
+                              {wfhTaskPaused ? <Play className="w-2.5 h-2.5" /> : <Pause className="w-2.5 h-2.5" />}
+                              {wfhTaskPaused ? "Resume" : "Pause"}
+                            </button>
+                          )}
+                        </div>
+                      );
+                    })()}
                   </div>
                 </div>
 
-                {/* Pill badges */}
-                <div className="flex flex-wrap gap-2 mt-3">
-                  {(deliverLanguage || conciergeLanguage) && (
-                    <span className="inline-flex items-center gap-1.5 text-[11px] font-medium text-foreground border border-border rounded-full px-3 py-1">
-                      <span className="text-sm">🌐</span> {deliverLanguage || conciergeLanguage}
-                    </span>
-                  )}
-                  {isWfhConcierge && (
-                    <span className="inline-flex items-center gap-1.5 text-[11px] font-medium text-foreground border border-border rounded-full px-3 py-1">
-                      <span className="text-sm">🏠</span> WFH Service
-                    </span>
-                  )}
-                  {!isWfhConcierge && selectedVehicle && (
-                    <span className="inline-flex items-center gap-1.5 text-[11px] font-medium text-foreground border border-border rounded-full px-3 py-1">
-                      <img src={vehicleOptions.find(v => v.id === selectedVehicle)?.image} alt="" className="h-3.5 object-contain" />
-                      {selectedVehicle.charAt(0).toUpperCase() + selectedVehicle.slice(1)}
-                    </span>
-                  )}
-                </div>
-              </div>
 
-              {/* ── Status Stepper Card ── */}
-              <div className="mx-6 rounded-2xl border border-border bg-background p-5 mb-3 relative">
-                {/* Current step info */}
-                <div className="mb-3">
-                  <p className="text-xs font-bold uppercase tracking-wider text-foreground">
-                    {deliverySteps[deliveryStep]?.label || "Processing"}
-                  </p>
-                  <p className="text-xs text-muted-foreground mt-0.5">
-                    {deliverySteps[deliveryStep]?.desc || ""}
-                    {deliveryStep === 0 && <><br />• Ready to begin</>}
-                  </p>
-                </div>
-
-                {/* Horizontal stepper dots */}
-                <div className="flex items-center gap-1 mb-1">
-                  {deliverySteps.map((step, i) => {
-                    const isCompleted = i < deliveryStep;
-                    const isCurrent = i === deliveryStep;
-                    return (
-                      <React.Fragment key={step.label}>
-                        <div
-                          className={cn(
-                            "w-5 h-5 rounded-full flex items-center justify-center shrink-0 transition-all",
-                            isCompleted
-                              ? "bg-primary"
-                              : isCurrent
-                              ? "bg-foreground"
-                              : "bg-muted border border-border"
-                          )}
-                        >
-                          {isCompleted && <Check className="w-3 h-3 text-primary-foreground" />}
-                          {isCurrent && <div className="w-1.5 h-1.5 rounded-full bg-background" />}
-                        </div>
-                        {i < deliverySteps.length - 1 && (
-                          <div className={cn("h-0.5 flex-1", isCompleted ? "bg-primary" : "bg-border")} />
-                        )}
-                      </React.Fragment>
-                    );
-                  })}
-                </div>
-                {/* Step labels under first and last */}
-                <div className="flex justify-between text-[10px] text-muted-foreground mb-1">
-                  <span>{deliverySteps[0]?.label.split(" ").pop()}</span>
-                  {conciergeServiceMode && (
-                    <span className="flex items-center gap-1">
-                      <Clock className="w-2.5 h-2.5" />
-                      {conciergeServiceMode === "hourly" ? "Hourly Billing" : "Daily Billing"}
-                    </span>
-                  )}
-                </div>
-
-                {/* WFH Clock — circular arc timer */}
-                {isWfhConcierge && (() => {
-                  const isActive = wfhTaskRunning && !wfhTaskPaused;
-                  const size = 100;
-                  const stroke = 5;
-                  const radius = (size - stroke) / 2;
-                  const circumference = 2 * Math.PI * radius;
-                  const progress = (wfhTaskElapsed % 60) / 60;
-                  const dashOffset = circumference * (1 - progress);
-                  return (
-                    <div className="absolute top-4 right-4 flex flex-col items-center gap-1">
-                      <div className="relative flex items-center justify-center" style={{ width: size, height: size }}>
-                        <svg width={size} height={size} className="absolute inset-0 -rotate-90">
-                          <circle cx={size / 2} cy={size / 2} r={radius} fill="none" strokeWidth={stroke} className={isActive ? "stroke-primary/20" : "stroke-muted-foreground/10"} strokeLinecap="round" />
-                          <circle cx={size / 2} cy={size / 2} r={radius} fill="none" strokeWidth={stroke} className={isActive ? "stroke-primary" : "stroke-muted-foreground/20"} strokeLinecap="round" strokeDasharray={circumference} strokeDashoffset={dashOffset} style={{ transition: 'stroke-dashoffset 1s linear' }} />
-                        </svg>
-                        <div className="flex flex-col items-center z-10">
-                          <span className={cn("text-xl font-bold tabular-nums tracking-tight font-mono transition-colors", isActive ? "text-foreground" : "text-muted-foreground/40")}>
-                            {String(Math.floor(wfhTaskElapsed / 3600)).padStart(2, "0")}:{String(Math.floor((wfhTaskElapsed % 3600) / 60)).padStart(2, "0")}
-                          </span>
-                          <span className={cn("text-[8px] font-medium uppercase tracking-wider transition-colors", isActive ? "text-muted-foreground" : "text-muted-foreground/30")}>Elapsed</span>
-                        </div>
-                      </div>
-                      {wfhTaskRunning && (
-                        <button
-                          onClick={() => setWfhTaskPaused(p => !p)}
-                          className={cn("flex items-center gap-1 text-[10px] font-semibold px-2.5 py-1 rounded-full border transition-colors", wfhTaskPaused ? "border-primary text-primary hover:bg-primary/10" : "border-border text-muted-foreground hover:text-foreground hover:border-foreground/30")}
-                        >
-                          {wfhTaskPaused ? <Play className="w-2.5 h-2.5" /> : <Pause className="w-2.5 h-2.5" />}
-                          {wfhTaskPaused ? "Resume" : "Pause"}
-                        </button>
-                      )}
+                {/* Trip Summary — hidden for WFH concierge */}
+                {!isWfhConcierge && (
+                <div className="space-y-3 pt-2">
+                  <div className="flex items-start gap-3">
+                    <div className="flex-shrink-0 w-2.5 h-2.5 rounded-full bg-green-500 mt-[5px]" />
+                    <div className="min-w-0">
+                      {pickupPlaceName && <p className="text-sm font-semibold text-foreground leading-tight">{pickupPlaceName}</p>}
+                      <p className="text-xs text-muted-foreground truncate">{pickup}</p>
                     </div>
-                  );
-                })()}
+                  </div>
+                  {deliverMultiStop && deliverExtraStops.length > 0 && deliverExtraStops.filter(s => s.address).map((stop, i) => (
+                    <div key={i} className="flex items-start gap-3">
+                      <div className="flex-shrink-0 w-2.5 h-2.5 rounded-sm bg-primary/60 mt-[5px]" />
+                      <div className="min-w-0">
+                        {stop.placeName && <p className="text-sm font-semibold text-foreground leading-tight">{stop.placeName}</p>}
+                        <p className="text-xs text-muted-foreground truncate">{stop.address}</p>
+                      </div>
+                    </div>
+                  ))}
+                  <div className="flex items-start gap-3">
+                    <div className="flex-shrink-0 w-2.5 h-2.5 bg-red-500 mt-[5px]" />
+                    <div className="min-w-0">
+                      {dropoffPlaceName && <p className="text-sm font-semibold text-foreground leading-tight">{dropoffPlaceName}</p>}
+                      <p className="text-xs text-muted-foreground truncate">{dropoff}</p>
+                    </div>
+                  </div>
+                </div>
+                )}
               </div>
 
-              {/* ── Order Details Card (grid layout) ── */}
-              <div className="mx-6 rounded-2xl border border-border bg-background p-4 mb-3">
+              {/* Order Details */}
+              <div className="rounded-xl border border-border bg-background p-4 mb-4">
                 <button
                   onClick={() => setShowOrderDetails(p => !p)}
                   className="flex items-center justify-between w-full"
                 >
                   <p className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Order Details</p>
-                  <span className="text-[11px] font-medium text-muted-foreground border border-border rounded-full px-3 py-0.5 flex items-center gap-1">
-                    View All <ChevronDown className={cn("w-3 h-3 transition-transform", showOrderDetails && "rotate-180")} />
-                  </span>
+                  <ChevronDown className={cn("w-3.5 h-3.5 text-muted-foreground transition-transform", showOrderDetails && "rotate-180")} />
                 </button>
-                {showOrderDetails && (
-                  <div className="mt-3 space-y-3">
-                    {/* Grid rows */}
-                    <div className="grid grid-cols-2 gap-3">
-                      <div>
-                        <p className="text-[10px] text-muted-foreground uppercase tracking-wider">Service</p>
-                        <p className="text-sm font-semibold text-foreground capitalize">{selectedService}</p>
-                      </div>
-                      {selectedService === "concierge" && conciergeCategory && (
-                        <div>
-                          <p className="text-[10px] text-muted-foreground uppercase tracking-wider">Category</p>
-                          <p className="text-sm font-semibold text-foreground capitalize">{conciergeCategories.find(c => c.id === conciergeCategory)?.label || conciergeCategory?.replace(/-/g, " ")}</p>
-                        </div>
-                      )}
-                    </div>
-                    <div className="grid grid-cols-2 gap-3">
-                      {conciergeServiceMode && (
-                        <div>
-                          <p className="text-[10px] text-muted-foreground uppercase tracking-wider">Rate</p>
-                          <p className="text-sm font-semibold text-foreground capitalize">{conciergeServiceMode}</p>
-                        </div>
-                      )}
-                      {isWfhConcierge && (
-                        <div>
-                          <p className="text-[10px] text-muted-foreground uppercase tracking-wider">Remote</p>
-                          <p className="text-sm font-semibold text-foreground">Yes (WFH)</p>
-                        </div>
-                      )}
-                      {selectedService === "deliver" && selectedVehicle && (
-                        <div>
-                          <p className="text-[10px] text-muted-foreground uppercase tracking-wider">Vehicle</p>
-                          <p className="text-sm font-semibold text-foreground capitalize">{selectedVehicle}</p>
-                        </div>
-                      )}
-                    </div>
-                    {/* Payment row */}
-                    <div className="border-t border-border pt-2 flex items-center justify-between">
-                      <p className="text-[10px] text-muted-foreground uppercase tracking-wider">Payment</p>
-                      <div className="flex items-center gap-2">
-                        <img src={activePayment.icon} alt="" className="h-5" />
-                        <span className="text-sm text-foreground">•••• {activePayment.last4}</span>
-                      </div>
-                    </div>
-                    {/* Scheduled */}
-                    {selectedDate && (
-                      <div className="flex justify-between text-sm">
-                        <span className="text-muted-foreground">Scheduled</span>
-                        <span className="text-foreground">{selectedDate.toLocaleDateString()} at {selectedTime}</span>
-                      </div>
-                    )}
-                    {/* Order value */}
-                    {(deliverOrderValue || conciergeOrderValue) && (
-                      <div className="flex justify-between text-sm">
-                        <span className="text-muted-foreground">Order value</span>
-                        <span className="text-foreground">${deliverOrderValue || conciergeOrderValue}</span>
-                      </div>
-                    )}
-                    {/* Heavy items */}
-                    {over70lbs && (
-                      <div className="flex justify-between text-sm">
-                        <span className="text-muted-foreground">Heavy items</span>
-                        <span className="text-foreground">{heavyWeight} lbs / {heavyItems} {parseInt(heavyItems) === 1 ? "item" : "items"}</span>
-                      </div>
-                    )}
-                    {twoCourials && (
-                      <div className="flex justify-between text-sm">
-                        <span className="text-muted-foreground">2 Courials</span>
-                        <span className="text-foreground">Yes</span>
-                      </div>
-                    )}
-                    {hasStairs && (
-                      <div className="flex justify-between text-sm">
-                        <span className="text-muted-foreground">Stairs</span>
-                        <span className="text-foreground">Yes</span>
-                      </div>
-                    )}
-                    {/* Protection */}
-                    {(Number(deliverOrderValue) > 100 || Number(conciergeOrderValue) > 100) && (
-                      <div className="flex justify-between text-sm">
-                        <span className="text-muted-foreground">Protection</span>
-                        <span className="text-foreground">
-                          {declineProtection ? "Declined" : (() => {
-                            const val = Number(deliverOrderValue) || Number(conciergeOrderValue);
-                            if (val > 200) return "High-value (>$200)";
-                            if (val > 100) return "5% fee ($101–$200)";
-                            return "Included ($100)";
-                          })()}
-                        </span>
-                      </div>
-                    )}
-                    {/* Expenses */}
-                    {deliverHasExpenses && deliverExpenseItems.some(e => e.description.trim()) && (
-                      <>
-                        <div className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Expenses</div>
-                        {deliverExpenseItems.filter(e => e.description.trim()).map((e, i) => (
-                          <div key={i} className="flex justify-between pl-3 text-xs">
-                            <span className="text-muted-foreground">{e.description}</span>
-                            <span className="text-foreground">${e.amount}</span>
-                          </div>
-                        ))}
-                      </>
-                    )}
-                    {conciergeHasExpenses && conciergeExpenseItems.some(e => e.description.trim()) && (
-                      <>
-                        <div className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Expenses</div>
-                        {conciergeExpenseItems.filter(e => e.description.trim()).map((e, i) => (
-                          <div key={i} className="flex justify-between pl-3 text-xs">
-                            <span className="text-muted-foreground">{e.description}</span>
-                            <span className="text-foreground">${e.amount}</span>
-                          </div>
-                        ))}
-                      </>
-                    )}
-                    {/* Notes */}
-                    {notes.trim() && (
-                      <div className="border-t border-border pt-2">
-                        <p className="text-[10px] text-muted-foreground uppercase tracking-wider mb-0.5">Notes</p>
-                        <p className="text-xs text-foreground whitespace-pre-wrap">{notes}</p>
-                      </div>
-                    )}
-                    {selectedService === "concierge" && conciergeDescription.trim() && (
-                      <div className="border-t border-border pt-2">
-                        <p className="text-[10px] text-muted-foreground uppercase tracking-wider mb-0.5">Task Description</p>
-                        <p className="text-xs text-foreground whitespace-pre-wrap">{conciergeDescription}</p>
-                      </div>
-                    )}
+                {showOrderDetails && <div className="space-y-1.5 text-sm mt-2">
+                  {/* Service */}
+                  <div className="flex justify-between">
+                    <span className="text-muted-foreground">Service</span>
+                    <span className="text-foreground capitalize">{selectedService}</span>
                   </div>
-                )}
+                  {/* Vehicle */}
+                  {selectedService === "deliver" && selectedVehicle && (
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Vehicle</span>
+                      <span className="text-foreground capitalize">{selectedVehicle}</span>
+                    </div>
+                  )}
+                  {selectedService === "concierge" && conciergeVehicle && (
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Vehicle</span>
+                      <span className="text-foreground capitalize">{conciergeVehicle === "none" ? "No vehicle" : conciergeVehicle}</span>
+                    </div>
+                  )}
+                  {/* Concierge category */}
+                  {selectedService === "concierge" && conciergeCategory && (
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Category</span>
+                      <span className="text-foreground capitalize">{conciergeCategory.replace(/-/g, " ")}</span>
+                    </div>
+                  )}
+                  {selectedService === "concierge" && conciergeSubCategory && (
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Sub-Category</span>
+                      <span className="text-foreground capitalize">{conciergeSubCategory.replace(/-/g, " ")}</span>
+                    </div>
+                  )}
+                  {/* Service mode */}
+                  {selectedService === "concierge" && conciergeServiceMode && (
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Rate</span>
+                      <span className="text-foreground capitalize">{conciergeServiceMode}</span>
+                    </div>
+                  )}
+                  {/* Remote/WFH */}
+                  {selectedService === "concierge" && conciergeIsRemote && (
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Remote</span>
+                      <span className="text-foreground">Yes (WFH)</span>
+                    </div>
+                  )}
+                  {/* Scheduled date/time */}
+                  {selectedDate && (
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Scheduled</span>
+                      <span className="text-foreground">{selectedDate.toLocaleDateString()} at {selectedTime}</span>
+                    </div>
+                  )}
+                  {/* Order value */}
+                  {(deliverOrderValue || conciergeOrderValue) && (
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Order value</span>
+                      <span className="text-foreground">${deliverOrderValue || conciergeOrderValue}</span>
+                    </div>
+                  )}
+                  {/* Heavy items */}
+                  {over70lbs && (
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Heavy items</span>
+                      <span className="text-foreground">{heavyWeight} lbs / {heavyItems} {parseInt(heavyItems) === 1 ? "item" : "items"}</span>
+                    </div>
+                  )}
+                  {/* 2 Courials */}
+                  {twoCourials && (
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">2 Courials</span>
+                      <span className="text-foreground">Yes</span>
+                    </div>
+                  )}
+                  {/* Stairs */}
+                  {hasStairs && (
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Stairs</span>
+                      <span className="text-foreground">Yes</span>
+                    </div>
+                  )}
+                  {/* Language */}
+                  {(deliverLanguage || conciergeLanguage) && (
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Language</span>
+                      <span className="text-foreground">{deliverLanguage || conciergeLanguage}</span>
+                    </div>
+                  )}
+                  {/* Protection / Insurance */}
+                  {(Number(deliverOrderValue) > 100 || Number(conciergeOrderValue) > 100) && (
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Protection</span>
+                      <span className="text-foreground">
+                        {declineProtection ? "Declined" : (() => {
+                          const val = Number(deliverOrderValue) || Number(conciergeOrderValue);
+                          if (val > 200) return "High-value (>$200)";
+                          if (val > 100) return "5% fee ($101–$200)";
+                          return "Included ($100)";
+                        })()}
+                      </span>
+                    </div>
+                  )}
+                  {/* Expenses */}
+                  {deliverHasExpenses && deliverExpenseItems.some(e => e.description.trim()) && (
+                    <>
+                       <div className="flex justify-between">
+                        <span className="text-muted-foreground">Expenses</span>
+                      </div>
+                      {deliverExpenseItems.filter(e => e.description.trim()).map((e, i) => (
+                        <div key={i} className="flex justify-between pl-3">
+                          <span className="text-muted-foreground text-xs">{e.description}</span>
+                          <span className="text-foreground text-xs">${e.amount}</span>
+                        </div>
+                      ))}
+                    </>
+                  )}
+                  {conciergeHasExpenses && conciergeExpenseItems.some(e => e.description.trim()) && (
+                    <>
+                       <div className="flex justify-between">
+                        <span className="text-muted-foreground">Expenses</span>
+                      </div>
+                      {conciergeExpenseItems.filter(e => e.description.trim()).map((e, i) => (
+                        <div key={i} className="flex justify-between pl-3">
+                          <span className="text-muted-foreground text-xs">{e.description}</span>
+                          <span className="text-foreground text-xs">${e.amount}</span>
+                        </div>
+                      ))}
+                    </>
+                  )}
+                  {/* Notes */}
+                  {notes.trim() && (
+                    <div className="border-t border-border pt-1.5 mt-1">
+                      <p className="text-xs text-muted-foreground mb-0.5">Notes</p>
+                      <p className="text-xs text-foreground whitespace-pre-wrap">{notes}</p>
+                    </div>
+                  )}
+                  {/* Concierge description */}
+                  {selectedService === "concierge" && conciergeDescription.trim() && (
+                    <div className="border-t border-border pt-1.5 mt-1">
+                      <p className="text-xs text-muted-foreground mb-0.5">Task Description</p>
+                      <p className="text-xs text-foreground whitespace-pre-wrap">{conciergeDescription}</p>
+                    </div>
+                  )}
+                  {/* Payment */}
+                  <div className="border-t border-border pt-1.5 mt-1 flex justify-between">
+                    <span className="text-muted-foreground">Payment</span>
+                    <span className="text-foreground">{activePayment.label}</span>
+                  </div>
+                </div>}
               </div>
 
-              {/* ── Trip Summary (non-WFH) ── */}
-              {!isWfhConcierge && (
-                <div className="mx-6 rounded-2xl border border-border bg-background p-4 mb-3">
-                  <div className="space-y-3">
-                    <div className="flex items-start gap-3">
-                      <div className="flex-shrink-0 w-2.5 h-2.5 rounded-full bg-green-500 mt-[5px]" />
-                      <div className="min-w-0">
-                        {pickupPlaceName && <p className="text-sm font-semibold text-foreground leading-tight">{pickupPlaceName}</p>}
-                        <p className="text-xs text-muted-foreground truncate">{pickup}</p>
-                      </div>
-                    </div>
-                    {deliverMultiStop && deliverExtraStops.length > 0 && deliverExtraStops.filter(s => s.address).map((stop, i) => (
-                      <div key={i} className="flex items-start gap-3">
-                        <div className="flex-shrink-0 w-2.5 h-2.5 rounded-sm bg-primary/60 mt-[5px]" />
-                        <div className="min-w-0">
-                          {stop.placeName && <p className="text-sm font-semibold text-foreground leading-tight">{stop.placeName}</p>}
-                          <p className="text-xs text-muted-foreground truncate">{stop.address}</p>
-                        </div>
-                      </div>
-                    ))}
-                    <div className="flex items-start gap-3">
-                      <div className="flex-shrink-0 w-2.5 h-2.5 bg-red-500 mt-[5px]" />
-                      <div className="min-w-0">
-                        {dropoffPlaceName && <p className="text-sm font-semibold text-foreground leading-tight">{dropoffPlaceName}</p>}
-                        <p className="text-xs text-muted-foreground truncate">{dropoff}</p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              )}
-
-              {/* ── Price / Receipt ── */}
+              {/* Price / Receipt */}
               {deliveryStep >= (isWfhConcierge ? 3 : 5) ? (
-                <div className="mx-6 rounded-2xl border border-border bg-muted/50 p-4 mb-3">
+                <div className="rounded-xl border border-border bg-muted/50 p-4 mb-4">
                   <p className="text-xs font-bold uppercase tracking-wider text-muted-foreground mb-2">Receipt</p>
                   <div className="space-y-1.5 text-sm">
                     <div className="flex justify-between">
@@ -3442,20 +3462,42 @@ const Book = () => {
                   </div>
                 </div>
               ) : (
-                <div className="mx-6 flex items-center justify-between px-1 mb-3">
+                <div className="flex items-center justify-between px-1 mb-4">
                   <span className="text-sm text-muted-foreground">Estimated fare</span>
                   <span className="text-sm font-bold text-foreground">$21.59</span>
                 </div>
               )}
 
-              {/* ── Action Button (orange, rounded) ── */}
-              <div className="mx-6 space-y-2 mb-3">
+              {/* Contact & Chat */}
+              <div className="flex gap-2 mb-3">
+                <button
+                  onClick={() => setShowContactSupport(true)}
+                  className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl border border-green-600 bg-green-600 hover:bg-green-700 transition-colors text-sm font-semibold text-white"
+                >
+                  <Headset className="w-4 h-4" />
+                  Contact Support
+                </button>
+                <button
+                  onClick={() => setShowChat(prev => !prev)}
+                  className={cn(
+                    "flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl border transition-colors text-sm font-semibold",
+                    showChat
+                      ? "border-primary bg-primary text-primary-foreground"
+                      : "border-primary bg-primary hover:bg-primary/90 text-primary-foreground"
+                  )}
+                >
+                  <MessageCircle className="w-4 h-4" />
+                  Message Courial
+                </button>
+              </div>
+
+              {/* Action Buttons */}
+              <div className="space-y-2 mb-3">
                 {deliveryStep < (isWfhConcierge ? 3 : 5) && (
                   <button
                     onClick={() => setDeliveryStep((s) => Math.min(s + 1, isWfhConcierge ? 3 : 5))}
-                    className="w-full py-3.5 rounded-full text-sm font-bold text-primary-foreground bg-primary hover:bg-primary/90 transition-colors flex items-center justify-center gap-2 shadow-sm"
+                    className="w-full py-3 rounded-full text-sm font-semibold text-background bg-foreground hover:bg-foreground/90 transition-colors"
                   >
-                    <Play className="w-4 h-4 fill-current" />
                     {isWfhConcierge
                       ? ["Begin Task", "Complete Task", "Finish"][deliveryStep]
                       : selectedService === "concierge"
@@ -3465,57 +3507,26 @@ const Book = () => {
                       : ["Arrive at Pickup", "Pick Up Package", "Arrive at Drop-off", "Drop Off Package", "Complete Order"][deliveryStep]}
                   </button>
                 )}
-              </div>
-
-              {/* ── Communication buttons ── */}
-              <div className="mx-6 flex gap-2 mb-3">
-                <button
-                  onClick={() => setShowChat(prev => !prev)}
-                  className={cn(
-                    "flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl border transition-colors text-[13px] font-semibold",
-                    showChat
-                      ? "border-foreground bg-foreground text-background"
-                      : "border-border bg-background text-foreground hover:bg-muted"
-                  )}
-                >
-                  <MessageCircle className="w-3.5 h-3.5" />
-                  Message Courial
-                </button>
-                <button
-                  onClick={() => setShowContactSupport(true)}
-                  className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl border border-border bg-background hover:bg-muted transition-colors text-[13px] font-semibold text-foreground"
-                >
-                  <Headset className="w-3.5 h-3.5" />
-                  Contact Supp.
-                </button>
-              </div>
-
-              {/* Done button */}
-              {deliveryStep >= (isWfhConcierge ? 3 : 5) && (
-                <div className="mx-6 mb-3">
+                {deliveryStep < (isWfhConcierge ? 3 : 5) && (
                   <button
                     onClick={handleCancelBooking}
-                    className="w-full py-3 rounded-full text-sm font-semibold text-background bg-foreground hover:bg-foreground/90 transition-colors"
+                    className="w-full py-3 rounded-full text-sm font-semibold text-muted-foreground bg-background border border-foreground/20 hover:bg-muted/50 transition-colors"
                   >
-                    Done
-                  </button>
-                </div>
-              )}
-
-              {/* Cancel button */}
-              {deliveryStep < (isWfhConcierge ? 3 : 5) && (
-                <div className="mx-6 mb-4">
-                  <button
-                    onClick={handleCancelBooking}
-                    className="w-full flex items-center justify-center gap-1.5 py-2 text-sm font-semibold text-red-500 hover:text-red-600 transition-colors"
-                  >
-                    <X className="w-3.5 h-3.5" />
                     Cancel {selectedService === "concierge" ? "Concierge" : selectedService === "valet" ? "Valet" : "Delivery"}
                   </button>
-                </div>
+                )}
+              </div>
+
+              {deliveryStep >= (isWfhConcierge ? 3 : 5) && (
+                <button
+                  onClick={handleCancelBooking}
+                  className="w-full py-3 rounded-full text-sm font-semibold text-background bg-foreground hover:bg-foreground/90 transition-colors mb-3"
+                >
+                  Done
+                </button>
               )}
 
-              {/* ── Chat Box ── */}
+              {/* Chat Box */}
               <AnimatePresence>
                 {showChat && (
                   <motion.div
@@ -3523,11 +3534,11 @@ const Book = () => {
                     animate={{ opacity: 1, height: "auto" }}
                     exit={{ opacity: 0, height: 0 }}
                     transition={{ duration: 0.25 }}
-                    className="overflow-hidden mx-6 mb-4"
+                    className="overflow-hidden mb-3"
                   >
                     <div className="rounded-xl border border-border bg-background">
                       <div className="p-3 border-b border-border">
-                        <p className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Chat with {(acceptedCourial?.name || "Marcus").split(" ")[0]}</p>
+                        <p className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Chat with Marcus</p>
                       </div>
                       <div className="p-3 space-y-2.5 max-h-[200px] overflow-y-auto">
                         {chatMessages.map((msg, i) => (
@@ -3571,6 +3582,7 @@ const Book = () => {
                 )}
               </AnimatePresence>
 
+              
             </motion.div>
           </div>
         )}
