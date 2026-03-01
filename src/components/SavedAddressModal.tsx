@@ -133,21 +133,26 @@ export const SavedAddressModal = ({
 
   useEffect(() => {
     if (open) {
-      refreshAddresses();
-      if (isHomeWork) {
-        const ex = getSavedAddresses().find((a) => a.type === addressType);
-        setName(ex?.name || "");
-        setAddress(ex?.address || "");
-        setCoords(ex ? { lat: ex.lat, lng: ex.lng } : null);
-      } else {
-        resetForm();
-      }
+      loadSavedAddressesFromDB().then((loaded) => {
+        setAddresses(loaded);
+        if (isHomeWork) {
+          const ex = loaded.find((a) => a.type === addressType);
+          setName(ex?.name || "");
+          setAddress(ex?.address || "");
+          setCoords(ex ? { lat: ex.lat, lng: ex.lng } : null);
+        } else {
+          resetForm();
+        }
+      });
       setReplacingId(null);
       setConfirmRemoveId(null);
     }
   }, [open, addressType]);
 
-  const refreshAddresses = () => setAddresses(getSavedAddresses());
+  const refreshAddresses = async () => {
+    const loaded = await loadSavedAddressesFromDB();
+    setAddresses(loaded);
+  };
   const resetForm = () => { setName(""); setAddress(""); setCoords(null); };
 
   const handlePlaceSelect = (place: any) => {
