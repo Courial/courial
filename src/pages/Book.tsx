@@ -3338,7 +3338,7 @@ const Book = () => {
                     </div>
                     {/* Row: Order Value & Protection */}
                     {(deliverOrderValue || conciergeOrderValue) && (
-                      <div className="grid grid-cols-2 gap-4 py-2.5">
+                      <div className="grid grid-cols-3 gap-4 py-2.5">
                         <div>
                           <p className="text-[11px] text-muted-foreground mb-0.5">Order Value</p>
                           <p className="text-sm font-medium text-foreground">${deliverOrderValue || conciergeOrderValue}</p>
@@ -3399,27 +3399,27 @@ const Book = () => {
                     {/* Expenses */}
                     {deliverHasExpenses && deliverExpenseItems.some(e => e.description.trim()) && (
                       <div className="py-2.5">
-                        <p className="text-[11px] text-muted-foreground mb-1">Expenses</p>
+                        <div className="flex items-center justify-between mb-1">
+                          <p className="text-[11px] text-muted-foreground">Expenses</p>
+                          <span className="text-xs font-medium text-foreground">
+                            ${deliverExpenseItems.filter(e => e.description.trim()).reduce((sum, e) => sum + Number(e.amount), 0).toLocaleString()}{deliverAllowOverage && Number(deliverOverageLimit) > 0 ? ` ($${deliverOverageLimit})` : ""}
+                          </span>
+                        </div>
                         {deliverExpenseItems.filter(e => e.description.trim()).map((e, i) => (
-                          <div key={i} className="flex justify-between">
-                            <span className="text-xs text-muted-foreground">{e.description}</span>
-                            <span className="text-xs font-medium text-foreground">
-                              ${e.amount}{deliverAllowOverage && Number(deliverOverageLimit) > 0 ? ` ($${deliverOverageLimit})` : ""}
-                            </span>
-                          </div>
+                          <p key={i} className="text-xs text-muted-foreground leading-relaxed">{e.description}</p>
                         ))}
                       </div>
                     )}
                     {conciergeHasExpenses && conciergeExpenseItems.some(e => e.description.trim()) && (
                       <div className="py-2.5">
-                        <p className="text-[11px] text-muted-foreground mb-1">Expenses</p>
+                        <div className="flex items-center justify-between mb-1">
+                          <p className="text-[11px] text-muted-foreground">Expenses</p>
+                          <span className="text-xs font-medium text-foreground">
+                            ${conciergeExpenseItems.filter(e => e.description.trim()).reduce((sum, e) => sum + Number(e.amount), 0).toLocaleString()}{conciergeAllowOverage && Number(conciergeOverageLimit) > 0 ? ` ($${conciergeOverageLimit})` : ""}
+                          </span>
+                        </div>
                         {conciergeExpenseItems.filter(e => e.description.trim()).map((e, i) => (
-                          <div key={i} className="flex justify-between">
-                            <span className="text-xs text-muted-foreground">{e.description}</span>
-                            <span className="text-xs font-medium text-foreground">
-                              ${e.amount}{conciergeAllowOverage && Number(conciergeOverageLimit) > 0 ? ` ($${conciergeOverageLimit})` : ""}
-                            </span>
-                          </div>
+                          <p key={i} className="text-xs text-muted-foreground leading-relaxed">{e.description}</p>
                         ))}
                       </div>
                     )}
