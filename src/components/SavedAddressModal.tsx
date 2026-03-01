@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { motion } from "framer-motion";
 import { MapPin, Minus, RefreshCw } from "lucide-react";
 import AddressAutocomplete from "@/components/booking/AddressAutocomplete";
+import { supabase } from "@/integrations/supabase/client";
 
 const SAVED_ADDRESSES_KEY = "courial_saved_addresses";
 
@@ -17,7 +18,8 @@ export interface SavedAddress {
   lng: number;
 }
 
-export function getSavedAddresses(): SavedAddress[] {
+/* ── Local cache helpers (instant reads) ── */
+function getLocalAddresses(): SavedAddress[] {
   try {
     return JSON.parse(localStorage.getItem(SAVED_ADDRESSES_KEY) || "[]");
   } catch {
@@ -25,24 +27,84 @@ export function getSavedAddresses(): SavedAddress[] {
   }
 }
 
-export function saveSavedAddress(entry: SavedAddress) {
-  const all = getSavedAddresses();
+function setLocalAddresses(addresses: SavedAddress[]) {
+  localStorage.setItem(SAVED_ADDRESSES_KEY, JSON.stringify(addresses));
+}
+
+/* ── Public API: DB-first with localStorage cache ── */
+
+export function getSavedAddresses(): SavedAddress[] {
+  return getLocalAddresses();
+}
+
+export async function loadSavedAddressesFromDB(): Promise<SavedAddress[]> {
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return getLocalAddresses();
+
+  const { data, error } = await supabase
+    .from("saved_addresses")
+    .select("id, type, name, address, lat, lng")
+    .eq("user_id", user.id);
+
+  if (error || !data) return getLocalAddresses();
+
+  const addresses: SavedAddress[] = data.map((r: any) => ({
+    id: r.id,
+    type: r.type,
+    name: r.name,
+    address: r.address,
+    lat: r.lat,
+    lng: r.lng,
+  }));
+  setLocalAddresses(addresses);
+  return addresses;
+}
+
+export async function saveSavedAddress(entry: SavedAddress) {
+  const { data: { user } } = await supabase.auth.getUser();
+
+  // Update local cache
+  const all = getLocalAddresses();
   if (entry.type === "home" || entry.type === "work") {
-    // Replace existing home/work
     const filtered = all.filter((a) => a.type !== entry.type);
-    filtered.push({ ...entry, id: entry.type });
-    localStorage.setItem(SAVED_ADDRESSES_KEY, JSON.stringify(filtered));
+    const newEntry = { ...entry, id: entry.type };
+    filtered.push(newEntry);
+    setLocalAddresses(filtered);
   } else {
-    // Add as new favorite with unique id
     const id = entry.id || `fav_${Date.now()}`;
     all.push({ ...entry, id });
-    localStorage.setItem(SAVED_ADDRESSES_KEY, JSON.stringify(all));
+    setLocalAddresses(all);
+  }
+
+  // Persist to DB if authenticated
+  if (user) {
+    if (entry.type === "home" || entry.type === "work") {
+      // Delete existing, then insert
+      await supabase.from("saved_addresses").delete().eq("user_id", user.id).eq("type", entry.type);
+    }
+    await supabase.from("saved_addresses").insert({
+      user_id: user.id,
+      type: entry.type,
+      name: entry.name || entry.type,
+      address: entry.address,
+      lat: entry.lat,
+      lng: entry.lng,
+    });
   }
 }
 
-export function removeSavedAddress(id: string) {
-  const all = getSavedAddresses().filter((a) => (a.id || a.type) !== id);
-  localStorage.setItem(SAVED_ADDRESSES_KEY, JSON.stringify(all));
+export async function removeSavedAddress(id: string) {
+  const all = getLocalAddresses().filter((a) => (a.id || a.type) !== id);
+  setLocalAddresses(all);
+
+  const { data: { user } } = await supabase.auth.getUser();
+  if (user) {
+    // Try by id first, then by type (for home/work)
+    const { error } = await supabase.from("saved_addresses").delete().eq("id", id).eq("user_id", user.id);
+    if (error) {
+      await supabase.from("saved_addresses").delete().eq("type", id).eq("user_id", user.id);
+    }
+  }
 }
 
 interface SavedAddressModalProps {
@@ -71,21 +133,26 @@ export const SavedAddressModal = ({
 
   useEffect(() => {
     if (open) {
-      refreshAddresses();
-      if (isHomeWork) {
-        const ex = getSavedAddresses().find((a) => a.type === addressType);
-        setName(ex?.name || "");
-        setAddress(ex?.address || "");
-        setCoords(ex ? { lat: ex.lat, lng: ex.lng } : null);
-      } else {
-        resetForm();
-      }
+      loadSavedAddressesFromDB().then((loaded) => {
+        setAddresses(loaded);
+        if (isHomeWork) {
+          const ex = loaded.find((a) => a.type === addressType);
+          setName(ex?.name || "");
+          setAddress(ex?.address || "");
+          setCoords(ex ? { lat: ex.lat, lng: ex.lng } : null);
+        } else {
+          resetForm();
+        }
+      });
       setReplacingId(null);
       setConfirmRemoveId(null);
     }
   }, [open, addressType]);
 
-  const refreshAddresses = () => setAddresses(getSavedAddresses());
+  const refreshAddresses = async () => {
+    const loaded = await loadSavedAddressesFromDB();
+    setAddresses(loaded);
+  };
   const resetForm = () => { setName(""); setAddress(""); setCoords(null); };
 
   const handlePlaceSelect = (place: any) => {
@@ -103,7 +170,7 @@ export const SavedAddressModal = ({
 
   const canSave = address.trim() && coords;
 
-  const handleSave = () => {
+  const handleSave = async () => {
     if (!canSave) return;
     const entry: SavedAddress = {
       type: addressType,
@@ -114,13 +181,12 @@ export const SavedAddressModal = ({
     };
 
     if (replacingId && isHomeWork) {
-      // Replace home/work
-      removeSavedAddress(replacingId);
+      await removeSavedAddress(replacingId);
     }
 
-    saveSavedAddress(entry);
+    await saveSavedAddress(entry);
     onSave?.();
-    refreshAddresses();
+    await refreshAddresses();
     if (isHomeWork) {
       onOpenChange(false);
     } else {
@@ -129,12 +195,11 @@ export const SavedAddressModal = ({
     setReplacingId(null);
   };
 
-  const handleRemove = (id: string) => {
-    removeSavedAddress(id);
-    refreshAddresses();
+  const handleRemove = async (id: string) => {
+    await removeSavedAddress(id);
+    await refreshAddresses();
     onSave?.();
     setConfirmRemoveId(null);
-    // If removing home/work, close modal
     if (isHomeWork) onOpenChange(false);
   };
 
@@ -376,9 +441,9 @@ const AddFavoriteModal = ({
 
   const canSave = address.trim() && coords;
 
-  const handleAdd = () => {
+  const handleAdd = async () => {
     if (!canSave) return;
-    saveSavedAddress({
+    await saveSavedAddress({
       type: "favorite",
       name: name.trim() || "Favorite",
       address: address.trim(),

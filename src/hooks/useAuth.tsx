@@ -1,6 +1,7 @@
 import { createContext, useContext, useState, useEffect, useRef } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import type { User } from "@supabase/supabase-js";
+import { loadSavedAddressesFromDB } from "@/components/SavedAddressModal";
 import React from "react";
 
 const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
@@ -87,9 +88,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setUser(session?.user ?? null);
 
       if (session?.user) {
-        // Use setTimeout to avoid Supabase client deadlock
         checkAdmin(session.user.id);
         syncSocialLogin(session, event);
+        // Load saved addresses from DB into localStorage cache
+        loadSavedAddressesFromDB().catch(() => {});
       } else {
         setIsAdmin(false);
       }
