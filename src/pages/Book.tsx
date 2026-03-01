@@ -3496,14 +3496,7 @@ const Book = () => {
                         <span className="text-sm font-bold text-foreground">$21.59</span>
                       </div>
                     )}
-                    {/* Payment */}
-                    <div className="py-2.5">
-                      <p className="text-[11px] text-muted-foreground mb-1">Payment</p>
-                      <div className="flex items-center gap-2">
-                        <img src={activePayment.icon} alt={activePayment.label} className="w-10 h-auto" />
-                        <span className="text-sm font-semibold text-foreground">••••&nbsp;{activePayment.last4}</span>
-                      </div>
-                    </div>
+                    
                   </div>
                 )}
               </div>
