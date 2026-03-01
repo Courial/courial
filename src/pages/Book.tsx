@@ -36,6 +36,7 @@ import AddressAutocomplete from "@/components/booking/AddressAutocomplete";
 import BookingMap from "@/components/booking/BookingMap";
 import chauffeurImage from "@/assets/chauffeur-service.jpg";
 import deliverBox from "@/assets/deliver-box.png";
+import conciergeBox from "@/assets/concierge-box.png";
 import conciergeIcon from "@/assets/concierge-icon.png";
 import deliverServiceIcon from "@/assets/service-icons/deliver.png";
 import conciergeServiceIcon from "@/assets/service-icons/concierge.png";
@@ -1072,6 +1073,9 @@ const Book = () => {
                 <div className="flex items-center gap-3">
                   {selectedService === "deliver" && (
                     <img src={deliverBox} alt="Delivery box" className="w-10 h-10" />
+                  )}
+                  {selectedService === "concierge" && (
+                    <img src={conciergeBox} alt="Concierge" className="w-10 h-10" />
                   )}
                   <h1 className="text-3xl font-bold text-foreground">
                     {serviceCards.find(s => s.id === selectedService)!.label}
