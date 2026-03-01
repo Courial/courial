@@ -3311,124 +3311,157 @@ const Book = () => {
                   <p className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Order Details</p>
                   <ChevronDown className={cn("w-3.5 h-3.5 text-muted-foreground transition-transform", showOrderDetails && "rotate-180")} />
                 </button>
-                {showOrderDetails && <div className="space-y-1.5 text-sm mt-2">
-                  {/* Service mode */}
-                  {selectedService === "concierge" && conciergeServiceMode && (
-                    <div className="flex justify-between">
-                      <span className="text-muted-foreground">Rate</span>
-                      <span className="text-foreground capitalize">{conciergeServiceMode}</span>
-                    </div>
-                  )}
-                  {/* Remote/WFH */}
-                  {selectedService === "concierge" && conciergeIsRemote && (
-                    <div className="flex justify-between">
-                      <span className="text-muted-foreground">Remote</span>
-                      <span className="text-foreground">Yes (WFH)</span>
-                    </div>
-                  )}
-                  {/* Scheduled date/time */}
-                  {selectedDate && (
-                    <div className="flex justify-between">
-                      <span className="text-muted-foreground">Scheduled</span>
-                      <span className="text-foreground">{selectedDate.toLocaleDateString()} at {selectedTime}</span>
-                    </div>
-                  )}
-                  {/* Order value */}
-                  {(deliverOrderValue || conciergeOrderValue) && (
-                    <div className="flex justify-between">
-                      <span className="text-muted-foreground">Order value</span>
-                      <span className="text-foreground">${deliverOrderValue || conciergeOrderValue}</span>
-                    </div>
-                  )}
-                  {/* Heavy items */}
-                  {over70lbs && (
-                    <div className="flex justify-between">
-                      <span className="text-muted-foreground">Heavy items</span>
-                      <span className="text-foreground">{heavyWeight} lbs / {heavyItems} {parseInt(heavyItems) === 1 ? "item" : "items"}</span>
-                    </div>
-                  )}
-                  {/* 2 Courials */}
-                  {twoCourials && (
-                    <div className="flex justify-between">
-                      <span className="text-muted-foreground">2 Courials</span>
-                      <span className="text-foreground">Yes</span>
-                    </div>
-                  )}
-                  {/* Stairs */}
-                  {hasStairs && (
-                    <div className="flex justify-between">
-                      <span className="text-muted-foreground">Stairs</span>
-                      <span className="text-foreground">Yes</span>
-                    </div>
-                  )}
-                  {/* Language */}
-                  {(deliverLanguage || conciergeLanguage) && (
-                    <div className="flex justify-between">
-                      <span className="text-muted-foreground">Language</span>
-                      <span className="text-foreground">{deliverLanguage || conciergeLanguage}</span>
-                    </div>
-                  )}
-                  {/* Protection / Insurance */}
-                  {(Number(deliverOrderValue) > 100 || Number(conciergeOrderValue) > 100) && (
-                    <div className="flex justify-between">
-                      <span className="text-muted-foreground">Protection</span>
-                      <span className="text-foreground">
-                        {declineProtection ? "Declined" : (() => {
-                          const val = Number(deliverOrderValue) || Number(conciergeOrderValue);
-                          if (val > 200) return "High-value (>$200)";
-                          if (val > 100) return "5% fee ($101–$200)";
-                          return "Included ($100)";
-                        })()}
-                      </span>
-                    </div>
-                  )}
-                  {/* Expenses */}
-                  {deliverHasExpenses && deliverExpenseItems.some(e => e.description.trim()) && (
-                    <>
-                       <div className="flex justify-between">
-                        <span className="text-muted-foreground">Expenses</span>
+                {showOrderDetails && (
+                  <div className="mt-3 space-y-0 divide-y divide-border text-sm">
+                    {/* Row 1: Service & Category */}
+                    <div className="grid grid-cols-2 gap-4 py-2.5">
+                      <div>
+                        <p className="text-[11px] text-muted-foreground mb-0.5">Service</p>
+                        <p className="text-sm font-semibold text-foreground capitalize">{selectedService || "Deliver"}</p>
                       </div>
-                      {deliverExpenseItems.filter(e => e.description.trim()).map((e, i) => (
-                        <div key={i} className="flex justify-between pl-3">
-                          <span className="text-muted-foreground text-xs">{e.description}</span>
-                          <span className="text-foreground text-xs">${e.amount}</span>
+                      {selectedService === "concierge" && conciergeCategory && (
+                        <div>
+                          <p className="text-[11px] text-muted-foreground mb-0.5">Category</p>
+                          <p className="text-sm font-semibold text-foreground">{conciergeCategory.replace(/-/g, " ").replace(/\b\w/g, c => c.toUpperCase())}</p>
                         </div>
-                      ))}
-                    </>
-                  )}
-                  {conciergeHasExpenses && conciergeExpenseItems.some(e => e.description.trim()) && (
-                    <>
-                       <div className="flex justify-between">
-                        <span className="text-muted-foreground">Expenses</span>
+                      )}
+                      {selectedService !== "concierge" && selectedVehicle && (
+                        <div>
+                          <p className="text-[11px] text-muted-foreground mb-0.5">Vehicle</p>
+                          <p className="text-sm font-semibold text-foreground capitalize">{selectedVehicle}</p>
+                        </div>
+                      )}
+                    </div>
+                    {/* Row 2: Rate & Remote (concierge) or Sub-category */}
+                    {selectedService === "concierge" && (conciergeServiceMode || conciergeIsRemote) && (
+                      <div className="grid grid-cols-2 gap-4 py-2.5">
+                        {conciergeServiceMode && (
+                          <div>
+                            <p className="text-[11px] text-muted-foreground mb-0.5">Rate</p>
+                            <p className="text-sm font-semibold text-foreground capitalize">{conciergeServiceMode}</p>
+                          </div>
+                        )}
+                        {conciergeIsRemote && (
+                          <div>
+                            <p className="text-[11px] text-muted-foreground mb-0.5">Remote</p>
+                            <p className="text-sm font-semibold text-foreground">Yes (WFH)</p>
+                          </div>
+                        )}
                       </div>
-                      {conciergeExpenseItems.filter(e => e.description.trim()).map((e, i) => (
-                        <div key={i} className="flex justify-between pl-3">
-                          <span className="text-muted-foreground text-xs">{e.description}</span>
-                          <span className="text-foreground text-xs">${e.amount}</span>
+                    )}
+                    {/* Row: Scheduled */}
+                    {selectedDate && (
+                      <div className="py-2.5">
+                        <div className="grid grid-cols-2 gap-4">
+                          <div>
+                            <p className="text-[11px] text-muted-foreground mb-0.5">Scheduled</p>
+                            <p className="text-sm font-semibold text-foreground">{selectedDate.toLocaleDateString()} at {selectedTime}</p>
+                          </div>
                         </div>
-                      ))}
-                    </>
-                  )}
-                  {/* Notes */}
-                  {notes.trim() && (
-                    <div className="border-t border-border pt-1.5 mt-1">
-                      <p className="text-xs text-muted-foreground mb-0.5">Notes</p>
-                      <p className="text-xs text-foreground whitespace-pre-wrap">{notes}</p>
+                      </div>
+                    )}
+                    {/* Row: Order value & Heavy items */}
+                    {((deliverOrderValue || conciergeOrderValue) || over70lbs) && (
+                      <div className="grid grid-cols-2 gap-4 py-2.5">
+                        {(deliverOrderValue || conciergeOrderValue) && (
+                          <div>
+                            <p className="text-[11px] text-muted-foreground mb-0.5">Order Value</p>
+                            <p className="text-sm font-semibold text-foreground">${deliverOrderValue || conciergeOrderValue}</p>
+                          </div>
+                        )}
+                        {over70lbs && (
+                          <div>
+                            <p className="text-[11px] text-muted-foreground mb-0.5">Heavy Items</p>
+                            <p className="text-sm font-semibold text-foreground">{heavyWeight} lbs / {heavyItems} {parseInt(heavyItems) === 1 ? "item" : "items"}</p>
+                          </div>
+                        )}
+                      </div>
+                    )}
+                    {/* Row: 2 Courials & Stairs */}
+                    {(twoCourials || hasStairs) && (
+                      <div className="grid grid-cols-2 gap-4 py-2.5">
+                        {twoCourials && (
+                          <div>
+                            <p className="text-[11px] text-muted-foreground mb-0.5">2 Courials</p>
+                            <p className="text-sm font-semibold text-foreground">Yes</p>
+                          </div>
+                        )}
+                        {hasStairs && (
+                          <div>
+                            <p className="text-[11px] text-muted-foreground mb-0.5">Stairs</p>
+                            <p className="text-sm font-semibold text-foreground">Yes</p>
+                          </div>
+                        )}
+                      </div>
+                    )}
+                    {/* Row: Language & Protection */}
+                    {((deliverLanguage || conciergeLanguage) || (Number(deliverOrderValue) > 100 || Number(conciergeOrderValue) > 100)) && (
+                      <div className="grid grid-cols-2 gap-4 py-2.5">
+                        {(deliverLanguage || conciergeLanguage) && (
+                          <div>
+                            <p className="text-[11px] text-muted-foreground mb-0.5">Language</p>
+                            <p className="text-sm font-semibold text-foreground">{deliverLanguage || conciergeLanguage}</p>
+                          </div>
+                        )}
+                        {(Number(deliverOrderValue) > 100 || Number(conciergeOrderValue) > 100) && (
+                          <div>
+                            <p className="text-[11px] text-muted-foreground mb-0.5">Protection</p>
+                            <p className="text-sm font-semibold text-foreground">
+                              {declineProtection ? "Declined" : (() => {
+                                const val = Number(deliverOrderValue) || Number(conciergeOrderValue);
+                                if (val > 200) return "High-value (>$200)";
+                                if (val > 100) return "5% fee ($101–$200)";
+                                return "Included ($100)";
+                              })()}
+                            </p>
+                          </div>
+                        )}
+                      </div>
+                    )}
+                    {/* Expenses */}
+                    {deliverHasExpenses && deliverExpenseItems.some(e => e.description.trim()) && (
+                      <div className="py-2.5">
+                        <p className="text-[11px] text-muted-foreground mb-1">Expenses</p>
+                        {deliverExpenseItems.filter(e => e.description.trim()).map((e, i) => (
+                          <div key={i} className="flex justify-between">
+                            <span className="text-xs text-muted-foreground">{e.description}</span>
+                            <span className="text-xs font-semibold text-foreground">${e.amount}</span>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                    {conciergeHasExpenses && conciergeExpenseItems.some(e => e.description.trim()) && (
+                      <div className="py-2.5">
+                        <p className="text-[11px] text-muted-foreground mb-1">Expenses</p>
+                        {conciergeExpenseItems.filter(e => e.description.trim()).map((e, i) => (
+                          <div key={i} className="flex justify-between">
+                            <span className="text-xs text-muted-foreground">{e.description}</span>
+                            <span className="text-xs font-semibold text-foreground">${e.amount}</span>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                    {/* Notes */}
+                    {notes.trim() && (
+                      <div className="py-2.5">
+                        <p className="text-[11px] text-muted-foreground mb-0.5">Notes</p>
+                        <p className="text-xs text-foreground whitespace-pre-wrap">{notes}</p>
+                      </div>
+                    )}
+                    {/* Concierge description */}
+                    {selectedService === "concierge" && conciergeDescription.trim() && (
+                      <div className="py-2.5">
+                        <p className="text-[11px] text-muted-foreground mb-0.5">Task Description</p>
+                        <p className="text-xs text-foreground whitespace-pre-wrap">{conciergeDescription}</p>
+                      </div>
+                    )}
+                    {/* Payment */}
+                    <div className="py-2.5">
+                      <p className="text-[11px] text-muted-foreground mb-0.5">Payment</p>
+                      <p className="text-sm font-semibold text-foreground">{activePayment.label}</p>
                     </div>
-                  )}
-                  {/* Concierge description */}
-                  {selectedService === "concierge" && conciergeDescription.trim() && (
-                    <div className="border-t border-border pt-1.5 mt-1">
-                      <p className="text-xs text-muted-foreground mb-0.5">Task Description</p>
-                      <p className="text-xs text-foreground whitespace-pre-wrap">{conciergeDescription}</p>
-                    </div>
-                  )}
-                  {/* Payment */}
-                  <div className="border-t border-border pt-1.5 mt-1 flex justify-between">
-                    <span className="text-muted-foreground">Payment</span>
-                    <span className="text-foreground">{activePayment.label}</span>
                   </div>
-                </div>}
+                )}
               </div>
 
               {/* Price / Receipt */}
@@ -3483,7 +3516,7 @@ const Book = () => {
                 <div className="mb-3">
                   <button
                     onClick={handleCancelBooking}
-                    className="w-full py-3 rounded-full text-sm font-semibold text-muted-foreground bg-background border border-foreground/20 hover:bg-muted/50 transition-colors"
+                    className="w-full py-3 rounded-full text-sm font-semibold text-white bg-destructive hover:bg-destructive/90 transition-colors"
                   >
                     Cancel {selectedService === "concierge" ? "Concierge" : selectedService === "valet" ? "Valet" : "Delivery"}
                   </button>
