@@ -3483,7 +3483,7 @@ const Book = () => {
                 <div className="mb-3">
                   <button
                     onClick={handleCancelBooking}
-                    className="w-full py-3 rounded-full text-sm font-semibold text-muted-foreground bg-background border border-foreground/20 hover:bg-muted/50 transition-colors"
+                    className="w-full py-3 rounded-full text-sm font-semibold text-white bg-destructive hover:bg-destructive/90 transition-colors"
                   >
                     Cancel {selectedService === "concierge" ? "Concierge" : selectedService === "valet" ? "Valet" : "Delivery"}
                   </button>
