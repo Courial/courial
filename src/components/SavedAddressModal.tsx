@@ -133,19 +133,20 @@ export const SavedAddressModal = ({
 
   useEffect(() => {
     if (open) {
-      loadSavedAddressesFromDB().then((loaded) => {
-        setAddresses(loaded);
-        if (isHomeWork) {
-          const ex = loaded.find((a) => a.type === addressType);
-          setName(ex?.name || "");
-          setAddress(ex?.address || "");
-          setCoords(ex ? { lat: ex.lat, lng: ex.lng } : null);
-        } else {
-          resetForm();
-        }
-      });
+      // Set form from local cache immediately (sync)
+      if (isHomeWork) {
+        const ex = getSavedAddresses().find((a) => a.type === addressType);
+        setName(ex?.name || "");
+        setAddress(ex?.address || "");
+        setCoords(ex ? { lat: ex.lat, lng: ex.lng } : null);
+      } else {
+        resetForm();
+      }
       setReplacingId(null);
       setConfirmRemoveId(null);
+
+      // Then refresh list from DB (won't overwrite form fields)
+      loadSavedAddressesFromDB().then(setAddresses);
     }
   }, [open, addressType]);
 
