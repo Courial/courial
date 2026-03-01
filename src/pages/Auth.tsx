@@ -70,9 +70,9 @@ const Auth = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
-  const [verifySuccess, setVerifySuccess] = useState(false);
   const [loginAttempts, setLoginAttempts] = useState(0);
   const [forgotPasswordSent, setForgotPasswordSent] = useState(false);
+  const [signingIn, setSigningIn] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
 
@@ -215,10 +215,10 @@ const Auth = () => {
     setLoading(false);
   };
 
-  const handleVerifyOtp = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleVerifyOtp = async (otpValue?: string) => {
+    const code = otpValue || otp;
     clearMessages();
-    if (otp.length < 4) return setError("Please enter the 4-digit code.");
+    if (code.length < 4) return setError("Please enter the 4-digit code.");
     setLoading(true);
 
     try {
@@ -228,7 +228,7 @@ const Auth = () => {
         body: JSON.stringify({
           country_code: otpCountryCode,
           phone: otpNationalNumber,
-          otp,
+          otp: code,
           deviceId: deviceID,
         }),
       });
@@ -239,6 +239,9 @@ const Auth = () => {
         setLoading(false);
         return;
       }
+
+      // Show blurred home screen immediately
+      setSigningIn(true);
       
       // Step 1: Get session tokens via raw fetch (reliable, doesn't hang)
       const signInRes = await fetch(`${SUPABASE_URL}/auth/v1/token?grant_type=password`, {
@@ -248,6 +251,7 @@ const Auth = () => {
       });
       const session = await signInRes.json();
       if (!signInRes.ok) {
+        setSigningIn(false);
         setError(session.error_description || session.msg || "Sign in failed");
         setLoading(false);
         return;
@@ -264,16 +268,15 @@ const Auth = () => {
 
       // Step 3: Sync new user to Couriol backend (only for signups where we have user data)
       if (mode === "signup" && name && email) {
-        setSuccessMessage("Finalizing...");
         const authId = session.user?.id || "";
         await syncUserToCourial(authId);
       }
 
-      setVerifySuccess(true);
-      setLoading(false);
-      setTimeout(() => { window.location.href = "/"; }, 1500);
+      // Navigate immediately
+      window.location.href = "/";
     } catch (err) {
       console.error("verify-otp fetch error:", err);
+      setSigningIn(false);
       setError("Network error. Please try again.");
       setLoading(false);
     }
@@ -349,12 +352,17 @@ const Auth = () => {
   return (
     <>
       {/* Render the home page behind */}
-      <div className="pointer-events-none">
+      <div className={`pointer-events-none ${signingIn ? 'blur-md' : ''}`}>
         <Index />
       </div>
 
-      {/* Modal overlay */}
-      <div className="fixed inset-0 z-50 flex items-center justify-center">
+      {/* Signing-in overlay — blurred home, no modal */}
+      {signingIn && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-background/60 backdrop-blur-sm" />
+      )}
+
+      {/* Modal overlay — hidden during sign-in transition */}
+      {!signingIn && <div className="fixed inset-0 z-50 flex items-center justify-center">
         {/* Backdrop — click to dismiss */}
         <div
           className="absolute inset-0 bg-foreground/25 backdrop-blur-md"
@@ -514,14 +522,9 @@ const Auth = () => {
               <motion.div key="otp" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}
                   className="w-full"
                 >
-                  {verifySuccess ? (
-                    <div className="flex flex-col items-center py-4">
-                      <p className="text-sm text-background text-center">Log-in Successful!</p>
-                    </div>
-                  ) : (
                     <>
                       <p className="text-center text-xs text-background/60 mb-4">We sent a 4-digit code to your phone</p>
-                      <form onSubmit={handleVerifyOtp} className="space-y-3">
+                      <form onSubmit={(e) => { e.preventDefault(); handleVerifyOtp(); }} className="space-y-3">
                         <div className="flex justify-center gap-2">
                           {[0, 1, 2, 3].map((i) => (
                             <input
@@ -540,6 +543,10 @@ const Auth = () => {
                                 const joined = newOtp.join("").slice(0, 4);
                                 setOtp(joined);
                                 if (val && i < 3) document.getElementById(`otp-${i + 1}`)?.focus();
+                                // Auto-submit when 4th digit entered
+                                if (joined.length === 4) {
+                                  setTimeout(() => handleVerifyOtp(joined), 100);
+                                }
                               }}
                               onKeyDown={(e) => {
                                 if (e.key === "Backspace" && !otp[i] && i > 0) {
@@ -552,6 +559,9 @@ const Auth = () => {
                                 setOtp(paste);
                                 const focusIdx = Math.min(paste.length, 3);
                                 document.getElementById(`otp-${focusIdx}`)?.focus();
+                                if (paste.length === 4) {
+                                  setTimeout(() => handleVerifyOtp(paste), 100);
+                                }
                               }}
                               className="w-8 h-8 rounded-lg bg-transparent text-background text-center text-sm font-mono border border-background/30 outline-none focus:ring-1 focus:ring-primary"
                             />
@@ -566,20 +576,17 @@ const Auth = () => {
                             </button>
                           </p>
                         )}
-                        <div className="flex justify-center">
-                          <Button type="submit" disabled={loading} className="rounded-lg h-11 w-full text-sm font-medium bg-foreground text-background border border-background/30 hover:bg-foreground/90">
-                            {loading ? "Verifying…" : "Verify Code"}
-                          </Button>
-                        </div>
+                        {loading && (
+                          <p className="text-xs text-background/60 text-center">Verifying…</p>
+                        )}
                       </form>
                     </>
-                  )}
                 </motion.div>
               )}
             </AnimatePresence>
           </div>
         </motion.div>
-      </div>
+      </div>}
     </>
   );
 };
