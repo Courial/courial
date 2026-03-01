@@ -3331,24 +3331,21 @@ const Book = () => {
                   <div className="flex items-start gap-3">
                     <div className="flex-shrink-0 w-2.5 h-2.5 rounded-full bg-green-500 mt-[5px]" />
                     <div className="min-w-0">
-                      {pickupPlaceName && <p className="text-sm font-semibold text-foreground leading-tight">{pickupPlaceName}</p>}
-                      <p className="text-xs text-muted-foreground truncate">{pickup}</p>
+                      <p className="text-xs text-muted-foreground">{pickupPlaceName ? `${pickupPlaceName}, ${pickup}` : pickup}</p>
                     </div>
                   </div>
                   {deliverMultiStop && deliverExtraStops.length > 0 && deliverExtraStops.filter(s => s.address).map((stop, i) => (
                     <div key={i} className="flex items-start gap-3">
                       <div className="flex-shrink-0 w-2.5 h-2.5 rounded-sm bg-primary/60 mt-[5px]" />
                       <div className="min-w-0">
-                        {stop.placeName && <p className="text-sm font-semibold text-foreground leading-tight">{stop.placeName}</p>}
-                        <p className="text-xs text-muted-foreground truncate">{stop.address}</p>
+                        <p className="text-xs text-muted-foreground">{stop.placeName ? `${stop.placeName}, ${stop.address}` : stop.address}</p>
                       </div>
                     </div>
                   ))}
                   <div className="flex items-start gap-3">
                     <div className="flex-shrink-0 w-2.5 h-2.5 bg-red-500 mt-[5px]" />
                     <div className="min-w-0">
-                      {dropoffPlaceName && <p className="text-sm font-semibold text-foreground leading-tight">{dropoffPlaceName}</p>}
-                      <p className="text-xs text-muted-foreground truncate">{dropoff}</p>
+                      <p className="text-xs text-muted-foreground">{dropoffPlaceName ? `${dropoffPlaceName}, ${dropoff}` : dropoff}</p>
                     </div>
                   </div>
                 </div>
