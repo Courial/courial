@@ -3061,8 +3061,8 @@ const Book = () => {
               </div>
 
               {/* Driver Card */}
-              <div className="rounded-2xl border border-border bg-background p-5 mb-4">
-                <div className="flex items-center gap-4 mb-4">
+              <div className="rounded-xl border border-border bg-background p-4 mb-3">
+                <div className="flex items-center gap-4">
                   {acceptedCourial?.image ? (
                     <img src={acceptedCourial.image} alt={acceptedCourial.name} className="w-[60px] h-[60px] rounded-full object-cover border border-border" />
                   ) : (
@@ -3098,8 +3098,10 @@ const Book = () => {
                     />
                   ) : null}
                 </div>
+              </div>
 
-                {/* WFH Task Timer - moved inline with stepper */}
+              {/* Status & Progress */}
+              <div className="rounded-xl border border-border bg-background p-4 mb-3">
 
                 {/* Delivery Status Stepper */}
                 <div className="mb-4">
