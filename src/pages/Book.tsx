@@ -1825,7 +1825,7 @@ const Book = () => {
                     🏠 WFH
                   </button>
                   {!conciergeIsRemote && (["start", "stop", "final"] as const).map((type) => {
-                    const labels: Record<string, string> = { start: "Start here", stop: "Stop here", final: "Finish here" };
+                    const labels: Record<string, string> = { start: "Start", stop: "Stop", final: "Finish" };
                     const iconColors: Record<string, string> = { start: "text-green-500", stop: "text-blue-500", final: "text-destructive" };
                     return (
                       <button
