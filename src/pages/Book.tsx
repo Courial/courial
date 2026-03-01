@@ -3004,9 +3004,17 @@ const Book = () => {
                   </AnimatePresence>
                 </div>
 
-                <p className="text-sm text-muted-foreground text-center max-w-[240px]">
-                  Stand by, we're finding the best Courial for this task.
-                </p>
+                <p className="text-sm text-muted-foreground text-center max-w-[260px]">
+                  {conciergeIsRemote && wfhSearchPhase
+                    ? wfhSearchPhase === "home"
+                      ? "Searching near your home address..."
+                      : wfhSearchPhase === "work"
+                        ? "Searching near your work address..."
+                        : wfhSearchPhase === "area_code"
+                          ? "Searching your phone area..."
+                          : "Stand by, we're finding the best Courial for this task."
+                    : "Stand by, we're finding the best Courial for this task."
+                  }
 
                 {/* Progress bar */}
                 <div className="mt-4 w-full max-w-[200px] h-1 rounded-full bg-muted overflow-hidden">
