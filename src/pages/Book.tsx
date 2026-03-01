@@ -3015,6 +3015,7 @@ const Book = () => {
                           : "Stand by, we're finding the best Courial for this task."
                     : "Stand by, we're finding the best Courial for this task."
                   }
+                </p>
 
                 {/* Progress bar */}
                 <div className="mt-4 w-full max-w-[200px] h-1 rounded-full bg-muted overflow-hidden">
