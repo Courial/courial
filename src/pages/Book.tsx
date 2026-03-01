@@ -992,42 +992,15 @@ const Book = () => {
               transition={{ duration: 0.3 }}
               className="mb-6"
             >
-              {/* Collapsed: show only selected card full-width */}
+              {/* Collapsed: show simple down arrow to return to service selection */}
               {!showAllServices && selectedService && (
-                <div className="relative">
-                  {(() => {
-                    const item = serviceCards.find(s => s.id === selectedService)!;
-                    return (
-                      <div className="group relative rounded-2xl glass-card overflow-hidden h-[80px] p-4 flex items-center gap-4 border-primary border transition-all duration-300">
-                        <div
-                          className="absolute inset-0 opacity-30"
-                          style={{
-                            backgroundImage: `url(${item.image})`,
-                            backgroundSize: "cover",
-                            backgroundPosition: "center",
-                          }}
-                        />
-                        <div className="absolute inset-0 bg-gradient-to-r from-background via-background/80 to-background/40" />
-                        <div className="relative z-10 flex items-center gap-3 flex-1">
-                          <div className="flex gap-1.5">
-                              <div className="w-9 h-9 rounded-xl bg-muted flex items-center justify-center overflow-hidden">
-                                <img src={item.serviceIcon} alt={item.label} className="w-7 h-7 object-contain" />
-                              </div>
-                          </div>
-                          <div>
-                            <h3 className="text-sm font-bold text-foreground">{item.label}</h3>
-                            <p className="text-xs text-muted-foreground leading-snug line-clamp-2 whitespace-pre-line">{item.desc}</p>
-                          </div>
-                        </div>
-                        <button
-                          onClick={() => { setShowAllServices(true); setSelectedService(null); }}
-                          className="relative z-10 w-10 h-10 rounded-xl bg-muted/15 hover:bg-muted/25 flex items-center justify-center transition-colors flex-shrink-0"
-                        >
-                          <ChevronDown className="w-3.5 h-3.5 text-foreground" />
-                        </button>
-                      </div>
-                    );
-                  })()}
+                <div className="flex justify-center">
+                  <button
+                    onClick={() => { setShowAllServices(true); setSelectedService(null); }}
+                    className="w-8 h-8 rounded-full bg-muted/40 hover:bg-muted/60 flex items-center justify-center transition-colors"
+                  >
+                    <ChevronDown className="w-4 h-4 text-muted-foreground" />
+                  </button>
                 </div>
               )}
 
