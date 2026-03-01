@@ -858,13 +858,17 @@ const Book = () => {
     };
   }, [bookingState, conciergeIsRemote, wfhSearchPhase, acceptedCourial, user, resubmitWithLocation, conciergeStartAddress, conciergeStartCoords, conciergeStopAddress, conciergeStopCoords, conciergeFinalAddress, conciergeFinalCoords]);
 
-  // WFH task timer — start on "Task In Progress" (step 1), stop on "Task Completed" (step 2+)
+   // Concierge task timer — start on "Task In Progress", stop on "Task Completed"
   useEffect(() => {
-    const isWfh = selectedService === "concierge" && conciergeIsRemote;
-    if (!isWfh) return;
-    if (deliveryStep >= 1 && deliveryStep < 2) {
+    if (selectedService !== "concierge") return;
+    const isWfh = conciergeIsRemote;
+    // WFH: step 1 = Task In Progress, step 2 = completed
+    // In-person: step 3 = Task In Progress, step 4 = completed
+    const startStep = isWfh ? 1 : 3;
+    const stopStep = isWfh ? 2 : 4;
+    if (deliveryStep >= startStep && deliveryStep < stopStep) {
       setWfhTaskRunning(true);
-    } else if (deliveryStep >= 2) {
+    } else if (deliveryStep >= stopStep) {
       setWfhTaskRunning(false);
     }
   }, [selectedService, conciergeIsRemote, deliveryStep]);
@@ -3091,6 +3095,9 @@ const Book = () => {
                     : !isWfhConcierge ? "4 mins away • 2:01 AM dropoff" : "WFH Service"
                   }
                 </p>
+                {selectedService === "concierge" && !isWfhConcierge && (
+                  <p className="text-sm font-semibold text-muted-foreground mt-0.5">4 mins away • 2.3 mi</p>
+                )}
               </div>
 
               {/* Driver Card */}
@@ -3121,8 +3128,16 @@ const Book = () => {
                     </div>
                     <div className="text-xs text-foreground mt-0.5"><span className="font-normal text-muted-foreground">Plate No.</span> <span className="font-bold">{acceptedCourial?.licensePlate || "ABC1234"}</span></div>
                   </div>
-                  {isWfhConcierge ? (
-                    <img src={noVehicleIcon} alt="No vehicle needed" className="h-[60px] w-[60px] shrink-0 object-contain" />
+                  {selectedService === "concierge" ? (
+                    conciergeVehicle === "none" || !conciergeVehicle ? (
+                      <img src={noVehicleIcon} alt="No vehicle needed" className="h-[60px] w-[60px] shrink-0 object-contain" />
+                    ) : (
+                      <img
+                        src={vehicleOptions.find(v => v.id === conciergeVehicle)?.image}
+                        alt={conciergeVehicle}
+                        className="h-10 object-contain"
+                      />
+                    )
                   ) : selectedVehicle ? (
                     <img
                       src={vehicleOptions.find(v => v.id === selectedVehicle)?.image}
@@ -3194,7 +3209,7 @@ const Book = () => {
                     })}
 
                     {/* WFH Clock - circular arc timer */}
-                    {isWfhConcierge && (() => {
+                    {selectedService === "concierge" && (() => {
                       const isActive = wfhTaskRunning && !wfhTaskPaused;
                       const size = 110;
                       const stroke = 6;
@@ -3265,8 +3280,38 @@ const Book = () => {
                 </div>
 
 
-                {/* Trip Summary — hidden for WFH concierge */}
-                {!isWfhConcierge && (
+                {/* Trip Summary — addresses with colored dots */}
+                {selectedService === "concierge" && !isWfhConcierge ? (
+                  <div className="space-y-3 pt-2">
+                    {conciergeStartAddress && (
+                      <div className="flex items-start gap-3">
+                        <div className="flex-shrink-0 w-2.5 h-2.5 rounded-full bg-green-500 mt-[5px]" />
+                        <div className="min-w-0">
+                          {conciergeStartPlaceName && <p className="text-sm font-semibold text-foreground leading-tight">{conciergeStartPlaceName}</p>}
+                          <p className="text-xs text-muted-foreground truncate">{conciergeStartAddress}</p>
+                        </div>
+                      </div>
+                    )}
+                    {conciergeStopAddress && (
+                      <div className="flex items-start gap-3">
+                        <div className="flex-shrink-0 w-2.5 h-2.5 rounded-sm bg-primary/60 mt-[5px]" />
+                        <div className="min-w-0">
+                          {conciergeStopPlaceName && <p className="text-sm font-semibold text-foreground leading-tight">{conciergeStopPlaceName}</p>}
+                          <p className="text-xs text-muted-foreground truncate">{conciergeStopAddress}</p>
+                        </div>
+                      </div>
+                    )}
+                    {conciergeFinalAddress && (
+                      <div className="flex items-start gap-3">
+                        <div className="flex-shrink-0 w-2.5 h-2.5 bg-red-500 mt-[5px]" />
+                        <div className="min-w-0">
+                          {conciergeFinalPlaceName && <p className="text-sm font-semibold text-foreground leading-tight">{conciergeFinalPlaceName}</p>}
+                          <p className="text-xs text-muted-foreground truncate">{conciergeFinalAddress}</p>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                ) : selectedService !== "concierge" && (
                 <div className="space-y-3 pt-2">
                   <div className="flex items-start gap-3">
                     <div className="flex-shrink-0 w-2.5 h-2.5 rounded-full bg-green-500 mt-[5px]" />
@@ -3369,6 +3414,50 @@ const Book = () => {
                         </div>
                       )}
                     </div>
+                    {/* Row: Concierge Vehicle */}
+                    {selectedService === "concierge" && conciergeVehicle && (
+                      <div className="grid grid-cols-3 gap-4 py-2.5">
+                        <div>
+                          <p className="text-xs font-medium text-foreground mb-0.5">Vehicle</p>
+                          <p className="text-[11px] text-muted-foreground capitalize">{conciergeVehicle === "none" ? "None" : conciergeVehicle}</p>
+                        </div>
+                      </div>
+                    )}
+                    {/* Roadside vehicle details */}
+                    {selectedService === "concierge" && conciergeCategory === "roadside-assistance" && (roadsideVehicleMake || roadsideVehicleModel || roadsideVehicleColor || roadsideLicensePlate) && (
+                      <div className="grid grid-cols-2 gap-4 py-2.5">
+                        {roadsideVehicleMake && (
+                          <div>
+                            <p className="text-xs font-medium text-foreground mb-0.5">Make</p>
+                            <p className="text-[11px] text-muted-foreground">{roadsideVehicleMake}</p>
+                          </div>
+                        )}
+                        {roadsideVehicleModel && (
+                          <div>
+                            <p className="text-xs font-medium text-foreground mb-0.5">Model</p>
+                            <p className="text-[11px] text-muted-foreground">{roadsideVehicleModel}</p>
+                          </div>
+                        )}
+                        {roadsideVehicleColor && (
+                          <div>
+                            <p className="text-xs font-medium text-foreground mb-0.5">Color</p>
+                            <p className="text-[11px] text-muted-foreground">{roadsideVehicleColor}</p>
+                          </div>
+                        )}
+                        {roadsideLicensePlate && (
+                          <div>
+                            <p className="text-xs font-medium text-foreground mb-0.5">Plate</p>
+                            <p className="text-[11px] text-muted-foreground">{roadsideLicensePlate}</p>
+                          </div>
+                        )}
+                        {roadsideSafeLocation !== null && (
+                          <div>
+                            <p className="text-xs font-medium text-foreground mb-0.5">Safe Location</p>
+                            <p className="text-[11px] text-muted-foreground">{roadsideSafeLocation ? "Yes" : "No"}</p>
+                          </div>
+                        )}
+                      </div>
+                    )}
                     {/* Row: Order Value & Protection */}
                     {(deliverOrderValue || conciergeOrderValue) && (
                       <div className="grid grid-cols-3 gap-4 py-2.5">
