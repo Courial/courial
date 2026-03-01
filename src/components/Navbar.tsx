@@ -44,7 +44,8 @@ export const Navbar = () => {
     const sync = () => {
       const state = localStorage.getItem("courial_booking_state");
       const started = localStorage.getItem("courial_form_started") === "true";
-      setBookingPulse(state === "loading" || state === "active");
+      setBookingPulse(state === "loading");
+      setBookingActive(state === "active");
       setFormStarted(started && state === "input");
     };
     sync();
