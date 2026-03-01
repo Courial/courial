@@ -139,7 +139,7 @@ const Auth = () => {
       } else {
         setDeviceID(data.deviceID || "");
         setView("otp");
-        setSuccessMessage("We sent a code to " + formatDisplayPhone(countryCode, nationalNumber));
+        setSuccessMessage("Sent to " + formatDisplayPhone(countryCode, nationalNumber));
       }
     } catch (err) {
       setError("Network error. Please try again.");
@@ -207,7 +207,7 @@ const Auth = () => {
       } else {
         setDeviceID(data.deviceID || "");
         setView("otp");
-        setSuccessMessage("We sent a code to " + formatDisplayPhone(countryCode, nationalNumber));
+        setSuccessMessage("Sent to " + formatDisplayPhone(countryCode, nationalNumber));
       }
     } catch (err) {
       setError("Network error. Please try again.");
@@ -526,7 +526,7 @@ const Auth = () => {
                   className="w-full"
                 >
                     <>
-                      <p className="text-center text-xs text-background/60 mb-4">We sent a 4-digit code to your phone</p>
+                      <p className="text-center text-xs text-background/60 mb-4">4-digit code sent to your phone</p>
                       <form onSubmit={(e) => { e.preventDefault(); handleVerifyOtp(); }} className="space-y-3">
                         <div className="flex justify-center gap-2">
                           {[0, 1, 2, 3].map((i) => (
