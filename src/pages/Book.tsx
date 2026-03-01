@@ -1879,6 +1879,8 @@ const Book = () => {
                   })}
                 </div>
 
+                {!conciergeIsRemote && (
+                <>
                 {/* Address Inputs for enabled toggles — Draggable to swap */}
                 <AnimatePresence>
                   {(conciergeAddressToggles.start || conciergeAddressToggles.stop || conciergeAddressToggles.final) && (
