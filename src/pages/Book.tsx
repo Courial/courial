@@ -3102,7 +3102,14 @@ const Book = () => {
                 <h2 className="text-lg font-bold text-foreground">
                   {selectedService === "concierge" ? "Concierge Task" : selectedService === "valet" ? "Valet Service" : "Delivery"}
                 </h2>
-                <p className="text-sm text-muted-foreground mt-0.5">
+                <p className="text-sm text-muted-foreground mt-0.5 flex items-center justify-center gap-1.5">
+                  {/* Green pulsing dot for ETA */}
+                  {((selectedService !== "concierge" && !isWfhConcierge && courialEta) || (selectedService === "concierge" && conciergeCategory)) && (
+                    <span className="relative flex h-2 w-2 shrink-0">
+                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75" />
+                      <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500" />
+                    </span>
+                  )}
                   {selectedService === "concierge" && conciergeCategory
                     ? `${conciergeCategory.replace(/-/g, " ").replace(/\b\w/g, c => c.toUpperCase())}${conciergeSubCategory ? ` • ${conciergeSubCategory}` : ""}${isWfhConcierge ? " • WFH Service" : ""}`
                     : !isWfhConcierge
@@ -3111,7 +3118,11 @@ const Book = () => {
                   }
                 </p>
                 {selectedService === "concierge" && !isWfhConcierge && (
-                  <p className="text-sm font-semibold text-muted-foreground mt-0.5">
+                  <p className="text-sm font-semibold text-muted-foreground mt-0.5 flex items-center justify-center gap-1.5">
+                    <span className="relative flex h-2 w-2 shrink-0">
+                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75" />
+                      <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500" />
+                    </span>
                     {courialEta ? `${courialEta.duration} away • ${courialEta.distance}` : "Calculating..."}
                   </p>
                 )}
@@ -3393,7 +3404,7 @@ const Book = () => {
               </div>
 
               {/* Order Details */}
-              <div className="rounded-xl border border-border bg-background p-4 mb-4">
+              <div className="rounded-xl border border-border bg-background px-4 py-2.5 mb-4">
                 <button
                   onClick={() => setShowOrderDetails(p => !p)}
                   className="flex items-center justify-between w-full"
