@@ -3439,8 +3439,11 @@ const Book = () => {
                     )}
                     {/* Payment */}
                     <div className="py-2.5">
-                      <p className="text-[11px] text-muted-foreground mb-0.5">Payment</p>
-                      <p className="text-sm font-semibold text-foreground">{activePayment.label}</p>
+                      <p className="text-[11px] text-muted-foreground mb-1">Payment</p>
+                      <div className="flex items-center gap-2">
+                        <img src={activePayment.icon} alt={activePayment.label} className="w-10 h-auto" />
+                        <span className="text-sm font-semibold text-foreground">••••&nbsp;{activePayment.last4}</span>
+                      </div>
                     </div>
                   </div>
                 )}
