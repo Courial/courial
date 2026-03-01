@@ -3463,7 +3463,7 @@ const Book = () => {
                     </div>
                     {/* Roadside vehicle details */}
                     {selectedService === "concierge" && conciergeCategory === "roadside-assistance" && (roadsideVehicleMake || roadsideVehicleModel || roadsideVehicleColor || roadsideLicensePlate) && (
-                      <div className="grid grid-cols-2 gap-4 py-2.5">
+                      <div className="grid grid-cols-2 gap-4 py-2.5 border-t-0">
                         {roadsideVehicleMake && (
                           <div>
                             <p className="text-xs font-medium text-foreground mb-0.5">Make</p>
