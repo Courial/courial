@@ -278,6 +278,31 @@ const Book = () => {
     setCourialCoords(coords);
   }, []);
 
+  // Calculate ETA from Courial to pickup using Google Distance Matrix
+  useEffect(() => {
+    if (!courialCoords || !window.google?.maps) return;
+    const pickupPt = selectedService === "concierge" ? conciergeStartCoords : pickupCoords;
+    if (!pickupPt) return;
+
+    const service = new window.google.maps.DistanceMatrixService();
+    service.getDistanceMatrix(
+      {
+        origins: [new window.google.maps.LatLng(courialCoords.lat, courialCoords.lng)],
+        destinations: [new window.google.maps.LatLng(pickupPt.lat, pickupPt.lng)],
+        travelMode: window.google.maps.TravelMode.DRIVING,
+        unitSystem: window.google.maps.UnitSystem.IMPERIAL,
+      },
+      (response, status) => {
+        if (status === "OK" && response?.rows?.[0]?.elements?.[0]?.status === "OK") {
+          const element = response.rows[0].elements[0];
+          const durationText = element.duration?.text || "";
+          const distanceText = element.distance?.text || "";
+          setCourialEta({ duration: durationText, distance: distanceText });
+        }
+      }
+    );
+  }, [courialCoords, conciergeStartCoords, pickupCoords, selectedService]);
+
   // Read token reactively when socket becomes enabled
   const [courialToken, setCourialToken] = useState<string | null>(null);
   useEffect(() => {
