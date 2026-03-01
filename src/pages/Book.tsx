@@ -2045,7 +2045,7 @@ const Book = () => {
                       id="concierge-expenses"
                       checked={conciergeHasExpenses === true}
                       onChange={(e) => setConciergeHasExpenses(e.target.checked)}
-                      className="h-3 w-3 rounded border border-border/60 accent-foreground cursor-pointer appearance-none checked:appearance-auto bg-background"
+                      className="h-3 w-3 rounded border-border/60 accent-foreground cursor-pointer"
                     />
                   </div>
                   <p className="text-[10px] text-muted-foreground mt-0.5 leading-relaxed">
@@ -2289,7 +2289,7 @@ const Book = () => {
                               type="checkbox"
                               checked={declineProtection}
                               onChange={(e) => setDeclineProtection(e.target.checked)}
-                              className="h-3 w-3 rounded border border-border/60 accent-foreground cursor-pointer appearance-none checked:appearance-auto bg-background"
+                              className="h-3 w-3 rounded border-border/60 accent-foreground cursor-pointer"
                             />
                             <span className="text-[10px] text-muted-foreground">I decline additional protection coverage and wish to proceed without it.</span>
                           </label>
@@ -2323,7 +2323,7 @@ const Book = () => {
                               type="checkbox"
                               checked={declineProtection}
                               onChange={(e) => setDeclineProtection(e.target.checked)}
-                              className="h-3 w-3 rounded border border-border/60 accent-foreground cursor-pointer appearance-none checked:appearance-auto bg-background"
+                              className="h-3 w-3 rounded border-border/60 accent-foreground cursor-pointer"
                             />
                             <span className="text-[10px] text-muted-foreground">I decline additional protection coverage and wish to proceed without it.</span>
                           </label>
@@ -2417,7 +2417,7 @@ const Book = () => {
                           setDeliverMultiStop(e.target.checked);
                           if (!e.target.checked) setDeliverExtraStops([]);
                         }}
-                        className="h-3 w-3 rounded border border-border/60 accent-foreground cursor-pointer appearance-none checked:appearance-auto bg-background"
+                        className="h-3 w-3 rounded border-border/60 accent-foreground cursor-pointer"
                       />
                     </div>
                     <p className="text-[10px] text-muted-foreground mt-0.5 leading-relaxed">
@@ -2649,7 +2649,7 @@ const Book = () => {
                         type="checkbox"
                         checked={deliverHasExpenses === true}
                         onChange={(e) => setDeliverHasExpenses(e.target.checked)}
-                        className="h-3 w-3 rounded border border-border/60 accent-foreground cursor-pointer appearance-none checked:appearance-auto bg-background"
+                        className="h-3 w-3 rounded border-border/60 accent-foreground cursor-pointer"
                       />
                     </div>
                     <p className="text-[10px] text-muted-foreground mt-0.5 leading-relaxed">
@@ -2887,7 +2887,7 @@ const Book = () => {
                                 type="checkbox"
                                 checked={declineProtection}
                                 onChange={(e) => setDeclineProtection(e.target.checked)}
-                                className="h-3 w-3 rounded border border-border/60 accent-foreground cursor-pointer appearance-none checked:appearance-auto bg-background"
+                                className="h-3 w-3 rounded border-border/60 accent-foreground cursor-pointer"
                               />
                               <span className="text-[10px] text-muted-foreground">I decline additional protection coverage and wish to proceed without it.</span>
                             </label>
@@ -2921,7 +2921,7 @@ const Book = () => {
                                 type="checkbox"
                                 checked={declineProtection}
                                 onChange={(e) => setDeclineProtection(e.target.checked)}
-                                className="h-3 w-3 rounded border border-border/60 accent-foreground cursor-pointer appearance-none checked:appearance-auto bg-background"
+                                className="h-3 w-3 rounded border-border/60 accent-foreground cursor-pointer"
                               />
                               <span className="text-[10px] text-muted-foreground">I decline additional protection coverage and wish to proceed without it.</span>
                             </label>
