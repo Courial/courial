@@ -3654,7 +3654,7 @@ const Book = () => {
               <div className="rounded-[20px] bg-foreground/75 text-background px-6 py-6 shadow-2xl backdrop-blur-sm flex flex-col">
                 <DialogTitle className="sr-only">Contact Us</DialogTitle>
                 <h1 className="text-2xl font-bold text-center mt-1 mb-2">Contact Us</h1>
-                <p className="text-sm text-background/50 text-center mb-6">Reach out through your preferred channel</p>
+                <p className="text-sm text-background/50 text-center mb-6">Tap any option below</p>
                 <div className="flex items-center justify-center gap-5">
                   {[
                     { icon: Phone, title: "Call Us", href: "tel:+14152754707", color: "bg-emerald-500" },
