@@ -3091,7 +3091,7 @@ const Book = () => {
               <Button
                 variant="ghost"
                 onClick={handleCancelBooking}
-                className="w-full rounded-lg h-10 text-sm font-semibold mt-4 bg-transparent border border-border text-foreground hover:bg-muted"
+                className="w-full rounded-lg h-10 text-sm font-semibold mt-4 bg-transparent border border-muted-foreground/40 text-foreground hover:bg-muted"
               >
                 Cancel
               </Button>
