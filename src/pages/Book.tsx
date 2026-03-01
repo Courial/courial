@@ -767,6 +767,7 @@ const Book = () => {
     setDeliveryStep(0);
     setSocketEnabled(false);
     setAcceptedCourial(null);
+    setCourialEta(null);
     setWfhSearchPhase(null);
     setShowKeepSearching(false);
     if (wfhTimerRef.current) clearTimeout(wfhTimerRef.current);
