@@ -92,6 +92,18 @@ export const SettingsModal = ({ open, onOpenChange }: SettingsModalProps) => {
                 );
               })}
               <button
+                onClick={() => setAddressModalType("favorite")}
+                className="flex items-center gap-3 w-full py-3 border-b border-background/20 text-left hover:opacity-75 transition-opacity"
+              >
+                <Star className="h-4 w-4 text-background/60" />
+                <div className="min-w-0 flex-1">
+                  <p className="text-sm font-semibold text-background">{savedAddresses.find(a => a.type === "favorite")?.name || "Favorite Places"}</p>
+                  <p className="text-[10px] text-background/50 leading-snug break-words whitespace-normal">
+                    {savedAddresses.find(a => a.type === "favorite")?.address || "Add favorite place"}
+                  </p>
+                </div>
+              </button>
+              <button
                 onClick={() => setFavoritesOpen(true)}
                 className="flex items-center gap-3 w-full py-3 text-left hover:opacity-75 transition-opacity"
               >
