@@ -571,7 +571,7 @@ const Auth = () => {
                           ))}
                         </div>
                         {error && <p className="text-xs text-red-400 text-center">{error}</p>}
-                        {successMessage && <p className="text-xs text-primary text-center mb-2">{successMessage}</p>}
+                        {successMessage && <p className="text-xs text-primary text-center">{successMessage}</p>}
                         {loginAttempts >= 2 && !forgotPasswordSent && (
                           <p className="text-center">
                             <button type="button" onClick={handleForgotPassword} disabled={loading} className="text-xs text-background/60 hover:text-background hover:underline transition-colors">
