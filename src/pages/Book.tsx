@@ -3151,7 +3151,7 @@ const Book = () => {
                     </div>
                     <div className="text-xs text-muted-foreground mt-0.5">
                       {acceptedCourial
-                        ? `${acceptedCourial.vehicleYear ? acceptedCourial.vehicleYear + " " : ""}${acceptedCourial.vehicleMake} ${acceptedCourial.vehicleModel}`.trim() || "Vehicle info pending"
+                        ? `${acceptedCourial.vehicleColor ? acceptedCourial.vehicleColor + " " : ""}${acceptedCourial.vehicleYear ? acceptedCourial.vehicleYear + " " : ""}${acceptedCourial.vehicleMake} ${acceptedCourial.vehicleModel}`.trim() || "Vehicle info pending"
                         : "Black Toyota Corolla"}
                     </div>
                     <div className="text-xs text-foreground mt-0.5"><span className="font-normal text-muted-foreground">Plate No.</span> <span className="font-bold">{acceptedCourial?.licensePlate || "ABC1234"}</span></div>
