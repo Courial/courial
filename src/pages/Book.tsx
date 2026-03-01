@@ -724,6 +724,7 @@ const Book = () => {
     setBookingState("input");
     setLoadingProgress(0);
     setDeliveryStep(0);
+    localStorage.removeItem("courial_delivery_step");
     setSocketEnabled(false);
     setAcceptedCourial(null);
     setWfhSearchPhase(null);
