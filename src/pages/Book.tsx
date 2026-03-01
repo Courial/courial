@@ -330,9 +330,20 @@ const Book = () => {
     "https://images.unsplash.com/photo-1580489944761-15a19d654956?w=300&h=400&fit=crop&crop=face&facepad=2",
   ], []);
 
-  // Use real courial photos when available, otherwise stock
+  // Use real courial photos when available (filter out non-face/placeholder images), otherwise stock
   const activeProfiles = useMemo(() => {
-    if (nearbyCourials.length > 0) return nearbyCourials.map(c => c.image);
+    if (nearbyCourials.length > 0) {
+      const validImages = nearbyCourials
+        .map(c => c.image)
+        .filter(img => {
+          if (!img) return false;
+          const lower = img.toLowerCase();
+          // Skip placeholder, default, or non-portrait images
+          if (lower.includes("placeholder") || lower.includes("default") || lower.includes("avatar") || lower.includes("no-image") || lower.includes("noimage")) return false;
+          return true;
+        });
+      if (validImages.length > 0) return validImages;
+    }
     return courialProfiles;
   }, [nearbyCourials, courialProfiles]);
 
