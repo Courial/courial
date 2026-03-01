@@ -3272,7 +3272,13 @@ const Book = () => {
                   <Headset className="w-4.5 h-4.5 text-white" />
                 </button>
                 <button
-                  onClick={() => setShowChat(prev => !prev)}
+                  onClick={() => {
+                    setShowChat(prev => {
+                      const next = !prev;
+                      if (next) setShowOrderDetails(false);
+                      return next;
+                    });
+                  }}
                   className="w-10 h-10 flex items-center justify-center rounded-full bg-primary hover:bg-primary/80 transition-colors"
                   aria-label="Message Courial"
                 >
