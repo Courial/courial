@@ -377,6 +377,7 @@ const Book = () => {
   useEffect(() => {
     localStorage.setItem("courial_booking_state", bookingState);
     localStorage.setItem("courial_form_started", formStarted ? "true" : "false");
+    localStorage.setItem("courial_delivery_step", String(deliveryStep));
     window.dispatchEvent(new Event("courial-booking-update"));
     return () => {
       // Clean up on unmount only if we're leaving the page in input state
