@@ -170,7 +170,7 @@ export const SavedAddressModal = ({
 
   const canSave = address.trim() && coords;
 
-  const handleSave = () => {
+  const handleSave = async () => {
     if (!canSave) return;
     const entry: SavedAddress = {
       type: addressType,
@@ -181,13 +181,12 @@ export const SavedAddressModal = ({
     };
 
     if (replacingId && isHomeWork) {
-      // Replace home/work
-      removeSavedAddress(replacingId);
+      await removeSavedAddress(replacingId);
     }
 
-    saveSavedAddress(entry);
+    await saveSavedAddress(entry);
     onSave?.();
-    refreshAddresses();
+    await refreshAddresses();
     if (isHomeWork) {
       onOpenChange(false);
     } else {
@@ -196,12 +195,11 @@ export const SavedAddressModal = ({
     setReplacingId(null);
   };
 
-  const handleRemove = (id: string) => {
-    removeSavedAddress(id);
-    refreshAddresses();
+  const handleRemove = async (id: string) => {
+    await removeSavedAddress(id);
+    await refreshAddresses();
     onSave?.();
     setConfirmRemoveId(null);
-    // If removing home/work, close modal
     if (isHomeWork) onOpenChange(false);
   };
 
