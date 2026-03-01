@@ -3313,24 +3313,35 @@ const Book = () => {
                 </button>
                 {showOrderDetails && (
                   <div className="mt-3 space-y-0 divide-y divide-border text-sm">
-                    {/* Row 1: Rate (concierge only) */}
-                    {selectedService === "concierge" && conciergeServiceMode && (
-                      <div className="grid grid-cols-2 gap-4 py-2.5">
+                    {/* Row: Language, Rate/Vehicle, Order Value */}
+                    <div className="grid grid-cols-3 gap-4 py-2.5">
+                      {(deliverLanguage || conciergeLanguage) && (
+                        <div>
+                          <p className="text-[11px] text-muted-foreground mb-0.5">Language</p>
+                          <p className="text-sm font-semibold text-foreground">{deliverLanguage || conciergeLanguage}</p>
+                        </div>
+                      )}
+                      {selectedService === "concierge" && conciergeServiceMode && (
                         <div>
                           <p className="text-[11px] text-muted-foreground mb-0.5">Rate</p>
-                          <p className="text-sm font-semibold text-foreground capitalize">{conciergeServiceMode}</p>
+                          <p className="text-sm font-semibold text-foreground">
+                            {conciergeServiceMode === "hourly" ? "$65 per Hour" : conciergeServiceMode === "daily" ? "$480 Daily" : conciergeServiceMode}
+                          </p>
                         </div>
-                      </div>
-                    )}
-                    {/* Row: Vehicle (non-concierge) */}
-                    {selectedService !== "concierge" && selectedVehicle && (
-                      <div className="grid grid-cols-2 gap-4 py-2.5">
+                      )}
+                      {selectedService !== "concierge" && selectedVehicle && (
                         <div>
                           <p className="text-[11px] text-muted-foreground mb-0.5">Vehicle</p>
                           <p className="text-sm font-semibold text-foreground capitalize">{selectedVehicle}</p>
                         </div>
-                      </div>
-                    )}
+                      )}
+                      {(deliverOrderValue || conciergeOrderValue) && (
+                        <div>
+                          <p className="text-[11px] text-muted-foreground mb-0.5">Order Value</p>
+                          <p className="text-sm font-semibold text-foreground">${deliverOrderValue || conciergeOrderValue}</p>
+                        </div>
+                      )}
+                    </div>
                     {/* Row: Scheduled */}
                     {selectedDate && (
                       <div className="py-2.5">
@@ -3342,21 +3353,13 @@ const Book = () => {
                         </div>
                       </div>
                     )}
-                    {/* Row: Order value & Heavy items */}
-                    {((deliverOrderValue || conciergeOrderValue) || over70lbs) && (
+                    {/* Row: Heavy items */}
+                    {over70lbs && (
                       <div className="grid grid-cols-2 gap-4 py-2.5">
-                        {(deliverOrderValue || conciergeOrderValue) && (
-                          <div>
-                            <p className="text-[11px] text-muted-foreground mb-0.5">Order Value</p>
-                            <p className="text-sm font-semibold text-foreground">${deliverOrderValue || conciergeOrderValue}</p>
-                          </div>
-                        )}
-                        {over70lbs && (
-                          <div>
-                            <p className="text-[11px] text-muted-foreground mb-0.5">Heavy Items</p>
-                            <p className="text-sm font-semibold text-foreground">{heavyWeight} lbs / {heavyItems} {parseInt(heavyItems) === 1 ? "item" : "items"}</p>
-                          </div>
-                        )}
+                        <div>
+                          <p className="text-[11px] text-muted-foreground mb-0.5">Heavy Items</p>
+                          <p className="text-sm font-semibold text-foreground">{heavyWeight} lbs / {heavyItems} {parseInt(heavyItems) === 1 ? "item" : "items"}</p>
+                        </div>
                       </div>
                     )}
                     {/* Row: 2 Courials & Stairs */}
@@ -3376,28 +3379,22 @@ const Book = () => {
                         )}
                       </div>
                     )}
-                    {/* Row: Language & Protection */}
-                    {((deliverLanguage || conciergeLanguage) || (Number(deliverOrderValue) > 100 || Number(conciergeOrderValue) > 100)) && (
-                      <div className="grid grid-cols-2 gap-4 py-2.5">
-                        {(deliverLanguage || conciergeLanguage) && (
-                          <div>
-                            <p className="text-[11px] text-muted-foreground mb-0.5">Language</p>
-                            <p className="text-sm font-semibold text-foreground">{deliverLanguage || conciergeLanguage}</p>
-                          </div>
-                        )}
-                        {(Number(deliverOrderValue) > 100 || Number(conciergeOrderValue) > 100) && (
-                          <div>
-                            <p className="text-[11px] text-muted-foreground mb-0.5">Protection</p>
-                            <p className="text-sm font-semibold text-foreground">
-                              {declineProtection ? "Declined" : (() => {
-                                const val = Number(deliverOrderValue) || Number(conciergeOrderValue);
-                                if (val > 200) return "High-value (>$200)";
-                                if (val > 100) return "5% fee ($101–$200)";
-                                return "Included ($100)";
-                              })()}
-                            </p>
-                          </div>
-                        )}
+                    {/* Row: Protection */}
+                    {(Number(deliverOrderValue) > 100 || Number(conciergeOrderValue) > 100) && (
+                      <div className="py-2.5">
+                        <p className="text-[11px] text-muted-foreground mb-0.5">Protection</p>
+                        <p className="text-sm font-semibold text-foreground">
+                          {declineProtection ? (() => {
+                            const val = Number(deliverOrderValue) || Number(conciergeOrderValue);
+                            const fee = val > 200 ? "Contact Support" : `$${(val * 0.05).toFixed(0)}`;
+                            return `Declined ($0)`;
+                          })() : (() => {
+                            const val = Number(deliverOrderValue) || Number(conciergeOrderValue);
+                            if (val > 200) return "Accepted (Contact Support)";
+                            if (val > 100) return `Accepted ($${(val * 0.05).toFixed(0)})`;
+                            return "Accepted ($0)";
+                          })()}
+                        </p>
                       </div>
                     )}
                     {/* Expenses */}
@@ -3407,7 +3404,9 @@ const Book = () => {
                         {deliverExpenseItems.filter(e => e.description.trim()).map((e, i) => (
                           <div key={i} className="flex justify-between">
                             <span className="text-xs text-muted-foreground">{e.description}</span>
-                            <span className="text-xs font-semibold text-foreground">${e.amount}</span>
+                            <span className="text-xs font-semibold text-foreground">
+                              ${e.amount}{deliverAllowOverage && Number(deliverOverageLimit) > 0 ? ` ($${deliverOverageLimit})` : ""}
+                            </span>
                           </div>
                         ))}
                       </div>
@@ -3418,7 +3417,9 @@ const Book = () => {
                         {conciergeExpenseItems.filter(e => e.description.trim()).map((e, i) => (
                           <div key={i} className="flex justify-between">
                             <span className="text-xs text-muted-foreground">{e.description}</span>
-                            <span className="text-xs font-semibold text-foreground">${e.amount}</span>
+                            <span className="text-xs font-semibold text-foreground">
+                              ${e.amount}{conciergeAllowOverage && Number(conciergeOverageLimit) > 0 ? ` ($${conciergeOverageLimit})` : ""}
+                            </span>
                           </div>
                         ))}
                       </div>
@@ -3437,6 +3438,65 @@ const Book = () => {
                         <p className="text-xs text-foreground whitespace-pre-wrap">{conciergeDescription}</p>
                       </div>
                     )}
+                    {/* Address Information */}
+                    <div className="py-2.5">
+                      <p className="text-[11px] text-muted-foreground mb-1">Address</p>
+                      {selectedService === "concierge" && isWfhConcierge ? (
+                        <p className="text-xs text-foreground">🏠 WFH Service (No Address required)</p>
+                      ) : selectedService === "concierge" ? (
+                        <div className="space-y-1">
+                          {conciergeStartAddress && (
+                            <div className="flex items-start gap-2">
+                              <span className="text-[10px] font-semibold text-muted-foreground uppercase w-8 shrink-0 pt-0.5">Start</span>
+                              <span className="text-xs text-foreground">{conciergeStartPlaceName ? `${conciergeStartPlaceName}, ${conciergeStartAddress}` : conciergeStartAddress}</span>
+                            </div>
+                          )}
+                          {conciergeStopAddress && (
+                            <div className="flex items-start gap-2">
+                              <span className="text-[10px] font-semibold text-muted-foreground uppercase w-8 shrink-0 pt-0.5">Stop</span>
+                              <span className="text-xs text-foreground">{conciergeStopPlaceName ? `${conciergeStopPlaceName}, ${conciergeStopAddress}` : conciergeStopAddress}</span>
+                            </div>
+                          )}
+                          {conciergeFinalAddress && (
+                            <div className="flex items-start gap-2">
+                              <span className="text-[10px] font-semibold text-muted-foreground uppercase w-8 shrink-0 pt-0.5">Final</span>
+                              <span className="text-xs text-foreground">{conciergeFinalPlaceName ? `${conciergeFinalPlaceName}, ${conciergeFinalAddress}` : conciergeFinalAddress}</span>
+                            </div>
+                          )}
+                          {!conciergeStartAddress && !conciergeStopAddress && !conciergeFinalAddress && (
+                            <p className="text-xs text-foreground">🏠 WFH Service (No Address required)</p>
+                          )}
+                        </div>
+                      ) : (
+                        <div className="space-y-1">
+                          {pickup && (
+                            <div className="flex items-start gap-2">
+                              <span className="text-[10px] font-semibold text-muted-foreground uppercase w-10 shrink-0 pt-0.5">Pickup</span>
+                              <span className="text-xs text-foreground">{pickupPlaceName ? `${pickupPlaceName}, ${pickup}` : pickup}</span>
+                            </div>
+                          )}
+                          {deliverMultiStop && deliverExtraStops.filter(s => s.address).map((stop, i) => (
+                            <div key={i} className="flex items-start gap-2">
+                              <span className="text-[10px] font-semibold text-muted-foreground uppercase w-10 shrink-0 pt-0.5">Stop {i + 1}</span>
+                              <span className="text-xs text-foreground">{stop.placeName ? `${stop.placeName}, ${stop.address}` : stop.address}</span>
+                            </div>
+                          ))}
+                          {dropoff && (
+                            <div className="flex items-start gap-2">
+                              <span className="text-[10px] font-semibold text-muted-foreground uppercase w-10 shrink-0 pt-0.5">Dropoff</span>
+                              <span className="text-xs text-foreground">{dropoffPlaceName ? `${dropoffPlaceName}, ${dropoff}` : dropoff}</span>
+                            </div>
+                          )}
+                        </div>
+                      )}
+                    </div>
+                    {/* Estimated Fare */}
+                    {deliveryStep < (isWfhConcierge ? 3 : 5) && (
+                      <div className="flex items-center justify-between py-2.5">
+                        <span className="text-[11px] text-muted-foreground">Estimated Fare</span>
+                        <span className="text-sm font-bold text-foreground">$21.59</span>
+                      </div>
+                    )}
                     {/* Payment */}
                     <div className="py-2.5">
                       <p className="text-[11px] text-muted-foreground mb-1">Payment</p>
@@ -3450,7 +3510,7 @@ const Book = () => {
               </div>
 
               {/* Price / Receipt */}
-              {deliveryStep >= (isWfhConcierge ? 3 : 5) ? (
+              {deliveryStep >= (isWfhConcierge ? 3 : 5) && (
                 <div className="rounded-xl border border-border bg-muted/50 p-4 mb-4">
                   <p className="text-xs font-bold uppercase tracking-wider text-muted-foreground mb-2">Receipt</p>
                   <div className="space-y-1.5 text-sm">
@@ -3487,11 +3547,6 @@ const Book = () => {
                       <span className="text-foreground">$29.31</span>
                     </div>
                   </div>
-                </div>
-              ) : (
-                <div className="flex items-center justify-between px-1 mb-4">
-                  <span className="text-sm text-muted-foreground">Estimated fare</span>
-                  <span className="text-sm font-bold text-foreground">$21.59</span>
                 </div>
               )}
 
