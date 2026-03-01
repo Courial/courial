@@ -215,10 +215,10 @@ const Auth = () => {
     setLoading(false);
   };
 
-  const handleVerifyOtp = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleVerifyOtp = async (otpValue?: string) => {
+    const code = otpValue || otp;
     clearMessages();
-    if (otp.length < 4) return setError("Please enter the 4-digit code.");
+    if (code.length < 4) return setError("Please enter the 4-digit code.");
     setLoading(true);
 
     try {
@@ -228,7 +228,7 @@ const Auth = () => {
         body: JSON.stringify({
           country_code: otpCountryCode,
           phone: otpNationalNumber,
-          otp,
+          otp: code,
           deviceId: deviceID,
         }),
       });
@@ -239,6 +239,9 @@ const Auth = () => {
         setLoading(false);
         return;
       }
+
+      // Show blurred home screen immediately
+      setSigningIn(true);
       
       // Step 1: Get session tokens via raw fetch (reliable, doesn't hang)
       const signInRes = await fetch(`${SUPABASE_URL}/auth/v1/token?grant_type=password`, {
@@ -248,6 +251,7 @@ const Auth = () => {
       });
       const session = await signInRes.json();
       if (!signInRes.ok) {
+        setSigningIn(false);
         setError(session.error_description || session.msg || "Sign in failed");
         setLoading(false);
         return;
@@ -264,16 +268,15 @@ const Auth = () => {
 
       // Step 3: Sync new user to Couriol backend (only for signups where we have user data)
       if (mode === "signup" && name && email) {
-        setSuccessMessage("Finalizing...");
         const authId = session.user?.id || "";
         await syncUserToCourial(authId);
       }
 
-      setVerifySuccess(true);
-      setLoading(false);
-      setTimeout(() => { window.location.href = "/"; }, 1500);
+      // Navigate immediately
+      window.location.href = "/";
     } catch (err) {
       console.error("verify-otp fetch error:", err);
+      setSigningIn(false);
       setError("Network error. Please try again.");
       setLoading(false);
     }
