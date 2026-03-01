@@ -255,6 +255,7 @@ const Book = () => {
   const [acceptedCourial, setAcceptedCourial] = useState<CourialDriver | null>(null);
   const [socketEnabled, setSocketEnabled] = useState(false);
   const [courialCoords, setCourialCoords] = useState<{ lat: number; lng: number } | null>(null);
+  const [courialEta, setCourialEta] = useState<{ duration: string; distance: string } | null>(null);
 
   // Socket: connect after successful booking, listen for courial acceptance
   const handleCourialAccepted = useCallback((driver: CourialDriver) => {
