@@ -132,7 +132,7 @@ const Auth = () => {
       if (!res.ok || data.success === 0 || data.success === false) {
         const errMsg = (data.msg || data.error || "Failed to send OTP").toLowerCase();
         if (errMsg.includes("not found") || errMsg.includes("no user") || errMsg.includes("does not exist")) {
-          setError("No account found. Create one to get started.");
+          setError("No account found.\nCreate one to get started.");
         } else {
           setError(data.msg || data.error || "Failed to send OTP");
         }
@@ -434,7 +434,7 @@ const Auth = () => {
                     <PhoneInput international defaultCountry={defaultCountry as any} value={signinPhone} onChange={setSigninPhone} className="auth-phone-input auth-phone-input--dark" countrySelectComponent={CountrySelect} />
                     {error && (
                       <div className="text-center">
-                        <p className="text-xs text-red-400">{error}</p>
+                        <p className="text-xs text-red-400 whitespace-pre-line">{error}</p>
                         {error.includes("No account found") && (
                           <button type="button" onClick={toggleMode} className="text-xs text-background font-bold hover:underline mt-1">Create an account</button>
                         )}
