@@ -321,12 +321,14 @@ const BookingMap: React.FC<BookingMapProps> = ({ pickupCoords, dropoffCoords, st
     });
 
     // Fit bounds and draw route
-    const markerCount = [pickupCoords, dropoffCoords, stopCoords].filter(Boolean).length + validExtraStops.length;
+    const allCoords = [pickupCoords, dropoffCoords, stopCoords].filter(Boolean) as LatLng[];
+    const markerCount = allCoords.length + validExtraStops.length;
 
-    if (pickupCoords && dropoffCoords) {
+    // Draw a route if we have at least 2 points total
+    const routePoints = [pickupCoords, stopCoords, dropoffCoords].filter(Boolean) as LatLng[];
+    if (routePoints.length >= 2) {
       map.fitBounds(bounds, { top: 80, bottom: 40, left: 40, right: 40 });
 
-      // Draw route using Directions API
       const directionsService = new google.maps.DirectionsService();
       const directionsRenderer = new google.maps.DirectionsRenderer({
         map,
@@ -339,23 +341,20 @@ const BookingMap: React.FC<BookingMapProps> = ({ pickupCoords, dropoffCoords, st
       });
       directionsRendererRef.current = directionsRenderer;
 
-      // Build ordered destinations: pickup → dropoff → extraStops (in order)
-      // All intermediate points are waypoints, last point is destination
-      const allDropoffs: LatLng[] = [dropoffCoords];
-      validExtraStops.forEach(s => allDropoffs.push(s.coords!));
-      
+      const origin = routePoints[0];
+      const finalDest = routePoints[routePoints.length - 1];
       const waypoints: google.maps.DirectionsWaypoint[] = [];
-      if (stopCoords) waypoints.push({ location: stopCoords, stopover: true });
-      // All dropoffs except the last become waypoints
-      for (let i = 0; i < allDropoffs.length - 1; i++) {
-        waypoints.push({ location: allDropoffs[i], stopover: true });
+      // Intermediate route points become waypoints
+      for (let i = 1; i < routePoints.length - 1; i++) {
+        waypoints.push({ location: routePoints[i], stopover: true });
       }
-      const finalDestination = allDropoffs[allDropoffs.length - 1];
+      // Add extra stops as waypoints before final destination
+      validExtraStops.forEach(s => waypoints.push({ location: s.coords!, stopover: true }));
 
       directionsService.route(
         {
-          origin: pickupCoords,
-          destination: finalDestination,
+          origin,
+          destination: finalDest,
           waypoints,
           travelMode: google.maps.TravelMode.DRIVING,
         },
@@ -363,7 +362,6 @@ const BookingMap: React.FC<BookingMapProps> = ({ pickupCoords, dropoffCoords, st
           if (status === "OK" && result) {
             directionsRenderer.setDirections(result);
 
-            // Extract total distance & duration across all legs
             const legs = result.routes[0].legs;
             let totalDistMeters = 0;
             let totalDurSeconds = 0;
@@ -371,10 +369,8 @@ const BookingMap: React.FC<BookingMapProps> = ({ pickupCoords, dropoffCoords, st
               totalDistMeters += leg.distance?.value || 0;
               totalDurSeconds += leg.duration?.value || 0;
             });
-            const miles = (totalDistMeters / 1609.34).toFixed(1);
             const mins = Math.round(totalDurSeconds / 60);
 
-            // Find midpoint of overview_path
             const overviewPath = result.routes[0].overview_path;
             const midIdx = Math.floor(overviewPath.length / 2);
             const midPoint = overviewPath[midIdx];
@@ -395,7 +391,7 @@ const BookingMap: React.FC<BookingMapProps> = ({ pickupCoords, dropoffCoords, st
     } else if (markerCount > 1) {
       map.fitBounds(bounds, { top: 80, bottom: 40, left: 40, right: 40 });
     } else if (markerCount === 1) {
-      const coords = pickupCoords || dropoffCoords || stopCoords!;
+      const coords = allCoords[0];
       map.setCenter(coords);
       map.setZoom(14);
     }

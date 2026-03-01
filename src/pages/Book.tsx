@@ -3795,26 +3795,21 @@ const Book = () => {
         {/* Right Column — Map Placeholder */}
         <div className="hidden md:flex flex-1 relative overflow-hidden">
            {(() => {
-               const isConcierge = selectedService === "concierge";
-               const mapPickup = isConcierge ? (conciergeStartCoords || conciergeStopCoords || conciergeFinalCoords) : pickupCoords;
-               const mapDropoff = isConcierge
-                 ? (conciergeStartCoords ? (conciergeFinalCoords || conciergeStopCoords) : (conciergeStopCoords && conciergeFinalCoords ? conciergeFinalCoords : null))
-                 : dropoffCoords;
-               // Stop marker only when all 3 concierge addresses exist
-               const mapStop = isConcierge && conciergeStartCoords && conciergeStopCoords && conciergeFinalCoords ? conciergeStopCoords : null;
-               const mapStopAddr = mapStop ? conciergeStopAddress : "";
-               const mapStopName = mapStop ? conciergeStopPlaceName : null;
-               const mapPickupAddr = isConcierge ? (conciergeStartAddress || conciergeStopAddress || conciergeFinalAddress) : pickup;
-               const mapDropoffAddr = isConcierge
-                 ? (conciergeStartCoords ? (conciergeFinalAddress || conciergeStopAddress) : (conciergeStopCoords && conciergeFinalCoords ? conciergeFinalAddress : ""))
-                 : dropoff;
-               const mapPickupName = isConcierge ? (conciergeStartCoords ? conciergeStartPlaceName : (conciergeStopCoords ? conciergeStopPlaceName : conciergeFinalPlaceName)) : pickupPlaceName;
-               const mapDropoffName = isConcierge
-                 ? (conciergeStartCoords ? (conciergeFinalCoords ? conciergeFinalPlaceName : conciergeStopPlaceName) : (conciergeStopCoords && conciergeFinalCoords ? conciergeFinalPlaceName : null))
-                 : dropoffPlaceName;
-               const mapVehicle = isConcierge ? conciergeVehicle : selectedVehicle;
-               const mapExtraStops = !isConcierge ? deliverExtraStops.filter(s => s.coords).map(s => ({ coords: s.coords, address: s.address, placeName: s.placeName })) : [];
-               const hasCoords = mapPickup || mapDropoff;
+                const isConcierge = selectedService === "concierge";
+                // For concierge: map each address directly to its correct marker type
+                // Start → green circle (pickup), Stop → blue octagon (stop), Final → red square (dropoff)
+                const mapPickup = isConcierge ? conciergeStartCoords : pickupCoords;
+                const mapDropoff = isConcierge ? conciergeFinalCoords : dropoffCoords;
+                const mapStop = isConcierge ? conciergeStopCoords : null;
+                const mapStopAddr = isConcierge ? conciergeStopAddress : "";
+                const mapStopName = isConcierge ? conciergeStopPlaceName : null;
+                const mapPickupAddr = isConcierge ? conciergeStartAddress : pickup;
+                const mapDropoffAddr = isConcierge ? conciergeFinalAddress : dropoff;
+                const mapPickupName = isConcierge ? conciergeStartPlaceName : pickupPlaceName;
+                const mapDropoffName = isConcierge ? conciergeFinalPlaceName : dropoffPlaceName;
+                const mapVehicle = isConcierge ? conciergeVehicle : selectedVehicle;
+                const mapExtraStops = !isConcierge ? deliverExtraStops.filter(s => s.coords).map(s => ({ coords: s.coords, address: s.address, placeName: s.placeName })) : [];
+                const hasCoords = mapPickup || mapDropoff || mapStop;
                return hasCoords ? (
              <div className="flex-1 relative">
                <BookingMap pickupCoords={mapPickup} dropoffCoords={mapPickup !== mapDropoff ? mapDropoff : null} stopCoords={mapStop} extraStops={mapExtraStops} pickupAddress={mapPickupAddr} dropoffAddress={mapDropoffAddr} stopAddress={mapStopAddr} pickupPlaceName={mapPickupName} dropoffPlaceName={mapDropoffName} stopPlaceName={mapStopName} bookingState={bookingState} vehicleType={mapVehicle} courialCoords={courialCoords} />
