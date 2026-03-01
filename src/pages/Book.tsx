@@ -1816,7 +1816,7 @@ const Book = () => {
                       });
                     }}
                     className={cn(
-                      "flex-1 py-1 rounded-full text-[11px] font-normal transition-all leading-none text-center",
+                      "flex-1 py-1 rounded-full text-[11px] font-normal transition-all leading-none text-center flex items-center justify-center gap-1",
                       conciergeIsRemote
                         ? "border border-primary text-foreground"
                         : "border border-border/60 bg-background text-foreground hover:border-foreground/50"
