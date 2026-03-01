@@ -308,27 +308,13 @@ export const SavedAddressModal = ({
                     <p className="text-xs text-background/40 text-center mb-4">No favorite places saved yet</p>
                   )}
 
-                  {/* Save (current form) + Add buttons */}
-                  <div className="flex gap-2">
-                    <Button
-                      onClick={handleSave}
-                      disabled={!canSave}
-                      className="flex-1 rounded-lg h-10 text-sm font-semibold bg-transparent border border-background/30 text-background hover:bg-background/10 disabled:opacity-40"
-                    >
-                      Save
-                    </Button>
-                    <Button
-                      onClick={() => { setAddModalOpen(true); }}
-                      className="flex-1 rounded-lg h-10 text-sm font-semibold bg-transparent border border-background/30 text-background hover:bg-background/10"
-                    >
-                      Add
-                    </Button>
-                  </div>
-
-                  {/* Inline address form */}
-                  <div className="mt-4 border-t border-background/20 pt-4">
-                    <AddressForm onSubmit={handleSave} submitLabel="Save" />
-                  </div>
+                  {/* Add button */}
+                  <Button
+                    onClick={() => setAddModalOpen(true)}
+                    className="w-full rounded-lg h-10 text-sm font-semibold bg-transparent border border-background/30 text-background hover:bg-background/10"
+                  >
+                    Add
+                  </Button>
                 </>
               )}
             </div>
