@@ -1,6 +1,7 @@
 import { createContext, useContext, useState, useEffect, useRef } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import type { User } from "@supabase/supabase-js";
+import { loadSavedAddressesFromDB } from "@/components/SavedAddressModal";
 import React from "react";
 
 const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
