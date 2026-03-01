@@ -3401,7 +3401,7 @@ const Book = () => {
                       <div className="py-2.5">
                         <div className="flex items-center justify-between mb-1">
                           <p className="text-xs font-medium text-foreground">Expenses</p>
-                          <span className="text-xs font-medium text-foreground">
+                          <span className="text-[11px] text-muted-foreground">
                             ${deliverExpenseItems.filter(e => e.description.trim()).reduce((sum, e) => sum + Number(e.amount), 0).toLocaleString()}{deliverAllowOverage && Number(deliverOverageLimit) > 0 ? ` ($${deliverOverageLimit})` : ""}
                           </span>
                         </div>
