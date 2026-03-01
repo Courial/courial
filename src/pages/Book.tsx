@@ -3625,63 +3625,7 @@ const Book = () => {
                 </div>
               )}
 
-              {/* Chat Box */}
-              <AnimatePresence>
-                {showChat && (
-                  <motion.div
-                    initial={{ opacity: 0, height: 0 }}
-                    animate={{ opacity: 1, height: "auto" }}
-                    exit={{ opacity: 0, height: 0 }}
-                    transition={{ duration: 0.25 }}
-                    className="overflow-hidden mb-3"
-                  >
-                    <div className="rounded-xl border border-border bg-background">
-                      <div className="p-3 border-b border-border">
-                        <p className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Chat with Marcus</p>
-                      </div>
-                      <div className="p-3 space-y-2.5 max-h-[200px] overflow-y-auto">
-                        {chatMessages.map((msg, i) => (
-                          <div key={i} className={cn("flex", msg.from === "user" ? "justify-end" : "justify-start")}>
-                            <div
-                              className={cn(
-                                "max-w-[75%] rounded-2xl px-3 py-2",
-                                msg.from === "user"
-                                  ? "bg-primary text-primary-foreground rounded-br-md"
-                                  : "bg-muted text-foreground rounded-bl-md"
-                              )}
-                            >
-                              <p className="text-sm leading-snug">{msg.text}</p>
-                              <p className={cn(
-                                "text-[10px] mt-0.5",
-                                msg.from === "user" ? "text-primary-foreground/60" : "text-muted-foreground"
-                              )}>{msg.time}</p>
-                            </div>
-                          </div>
-                        ))}
-                        <div ref={chatEndRef} />
-                      </div>
-                      <div className="p-2 border-t border-border flex gap-2">
-                        <Input
-                          value={chatInput}
-                          onChange={(e) => setChatInput(e.target.value)}
-                          onKeyDown={(e) => e.key === "Enter" && handleSendChat()}
-                          placeholder="Type a message..."
-                          className="text-sm h-9"
-                        />
-                        <button
-                          onClick={handleSendChat}
-                          disabled={!chatInput.trim()}
-                          className="shrink-0 w-9 h-9 rounded-lg bg-primary text-primary-foreground flex items-center justify-center hover:bg-primary/90 transition-colors disabled:opacity-40"
-                        >
-                          <Send className="w-4 h-4" />
-                        </button>
-                      </div>
-                    </div>
-                  </motion.div>
-                )}
-              </AnimatePresence>
 
-              
             </motion.div>
           </div>
         )}
