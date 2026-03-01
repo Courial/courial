@@ -3313,40 +3313,22 @@ const Book = () => {
                 </button>
                 {showOrderDetails && (
                   <div className="mt-3 space-y-0 divide-y divide-border text-sm">
-                    {/* Row 1: Service & Category */}
-                    <div className="grid grid-cols-2 gap-4 py-2.5">
-                      <div>
-                        <p className="text-[11px] text-muted-foreground mb-0.5">Service</p>
-                        <p className="text-sm font-semibold text-foreground capitalize">{selectedService || "Deliver"}</p>
-                      </div>
-                      {selectedService === "concierge" && conciergeCategory && (
+                    {/* Row 1: Rate (concierge only) */}
+                    {selectedService === "concierge" && conciergeServiceMode && (
+                      <div className="grid grid-cols-2 gap-4 py-2.5">
                         <div>
-                          <p className="text-[11px] text-muted-foreground mb-0.5">Category</p>
-                          <p className="text-sm font-semibold text-foreground">{conciergeCategory.replace(/-/g, " ").replace(/\b\w/g, c => c.toUpperCase())}</p>
+                          <p className="text-[11px] text-muted-foreground mb-0.5">Rate</p>
+                          <p className="text-sm font-semibold text-foreground capitalize">{conciergeServiceMode}</p>
                         </div>
-                      )}
-                      {selectedService !== "concierge" && selectedVehicle && (
+                      </div>
+                    )}
+                    {/* Row: Vehicle (non-concierge) */}
+                    {selectedService !== "concierge" && selectedVehicle && (
+                      <div className="grid grid-cols-2 gap-4 py-2.5">
                         <div>
                           <p className="text-[11px] text-muted-foreground mb-0.5">Vehicle</p>
                           <p className="text-sm font-semibold text-foreground capitalize">{selectedVehicle}</p>
                         </div>
-                      )}
-                    </div>
-                    {/* Row 2: Rate & Remote (concierge) or Sub-category */}
-                    {selectedService === "concierge" && (conciergeServiceMode || conciergeIsRemote) && (
-                      <div className="grid grid-cols-2 gap-4 py-2.5">
-                        {conciergeServiceMode && (
-                          <div>
-                            <p className="text-[11px] text-muted-foreground mb-0.5">Rate</p>
-                            <p className="text-sm font-semibold text-foreground capitalize">{conciergeServiceMode}</p>
-                          </div>
-                        )}
-                        {conciergeIsRemote && (
-                          <div>
-                            <p className="text-[11px] text-muted-foreground mb-0.5">Remote</p>
-                            <p className="text-sm font-semibold text-foreground">Yes (WFH)</p>
-                          </div>
-                        )}
                       </div>
                     )}
                     {/* Row: Scheduled */}
