@@ -3115,11 +3115,15 @@ const Book = () => {
                 <p className="text-sm text-muted-foreground mt-0.5">
                   {selectedService === "concierge" && conciergeCategory
                     ? `${conciergeCategory.replace(/-/g, " ").replace(/\b\w/g, c => c.toUpperCase())}${conciergeSubCategory ? ` • ${conciergeSubCategory}` : ""}${isWfhConcierge ? " • WFH Service" : ""}`
-                    : !isWfhConcierge ? "4 mins away • 2:01 AM dropoff" : "WFH Service"
+                    : !isWfhConcierge
+                      ? courialEta ? `${courialEta.duration} away • ${new Date(Date.now() + parseInt(courialEta.duration) * 60000).toLocaleTimeString([], { hour: "numeric", minute: "2-digit" })} dropoff` : "Calculating ETA..."
+                      : "WFH Service"
                   }
                 </p>
                 {selectedService === "concierge" && !isWfhConcierge && (
-                  <p className="text-sm font-semibold text-muted-foreground mt-0.5">4 mins away • 2.3 mi</p>
+                  <p className="text-sm font-semibold text-muted-foreground mt-0.5">
+                    {courialEta ? `${courialEta.duration} away • ${courialEta.distance}` : "Calculating..."}
+                  </p>
                 )}
               </div>
 
