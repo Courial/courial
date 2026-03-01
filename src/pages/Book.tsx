@@ -318,21 +318,32 @@ const Book = () => {
     onStatusChange: handleStatusChange,
   });
   const courialProfiles = useMemo(() => [
-    "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop&crop=face",
-    "https://images.unsplash.com/photo-1494790108755-2616b612b786?w=200&h=200&fit=crop&crop=face",
-    "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=200&h=200&fit=crop&crop=face",
-    "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=200&h=200&fit=crop&crop=face",
-    "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=200&h=200&fit=crop&crop=face",
-    "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=200&h=200&fit=crop&crop=face",
-    "https://images.unsplash.com/photo-1552058544-f2b08422138a?w=200&h=200&fit=crop&crop=face",
-    "https://images.unsplash.com/photo-1499952127939-9bbf5af6c51c?w=200&h=200&fit=crop&crop=face",
-    "https://images.unsplash.com/photo-1566492031773-4f4e44671857?w=200&h=200&fit=crop&crop=face",
-    "https://images.unsplash.com/photo-1580489944761-15a19d654956?w=200&h=200&fit=crop&crop=face",
+    "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300&h=400&fit=crop&crop=face&facepad=2",
+    "https://images.unsplash.com/photo-1494790108755-2616b612b786?w=300&h=400&fit=crop&crop=face&facepad=2",
+    "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=300&h=400&fit=crop&crop=face&facepad=2",
+    "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=300&h=400&fit=crop&crop=face&facepad=2",
+    "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=300&h=400&fit=crop&crop=face&facepad=2",
+    "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=300&h=400&fit=crop&crop=face&facepad=2",
+    "https://images.unsplash.com/photo-1552058544-f2b08422138a?w=300&h=400&fit=crop&crop=face&facepad=2",
+    "https://images.unsplash.com/photo-1499952127939-9bbf5af6c51c?w=300&h=400&fit=crop&crop=face&facepad=2",
+    "https://images.unsplash.com/photo-1566492031773-4f4e44671857?w=300&h=400&fit=crop&crop=face&facepad=2",
+    "https://images.unsplash.com/photo-1580489944761-15a19d654956?w=300&h=400&fit=crop&crop=face&facepad=2",
   ], []);
 
-  // Use real courial photos when available, otherwise stock
+  // Use real courial photos when available (filter out non-face/placeholder images), otherwise stock
   const activeProfiles = useMemo(() => {
-    if (nearbyCourials.length > 0) return nearbyCourials.map(c => c.image);
+    if (nearbyCourials.length > 0) {
+      const validImages = nearbyCourials
+        .map(c => c.image)
+        .filter(img => {
+          if (!img) return false;
+          const lower = img.toLowerCase();
+          // Skip placeholder, default, or non-portrait images
+          if (lower.includes("placeholder") || lower.includes("default") || lower.includes("avatar") || lower.includes("no-image") || lower.includes("noimage")) return false;
+          return true;
+        });
+      if (validImages.length > 0) return validImages;
+    }
     return courialProfiles;
   }, [nearbyCourials, courialProfiles]);
 
@@ -2940,103 +2951,86 @@ const Book = () => {
           </div>
           )}
 
-        {/* Loading state — full animation in sidebar when no map (remote/WFH) */}
-        {bookingState === "loading" && (() => {
-          const isConcierge = selectedService === "concierge";
-          const hasAnyConciergeCoords = conciergeStartCoords || conciergeStopCoords || conciergeFinalCoords;
-          const showSidebarAnimation = isConcierge && !hasAnyConciergeCoords;
-          
-          if (showSidebarAnimation) {
-            return (
-              <div className="p-6 flex flex-col items-center justify-center h-full gap-6">
-                {/* Remote banner with current search phase */}
-                <div className="w-full rounded-2xl bg-muted/60 border border-border px-5 py-4 text-center mb-2">
-                  <div className="flex items-center justify-center gap-2 mb-1">
-                    <div className="w-2 h-2 rounded-full bg-primary animate-pulse" />
-                    <span className="text-xs font-semibold text-primary uppercase tracking-wider">Remote Task</span>
-                  </div>
-                  <p className="text-sm text-muted-foreground">This is a Work-From-Home Concierge service. No travel required.</p>
-                  {wfhSearchPhase && (
-                    <div className="mt-2 pt-2 border-t border-border/50">
-                      <p className="text-[11px] text-muted-foreground">
-                        {wfhSearchPhase === "home" && "🏠 Searching near your Home address…"}
-                        {wfhSearchPhase === "work" && "🏢 Searching near your Work address…"}
-                        {wfhSearchPhase === "area_code" && "📍 Searching your general area…"}
-                        {wfhSearchPhase === "exhausted" && "No Concierges found nearby."}
-                      </p>
-                    </div>
-                  )}
-                </div>
+        {/* Loading state — same layout as active, with bento grid of Courial photos */}
+        {bookingState === "loading" && (
+          <div className="p-8 h-full">
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.4 }}
+              className="flex flex-col h-full"
+            >
+              {/* Header — same as active state */}
+              <div className="text-center mb-6">
+                <h2 className="text-lg font-bold text-foreground">
+                  {selectedService === "concierge" ? "Concierge Task" : selectedService === "valet" ? "Valet Service" : "Delivery"}
+                </h2>
+                <p className="text-sm text-muted-foreground mt-0.5">
+                  {selectedService === "concierge" && conciergeCategory
+                    ? `${conciergeCategory.replace(/-/g, " ").replace(/\b\w/g, c => c.toUpperCase())}${conciergeSubCategory ? ` • ${conciergeSubCategory}` : ""}`
+                    : selectedService === "valet" ? "Valet Service" : "Delivery"}
+                </p>
+              </div>
 
-                {/* Circular Progress with flashing profile photos */}
-                <div className="relative w-28 h-28">
-                  <svg className="w-28 h-28 -rotate-90" viewBox="0 0 112 112">
-                    <circle cx="56" cy="56" r="50" fill="none" stroke="hsl(var(--muted))" strokeWidth="4" />
-                    <circle
-                      cx="56" cy="56" r="50" fill="none"
-                      stroke="hsl(var(--primary))"
-                      strokeWidth="4"
-                      strokeLinecap="round"
-                      strokeDasharray={2 * Math.PI * 50}
-                      strokeDashoffset={2 * Math.PI * 50 * (1 - loadingProgress / 100)}
-                      className="transition-all duration-100"
+              {/* Bento grid of Courial photos */}
+              <div className="grid grid-cols-3 gap-2 mb-5">
+                {activeProfiles.slice(0, 9).map((img, i) => (
+                  <motion.div
+                    key={i}
+                    initial={{ opacity: 0, scale: 0.85 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ duration: 0.35, delay: i * 0.06 }}
+                    className={cn(
+                      "relative overflow-hidden rounded-xl aspect-square",
+                      i === currentProfileIndex && "ring-2 ring-primary ring-offset-2 ring-offset-background"
+                    )}
+                  >
+                    <img
+                      src={img}
+                      alt="Courial"
+                      className="w-full h-full object-cover"
                     />
-                  </svg>
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <AnimatePresence mode="wait">
-                      <motion.img
-                        key={currentProfileIndex}
-                        src={activeProfiles[currentProfileIndex]}
-                        alt="Concierge nearby"
-                        initial={{ opacity: 0, scale: 0.8 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        exit={{ opacity: 0, scale: 0.8 }}
-                        transition={{ duration: 0.25 }}
-                        className="w-[92px] h-[92px] rounded-full object-cover"
+                    {/* Scanning shimmer overlay on active photo */}
+                    {i === currentProfileIndex && (
+                      <motion.div
+                        className="absolute inset-0 bg-gradient-to-b from-primary/20 via-transparent to-primary/20"
+                        animate={{ opacity: [0.3, 0.7, 0.3] }}
+                        transition={{ duration: 1.5, repeat: Infinity }}
                       />
-                    </AnimatePresence>
-                  </div>
-                </div>
+                    )}
+                  </motion.div>
+                ))}
+              </div>
 
-                {/* Phase indicator dots */}
-                {wfhSearchPhase && (
-                  <div className="flex items-center gap-2">
-                    {["home", "work", "area_code"].map((phase) => (
-                      <div
-                        key={phase}
-                        className={cn(
-                          "w-2 h-2 rounded-full transition-colors duration-300",
-                          wfhSearchPhase === phase ? "bg-primary" :
-                          (["home", "work", "area_code"].indexOf(phase) < ["home", "work", "area_code"].indexOf(wfhSearchPhase)) ? "bg-primary/40" : "bg-muted-foreground/20"
-                        )}
-                      />
-                    ))}
-                  </div>
-                )}
-
-                <div className="text-center">
-                  <h2 className="text-lg font-bold text-foreground mb-1">Finding the perfect Concierge for your request.</h2>
+              {/* Standby text */}
+              <div className="text-center mb-6">
+                <p className="text-sm text-muted-foreground">
+                  Stand by, we're finding the best Courial for this task.
+                </p>
+                {/* Progress bar */}
+                <div className="mt-4 w-full h-1 rounded-full bg-muted overflow-hidden">
+                  <motion.div
+                    className="h-full bg-primary rounded-full"
+                    style={{ width: `${loadingProgress}%` }}
+                    transition={{ duration: 0.3 }}
+                  />
                 </div>
+              </div>
+
+              {/* Cancel button */}
+              <div className="mt-auto flex justify-center">
                 <Button
                   variant="outline"
                   size="lg"
                   onClick={handleCancelBooking}
-                  className="rounded-full px-10 bg-muted text-foreground border-border hover:bg-muted/80"
+                  className="rounded-full px-10"
                 >
                   Cancel
                 </Button>
               </div>
-            );
-          }
-
-          return (
-            <div className="p-8 flex flex-col items-center justify-center h-full">
-              <div className="text-center text-muted-foreground text-sm">
-                {isConcierge ? "Finding your Concierge…" : selectedService === "valet" ? "Connecting with a Valet…" : "Searching nearby Courials…"}
-              </div>
-            </div>
-          );
-        })()}
+            </motion.div>
+          </div>
+        )}
 
         {/* Active Tracking State */}
         {bookingState === "active" && (
@@ -3687,75 +3681,7 @@ const Book = () => {
              <div className="flex-1 relative">
                <BookingMap pickupCoords={mapPickup} dropoffCoords={mapPickup !== mapDropoff ? mapDropoff : null} stopCoords={mapStop} extraStops={mapExtraStops} pickupAddress={mapPickupAddr} dropoffAddress={mapDropoffAddr} stopAddress={mapStopAddr} pickupPlaceName={mapPickupName} dropoffPlaceName={mapDropoffName} stopPlaceName={mapStopName} bookingState={bookingState} vehicleType={mapVehicle} courialCoords={courialCoords} />
               
-              {/* Loading Overlay Popup */}
-              <AnimatePresence>
-                {bookingState === "loading" && (
-                  <motion.div
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                    transition={{ duration: 0.3 }}
-                    className="absolute inset-0 z-20 flex items-center justify-center"
-                    style={{ backgroundColor: "hsla(0, 0%, 0%, 0.35)", backdropFilter: "blur(6px)" }}
-                  >
-                    <motion.div
-                      initial={{ opacity: 0, scale: 0.9 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      exit={{ opacity: 0, scale: 0.9 }}
-                      transition={{ duration: 0.3, delay: 0.1 }}
-                      className="rounded-3xl p-10 flex flex-col items-center gap-6 max-w-sm mx-4"
-                      style={{ backgroundColor: "hsla(0, 0%, 0%, 0.3)", backdropFilter: "blur(20px)" }}
-                    >
-                      {/* Circular Progress with flashing profile photos */}
-                      <div className="relative w-28 h-28">
-                        <svg className="w-28 h-28 -rotate-90" viewBox="0 0 112 112">
-                          <circle cx="56" cy="56" r="50" fill="none" stroke="hsla(0,0%,100%,0.15)" strokeWidth="4" />
-                          <circle
-                            cx="56" cy="56" r="50" fill="none"
-                            stroke="hsl(var(--primary))"
-                            strokeWidth="4"
-                            strokeLinecap="round"
-                            strokeDasharray={2 * Math.PI * 50}
-                            strokeDashoffset={2 * Math.PI * 50 * (1 - loadingProgress / 100)}
-                            className="transition-all duration-100"
-                          />
-                        </svg>
-                        <div className="absolute inset-0 flex items-center justify-center">
-                          <AnimatePresence mode="wait">
-                            <motion.img
-                              key={currentProfileIndex}
-                              src={activeProfiles[currentProfileIndex]}
-                              alt="Courial nearby"
-                              initial={{ opacity: 0, scale: 0.8 }}
-                              animate={{ opacity: 1, scale: 1 }}
-                              exit={{ opacity: 0, scale: 0.8 }}
-                              transition={{ duration: 0.25 }}
-                              className="w-[92px] h-[92px] rounded-full object-cover"
-                            />
-                          </AnimatePresence>
-                        </div>
-                      </div>
-                      <div className="text-center">
-                        <h2 className="text-xl font-bold text-white mb-1">
-                          {selectedService === "concierge"
-                            ? "Finding the perfect Concierge for your request."
-                            : selectedService === "valet"
-                            ? "Connecting you with a nearby Valet—right now."
-                            : "Connecting you with the best available Courial—right now."}
-                        </h2>
-                      </div>
-                      <Button
-                        variant="outline"
-                        size="lg"
-                        onClick={handleCancelBooking}
-                        className="mt-2 rounded-full px-10 bg-black/75 text-white border-0 hover:bg-black/90 hover:text-white"
-                      >
-                        Cancel
-                      </Button>
-                    </motion.div>
-                  </motion.div>
-                )}
-              </AnimatePresence>
+              {/* Loading Overlay removed — searching UI is now in sidebar */}
             </div>
           ) : (
             <div className="flex-1 overflow-y-auto">
