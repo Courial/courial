@@ -3338,7 +3338,7 @@ const Book = () => {
                     </div>
                     {/* Row: Order Value & Protection */}
                     {(deliverOrderValue || conciergeOrderValue) && (
-                      <div className="grid grid-cols-2 gap-4 py-2.5">
+                      <div className="grid grid-cols-3 gap-4 py-2.5">
                         <div>
                           <p className="text-[11px] text-muted-foreground mb-0.5">Order Value</p>
                           <p className="text-sm font-medium text-foreground">${deliverOrderValue || conciergeOrderValue}</p>
