@@ -3304,8 +3304,8 @@ const Book = () => {
                       <div className="flex items-start gap-3">
                         <div className="flex-shrink-0 w-2.5 h-2.5 rounded-full bg-green-500 mt-[5px]" />
                         <div className="min-w-0">
-                          {conciergeStartPlaceName && <p className="text-sm font-semibold text-foreground leading-tight">{conciergeStartPlaceName}</p>}
-                          <p className="text-xs text-muted-foreground truncate">{conciergeStartAddress}</p>
+                          
+                          <p className="text-xs text-muted-foreground">{conciergeStartPlaceName ? `${conciergeStartPlaceName}, ${conciergeStartAddress}` : conciergeStartAddress}</p>
                         </div>
                       </div>
                     )}
@@ -3313,8 +3313,7 @@ const Book = () => {
                       <div className="flex items-start gap-3">
                         <div className="flex-shrink-0 w-2.5 h-2.5 rounded-sm bg-primary/60 mt-[5px]" />
                         <div className="min-w-0">
-                          {conciergeStopPlaceName && <p className="text-sm font-semibold text-foreground leading-tight">{conciergeStopPlaceName}</p>}
-                          <p className="text-xs text-muted-foreground truncate">{conciergeStopAddress}</p>
+                          <p className="text-xs text-muted-foreground">{conciergeStopPlaceName ? `${conciergeStopPlaceName}, ${conciergeStopAddress}` : conciergeStopAddress}</p>
                         </div>
                       </div>
                     )}
@@ -3322,8 +3321,7 @@ const Book = () => {
                       <div className="flex items-start gap-3">
                         <div className="flex-shrink-0 w-2.5 h-2.5 bg-red-500 mt-[5px]" />
                         <div className="min-w-0">
-                          {conciergeFinalPlaceName && <p className="text-sm font-semibold text-foreground leading-tight">{conciergeFinalPlaceName}</p>}
-                          <p className="text-xs text-muted-foreground truncate">{conciergeFinalAddress}</p>
+                          <p className="text-xs text-muted-foreground">{conciergeFinalPlaceName ? `${conciergeFinalPlaceName}, ${conciergeFinalAddress}` : conciergeFinalAddress}</p>
                         </div>
                       </div>
                     )}
@@ -3333,24 +3331,21 @@ const Book = () => {
                   <div className="flex items-start gap-3">
                     <div className="flex-shrink-0 w-2.5 h-2.5 rounded-full bg-green-500 mt-[5px]" />
                     <div className="min-w-0">
-                      {pickupPlaceName && <p className="text-sm font-semibold text-foreground leading-tight">{pickupPlaceName}</p>}
-                      <p className="text-xs text-muted-foreground truncate">{pickup}</p>
+                      <p className="text-xs text-muted-foreground">{pickupPlaceName ? `${pickupPlaceName}, ${pickup}` : pickup}</p>
                     </div>
                   </div>
                   {deliverMultiStop && deliverExtraStops.length > 0 && deliverExtraStops.filter(s => s.address).map((stop, i) => (
                     <div key={i} className="flex items-start gap-3">
                       <div className="flex-shrink-0 w-2.5 h-2.5 rounded-sm bg-primary/60 mt-[5px]" />
                       <div className="min-w-0">
-                        {stop.placeName && <p className="text-sm font-semibold text-foreground leading-tight">{stop.placeName}</p>}
-                        <p className="text-xs text-muted-foreground truncate">{stop.address}</p>
+                        <p className="text-xs text-muted-foreground">{stop.placeName ? `${stop.placeName}, ${stop.address}` : stop.address}</p>
                       </div>
                     </div>
                   ))}
                   <div className="flex items-start gap-3">
                     <div className="flex-shrink-0 w-2.5 h-2.5 bg-red-500 mt-[5px]" />
                     <div className="min-w-0">
-                      {dropoffPlaceName && <p className="text-sm font-semibold text-foreground leading-tight">{dropoffPlaceName}</p>}
-                      <p className="text-xs text-muted-foreground truncate">{dropoff}</p>
+                      <p className="text-xs text-muted-foreground">{dropoffPlaceName ? `${dropoffPlaceName}, ${dropoff}` : dropoff}</p>
                     </div>
                   </div>
                 </div>
@@ -3463,7 +3458,7 @@ const Book = () => {
                     </div>
                     {/* Roadside vehicle details */}
                     {selectedService === "concierge" && conciergeCategory === "roadside-assistance" && (roadsideVehicleMake || roadsideVehicleModel || roadsideVehicleColor || roadsideLicensePlate) && (
-                      <div className="grid grid-cols-2 gap-4 py-2.5">
+                      <div className="grid grid-cols-2 gap-4 py-2.5 border-t-0">
                         {roadsideVehicleMake && (
                           <div>
                             <p className="text-xs font-medium text-foreground mb-0.5">Make</p>
@@ -3494,6 +3489,33 @@ const Book = () => {
                             <p className="text-[11px] text-muted-foreground">{roadsideSafeLocation ? "Yes" : "No"}</p>
                           </div>
                         )}
+                      </div>
+                    )}
+                    {/* Expenses */}
+                    {deliverHasExpenses && deliverExpenseItems.some(e => e.description.trim()) && (
+                      <div className="py-2.5">
+                        <div className="flex items-center justify-between mb-1">
+                          <p className="text-xs font-medium text-foreground">Expenses</p>
+                          <span className="text-[11px] text-muted-foreground">
+                            ${deliverExpenseItems.filter(e => e.description.trim()).reduce((sum, e) => sum + Number(e.amount), 0).toLocaleString()}{deliverAllowOverage && Number(deliverOverageLimit) > 0 ? ` ($${deliverOverageLimit})` : ""}
+                          </span>
+                        </div>
+                        {deliverExpenseItems.filter(e => e.description.trim()).map((e, i) => (
+                          <p key={i} className="text-[11px] text-muted-foreground leading-relaxed">{e.description}</p>
+                        ))}
+                      </div>
+                    )}
+                    {conciergeHasExpenses && conciergeExpenseItems.some(e => e.description.trim()) && (
+                      <div className="py-2.5">
+                        <div className="flex items-center justify-between mb-1">
+                          <p className="text-xs font-medium text-foreground">Expenses</p>
+                          <span className="text-[11px] text-muted-foreground">
+                            ${conciergeExpenseItems.filter(e => e.description.trim()).reduce((sum, e) => sum + Number(e.amount), 0).toLocaleString()}{conciergeAllowOverage && Number(conciergeOverageLimit) > 0 ? ` ($${conciergeOverageLimit})` : ""}
+                          </span>
+                        </div>
+                        {conciergeExpenseItems.filter(e => e.description.trim()).map((e, i) => (
+                          <p key={i} className="text-[11px] text-muted-foreground leading-relaxed">{e.description}</p>
+                        ))}
                       </div>
                     )}
                     {/* Row: Order Value & Protection */}
@@ -3553,34 +3575,6 @@ const Book = () => {
                             <p className="text-[11px] text-muted-foreground">Yes</p>
                           </div>
                         )}
-                      </div>
-                    )}
-                    
-                    {/* Expenses */}
-                    {deliverHasExpenses && deliverExpenseItems.some(e => e.description.trim()) && (
-                      <div className="py-2.5">
-                        <div className="flex items-center justify-between mb-1">
-                          <p className="text-xs font-medium text-foreground">Expenses</p>
-                          <span className="text-[11px] text-muted-foreground">
-                            ${deliverExpenseItems.filter(e => e.description.trim()).reduce((sum, e) => sum + Number(e.amount), 0).toLocaleString()}{deliverAllowOverage && Number(deliverOverageLimit) > 0 ? ` ($${deliverOverageLimit})` : ""}
-                          </span>
-                        </div>
-                        {deliverExpenseItems.filter(e => e.description.trim()).map((e, i) => (
-                          <p key={i} className="text-[11px] text-muted-foreground leading-relaxed">{e.description}</p>
-                        ))}
-                      </div>
-                    )}
-                    {conciergeHasExpenses && conciergeExpenseItems.some(e => e.description.trim()) && (
-                      <div className="py-2.5">
-                        <div className="flex items-center justify-between mb-1">
-                          <p className="text-xs font-medium text-foreground">Expenses</p>
-                          <span className="text-[11px] text-muted-foreground">
-                            ${conciergeExpenseItems.filter(e => e.description.trim()).reduce((sum, e) => sum + Number(e.amount), 0).toLocaleString()}{conciergeAllowOverage && Number(conciergeOverageLimit) > 0 ? ` ($${conciergeOverageLimit})` : ""}
-                          </span>
-                        </div>
-                        {conciergeExpenseItems.filter(e => e.description.trim()).map((e, i) => (
-                          <p key={i} className="text-[11px] text-muted-foreground leading-relaxed">{e.description}</p>
-                        ))}
                       </div>
                     )}
                     {/* Notes */}
