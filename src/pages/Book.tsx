@@ -3304,7 +3304,7 @@ const Book = () => {
                       <div className="flex items-start gap-3">
                         <div className="flex-shrink-0 w-2.5 h-2.5 rounded-full bg-green-500 mt-[5px]" />
                         <div className="min-w-0">
-                          {conciergeStartPlaceName && <p className="text-sm font-semibold text-foreground leading-tight">{conciergeStartPlaceName}</p>}
+                          
                           <p className="text-xs text-muted-foreground">{conciergeStartPlaceName ? `${conciergeStartPlaceName}, ${conciergeStartAddress}` : conciergeStartAddress}</p>
                         </div>
                       </div>
