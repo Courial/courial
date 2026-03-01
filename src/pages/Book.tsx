@@ -3478,39 +3478,16 @@ const Book = () => {
               )}
 
 
-              {/* Action Buttons */}
-              <div className="space-y-2 mb-3">
-                {deliveryStep < (isWfhConcierge ? 3 : 5) && (
-                  <button
-                    onClick={() => setDeliveryStep((s) => Math.min(s + 1, isWfhConcierge ? 3 : 5))}
-                    className="w-full py-3 rounded-full text-sm font-semibold text-background bg-foreground hover:bg-foreground/90 transition-colors"
-                  >
-                    {isWfhConcierge
-                      ? ["Begin Task", "Complete Task", "Finish"][deliveryStep]
-                      : selectedService === "concierge"
-                      ? ["En Route", "Arrive", "Begin Task", "Complete Task", "Finish"][deliveryStep]
-                      : selectedService === "valet"
-                      ? ["En Route", "Arrive", "Take Vehicle", "Park Vehicle", "Finish"][deliveryStep]
-                      : ["Arrive at Pickup", "Pick Up Package", "Arrive at Drop-off", "Drop Off Package", "Complete Order"][deliveryStep]}
-                  </button>
-                )}
-                {deliveryStep < (isWfhConcierge ? 3 : 5) && (
+              {/* Cancel button */}
+              {deliveryStep < (isWfhConcierge ? 3 : 5) && (
+                <div className="mb-3">
                   <button
                     onClick={handleCancelBooking}
                     className="w-full py-3 rounded-full text-sm font-semibold text-muted-foreground bg-background border border-foreground/20 hover:bg-muted/50 transition-colors"
                   >
                     Cancel {selectedService === "concierge" ? "Concierge" : selectedService === "valet" ? "Valet" : "Delivery"}
                   </button>
-                )}
-              </div>
-
-              {deliveryStep >= (isWfhConcierge ? 3 : 5) && (
-                <button
-                  onClick={handleCancelBooking}
-                  className="w-full py-3 rounded-full text-sm font-semibold text-background bg-foreground hover:bg-foreground/90 transition-colors mb-3"
-                >
-                  Done
-                </button>
+                </div>
               )}
 
               {/* Chat Box */}
