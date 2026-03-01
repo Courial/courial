@@ -3270,37 +3270,6 @@ const Book = () => {
                   <ChevronDown className={cn("w-3.5 h-3.5 text-muted-foreground transition-transform", showOrderDetails && "rotate-180")} />
                 </button>
                 {showOrderDetails && <div className="space-y-1.5 text-sm mt-2">
-                  {/* Service */}
-                  <div className="flex justify-between">
-                    <span className="text-muted-foreground">Service</span>
-                    <span className="text-foreground capitalize">{selectedService}</span>
-                  </div>
-                  {/* Vehicle */}
-                  {selectedService === "deliver" && selectedVehicle && (
-                    <div className="flex justify-between">
-                      <span className="text-muted-foreground">Vehicle</span>
-                      <span className="text-foreground capitalize">{selectedVehicle}</span>
-                    </div>
-                  )}
-                  {selectedService === "concierge" && conciergeVehicle && (
-                    <div className="flex justify-between">
-                      <span className="text-muted-foreground">Vehicle</span>
-                      <span className="text-foreground capitalize">{conciergeVehicle === "none" ? "No vehicle" : conciergeVehicle}</span>
-                    </div>
-                  )}
-                  {/* Concierge category */}
-                  {selectedService === "concierge" && conciergeCategory && (
-                    <div className="flex justify-between">
-                      <span className="text-muted-foreground">Category</span>
-                      <span className="text-foreground capitalize">{conciergeCategory.replace(/-/g, " ")}</span>
-                    </div>
-                  )}
-                  {selectedService === "concierge" && conciergeSubCategory && (
-                    <div className="flex justify-between">
-                      <span className="text-muted-foreground">Sub-Category</span>
-                      <span className="text-foreground capitalize">{conciergeSubCategory.replace(/-/g, " ")}</span>
-                    </div>
-                  )}
                   {/* Service mode */}
                   {selectedService === "concierge" && conciergeServiceMode && (
                     <div className="flex justify-between">
