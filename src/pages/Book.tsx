@@ -3439,7 +3439,7 @@ const Book = () => {
                     )}
                     {/* Address Information */}
                     <div className="py-2.5">
-                      <p className="text-[11px] text-muted-foreground mb-1">Address</p>
+                      <p className="text-xs font-medium text-foreground mb-1">Address</p>
                       {selectedService === "concierge" && isWfhConcierge ? (
                         <p className="text-xs text-foreground">🏠 WFH Service (No Address required)</p>
                       ) : selectedService === "concierge" ? (
