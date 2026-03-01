@@ -222,12 +222,12 @@ export const SavedAddressModal = ({
     }
   };
 
-  const AddressForm = ({ onSubmit, submitLabel }: { onSubmit: () => void; submitLabel: string }) => (
+  const addressFormJSX = (submitLabel: string, onSubmit: () => void) => (
     <>
       <div className="mb-3">
         <label className="text-[10px] font-bold text-background/50 uppercase tracking-wider mb-1.5 block">Address</label>
         <AddressAutocomplete
-          placeholder={`Enter address`}
+          placeholder="Enter address"
           value={address}
           onChange={setAddress}
           onPlaceSelect={handlePlaceSelect}
@@ -237,7 +237,7 @@ export const SavedAddressModal = ({
       <div className="mb-4">
         <label className="text-[10px] font-bold text-background/50 uppercase tracking-wider mb-1.5 block">Label</label>
         <Input
-          placeholder={`e.g. Gym, Mom's house`}
+          placeholder="e.g. Gym, Mom's house"
           value={name}
           onChange={(e) => setName(e.target.value)}
           className="bg-transparent border-background/30 text-background placeholder:text-background/30 focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:border-primary h-9 text-sm"
