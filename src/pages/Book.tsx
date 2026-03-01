@@ -3435,28 +3435,6 @@ const Book = () => {
                 </div>
               )}
 
-              {/* Contact & Chat - icon buttons */}
-              <div className="flex gap-2 mb-3">
-                <button
-                  onClick={() => setShowContactSupport(true)}
-                  className="w-10 h-10 flex items-center justify-center rounded-full border border-border hover:bg-muted transition-colors"
-                  aria-label="Contact Support"
-                >
-                  <Headset className="w-4.5 h-4.5 text-foreground" />
-                </button>
-                <button
-                  onClick={() => setShowChat(prev => !prev)}
-                  className={cn(
-                    "w-10 h-10 flex items-center justify-center rounded-full border transition-colors",
-                    showChat
-                      ? "border-primary bg-primary text-primary-foreground"
-                      : "border-border hover:bg-muted"
-                  )}
-                  aria-label="Message Courial"
-                >
-                  <MessageCircle className={cn("w-4.5 h-4.5", showChat ? "text-primary-foreground" : "text-foreground")} />
-                </button>
-              </div>
 
               {/* Action Buttons */}
               <div className="space-y-2 mb-3">
