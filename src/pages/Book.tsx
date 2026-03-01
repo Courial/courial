@@ -713,6 +713,13 @@ const Book = () => {
     }
   }, [isFormValid, user, timeMode, selectedService, selectedVehicle, notes, pickup, pickupCoords, dropoff, dropoffCoords, selectedDate, selectedTime, over70lbs, heavyWeight, heavyItems, twoCourials, hasStairs, conciergeDescription, conciergeCategory, conciergeSubCategory, conciergeIsRemote, conciergeStartAddress, conciergeStartCoords, conciergeStopAddress, conciergeStopCoords, conciergeFinalAddress, conciergeFinalCoords, conciergeLanguage, conciergeServiceMode, conciergeHasExpenses, conciergeExpenseItems, conciergeAllowOverage, conciergeOverageLimit, conciergeOrderValue, deliverLanguage, deliverMultiStop, deliverExtraStops, deliverHasExpenses, deliverExpenseItems, deliverAllowOverage, deliverOverageLimit]);
 
+  // Scroll sidebar to top when entering loading/active states or toggling chat
+  useEffect(() => {
+    if (bookingState === "loading" || bookingState === "active") {
+      sidebarRef.current?.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  }, [bookingState, showChat]);
+
   // Animate loading progress — caps at 95% and waits for socket AcceptOrder_listener
   useEffect(() => {
     if (bookingState !== "loading") return;
