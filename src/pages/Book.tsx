@@ -255,6 +255,7 @@ const Book = () => {
   const [acceptedCourial, setAcceptedCourial] = useState<CourialDriver | null>(null);
   const [socketEnabled, setSocketEnabled] = useState(false);
   const [courialCoords, setCourialCoords] = useState<{ lat: number; lng: number } | null>(null);
+  const [courialEta, setCourialEta] = useState<{ duration: string; distance: string } | null>(null);
 
   // Socket: connect after successful booking, listen for courial acceptance
   const handleCourialAccepted = useCallback((driver: CourialDriver) => {
@@ -276,6 +277,31 @@ const Book = () => {
     console.log("[Book] Courial location update:", coords);
     setCourialCoords(coords);
   }, []);
+
+  // Calculate ETA from Courial to pickup using Google Distance Matrix
+  useEffect(() => {
+    if (!courialCoords || !window.google?.maps) return;
+    const pickupPt = selectedService === "concierge" ? conciergeStartCoords : pickupCoords;
+    if (!pickupPt) return;
+
+    const service = new window.google.maps.DistanceMatrixService();
+    service.getDistanceMatrix(
+      {
+        origins: [new window.google.maps.LatLng(courialCoords.lat, courialCoords.lng)],
+        destinations: [new window.google.maps.LatLng(pickupPt.lat, pickupPt.lng)],
+        travelMode: window.google.maps.TravelMode.DRIVING,
+        unitSystem: window.google.maps.UnitSystem.IMPERIAL,
+      },
+      (response, status) => {
+        if (status === "OK" && response?.rows?.[0]?.elements?.[0]?.status === "OK") {
+          const element = response.rows[0].elements[0];
+          const durationText = element.duration?.text || "";
+          const distanceText = element.distance?.text || "";
+          setCourialEta({ duration: durationText, distance: distanceText });
+        }
+      }
+    );
+  }, [courialCoords, conciergeStartCoords, pickupCoords, selectedService]);
 
   // Read token reactively when socket becomes enabled
   const [courialToken, setCourialToken] = useState<string | null>(null);
@@ -741,6 +767,7 @@ const Book = () => {
     setDeliveryStep(0);
     setSocketEnabled(false);
     setAcceptedCourial(null);
+    setCourialEta(null);
     setWfhSearchPhase(null);
     setShowKeepSearching(false);
     if (wfhTimerRef.current) clearTimeout(wfhTimerRef.current);
@@ -3089,11 +3116,15 @@ const Book = () => {
                 <p className="text-sm text-muted-foreground mt-0.5">
                   {selectedService === "concierge" && conciergeCategory
                     ? `${conciergeCategory.replace(/-/g, " ").replace(/\b\w/g, c => c.toUpperCase())}${conciergeSubCategory ? ` • ${conciergeSubCategory}` : ""}${isWfhConcierge ? " • WFH Service" : ""}`
-                    : !isWfhConcierge ? "4 mins away • 2:01 AM dropoff" : "WFH Service"
+                    : !isWfhConcierge
+                      ? courialEta ? `${courialEta.duration} away • ${new Date(Date.now() + parseInt(courialEta.duration) * 60000).toLocaleTimeString([], { hour: "numeric", minute: "2-digit" })} dropoff` : "Calculating ETA..."
+                      : "WFH Service"
                   }
                 </p>
                 {selectedService === "concierge" && !isWfhConcierge && (
-                  <p className="text-sm font-semibold text-muted-foreground mt-0.5">4 mins away • 2.3 mi</p>
+                  <p className="text-sm font-semibold text-muted-foreground mt-0.5">
+                    {courialEta ? `${courialEta.duration} away • ${courialEta.distance}` : "Calculating..."}
+                  </p>
                 )}
               </div>
 
