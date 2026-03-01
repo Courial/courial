@@ -992,12 +992,15 @@ const Book = () => {
               transition={{ duration: 0.3 }}
               className="mb-6"
             >
-              {/* Collapsed: show simple down arrow to return to service selection */}
+              {/* Collapsed: show service name with down arrow to return to selection */}
               {!showAllServices && selectedService && (
-                <div className="flex justify-center">
+                <div className="flex items-center gap-1.5 mb-1">
+                  <span className="text-sm font-bold text-foreground">
+                    {serviceCards.find(s => s.id === selectedService)?.label}
+                  </span>
                   <button
                     onClick={() => { setShowAllServices(true); setSelectedService(null); }}
-                    className="w-8 h-8 rounded-full bg-muted/40 hover:bg-muted/60 flex items-center justify-center transition-colors"
+                    className="flex items-center justify-center transition-colors"
                   >
                     <ChevronDown className="w-4 h-4 text-muted-foreground" />
                   </button>
