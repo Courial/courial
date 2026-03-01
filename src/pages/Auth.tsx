@@ -526,7 +526,7 @@ const Auth = () => {
                   className="w-full"
                 >
                     <>
-                      <p className="text-center text-xs text-background/60 mb-4">4-digit code sent to your phone</p>
+                      <p className="text-center text-xs text-background/60 mb-4">4-digit code sent to<br/>your phone</p>
                       <form onSubmit={(e) => { e.preventDefault(); handleVerifyOtp(); }} className="space-y-3">
                         <div className="flex justify-center gap-2">
                           {[0, 1, 2, 3].map((i) => (
