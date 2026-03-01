@@ -107,7 +107,7 @@ export const SettingsModal = ({ open, onOpenChange }: SettingsModalProps) => {
                 onClick={() => setFavoritesOpen(true)}
                 className="flex items-center gap-3 w-full py-3 text-left hover:opacity-75 transition-opacity"
               >
-                <Heart className="h-4 w-4 text-background/60" />
+                <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
                 <div>
                   <p className="text-sm font-semibold text-background">Favorite Partners</p>
                   <p className="text-[10px] text-background/50">View your favorite partners</p>
