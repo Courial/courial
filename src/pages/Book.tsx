@@ -1823,7 +1823,7 @@ const Book = () => {
                         : "border border-border/60 bg-background text-foreground/75 hover:border-foreground/50"
                     )}
                   >
-                    🏠 Remote / WFH
+                    🏠 WFH
                   </button>
                 </div>
 
