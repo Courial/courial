@@ -194,7 +194,7 @@ export const Navbar = () => {
                         </Button>
                       </Link>
                     )}
-                    <Button variant="ghost" className="w-full justify-start border border-foreground/25" onClick={() => { console.log("[Navbar] Sign out - nuking session"); localStorage.clear(); sessionStorage.clear(); window.location.replace("/"); }}>
+                    <Button variant="ghost" className="w-full justify-start border border-foreground/25" onClick={() => { console.log("[Navbar] Sign out - nuking session"); const overlay = document.createElement("div"); overlay.style.cssText = "position:fixed;inset:0;z-index:9999;backdrop-filter:blur(12px);background:rgba(0,0,0,0.3);transition:opacity 0.3s;"; document.body.appendChild(overlay); setTimeout(() => { localStorage.clear(); sessionStorage.clear(); window.location.replace("/"); }, 400); }}>
                       <LogOut className="w-4 h-4 mr-2" />
                       Sign Out
                     </Button>

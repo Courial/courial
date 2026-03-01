@@ -131,9 +131,15 @@ export const ProfileHoverCard = () => {
             <button
               onClick={() => {
                 console.log("[Navbar] Sign out - nuking session");
-                localStorage.clear();
-                sessionStorage.clear();
-                window.location.replace("/");
+                // Show blur overlay before clearing to avoid white flash
+                const overlay = document.createElement("div");
+                overlay.style.cssText = "position:fixed;inset:0;z-index:9999;backdrop-filter:blur(12px);background:rgba(0,0,0,0.3);transition:opacity 0.3s;";
+                document.body.appendChild(overlay);
+                setTimeout(() => {
+                  localStorage.clear();
+                  sessionStorage.clear();
+                  window.location.replace("/");
+                }, 400);
               }}
               className="w-full rounded-lg h-9 text-sm font-semibold bg-transparent border border-background/30 text-background hover:bg-background/10 transition-colors flex items-center justify-center gap-2"
             >
