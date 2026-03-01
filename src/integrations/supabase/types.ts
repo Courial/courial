@@ -233,6 +233,39 @@ export type Database = {
         }
         Relationships: []
       }
+      saved_addresses: {
+        Row: {
+          address: string
+          created_at: string
+          id: string
+          lat: number
+          lng: number
+          name: string
+          type: string
+          user_id: string
+        }
+        Insert: {
+          address: string
+          created_at?: string
+          id?: string
+          lat: number
+          lng: number
+          name: string
+          type: string
+          user_id: string
+        }
+        Update: {
+          address?: string
+          created_at?: string
+          id?: string
+          lat?: number
+          lng?: number
+          name?: string
+          type?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       site_visits: {
         Row: {
           city: string | null
