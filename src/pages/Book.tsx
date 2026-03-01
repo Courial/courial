@@ -2417,7 +2417,7 @@ const Book = () => {
                           setDeliverMultiStop(e.target.checked);
                           if (!e.target.checked) setDeliverExtraStops([]);
                         }}
-                        className="h-3 w-3 rounded border border-border/60 accent-foreground cursor-pointer appearance-none checked:appearance-auto bg-background"
+                        className="h-3 w-3 rounded border-border/60 accent-foreground cursor-pointer"
                       />
                     </div>
                     <p className="text-[10px] text-muted-foreground mt-0.5 leading-relaxed">
