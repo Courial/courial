@@ -3266,22 +3266,22 @@ const Book = () => {
               <div className="flex gap-2 mb-3">
                 <button
                   onClick={() => setShowContactSupport(true)}
-                  className="w-10 h-10 flex items-center justify-center rounded-full border border-border hover:bg-muted transition-colors"
+                  className="w-10 h-10 flex items-center justify-center rounded-full bg-emerald-500 hover:bg-emerald-600 transition-colors"
                   aria-label="Contact Support"
                 >
-                  <Headset className="w-4.5 h-4.5 text-foreground" />
+                  <Headset className="w-4.5 h-4.5 text-white" />
                 </button>
                 <button
                   onClick={() => setShowChat(prev => !prev)}
                   className={cn(
-                    "w-10 h-10 flex items-center justify-center rounded-full border transition-colors",
+                    "w-10 h-10 flex items-center justify-center rounded-full transition-colors",
                     showChat
-                      ? "border-primary bg-primary text-primary-foreground"
-                      : "border-border hover:bg-muted"
+                      ? "bg-foreground"
+                      : "bg-foreground hover:bg-foreground/80"
                   )}
                   aria-label="Message Courial"
                 >
-                  <MessageCircle className={cn("w-4.5 h-4.5", showChat ? "text-primary-foreground" : "text-foreground")} />
+                  <MessageCircle className="w-4.5 h-4.5 text-background" />
                 </button>
               </div>
 
