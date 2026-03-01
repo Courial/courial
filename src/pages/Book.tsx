@@ -2983,24 +2983,27 @@ const Book = () => {
 
         {/* Loading state — frosted-glass modal style */}
         {bookingState === "loading" && (
-          <div className="p-8 h-full flex items-center justify-center">
+          <div className="p-8 h-full flex flex-col">
+            {/* Heading — matches LIVE page */}
+            <div className="text-center mb-6">
+              <h2 className="text-lg font-bold text-foreground">
+                {selectedService === "concierge" ? "Concierge Task" : selectedService === "valet" ? "Valet Service" : "Delivery"}
+              </h2>
+              <p className="text-sm text-muted-foreground mt-0.5">
+                {selectedService === "concierge" && conciergeCategory
+                  ? `${conciergeCategory.replace(/-/g, " ").replace(/\b\w/g, c => c.toUpperCase())}${conciergeSubCategory ? ` • ${conciergeSubCategory}` : ""}`
+                  : selectedService === "valet" ? "Valet Service" : "Delivery"}
+              </p>
+            </div>
+
+            {/* Modal */}
             <motion.div
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.3 }}
-              className="w-full max-w-[19.2rem]"
+              className="w-full max-w-[19.2rem] mx-auto"
             >
               <div className="rounded-[20px] bg-foreground/75 text-background px-6 py-6 shadow-2xl backdrop-blur-sm flex flex-col items-center">
-                {/* Title */}
-                <h1 className="text-2xl font-bold text-center mt-1 mb-1">
-                  {selectedService === "concierge" ? "Concierge Task" : selectedService === "valet" ? "Valet Service" : "Delivery"}
-                </h1>
-                <p className="text-sm text-background/50 text-center mb-5">
-                  {selectedService === "concierge" && conciergeCategory
-                    ? `${conciergeCategory.replace(/-/g, " ").replace(/\b\w/g, c => c.toUpperCase())}${conciergeSubCategory ? ` • ${conciergeSubCategory}` : ""}`
-                    : selectedService === "valet" ? "Valet Service" : "Delivery"}
-                </p>
-
                 {/* Cycling circle avatar */}
                 <div className="relative mb-5">
                   {/* Pulsing ring behind avatar */}
@@ -3032,7 +3035,7 @@ const Book = () => {
                   </AnimatePresence>
                 </div>
 
-                <p className="text-sm text-background/50 text-center max-w-[260px]">
+                <p className="text-sm font-medium text-background text-center max-w-[260px]">
                   {wfhSearchPhase === "home"
                     ? "Searching near your home address..."
                     : wfhSearchPhase === "work"
@@ -3055,16 +3058,16 @@ const Book = () => {
                     transition={{ duration: 0.3 }}
                   />
                 </div>
-
-                {/* Cancel button */}
-                <Button
-                  variant="ghost"
-                  onClick={handleCancelBooking}
-                  className="w-full rounded-lg h-10 text-sm font-semibold mt-5 bg-transparent border border-background/30 text-background hover:bg-background/10"
-                >
-                  Cancel
-                </Button>
               </div>
+
+              {/* Cancel button — below modal */}
+              <Button
+                variant="ghost"
+                onClick={handleCancelBooking}
+                className="w-full rounded-lg h-10 text-sm font-semibold mt-4 bg-transparent border border-border text-foreground hover:bg-muted"
+              >
+                Cancel
+              </Button>
             </motion.div>
           </div>
         )}
