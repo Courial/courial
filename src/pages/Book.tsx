@@ -1076,6 +1076,12 @@ const Book = () => {
                   <h1 className="text-3xl font-bold text-foreground">
                     {serviceCards.find(s => s.id === selectedService)!.label}
                   </h1>
+                  <button
+                    onClick={() => { setShowAllServices(true); setSelectedService(null); }}
+                    className="ml-1 flex items-center justify-center"
+                  >
+                    <ChevronDown className="w-5 h-5 text-muted-foreground" />
+                  </button>
                 </div>
 
                 {/* Now / Later pill toggle */}
