@@ -1801,13 +1801,12 @@ const Book = () => {
                 transition={{ duration: 0.2 }}
                 className="overflow-hidden"
               >
-                {/* Remote / WFH Toggle */}
-                <div className="flex items-center justify-center mb-3">
+                {/* Address Toggle Pills + WFH — all on same row */}
+                <div className="flex items-center justify-center gap-2 mb-3">
                   <button
                     onClick={() => {
                       setConciergeIsRemote(prev => {
                         if (!prev) {
-                          // Turning on remote — clear all addresses
                           setConciergeAddressToggles({ start: false, stop: false, final: false });
                           setConciergeStartAddress(""); setConciergeStartPlaceName(null); setConciergeStartCoords(null);
                           setConciergeStopAddress(""); setConciergeStopPlaceName(null); setConciergeStopCoords(null);
@@ -1817,46 +1816,45 @@ const Book = () => {
                       });
                     }}
                     className={cn(
-                      "px-3 py-1.5 rounded-full text-[11px] font-medium transition-all leading-none flex items-center gap-1.5",
+                      "flex-1 py-1 rounded-full text-[11px] font-normal transition-all leading-none text-center",
                       conciergeIsRemote
-                        ? "border border-primary text-foreground bg-primary/10"
-                        : "border border-border/60 bg-background text-foreground/75 hover:border-foreground/50"
+                        ? "border border-primary text-foreground"
+                        : "border border-border/60 bg-background text-foreground hover:border-foreground/50"
                     )}
                   >
-                    🏠 Remote / WFH
+                    🏠 WFH
                   </button>
+                  {!conciergeIsRemote && (["start", "stop", "final"] as const).map((type) => {
+                    const labels: Record<string, string> = { start: "Start here", stop: "Stop here", final: "Finish here" };
+                    return (
+                      <button
+                        key={type}
+                        onClick={() => {
+                          setConciergeAddressToggles(prev => {
+                            const newVal = !prev[type];
+                            if (!newVal) {
+                              if (type === "start") { setConciergeStartAddress(""); setConciergeStartPlaceName(null); setConciergeStartCoords(null); }
+                              if (type === "stop") { setConciergeStopAddress(""); setConciergeStopPlaceName(null); setConciergeStopCoords(null); }
+                              if (type === "final") { setConciergeFinalAddress(""); setConciergeFinalPlaceName(null); setConciergeFinalCoords(null); }
+                            }
+                            return { ...prev, [type]: newVal };
+                          });
+                        }}
+                        className={cn(
+                          "flex-1 py-1 rounded-full text-[11px] font-normal transition-all leading-none text-center",
+                          conciergeAddressToggles[type]
+                            ? "border border-primary text-foreground"
+                            : "border border-border/60 bg-background text-foreground hover:border-foreground/50"
+                        )}
+                      >
+                        {labels[type]}
+                      </button>
+                    );
+                  })}
                 </div>
 
-                {/* Address Toggle Pills — hidden when Remote is on */}
-                {!conciergeIsRemote && (<>
-                <div className="flex items-center justify-center gap-2 mb-3">
-                  {(["start", "stop", "final"] as const).map((type) => (
-                    <button
-                      key={type}
-                      onClick={() => {
-                        setConciergeAddressToggles(prev => {
-                          const newVal = !prev[type];
-                          if (!newVal) {
-                            // Clear address data when toggle is turned off
-                            if (type === "start") { setConciergeStartAddress(""); setConciergeStartPlaceName(null); setConciergeStartCoords(null); }
-                            if (type === "stop") { setConciergeStopAddress(""); setConciergeStopPlaceName(null); setConciergeStopCoords(null); }
-                            if (type === "final") { setConciergeFinalAddress(""); setConciergeFinalPlaceName(null); setConciergeFinalCoords(null); }
-                          }
-                          return { ...prev, [type]: newVal };
-                        });
-                      }}
-                      className={cn(
-                        "px-2.5 py-1 rounded-full text-[11px] font-normal transition-all leading-none",
-                        conciergeAddressToggles[type]
-                          ? "border border-primary text-foreground"
-                          : "border border-border/60 bg-background text-foreground hover:border-foreground/50"
-                      )}
-                    >
-                      + {type.charAt(0).toUpperCase() + type.slice(1)} address
-                    </button>
-                  ))}
-                </div>
-
+                {!conciergeIsRemote && (
+                <>
                 {/* Address Inputs for enabled toggles — Draggable to swap */}
                 <AnimatePresence>
                   {(conciergeAddressToggles.start || conciergeAddressToggles.stop || conciergeAddressToggles.final) && (
@@ -1870,9 +1868,9 @@ const Book = () => {
                       {(() => {
                         type ConcFieldDef = { id: string; dotClass: string; placeName: string | null; coords: any; value: string; placeholder: string; onChange: (v: string) => void; onPlaceSelect: (p: any) => void; onClear: () => void };
                         const concFields: ConcFieldDef[] = [];
-                        if (conciergeAddressToggles.start) concFields.push({ id: "start", dotClass: "rounded-full bg-green-500", placeName: conciergeStartPlaceName, coords: conciergeStartCoords, value: conciergeStartAddress, placeholder: "Start address", onChange: (v) => { setConciergeStartAddress(v); if (!v) { setConciergeStartPlaceName(null); setConciergeStartCoords(null); } }, onPlaceSelect: handleConciergeStartSelect, onClear: () => { setConciergeStartAddress(""); setConciergeStartPlaceName(null); setConciergeStartCoords(null); } });
-                        if (conciergeAddressToggles.stop) concFields.push({ id: "stop", dotClass: "rounded-none bg-blue-500", placeName: conciergeStopPlaceName, coords: conciergeStopCoords, value: conciergeStopAddress, placeholder: "Stop address", onChange: (v) => { setConciergeStopAddress(v); if (!v) { setConciergeStopPlaceName(null); setConciergeStopCoords(null); } }, onPlaceSelect: handleConciergeStopSelect, onClear: () => { setConciergeStopAddress(""); setConciergeStopPlaceName(null); setConciergeStopCoords(null); } });
-                        if (conciergeAddressToggles.final) concFields.push({ id: "final", dotClass: "rounded-none bg-destructive", placeName: conciergeFinalPlaceName, coords: conciergeFinalCoords, value: conciergeFinalAddress, placeholder: "Final address", onChange: (v) => { setConciergeFinalAddress(v); if (!v) { setConciergeFinalPlaceName(null); setConciergeFinalCoords(null); } }, onPlaceSelect: handleConciergeFinalSelect, onClear: () => { setConciergeFinalAddress(""); setConciergeFinalPlaceName(null); setConciergeFinalCoords(null); } });
+                        if (conciergeAddressToggles.start) concFields.push({ id: "start", dotClass: "rounded-full bg-green-500", placeName: conciergeStartPlaceName, coords: conciergeStartCoords, value: conciergeStartAddress, placeholder: "Start here", onChange: (v) => { setConciergeStartAddress(v); if (!v) { setConciergeStartPlaceName(null); setConciergeStartCoords(null); } }, onPlaceSelect: handleConciergeStartSelect, onClear: () => { setConciergeStartAddress(""); setConciergeStartPlaceName(null); setConciergeStartCoords(null); } });
+                        if (conciergeAddressToggles.stop) concFields.push({ id: "stop", dotClass: "rounded-none bg-blue-500", placeName: conciergeStopPlaceName, coords: conciergeStopCoords, value: conciergeStopAddress, placeholder: "Stop here", onChange: (v) => { setConciergeStopAddress(v); if (!v) { setConciergeStopPlaceName(null); setConciergeStopCoords(null); } }, onPlaceSelect: handleConciergeStopSelect, onClear: () => { setConciergeStopAddress(""); setConciergeStopPlaceName(null); setConciergeStopCoords(null); } });
+                        if (conciergeAddressToggles.final) concFields.push({ id: "final", dotClass: "rounded-none bg-destructive", placeName: conciergeFinalPlaceName, coords: conciergeFinalCoords, value: conciergeFinalAddress, placeholder: "Finish here", onChange: (v) => { setConciergeFinalAddress(v); if (!v) { setConciergeFinalPlaceName(null); setConciergeFinalCoords(null); } }, onPlaceSelect: handleConciergeFinalSelect, onClear: () => { setConciergeFinalAddress(""); setConciergeFinalPlaceName(null); setConciergeFinalCoords(null); } });
 
                         const concSwap = (a: number, b: number) => {
                           if (a < 0 || b < 0 || a >= concFields.length || b >= concFields.length) return;
@@ -1943,7 +1941,8 @@ const Book = () => {
                     </motion.div>
                   )}
                 </AnimatePresence>
-                </>)}
+                </>
+                )}
                 {/* Remote indicator text */}
                 {conciergeIsRemote && (
                   <div className="flex items-center gap-2 px-4 py-3 border border-border rounded-xl bg-muted/50 mb-3">
