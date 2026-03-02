@@ -620,7 +620,7 @@ const Book = () => {
         notes: isConcierge ? conciergeDescription : notes,
         pickup: isConcierge ? concPickup : { address: pickup, lat: pickupCoords?.lat, lng: pickupCoords?.lng },
         dropoff: isConcierge ? concDropoff : { address: dropoff, lat: dropoffCoords?.lat, lng: dropoffCoords?.lng },
-        userId: user.id,
+        userId: user.user_metadata?.courial_id || user.id,
       };
       if (isConcierge && conciergeIsRemote) {
         payload.isRemote = true;
