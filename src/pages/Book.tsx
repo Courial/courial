@@ -480,14 +480,37 @@ const Book = () => {
     }
   }, [roadsideCustomModel, selectedService]);
 
+  const fetchVehiclePortTypes = useCallback(async (make: string, model: string) => {
+    if (!make || !model || selectedService !== "valet") return;
+    setRoadsidePortTypesLoading(true);
+    setRoadsidePortTypeSuggestions([]);
+    setRoadsidePortType("");
+    try {
+      const { data, error } = await supabase.functions.invoke("vehicle-port-types", {
+        body: { make, model },
+      });
+      if (error) throw error;
+      if (data?.portTypes && Array.isArray(data.portTypes)) {
+        setRoadsidePortTypeSuggestions(data.portTypes);
+        if (data.portTypes.length === 1) {
+          setRoadsidePortType(data.portTypes[0]);
+        }
+      }
+    } catch (e) {
+      console.error("Failed to fetch port types:", e);
+    } finally {
+      setRoadsidePortTypesLoading(false);
+    }
+  }, [selectedService]);
+
   // Close roadside dropdowns on outside click
   useEffect(() => {
-    const handler = () => { setRoadsideMakeOpen(false); setRoadsideModelOpen(false); setRoadsideColorOpen(false); };
-    if (roadsideMakeOpen || roadsideModelOpen || roadsideColorOpen) {
+    const handler = () => { setRoadsideMakeOpen(false); setRoadsideModelOpen(false); setRoadsideColorOpen(false); setRoadsidePortTypeOpen(false); };
+    if (roadsideMakeOpen || roadsideModelOpen || roadsideColorOpen || roadsidePortTypeOpen) {
       document.addEventListener("click", handler);
       return () => document.removeEventListener("click", handler);
     }
-  }, [roadsideMakeOpen, roadsideModelOpen, roadsideColorOpen]);
+  }, [roadsideMakeOpen, roadsideModelOpen, roadsideColorOpen, roadsidePortTypeOpen]);
 
   // Redraft with AI handler
   const handleRedraft = useCallback(async () => {
