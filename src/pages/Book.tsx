@@ -4045,40 +4045,40 @@ const Book = () => {
       </Dialog>
     </div>
 
-    {/* Home Address Gate Dialog */}
-    <Dialog open={showHomeAddressGate} onOpenChange={setShowHomeAddressGate}>
-      <DialogContent className="sm:max-w-[19.2rem] bg-transparent border-none !rounded-[20px] p-0 overflow-hidden [&>button]:hidden shadow-none">
-        <motion.div
-          initial={{ opacity: 0, scale: 0.95 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.3 }}
-        >
-          <div className="rounded-[20px] bg-foreground/75 text-background px-6 py-6 shadow-2xl backdrop-blur-sm flex flex-col items-center text-center">
-            <DialogTitle className="text-lg font-bold text-background mb-3">Home Address Required</DialogTitle>
-            <p className="text-sm text-background/70 mb-6">Please add your home address prior to booking a service.</p>
-            <div className="flex gap-3 w-full">
-              <Button
-                variant="outline"
-                className="flex-1 rounded-xl border-background/20 text-background hover:bg-background/10"
-                onClick={() => setShowHomeAddressGate(false)}
-              >
-                Close
-              </Button>
-              <Button
-                className="flex-1 rounded-xl bg-primary text-primary-foreground hover:bg-primary/90"
-                onClick={() => { setShowHomeAddressGate(false); setShowSettingsFromGate(true); }}
-              >
-                Add
-              </Button>
+      {/* Home Address Gate Dialog */}
+      <Dialog open={showHomeAddressGate} onOpenChange={setShowHomeAddressGate}>
+        <DialogContent className="sm:max-w-[19.2rem] bg-transparent border-none !rounded-[20px] p-0 overflow-hidden [&>button]:hidden shadow-none">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.3 }}
+          >
+            <div className="rounded-[20px] bg-foreground/75 text-background px-6 py-6 shadow-2xl backdrop-blur-sm flex flex-col items-center text-center">
+              <DialogTitle className="text-lg font-bold text-background mb-3">Home Address Required</DialogTitle>
+              <p className="text-sm text-background/70 mb-6">Please add your home address prior to booking a service.</p>
+              <div className="flex gap-3 w-full">
+                <Button
+                  variant="outline"
+                  className="flex-1 rounded-xl border-background/20 text-background hover:bg-background/10"
+                  onClick={() => setShowHomeAddressGate(false)}
+                >
+                  Close
+                </Button>
+                <Button
+                  className="flex-1 rounded-xl bg-primary text-primary-foreground hover:bg-primary/90"
+                  onClick={() => { setShowHomeAddressGate(false); setShowSettingsFromGate(true); }}
+                >
+                  Add
+                </Button>
+              </div>
             </div>
-          </div>
-        </motion.div>
-      </DialogContent>
-    </Dialog>
+          </motion.div>
+        </DialogContent>
+      </Dialog>
 
-    {/* Settings Modal opened from gate */}
-    <SettingsModal open={showSettingsFromGate} onOpenChange={setShowSettingsFromGate} />
-    </div>
+      {/* Settings Modal opened from gate */}
+      <SettingsModal open={showSettingsFromGate} onOpenChange={setShowSettingsFromGate} />
+    </>
   );
 };
 
