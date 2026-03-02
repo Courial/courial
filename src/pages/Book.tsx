@@ -3113,7 +3113,7 @@ const Book = () => {
                     {deliverMultiStop && deliverExtraStops.length > 0 ? "Multiple Stops" : "Single Pick-up and Drop-off"}
                   </p>
                 )}
-                <p className="text-sm text-muted-foreground mt-0.5 flex items-center justify-center gap-1.5">
+                <p className="text-sm font-medium text-muted-foreground mt-0.5 flex items-center justify-center gap-1.5">
                   {/* Green pulsing dot for ETA */}
                   {(selectedService !== "concierge" && !isWfhConcierge && courialEta) && (
                     <span className="relative flex h-2 w-2 shrink-0">
@@ -3129,7 +3129,7 @@ const Book = () => {
                   }
                 </p>
                 {selectedService === "concierge" && !isWfhConcierge && (
-                  <p className="text-sm font-semibold text-muted-foreground mt-0.5 flex items-center justify-center gap-1.5">
+                  <p className="text-sm font-medium text-muted-foreground mt-0.5 flex items-center justify-center gap-1.5">
                     <span className="relative flex h-2 w-2 shrink-0">
                       <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75" />
                       <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500" />
