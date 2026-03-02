@@ -170,8 +170,8 @@ export function useCourialSocket({ token, enabled, acceptedDriverId, onAccepted,
             courialData?.createdAt ||
             courialData?.joinedAt ||
             "",
-          latitude: provider?.latitude != null ? parseFloat(String(provider.latitude)) : (courialData?.latitude != null ? parseFloat(String(courialData.latitude)) : null),
-          longitude: provider?.longitude != null ? parseFloat(String(provider.longitude)) : (courialData?.longitude != null ? parseFloat(String(courialData.longitude)) : null),
+          latitude: (() => { const v = provider?.latitude ?? courialData?.latitude; const n = v != null ? parseFloat(String(v)) : NaN; return isNaN(n) ? null : n; })(),
+          longitude: (() => { const v = provider?.longitude ?? courialData?.longitude; const n = v != null ? parseFloat(String(v)) : NaN; return isNaN(n) ? null : n; })(),
         };
 
         console.log("[CourialSocket] Parsed accepted courial:", driver);
