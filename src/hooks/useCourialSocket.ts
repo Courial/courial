@@ -253,7 +253,8 @@ export function useCourialSocket({ token, enabled, acceptedDriverId, onAccepted,
 
           // Extract pickup photo + item count
           if (onPickupDetails) {
-            const pickupPhoto = flat?.pickupLocationPhoto ?? flat?.pickup_location_photo ?? flat?.pickupPhoto ?? flat?.pickup_photo ?? flat?.Identification_image ?? flat?.identification_image ?? flat?.image ?? null;
+            // Note: do NOT use flat.image as fallback — that's the driver's profile image from Provider
+            const pickupPhoto = data?.pickupLocationPhoto ?? data?.pickup_location_photo ?? flat?.pickupLocationPhoto ?? flat?.pickup_location_photo ?? flat?.pickupPhoto ?? flat?.pickup_photo ?? flat?.Identification_image ?? flat?.identification_image ?? null;
             const rawPackages = flat?.numberOfPackages ?? flat?.number_of_packages ?? flat?.itemCount ?? flat?.item_count ?? flat?.noOfPackages ?? flat?.no_of_packages ?? flat?.over45Lbs ?? null;
             // Also check orderimages array
             const orderImages = flat?.orderimages ?? flat?.orderImages ?? [];
