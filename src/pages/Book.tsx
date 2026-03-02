@@ -1821,7 +1821,7 @@ const Book = () => {
                               {roadsideModelSuggestions.map((model) => (
                                 <button
                                   key={model}
-                                  onClick={() => { setRoadsideVehicleModel(model); setRoadsideModelOpen(false); }}
+                                  onClick={() => { setRoadsideVehicleModel(model); setRoadsideModelOpen(false); if (selectedService === "valet") fetchVehiclePortTypes(roadsideVehicleMake, model); }}
                                   className="w-full px-2 py-1.5 text-xs text-left text-foreground hover:bg-muted transition-colors"
                                 >
                                   {model}
@@ -1841,7 +1841,7 @@ const Book = () => {
                   </div>
                   <div className="flex gap-1.5 w-full min-w-0">
                     {/* Color dropdown or custom input */}
-                    <div className="w-1/2 min-w-0 relative">
+                    <div className={`${selectedService === "valet" ? "w-1/3" : "w-1/2"} min-w-0 relative`}>
                       {roadsideCustomColor ? (
                         <div className="flex gap-1">
                           <input
@@ -1856,7 +1856,7 @@ const Book = () => {
                       ) : (
                         <>
                           <button
-                            onClick={(e) => { e.stopPropagation(); setRoadsideColorOpen(!roadsideColorOpen); setRoadsideMakeOpen(false); setRoadsideModelOpen(false); }}
+                            onClick={(e) => { e.stopPropagation(); setRoadsideColorOpen(!roadsideColorOpen); setRoadsideMakeOpen(false); setRoadsideModelOpen(false); setRoadsidePortTypeOpen(false); }}
                             className="w-full px-2 py-2 rounded-lg border border-border/60 bg-background text-foreground text-xs text-left flex items-center justify-between hover:border-foreground/30 transition-colors"
                           >
                             <span className={roadsideVehicleColor ? "text-foreground" : "text-muted-foreground"}>{roadsideVehicleColor || "Color"}</span>
@@ -1884,12 +1884,39 @@ const Book = () => {
                         </>
                       )}
                     </div>
+                    {/* Port Type dropdown - Valet only */}
+                    {selectedService === "valet" && (
+                      <div className="w-1/3 min-w-0 relative">
+                        <button
+                          onClick={(e) => { e.stopPropagation(); if (roadsidePortTypeSuggestions.length > 0) { setRoadsidePortTypeOpen(!roadsidePortTypeOpen); setRoadsideMakeOpen(false); setRoadsideModelOpen(false); setRoadsideColorOpen(false); } }}
+                          className={`w-full px-2 py-2 rounded-lg border border-border/60 bg-background text-xs text-left flex items-center justify-between transition-colors ${roadsidePortTypeSuggestions.length > 0 ? "text-foreground hover:border-foreground/30" : "text-muted-foreground opacity-60 cursor-not-allowed"}`}
+                        >
+                          <span className={roadsidePortType ? "text-foreground" : "text-muted-foreground"}>
+                            {roadsidePortTypesLoading ? "Loading..." : roadsidePortType || "Port Type"}
+                          </span>
+                          <ChevronDown className="w-3 h-3 text-muted-foreground" />
+                        </button>
+                        {roadsidePortTypeOpen && roadsidePortTypeSuggestions.length > 0 && (
+                          <div onClick={(e) => e.stopPropagation()} className="absolute z-50 mt-1 w-full max-h-48 overflow-y-auto rounded-lg border border-border/60 bg-background shadow-lg">
+                            {roadsidePortTypeSuggestions.map((pt) => (
+                              <button
+                                key={pt}
+                                onClick={() => { setRoadsidePortType(pt); setRoadsidePortTypeOpen(false); }}
+                                className="w-full px-2 py-1.5 text-xs text-left text-foreground hover:bg-muted transition-colors"
+                              >
+                                {pt}
+                              </button>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                    )}
                     <input
                       type="text"
                       placeholder="License Plate"
                       value={roadsideLicensePlate}
                       onChange={(e) => setRoadsideLicensePlate(e.target.value)}
-                      className="w-1/2 min-w-0 px-2 py-2 rounded-lg border border-border/60 bg-background text-foreground text-xs placeholder:text-muted-foreground focus:outline-none focus:border-border transition-colors"
+                      className={`${selectedService === "valet" ? "w-1/3" : "w-1/2"} min-w-0 px-2 py-2 rounded-lg border border-border/60 bg-background text-foreground text-xs placeholder:text-muted-foreground focus:outline-none focus:border-border transition-colors`}
                     />
                   </div>
                 </div>
