@@ -2,6 +2,7 @@ import { useState, useCallback, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X, LogOut, Package } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { ProfileHoverCard } from "@/components/ProfileHoverCard";
@@ -27,6 +28,7 @@ export const Navbar = () => {
   const [bookingPulse, setBookingPulse] = useState(false);
   const [formStarted, setFormStarted] = useState(false);
   const [bookingActive, setBookingActive] = useState(false);
+  const [showSignInGate, setShowSignInGate] = useState(false);
 
   useEffect(() => {
     if (!user) { setHasOrders(false); return; }
@@ -72,6 +74,7 @@ export const Navbar = () => {
   };
 
   return (
+    <>
     <motion.nav
       initial={{ y: -20, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
@@ -129,15 +132,25 @@ export const Navbar = () => {
             ) : (
               <div className="w-[70px]" />
             )}
-            <Link to="/book">
+            {user ? (
+              <Link to="/book">
+                <Button
+                  variant={bookingActive ? "hero-green" : isActive("/book") ? "secondary" : formStarted ? "hero-orange" : "hero"}
+                  size="sm"
+                  className={bookingPulse ? "animate-pulse-gentle" : ""}
+                >
+                  Book Now
+                </Button>
+              </Link>
+            ) : (
               <Button
-                variant={bookingActive ? "hero-green" : isActive("/book") ? "secondary" : formStarted ? "hero-orange" : "hero"}
+                variant="hero"
                 size="sm"
-                className={bookingPulse ? "animate-pulse-gentle" : ""}
+                onClick={() => setShowSignInGate(true)}
               >
                 Book Now
               </Button>
-            </Link>
+            )}
           </div>
 
           {/* Mobile Menu Button */}
@@ -208,19 +221,52 @@ export const Navbar = () => {
                     </Button>
                   </Link>
                 )}
-                <Link to="/book" onClick={() => setIsOpen(false)}>
+                {user ? (
+                  <Link to="/book" onClick={() => setIsOpen(false)}>
+                    <Button
+                      variant={bookingActive ? "hero-green" : isActive("/book") ? "secondary" : formStarted ? "hero-orange" : "hero"}
+                      className={`w-full ${bookingPulse ? "animate-pulse-gentle" : ""}`}
+                    >
+                      Book Now
+                    </Button>
+                  </Link>
+                ) : (
                   <Button
-                    variant={bookingActive ? "hero-green" : isActive("/book") ? "secondary" : formStarted ? "hero-orange" : "hero"}
-                    className={`w-full ${bookingPulse ? "animate-pulse-gentle" : ""}`}
+                    variant="hero"
+                    className="w-full"
+                    onClick={() => { setIsOpen(false); setShowSignInGate(true); }}
                   >
                     Book Now
                   </Button>
-                </Link>
+                )}
               </div>
             </div>
           </motion.div>
         )}
       </AnimatePresence>
     </motion.nav>
+
+    {/* Sign In Required Gate */}
+    <Dialog open={showSignInGate} onOpenChange={setShowSignInGate}>
+      <DialogContent className="sm:max-w-[19.2rem] bg-transparent border-none !rounded-[20px] p-0 overflow-hidden [&>button]:hidden shadow-none">
+        <motion.div
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.3 }}
+        >
+          <div className="rounded-[20px] bg-foreground/75 text-background px-6 py-6 shadow-2xl backdrop-blur-sm flex flex-col items-center text-center">
+            <DialogTitle className="text-lg font-bold text-background mb-3">Sign In Required</DialogTitle>
+            <p className="text-sm text-background/70 mb-6">Please sign in to book a service.</p>
+            <Button
+              className="w-full rounded-xl bg-background text-foreground hover:bg-background/90"
+              onClick={() => { setShowSignInGate(false); navigate("/auth"); }}
+            >
+              Got it!
+            </Button>
+          </div>
+        </motion.div>
+      </DialogContent>
+    </Dialog>
+    </>
   );
 };

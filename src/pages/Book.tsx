@@ -4,7 +4,7 @@ import { useCourialSocket, type CourialDriver } from "@/hooks/useCourialSocket";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { Navbar } from "@/components/Navbar";
-import { Link, useSearchParams } from "react-router-dom";
+import { Link, useSearchParams, useNavigate } from "react-router-dom";
 import { ActivityPanel } from "@/components/booking/ActivityPanel";
 import { motion, AnimatePresence } from "framer-motion";
 import { Helmet } from "react-helmet-async";
@@ -97,6 +97,7 @@ const serviceCards: { id: ServiceId; label: string; desc: string; href: string; 
 
 const Book = () => {
   const { user } = useAuth();
+  const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
   const showActivity = searchParams.get("view") === "activity";
   const sidebarRef = useRef<HTMLDivElement>(null);
@@ -205,6 +206,9 @@ const Book = () => {
   // Home address gate
   const [showHomeAddressGate, setShowHomeAddressGate] = useState(false);
   const [showSettingsFromGate, setShowSettingsFromGate] = useState(false);
+
+  // Sign in gate
+  const [showSignInGate, setShowSignInGate] = useState(false);
 
   // Auto-select "Require 2 Courials" based on weight conditions
   useEffect(() => {
@@ -1115,6 +1119,11 @@ const Book = () => {
                         const handleClick = (e: React.MouseEvent) => {
                           if (!item.external) {
                             e.preventDefault();
+                            // Must be signed in
+                            if (!user) {
+                              setShowSignInGate(true);
+                              return;
+                            }
                             // Check for home address before allowing booking
                             const addresses = getSavedAddresses();
                             const hasHome = addresses.some((a) => a.type === "home");
@@ -4079,6 +4088,28 @@ const Book = () => {
 
       {/* Settings Modal opened from gate */}
       <SettingsModal open={showSettingsFromGate} onOpenChange={setShowSettingsFromGate} />
+
+      {/* Sign In Required Gate */}
+      <Dialog open={showSignInGate} onOpenChange={setShowSignInGate}>
+        <DialogContent className="sm:max-w-[19.2rem] bg-transparent border-none !rounded-[20px] p-0 overflow-hidden [&>button]:hidden shadow-none">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.3 }}
+          >
+            <div className="rounded-[20px] bg-foreground/75 text-background px-6 py-6 shadow-2xl backdrop-blur-sm flex flex-col items-center text-center">
+              <DialogTitle className="text-lg font-bold text-background mb-3">Sign In Required</DialogTitle>
+              <p className="text-sm text-background/70 mb-6">Please sign in to book a service.</p>
+              <Button
+                className="w-full rounded-xl bg-background text-foreground hover:bg-background/90"
+                onClick={() => { setShowSignInGate(false); navigate("/auth"); }}
+              >
+                Got it!
+              </Button>
+            </div>
+          </motion.div>
+        </DialogContent>
+      </Dialog>
     </>
   );
 };
