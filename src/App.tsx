@@ -6,6 +6,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { HelmetProvider } from "react-helmet-async";
 import { ChatBubble } from "@/components/ChatBubble";
 import { AuthProvider } from "@/hooks/useAuth";
+import { PhoneVerificationGate } from "@/components/PhoneVerificationGate";
 import Index from "./pages/Index";
 import Markets from "./pages/Markets";
 import Business from "./pages/Business";
@@ -49,6 +50,7 @@ const App = () => (
     <HelmetProvider>
       <TooltipProvider>
         <AuthProvider>
+          <PhoneVerificationGate>
           <CartProvider>
             <Toaster />
             <Sonner />
@@ -88,6 +90,7 @@ const App = () => (
               <ChatBubble />
             </BrowserRouter>
           </CartProvider>
+          </PhoneVerificationGate>
         </AuthProvider>
       </TooltipProvider>
     </HelmetProvider>
