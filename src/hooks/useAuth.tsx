@@ -72,7 +72,42 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       }),
     })
       .then((r) => r.json())
-      .then((d) => console.log("[social-login] synced:", d))
+      .then(async (d) => {
+        console.log("[social-login] synced:", d);
+        // Extract Courial profile data if user already exists
+        const profile = d?.data?.data || d?.data || {};
+        const courialPhone = profile.phone || profile.mobile || profile.phoneNumber || profile.phone_number;
+        const courialAvatar = profile.image || profile.profileImage || profile.avatar || profile.photo || profile.picture;
+        const courialToken = profile.token;
+        const courialId = profile.id;
+        const courialCountryCode = profile.country_code || profile.countryCode;
+
+        if (courialToken) {
+          localStorage.setItem("courial_api_token", courialToken);
+        }
+
+        // If Courial already has this user's phone, mark them as verified
+        if (courialPhone) {
+          const fullPhone = courialCountryCode
+            ? `${courialCountryCode.startsWith("+") ? "" : "+"}${courialCountryCode}${courialPhone.replace(/\D/g, "")}`
+            : courialPhone;
+          const updateData: Record<string, any> = {
+            phone: fullPhone,
+            courial_user: true,
+            courial_id: courialId,
+          };
+          if (courialAvatar) updateData.avatar_url = courialAvatar;
+          if (profile.firstName || profile.first_name) {
+            updateData.full_name = [profile.firstName || profile.first_name, profile.lastName || profile.last_name].filter(Boolean).join(" ");
+          }
+
+          await supabase.auth.updateUser({ data: updateData });
+          console.log("[social-login] Updated user metadata with Courial phone:", fullPhone);
+        } else if (courialAvatar) {
+          // At least update avatar if available
+          await supabase.auth.updateUser({ data: { avatar_url: courialAvatar, courial_id: courialId } });
+        }
+      })
       .catch((e) => console.error("[social-login] error:", e));
   };
 
