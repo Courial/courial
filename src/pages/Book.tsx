@@ -4066,7 +4066,7 @@ const Book = () => {
                   Close
                 </Button>
                 <Button
-                  className="flex-1 rounded-xl bg-primary text-primary-foreground hover:bg-primary/90"
+                  className="flex-1 rounded-xl bg-background text-foreground hover:bg-background/90"
                   onClick={() => { setShowHomeAddressGate(false); setShowSettingsFromGate(true); }}
                 >
                   Add
