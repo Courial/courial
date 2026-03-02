@@ -35,6 +35,10 @@ interface UseCourialSocketOptions {
   onStatusChange?: (status: string) => void;
   /** Callback when completion photo is received */
   onCompletionPhoto?: (photoUrl: string) => void;
+  /** Callback when pickup photo & item count are received */
+  onPickupDetails?: (details: { pickupPhoto: string | null; numberOfPackages: number | null }) => void;
+  /** Callback when drop-off proof photo is received */
+  onDropoffPhoto?: (photoUrl: string) => void;
 }
 
 /**
