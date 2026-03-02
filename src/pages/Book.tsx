@@ -346,6 +346,11 @@ const Book = () => {
     }
   }, [selectedService, conciergeIsRemote]);
 
+  const handleCompletionPhoto = useCallback((photoUrl: string) => {
+    console.log("[Book] Completion photo received:", photoUrl);
+    setCompletionPhotoUrl(photoUrl);
+  }, []);
+
   useCourialSocket({
     token: courialToken,
     enabled: socketEnabled,
@@ -353,6 +358,7 @@ const Book = () => {
     onAccepted: handleCourialAccepted,
     onLocationUpdate: handleLocationUpdate,
     onStatusChange: handleStatusChange,
+    onCompletionPhoto: handleCompletionPhoto,
   });
   const courialProfiles = useMemo(() => [
     "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300&h=400&fit=crop&crop=face&facepad=2",
