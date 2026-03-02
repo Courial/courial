@@ -16,6 +16,7 @@ import mastercardIcon from "@/assets/card-icons/mastercard.svg";
 import amexIcon from "@/assets/card-icons/amex.svg";
 import discoverIcon from "@/assets/card-icons/discover.svg";
 import { PaymentMethodsModal } from "@/components/PaymentMethodsModal";
+import { SettingsModal } from "@/components/SettingsModal";
 
 import { Hero } from "@/components/Hero";
 import { LogoTicker } from "@/components/LogoTicker";
@@ -200,6 +201,10 @@ const Book = () => {
   const [showOrderDetails, setShowOrderDetails] = useState(false);
   const [deliverExpenseRedraftSuggestion, setDeliverExpenseRedraftSuggestion] = useState<{ index: number; text: string } | null>(null);
   const [isDeliverExpenseRedrafting, setIsDeliverExpenseRedrafting] = useState<number | null>(null);
+
+  // Home address gate
+  const [showHomeAddressGate, setShowHomeAddressGate] = useState(false);
+  const [showSettingsFromGate, setShowSettingsFromGate] = useState(false);
 
   // Auto-select "Require 2 Courials" based on weight conditions
   useEffect(() => {
@@ -1041,6 +1046,7 @@ const Book = () => {
   }, []);
 
   return (
+    <>
     <div className="min-h-screen bg-background">
       <Helmet>
         <title>Book a Courier — Courial</title>
@@ -1109,6 +1115,13 @@ const Book = () => {
                         const handleClick = (e: React.MouseEvent) => {
                           if (!item.external) {
                             e.preventDefault();
+                            // Check for home address before allowing booking
+                            const addresses = getSavedAddresses();
+                            const hasHome = addresses.some((a) => a.type === "home");
+                            if (!hasHome) {
+                              setShowHomeAddressGate(true);
+                              return;
+                            }
                             setSelectedService(item.id);
                             setShowAllServices(false);
                           }
@@ -4032,6 +4045,41 @@ const Book = () => {
         </DialogContent>
       </Dialog>
     </div>
+
+      {/* Home Address Gate Dialog */}
+      <Dialog open={showHomeAddressGate} onOpenChange={setShowHomeAddressGate}>
+        <DialogContent className="sm:max-w-[19.2rem] bg-transparent border-none !rounded-[20px] p-0 overflow-hidden [&>button]:hidden shadow-none">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.3 }}
+          >
+            <div className="rounded-[20px] bg-foreground/75 text-background px-6 py-6 shadow-2xl backdrop-blur-sm flex flex-col items-center text-center">
+              <DialogTitle className="text-lg font-bold text-background mb-3">Home Address Required</DialogTitle>
+              <p className="text-sm text-background/70 mb-6">Please add your home address prior to booking a service.</p>
+              <div className="flex gap-3 w-full">
+                <Button
+                  variant="outline"
+                  className="flex-1 rounded-xl border-background/20 text-background hover:bg-background/10"
+                  onClick={() => setShowHomeAddressGate(false)}
+                >
+                  Close
+                </Button>
+                <Button
+                  className="flex-1 rounded-xl bg-primary text-primary-foreground hover:bg-primary/90"
+                  onClick={() => { setShowHomeAddressGate(false); setShowSettingsFromGate(true); }}
+                >
+                  Add
+                </Button>
+              </div>
+            </div>
+          </motion.div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Settings Modal opened from gate */}
+      <SettingsModal open={showSettingsFromGate} onOpenChange={setShowSettingsFromGate} />
+    </>
   );
 };
 
