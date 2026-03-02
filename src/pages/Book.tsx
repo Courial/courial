@@ -463,7 +463,7 @@ const Book = () => {
     setRoadsideModelSuggestions([]);
     try {
       const { data, error } = await supabase.functions.invoke("vehicle-models", {
-        body: { make },
+        body: { make, evOnly: selectedService === "valet" },
       });
       if (error) throw error;
       if (data?.models && Array.isArray(data.models)) {
@@ -474,7 +474,7 @@ const Book = () => {
     } finally {
       setRoadsideModelsLoading(false);
     }
-  }, [roadsideCustomModel]);
+  }, [roadsideCustomModel, selectedService]);
 
   // Close roadside dropdowns on outside click
   useEffect(() => {
@@ -1739,7 +1739,7 @@ const Book = () => {
                           </button>
                           {roadsideMakeOpen && (
                             <div onClick={(e) => e.stopPropagation()} className="absolute z-50 mt-1 w-full max-h-48 overflow-y-auto rounded-lg border border-border/60 bg-background shadow-lg">
-                              {["Acura","Audi","BMW","Buick","Cadillac","Chevrolet","Chrysler","Dodge","Ford","Genesis","GMC","Honda","Hyundai","Infiniti","Jaguar","Jeep","Kia","Land Rover","Lexus","Lincoln","Mazda","Mercedes-Benz","Mini","Mitsubishi","Nissan","Porsche","Ram","Rivian","Subaru","Tesla","Toyota","Volkswagen","Volvo"].map((make) => (
+                              {(selectedService === "valet" ? ["Acura","Audi","BMW","BYD","Cadillac","Chevrolet","Chrysler","Dodge","Ferrari","Fiat","Fisker","Ford","Genesis","GMC","Honda","Hyundai","Jaguar","Jeep","Kia","Land Rover","Lexus","Lincoln","Lucid","Mazda","McLaren","Mercedes-Benz","Mini","Mitsubishi","Nissan","Polestar","Porsche","Ram","Rivian","Rolls-Royce","Scout","Subaru","Tesla","Toyota","VinFast","Volkswagen","Volvo"] : ["Acura","Audi","BMW","Buick","Cadillac","Chevrolet","Chrysler","Dodge","Ford","Genesis","GMC","Honda","Hyundai","Infiniti","Jaguar","Jeep","Kia","Land Rover","Lexus","Lincoln","Mazda","Mercedes-Benz","Mini","Mitsubishi","Nissan","Porsche","Ram","Rivian","Subaru","Tesla","Toyota","Volkswagen","Volvo"]).map((make) => (
                                 <button
                                   key={make}
                                   onClick={() => {
