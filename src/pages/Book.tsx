@@ -235,6 +235,11 @@ const Book = () => {
   const [currentProfileIndex, setCurrentProfileIndex] = useState(0);
   const [showChat, setShowChat] = useState(false);
   const [completionPhotoUrl, setCompletionPhotoUrl] = useState<string | null>(null);
+  const [pickupPhotoUrl, setPickupPhotoUrl] = useState<string | null>(null);
+  const [dropoffPhotoUrl, setDropoffPhotoUrl] = useState<string | null>(null);
+  const [numberOfPackages, setNumberOfPackages] = useState<number | null>(null);
+  const [pickupPhotoLoading, setPickupPhotoLoading] = useState(false);
+  const [dropoffPhotoLoading, setDropoffPhotoLoading] = useState(false);
   const [chatMessages, setChatMessages] = useState<{ from: "user" | "courial"; text: string; time: string }[]>([
     { from: "courial", text: "Hey! I'm on my way to the pickup. Let me know if you have any instructions.", time: new Date().toLocaleTimeString([], { hour: "numeric", minute: "2-digit" }) },
   ]);
