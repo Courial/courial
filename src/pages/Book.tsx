@@ -787,8 +787,22 @@ const Book = () => {
     return () => clearInterval(interval);
   }, [bookingState]);
 
+  // Reset UI only — used when delivery is complete ("Done" button)
+  const handleDoneBooking = useCallback(() => {
+    deliveryIdRef.current = null;
+    setBookingState("input");
+    setLoadingProgress(0);
+    setDeliveryStep(0);
+    setSocketEnabled(false);
+    setAcceptedCourial(null);
+    setCourialEta(null);
+    setWfhSearchPhase(null);
+    setShowKeepSearching(false);
+    if (wfhTimerRef.current) clearTimeout(wfhTimerRef.current);
+  }, []);
+
+  // Cancel with backend API — used when user actively cancels an in-progress order
   const handleCancelBooking = useCallback(async () => {
-    // Call the cancel-delivery edge function if we have a deliveryId
     const orderId = deliveryIdRef.current;
     if (orderId) {
       const courialToken = localStorage.getItem("courial_api_token");
@@ -808,19 +822,9 @@ const Book = () => {
           console.error("[cancel-delivery] Exception:", err);
         }
       }
-      deliveryIdRef.current = null;
     }
-
-    setBookingState("input");
-    setLoadingProgress(0);
-    setDeliveryStep(0);
-    setSocketEnabled(false);
-    setAcceptedCourial(null);
-    setCourialEta(null);
-    setWfhSearchPhase(null);
-    setShowKeepSearching(false);
-    if (wfhTimerRef.current) clearTimeout(wfhTimerRef.current);
-  }, []);
+    handleDoneBooking();
+  }, [handleDoneBooking]);
 
   // Re-submit booking with new location coords for WFH cascading search
   const resubmitWithLocation = useCallback(async (loc: { address: string; lat: number; lng: number }) => {
