@@ -1256,8 +1256,8 @@ const Book = () => {
                               <SelectValue />
                             </SelectTrigger>
                             <SelectContent>
-                              {["70","75","80","90","100","125","150","175","200","250","300","350","400","450","500"].map(w => (
-                                <SelectItem key={w} value={w}>{w} lbs</SelectItem>
+                              {["<70","70","75","80","90","100","125","150","175","200","250","300","350","400","450","500"].map(w => (
+                                <SelectItem key={w} value={w}>{w === "<70" ? "< 70 lbs" : `${w} lbs`}</SelectItem>
                               ))}
                             </SelectContent>
                           </Select>
