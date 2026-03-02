@@ -50,6 +50,7 @@ const App = () => (
     <HelmetProvider>
       <TooltipProvider>
         <AuthProvider>
+          <PhoneVerificationGate>
           <CartProvider>
             <Toaster />
             <Sonner />
@@ -89,6 +90,7 @@ const App = () => (
               <ChatBubble />
             </BrowserRouter>
           </CartProvider>
+          </PhoneVerificationGate>
         </AuthProvider>
       </TooltipProvider>
     </HelmetProvider>
