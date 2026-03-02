@@ -1115,6 +1115,11 @@ const Book = () => {
                         const handleClick = (e: React.MouseEvent) => {
                           if (!item.external) {
                             e.preventDefault();
+                            // Must be signed in
+                            if (!user) {
+                              setShowSignInGate(true);
+                              return;
+                            }
                             // Check for home address before allowing booking
                             const addresses = getSavedAddresses();
                             const hasHome = addresses.some((a) => a.type === "home");
