@@ -1054,7 +1054,7 @@ const Book = () => {
     toast.info("Booking cancelled. You can try again anytime.");
   }, [handleCancelBooking]);
 
-  const deliveryStepsMap: Record<string, { label: string; desc: string }[]> = {
+  const deliveryStepsMap: Record<string, { label: string; desc: string; isComplete?: boolean }[]> = {
     deliver: [
       { label: "Order Accepted", desc: "Your delivery request has been confirmed" },
       { label: "Courial at Pickup", desc: "Your courier has arrived at the pickup location" },
