@@ -228,6 +228,7 @@ const Book = () => {
   const [nearbyCourials, setNearbyCourials] = useState<{ id: number; name: string; image: string; distance: string }[]>([]);
   const [currentProfileIndex, setCurrentProfileIndex] = useState(0);
   const [showChat, setShowChat] = useState(false);
+  const [completionPhotoUrl, setCompletionPhotoUrl] = useState<string | null>(null);
   const [chatMessages, setChatMessages] = useState<{ from: "user" | "courial"; text: string; time: string }[]>([
     { from: "courial", text: "Hey! I'm on my way to the pickup. Let me know if you have any instructions.", time: new Date().toLocaleTimeString([], { hour: "numeric", minute: "2-digit" }) },
   ]);

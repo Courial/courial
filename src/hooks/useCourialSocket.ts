@@ -33,13 +33,15 @@ interface UseCourialSocketOptions {
   onLocationUpdate?: (coords: { lat: number; lng: number }) => void;
   /** Callback when delivery status changes */
   onStatusChange?: (status: string) => void;
+  /** Callback when completion photo is received */
+  onCompletionPhoto?: (photoUrl: string) => void;
 }
 
 /**
  * Connects to the Courial real-time socket after booking
  * and listens for the AcceptOrder_listener event.
  */
-export function useCourialSocket({ token, enabled, acceptedDriverId, onAccepted, onLocationUpdate, onStatusChange }: UseCourialSocketOptions) {
+export function useCourialSocket({ token, enabled, acceptedDriverId, onAccepted, onLocationUpdate, onStatusChange, onCompletionPhoto }: UseCourialSocketOptions) {
   const socketRef = useRef<Socket | null>(null);
   const [connected, setConnected] = useState(false);
 
@@ -233,12 +235,33 @@ export function useCourialSocket({ token, enabled, acceptedDriverId, onAccepted,
       });
     });
 
+    // Listen for completion photo events
+    const photoEvents = [
+      "completionPhoto", "completion_photo", "deliveryPhoto",
+      "delivery_photo", "proofOfDelivery", "proof_of_delivery",
+    ];
+    photoEvents.forEach((eventName) => {
+      socket.on(eventName, (rawData: any) => {
+        console.log(`[CourialSocket] ${eventName} received:`, rawData);
+        try {
+          const parsed = typeof rawData === "string" ? JSON.parse(rawData) : rawData;
+          const data = parsed?.data ?? parsed;
+          const photoUrl = data?.photo_url ?? data?.photoUrl ?? data?.image ?? data?.url ?? data?.photo ?? "";
+          if (photoUrl && onCompletionPhoto) {
+            onCompletionPhoto(photoUrl);
+          }
+        } catch (err) {
+          console.error(`[CourialSocket] Error parsing ${eventName}:`, err);
+        }
+      });
+    });
+
     return () => {
       socket.disconnect();
       socketRef.current = null;
       setConnected(false);
     };
-  }, [enabled, token, acceptedDriverId, onAccepted, onLocationUpdate, onStatusChange]);
+  }, [enabled, token, acceptedDriverId, onAccepted, onLocationUpdate, onStatusChange, onCompletionPhoto]);
 
   return { connected, disconnect };
 }
