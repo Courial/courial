@@ -97,6 +97,7 @@ const serviceCards: { id: ServiceId; label: string; desc: string; href: string; 
 
 const Book = () => {
   const { user } = useAuth();
+  const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
   const showActivity = searchParams.get("view") === "activity";
   const sidebarRef = useRef<HTMLDivElement>(null);
