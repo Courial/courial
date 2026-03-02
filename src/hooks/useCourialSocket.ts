@@ -296,7 +296,7 @@ export function useCourialSocket({ token, enabled, acceptedDriverId, onAccepted,
       socketRef.current = null;
       setConnected(false);
     };
-  }, [enabled, token, acceptedDriverId, onAccepted, onLocationUpdate, onStatusChange, onCompletionPhoto]);
+  }, [enabled, token, acceptedDriverId, onAccepted, onLocationUpdate, onStatusChange, onCompletionPhoto, onPickupDetails, onDropoffPhoto]);
 
   return { connected, disconnect };
 }
