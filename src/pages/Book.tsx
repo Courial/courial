@@ -365,6 +365,23 @@ const Book = () => {
     setCompletionPhotoUrl(photoUrl);
   }, []);
 
+  const handlePickupDetails = useCallback((details: { pickupPhoto: string | null; numberOfPackages: number | null }) => {
+    console.log("[Book] Pickup details received:", details);
+    if (details.pickupPhoto) {
+      setPickupPhotoLoading(true);
+      setPickupPhotoUrl(details.pickupPhoto);
+    }
+    if (details.numberOfPackages != null) {
+      setNumberOfPackages(details.numberOfPackages);
+    }
+  }, []);
+
+  const handleDropoffPhoto = useCallback((photoUrl: string) => {
+    console.log("[Book] Dropoff photo received:", photoUrl);
+    setDropoffPhotoLoading(true);
+    setDropoffPhotoUrl(photoUrl);
+  }, []);
+
   useCourialSocket({
     token: courialToken,
     enabled: socketEnabled,
