@@ -258,11 +258,12 @@ export function useCourialSocket({ token, enabled, acceptedDriverId, onAccepted,
             // Also check orderimages array
             const orderImages = flat?.orderimages ?? flat?.orderImages ?? [];
             const firstOrderImage = Array.isArray(orderImages) && orderImages.length > 0 ? (orderImages[0]?.image ?? orderImages[0]?.url ?? orderImages[0]) : null;
-            if (pickupPhoto || rawPackages != null) {
+            const resolvedPhoto = (pickupPhoto && pickupPhoto !== "") ? pickupPhoto : (typeof firstOrderImage === "string" && firstOrderImage !== "" ? firstOrderImage : null);
+            if (resolvedPhoto || rawPackages != null) {
               const numberOfPackages = rawPackages != null ? parseInt(String(rawPackages), 10) : null;
-              console.log(`[CourialSocket] Pickup details extracted - photo: ${!!pickupPhoto}, packages: ${numberOfPackages}`);
+              console.log(`[CourialSocket] Pickup details extracted - photo: ${resolvedPhoto}, packages: ${numberOfPackages}, orderImages:`, orderImages);
               onPickupDetails({
-                pickupPhoto: pickupPhoto || null,
+                pickupPhoto: resolvedPhoto,
                 numberOfPackages: isNaN(numberOfPackages as number) ? null : numberOfPackages,
               });
             }
