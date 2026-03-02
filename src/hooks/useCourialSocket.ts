@@ -237,35 +237,33 @@ export function useCourialSocket({ token, enabled, acceptedDriverId, onAccepted,
           onStatusChange(status);
         }
 
-        // Extract pickup photo + item count from confirmPickup_listener
-        if (eventName === "confirmPickup_listener" && onPickupDetails) {
-          try {
-            const parsed = typeof rawData === "string" ? JSON.parse(rawData) : rawData;
-            const data = parsed?.data ?? parsed;
+        // Try to extract pickup/dropoff details from ANY status event
+        try {
+          const parsed = typeof rawData === "string" ? JSON.parse(rawData) : rawData;
+          const data = parsed?.data ?? parsed;
+
+          // Extract pickup photo + item count (available in confirmPickup and confirmDelivery)
+          if (onPickupDetails) {
             const pickupPhoto = data?.pickupLocationPhoto ?? data?.pickup_location_photo ?? data?.pickupPhoto ?? data?.pickup_photo ?? null;
             const rawPackages = data?.numberOfPackages ?? data?.number_of_packages ?? data?.itemCount ?? data?.item_count ?? null;
-            const numberOfPackages = rawPackages != null ? parseInt(String(rawPackages), 10) : null;
-            onPickupDetails({
-              pickupPhoto: pickupPhoto || null,
-              numberOfPackages: isNaN(numberOfPackages as number) ? null : numberOfPackages,
-            });
-          } catch (err) {
-            console.error(`[CourialSocket] Error parsing pickup details:`, err);
+            if (pickupPhoto || rawPackages != null) {
+              const numberOfPackages = rawPackages != null ? parseInt(String(rawPackages), 10) : null;
+              onPickupDetails({
+                pickupPhoto: pickupPhoto || null,
+                numberOfPackages: isNaN(numberOfPackages as number) ? null : numberOfPackages,
+              });
+            }
           }
-        }
 
-        // Extract drop-off proof photo from confirmDeliveryPointArrival_listener
-        if (eventName === "confirmDeliveryPointArrival_listener" && onDropoffPhoto) {
-          try {
-            const parsed = typeof rawData === "string" ? JSON.parse(rawData) : rawData;
-            const data = parsed?.data ?? parsed;
+          // Extract drop-off proof photo (available in confirmDeliveryPointArrival and confirmDelivery)
+          if (onDropoffPhoto) {
             const photo = data?.takeDeliveryPhoto ?? data?.take_delivery_photo ?? data?.dropoffPhoto ?? data?.dropoff_photo ?? null;
             if (photo) {
               onDropoffPhoto(photo);
             }
-          } catch (err) {
-            console.error(`[CourialSocket] Error parsing dropoff photo:`, err);
           }
+        } catch (err) {
+          console.error(`[CourialSocket] Error parsing status event details:`, err);
         }
       });
     });
