@@ -3368,6 +3368,77 @@ const Book = () => {
                                   : step.desc}
                               </motion.p>
                             )}
+
+                            {/* Pickup photo + item count after "Courial Picked Up" step */}
+                            {step.label === "Courial Picked Up" && (isCompleted || isCurrent) && (
+                              <motion.div
+                                initial={{ opacity: 0, height: 0 }}
+                                animate={{ opacity: 1, height: "auto" }}
+                                className="mt-2 space-y-1.5"
+                              >
+                                {numberOfPackages != null && (
+                                  <p className="text-xs font-medium text-muted-foreground">
+                                    Items picked up: <span className="text-foreground font-semibold">{numberOfPackages}</span>
+                                  </p>
+                                )}
+                                {pickupPhotoLoading && !pickupPhotoUrl && (
+                                  <div className="w-full max-w-[200px] h-[120px] rounded-lg bg-muted animate-pulse" />
+                                )}
+                                {pickupPhotoUrl && (
+                                  <div className="relative w-full max-w-[200px] rounded-lg overflow-hidden border border-border shadow-sm">
+                                    {pickupPhotoLoading && (
+                                      <div className="absolute inset-0 bg-muted animate-pulse z-10" />
+                                    )}
+                                    <img
+                                      src={pickupPhotoUrl}
+                                      alt="Pickup photo"
+                                      className="w-full h-auto object-cover rounded-lg"
+                                      onLoad={() => setPickupPhotoLoading(false)}
+                                      onError={() => { setPickupPhotoLoading(false); setPickupPhotoUrl(null); }}
+                                    />
+                                    <button
+                                      onClick={() => window.open(pickupPhotoUrl, "_blank")}
+                                      className="absolute top-1.5 right-1.5 p-1 rounded-full bg-background/80 backdrop-blur-sm"
+                                    >
+                                      <Eye className="w-3.5 h-3.5 text-foreground" />
+                                    </button>
+                                  </div>
+                                )}
+                              </motion.div>
+                            )}
+
+                            {/* Drop-off proof photo after "Courial at Drop-off" step */}
+                            {step.label === "Courial at Drop-off" && (isCompleted || isCurrent) && (
+                              <motion.div
+                                initial={{ opacity: 0, height: 0 }}
+                                animate={{ opacity: 1, height: "auto" }}
+                                className="mt-2"
+                              >
+                                {dropoffPhotoLoading && !dropoffPhotoUrl && (
+                                  <div className="w-full max-w-[200px] h-[120px] rounded-lg bg-muted animate-pulse" />
+                                )}
+                                {dropoffPhotoUrl && (
+                                  <div className="relative w-full max-w-[200px] rounded-lg overflow-hidden border border-border shadow-sm">
+                                    {dropoffPhotoLoading && (
+                                      <div className="absolute inset-0 bg-muted animate-pulse z-10" />
+                                    )}
+                                    <img
+                                      src={dropoffPhotoUrl}
+                                      alt="Drop-off proof"
+                                      className="w-full h-auto object-cover rounded-lg"
+                                      onLoad={() => setDropoffPhotoLoading(false)}
+                                      onError={() => { setDropoffPhotoLoading(false); setDropoffPhotoUrl(null); }}
+                                    />
+                                    <button
+                                      onClick={() => window.open(dropoffPhotoUrl, "_blank")}
+                                      className="absolute top-1.5 right-1.5 p-1 rounded-full bg-background/80 backdrop-blur-sm"
+                                    >
+                                      <Eye className="w-3.5 h-3.5 text-foreground" />
+                                    </button>
+                                  </div>
+                                )}
+                              </motion.div>
+                            )}
                           </div>
                         </div>
                       );
