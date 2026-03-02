@@ -235,6 +235,7 @@ const Book = () => {
   const [currentProfileIndex, setCurrentProfileIndex] = useState(0);
   const [showChat, setShowChat] = useState(false);
   const [completionPhotoUrl, setCompletionPhotoUrl] = useState<string | null>(null);
+  const [completionDate, setCompletionDate] = useState<Date | null>(null);
   const [pickupPhotoUrl, setPickupPhotoUrl] = useState<string | null>(null);
   const [dropoffPhotoUrl, setDropoffPhotoUrl] = useState<string | null>(null);
   const [numberOfPackages, setNumberOfPackages] = useState<number | null>(null);
@@ -357,6 +358,9 @@ const Book = () => {
     if (stepIndex !== undefined) {
       setDeliveryStep(stepIndex);
       toast.info(status);
+      if (status === "Order Complete") {
+        setCompletionDate(new Date());
+      }
     }
   }, [selectedService, conciergeIsRemote]);
 
@@ -849,6 +853,7 @@ const Book = () => {
     setDeliverOrderValue("");
     setShowOrderDetails(false);
     setCompletionPhotoUrl(null);
+    setCompletionDate(null);
     setPickupPhotoUrl(null);
     setDropoffPhotoUrl(null);
     setNumberOfPackages(null);
@@ -1049,14 +1054,14 @@ const Book = () => {
     toast.info("Booking cancelled. You can try again anytime.");
   }, [handleCancelBooking]);
 
-  const deliveryStepsMap: Record<string, { label: string; desc: string }[]> = {
+  const deliveryStepsMap: Record<string, { label: string; desc: string; isComplete?: boolean }[]> = {
     deliver: [
       { label: "Order Accepted", desc: "Your delivery request has been confirmed" },
       { label: "Courial at Pickup", desc: "Your courier has arrived at the pickup location" },
       { label: "Courial Picked Up", desc: "Package has been collected" },
       { label: "Courial at Drop-off", desc: "Your courier has arrived at the destination" },
       { label: "Courial Dropped Off", desc: "Package has been delivered" },
-      { label: "Order Complete", desc: "Invoice sent — thank you!" },
+      { label: "Order Complete", desc: "Invoice sent — thank you!", isComplete: true },
     ],
     concierge: [
       { label: "Request Accepted", desc: "Concierge confirmed" },
@@ -1064,13 +1069,13 @@ const Book = () => {
       { label: "Concierge Arrived", desc: "Your concierge has arrived" },
       { label: "Task In Progress", desc: "Task has begun" },
       { label: "Task Completed", desc: "Task completed" },
-      { label: "Order Complete", desc: "Invoice sent — thank you!" },
+      { label: "Order Complete", desc: "Invoice sent — thank you!", isComplete: true },
     ],
     concierge_wfh: [
       { label: "Request Accepted", desc: "Concierge confirmed" },
       { label: "Task In Progress", desc: "Task has begun" },
       { label: "Task Completed", desc: "Task completed" },
-      { label: "Order Complete", desc: "Invoice sent — thank you!" },
+      { label: "Order Complete", desc: "Invoice sent — thank you!", isComplete: true },
     ],
     valet: [
       { label: "Request Accepted", desc: "Your valet request has been confirmed" },
@@ -1078,7 +1083,7 @@ const Book = () => {
       { label: "Valet Arrived", desc: "Your valet has arrived" },
       { label: "Task In Progress", desc: "Service has begun" },
       { label: "Task Completed", desc: "Service completed" },
-      { label: "Order Complete", desc: "Invoice sent — thank you!" },
+      { label: "Order Complete", desc: "Invoice sent — thank you!", isComplete: true },
     ],
   };
   const isWfhConcierge = selectedService === "concierge" && conciergeIsRemote;
@@ -3354,19 +3359,29 @@ const Book = () => {
                                 isCurrent ? "text-foreground" : isCompleted ? "text-muted-foreground" : "text-muted-foreground/50"
                               )}
                             >
-                              {step.label}
+                              {step.isComplete && deliveryIdRef.current
+                                ? `Order ${deliveryIdRef.current} Complete`
+                                : step.label}
                               {isCompleted && <span className="ml-1.5 text-primary">✓</span>}
                             </p>
                             {isCurrent && (
-                              <motion.p
+                              <motion.div
                                 initial={{ opacity: 0, y: -4 }}
                                 animate={{ opacity: 1, y: 0 }}
-                                className="text-xs text-muted-foreground mt-0.5"
+                                className="mt-0.5"
                               >
-                                {step.label === "Task Completed" && wfhTaskElapsed > 0
-                                  ? `${Math.floor(wfhTaskElapsed / 3600) > 0 && Math.floor((wfhTaskElapsed % 3600) / 60) > 0 ? `${Math.floor(wfhTaskElapsed / 3600)} hrs • ${Math.floor((wfhTaskElapsed % 3600) / 60)} mins` : Math.floor(wfhTaskElapsed / 3600) > 0 ? `${Math.floor(wfhTaskElapsed / 3600)} hrs` : `${Math.floor((wfhTaskElapsed % 3600) / 60)} mins`} task`
-                                  : step.desc}
-                              </motion.p>
+                                {step.isComplete && completionDate ? (
+                                  <p className="text-xs text-muted-foreground">
+                                    {format(completionDate, "d MMMM yyyy")} at {format(completionDate, "h:mm a")}
+                                  </p>
+                                ) : (
+                                  <p className="text-xs text-muted-foreground">
+                                    {step.label === "Task Completed" && wfhTaskElapsed > 0
+                                      ? `${Math.floor(wfhTaskElapsed / 3600) > 0 && Math.floor((wfhTaskElapsed % 3600) / 60) > 0 ? `${Math.floor(wfhTaskElapsed / 3600)} hrs • ${Math.floor((wfhTaskElapsed % 3600) / 60)} mins` : Math.floor(wfhTaskElapsed / 3600) > 0 ? `${Math.floor(wfhTaskElapsed / 3600)} hrs` : `${Math.floor((wfhTaskElapsed % 3600) / 60)} mins`} task`
+                                      : step.desc}
+                                  </p>
+                                )}
+                              </motion.div>
                             )}
 
                             {/* Pickup photo + item count after "Courial Picked Up" step */}
@@ -3573,30 +3588,20 @@ const Book = () => {
 
               {/* Completion Photo — shown on Order Complete */}
               {deliveryStep >= (isWfhConcierge ? 3 : 5) && completionPhotoUrl && (
-                <div className="rounded-2xl border border-border bg-background overflow-hidden mb-3">
-                  <div className="px-4 pt-3 pb-2 flex items-center gap-2">
-                    <div className="w-6 h-6 rounded-md bg-primary/10 flex items-center justify-center">
-                      <Check className="w-3.5 h-3.5 text-primary" />
-                    </div>
-                    <p className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Proof of Completion</p>
-                  </div>
-                  <div className="px-3 pb-3">
-                    <div className="relative rounded-xl overflow-hidden aspect-video bg-muted">
-                      <img
-                        src={completionPhotoUrl}
-                        alt="Order completion photo"
-                        className="w-full h-full object-cover"
-                        onClick={() => window.open(completionPhotoUrl, "_blank")}
-                      />
-                      <button
-                        onClick={() => window.open(completionPhotoUrl, "_blank")}
-                        className="absolute top-2 right-2 w-7 h-7 rounded-full bg-background/80 backdrop-blur-sm flex items-center justify-center hover:bg-background transition-colors"
-                        aria-label="View full photo"
-                      >
-                        <Eye className="w-3.5 h-3.5 text-foreground" />
-                      </button>
-                    </div>
-                  </div>
+                <div className="relative rounded-2xl overflow-hidden mb-3 border border-border">
+                  <img
+                    src={completionPhotoUrl}
+                    alt="Order completion photo"
+                    className="w-full h-auto object-cover cursor-pointer"
+                    onClick={() => window.open(completionPhotoUrl, "_blank")}
+                  />
+                  <button
+                    onClick={() => window.open(completionPhotoUrl, "_blank")}
+                    className="absolute top-2 right-2 w-7 h-7 rounded-full bg-background/80 backdrop-blur-sm flex items-center justify-center hover:bg-background transition-colors"
+                    aria-label="View full photo"
+                  >
+                    <Eye className="w-3.5 h-3.5 text-foreground" />
+                  </button>
                 </div>
               )}
 
@@ -3631,12 +3636,14 @@ const Book = () => {
                   </button>
                 )}
                 {deliveryStep >= (isWfhConcierge ? 3 : 5) && (
-                  <button
-                    onClick={handleDoneBooking}
-                    className="flex-1 py-2.5 rounded-full text-sm font-semibold text-background bg-foreground hover:bg-foreground/90 transition-colors"
-                  >
-                    Done
-                  </button>
+                  <div className="flex-1 flex justify-end">
+                    <button
+                      onClick={handleDoneBooking}
+                      className="px-6 py-2.5 rounded-full text-sm font-semibold text-background bg-foreground hover:bg-foreground/90 transition-colors"
+                    >
+                      Done
+                    </button>
+                  </div>
                 )}
               </div>
 
