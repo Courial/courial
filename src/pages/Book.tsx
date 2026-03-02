@@ -821,7 +821,7 @@ const Book = () => {
       notes: conciergeDescription,
       pickup: loc,
       dropoff: loc,
-      userId: user.id,
+      userId: user?.user_metadata?.courial_id || user.id,
       isRemote: true,
       conciergeCategory: cat?.label || conciergeCategory,
       conciergeSubCategory: conciergeSubCategory === "__direct__" ? cat?.label : conciergeSubCategory,
