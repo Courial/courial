@@ -1705,8 +1705,8 @@ const Book = () => {
             </motion.div>
             )}
 
-            {/* Roadside Assistance Vehicle Details */}
-            {selectedService === "concierge" && conciergeCategory === "roadside-assistance" && conciergeSubCategory && conciergeSubCategory !== "__direct__" && (
+            {/* Vehicle Details - Roadside Assistance & Valet */}
+            {((selectedService === "concierge" && conciergeCategory === "roadside-assistance" && conciergeSubCategory && conciergeSubCategory !== "__direct__") || (selectedService === "valet" && conciergeSubCategory && conciergeSubCategory !== "__direct__")) && (
               <div className="mb-4 mt-4 space-y-3">
                 <span className="text-xs font-medium text-muted-foreground">Vehicle Details</span>
                 <div className="space-y-2">
