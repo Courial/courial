@@ -45,6 +45,7 @@ export function PhoneVerificationGate({ children }: { children: React.ReactNode 
   const [successMessage, setSuccessMessage] = useState("");
   const [btnLoading, setBtnLoading] = useState(false);
   const [defaultCountry, setDefaultCountry] = useState<string>("US");
+  const [otpType, setOtpType] = useState<string>("1");
 
   useEffect(() => {
     fetch("https://ipapi.co/json/")
@@ -96,11 +97,13 @@ export function PhoneVerificationGate({ children }: { children: React.ReactNode 
           setError(data2.msg || data.msg || "Failed to send OTP");
         } else {
           setDeviceID(data2.deviceID || "");
+          setOtpType("0");
           setView("otp");
           setSuccessMessage("Sent to\n" + formatDisplayPhone(countryCode, nationalNumber));
         }
       } else {
         setDeviceID(data.deviceID || "");
+        setOtpType(data.type || "1");
         setView("otp");
         setSuccessMessage("Sent to\n" + formatDisplayPhone(countryCode, nationalNumber));
       }
@@ -125,6 +128,7 @@ export function PhoneVerificationGate({ children }: { children: React.ReactNode 
           phone: otpNationalNumber,
           otp: code,
           deviceId: deviceID,
+          type: otpType,
         }),
       });
       const data = await res.json();
