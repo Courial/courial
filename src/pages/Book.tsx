@@ -390,6 +390,8 @@ const Book = () => {
     onLocationUpdate: handleLocationUpdate,
     onStatusChange: handleStatusChange,
     onCompletionPhoto: handleCompletionPhoto,
+    onPickupDetails: handlePickupDetails,
+    onDropoffPhoto: handleDropoffPhoto,
   });
   const courialProfiles = useMemo(() => [
     "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300&h=400&fit=crop&crop=face&facepad=2",
@@ -847,6 +849,11 @@ const Book = () => {
     setDeliverOrderValue("");
     setShowOrderDetails(false);
     setCompletionPhotoUrl(null);
+    setPickupPhotoUrl(null);
+    setDropoffPhotoUrl(null);
+    setNumberOfPackages(null);
+    setPickupPhotoLoading(false);
+    setDropoffPhotoLoading(false);
     setShowChat(false);
     setChatMessages([
       { from: "courial", text: "Hey! I'm on my way to the pickup. Let me know if you have any instructions.", time: new Date().toLocaleTimeString([], { hour: "numeric", minute: "2-digit" }) },
