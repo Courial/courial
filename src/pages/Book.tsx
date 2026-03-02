@@ -1011,9 +1011,9 @@ const Book = () => {
     valet: [
       { label: "Request Accepted", desc: "Your valet request has been confirmed" },
       { label: "Valet En Route", desc: "Your valet is on the way" },
-      { label: "Valet Arrived", desc: "Your valet has arrived at the location" },
-      { label: "Vehicle In Transit", desc: "Your vehicle is being handled" },
-      { label: "Vehicle Parked", desc: "Your vehicle has been parked" },
+      { label: "Valet Arrived", desc: "Your valet has arrived" },
+      { label: "Task In Progress", desc: "Service has begun" },
+      { label: "Task Completed", desc: "Service completed" },
       { label: "Order Complete", desc: "Invoice sent — thank you!" },
     ],
   };
