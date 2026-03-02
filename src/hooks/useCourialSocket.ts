@@ -253,8 +253,11 @@ export function useCourialSocket({ token, enabled, acceptedDriverId, onAccepted,
 
           // Extract pickup photo + item count
           if (onPickupDetails) {
-            const pickupPhoto = flat?.pickupLocationPhoto ?? flat?.pickup_location_photo ?? flat?.pickupPhoto ?? flat?.pickup_photo ?? null;
-            const rawPackages = flat?.numberOfPackages ?? flat?.number_of_packages ?? flat?.itemCount ?? flat?.item_count ?? flat?.noOfPackages ?? flat?.no_of_packages ?? null;
+            const pickupPhoto = flat?.pickupLocationPhoto ?? flat?.pickup_location_photo ?? flat?.pickupPhoto ?? flat?.pickup_photo ?? flat?.Identification_image ?? flat?.identification_image ?? flat?.image ?? null;
+            const rawPackages = flat?.numberOfPackages ?? flat?.number_of_packages ?? flat?.itemCount ?? flat?.item_count ?? flat?.noOfPackages ?? flat?.no_of_packages ?? flat?.over45Lbs ?? null;
+            // Also check orderimages array
+            const orderImages = flat?.orderimages ?? flat?.orderImages ?? [];
+            const firstOrderImage = Array.isArray(orderImages) && orderImages.length > 0 ? (orderImages[0]?.image ?? orderImages[0]?.url ?? orderImages[0]) : null;
             if (pickupPhoto || rawPackages != null) {
               const numberOfPackages = rawPackages != null ? parseInt(String(rawPackages), 10) : null;
               console.log(`[CourialSocket] Pickup details extracted - photo: ${!!pickupPhoto}, packages: ${numberOfPackages}`);
