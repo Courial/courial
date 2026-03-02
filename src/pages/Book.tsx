@@ -463,7 +463,7 @@ const Book = () => {
     setRoadsideModelSuggestions([]);
     try {
       const { data, error } = await supabase.functions.invoke("vehicle-models", {
-        body: { make },
+        body: { make, evOnly: selectedService === "valet" },
       });
       if (error) throw error;
       if (data?.models && Array.isArray(data.models)) {
@@ -474,7 +474,7 @@ const Book = () => {
     } finally {
       setRoadsideModelsLoading(false);
     }
-  }, [roadsideCustomModel]);
+  }, [roadsideCustomModel, selectedService]);
 
   // Close roadside dropdowns on outside click
   useEffect(() => {
