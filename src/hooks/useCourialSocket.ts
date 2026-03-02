@@ -35,8 +35,6 @@ interface UseCourialSocketOptions {
   onStatusChange?: (status: string) => void;
   /** Callback when completion photo is received */
   onCompletionPhoto?: (photoUrl: string) => void;
-  /** Callback when pickup photo & item count are received */
-  onPickupDetails?: (details: { pickupPhoto: string | null; numberOfPackages: number | null }) => void;
   /** Callback when drop-off proof photo is received */
   onDropoffPhoto?: (photoUrl: string) => void;
 }
@@ -45,7 +43,7 @@ interface UseCourialSocketOptions {
  * Connects to the Courial real-time socket after booking
  * and listens for the AcceptOrder_listener event.
  */
-export function useCourialSocket({ token, enabled, acceptedDriverId, onAccepted, onLocationUpdate, onStatusChange, onCompletionPhoto, onPickupDetails, onDropoffPhoto }: UseCourialSocketOptions) {
+export function useCourialSocket({ token, enabled, acceptedDriverId, onAccepted, onLocationUpdate, onStatusChange, onCompletionPhoto, onDropoffPhoto }: UseCourialSocketOptions) {
   const socketRef = useRef<Socket | null>(null);
   const [connected, setConnected] = useState(false);
 
@@ -251,28 +249,6 @@ export function useCourialSocket({ token, enabled, acceptedDriverId, onAccepted,
             ...(data?.delivery ?? {}),
           };
 
-          // Extract pickup photo + item count
-          if (onPickupDetails) {
-            // Note: do NOT use flat.image as fallback — that's the driver's profile image from Provider
-            const pickupPhoto = data?.pickupLocationPhoto ?? data?.pickup_location_photo ?? flat?.pickupLocationPhoto ?? flat?.pickup_location_photo ?? flat?.pickupPhoto ?? flat?.pickup_photo ?? flat?.Identification_image ?? flat?.identification_image ?? null;
-            // Check data first (before flat) to avoid Provider fields overwriting real values
-            // over45Lbs is a boolean flag (0/1), NOT a count — exclude it from package count
-            const rawPackages = data?.numberOfPackages ?? data?.number_of_packages ?? data?.noOfPackages ?? data?.no_of_packages ?? data?.itemCount ?? data?.item_count ?? data?.packageCount ?? data?.package_count ?? data?.totalItems ?? data?.total_items ?? data?.parcels ?? flat?.numberOfPackages ?? flat?.number_of_packages ?? flat?.noOfPackages ?? flat?.no_of_packages ?? flat?.itemCount ?? flat?.item_count ?? flat?.packageCount ?? flat?.package_count ?? flat?.totalItems ?? flat?.total_items ?? flat?.parcels ?? null;
-            // Log ALL keys + full data to find the correct field
-            console.log(`[CourialSocket] Package count debug - rawPackages resolved:`, rawPackages, `| data keys:`, Object.keys(data || {}), `| flat keys:`, Object.keys(flat || {}), `| FULL data:`, JSON.stringify(data));
-            // Also check orderimages array
-            const orderImages = flat?.orderimages ?? flat?.orderImages ?? [];
-            const firstOrderImage = Array.isArray(orderImages) && orderImages.length > 0 ? (orderImages[0]?.image ?? orderImages[0]?.url ?? orderImages[0]) : null;
-            const resolvedPhoto = (pickupPhoto && pickupPhoto !== "") ? pickupPhoto : (typeof firstOrderImage === "string" && firstOrderImage !== "" ? firstOrderImage : null);
-            if (resolvedPhoto || rawPackages != null) {
-              const numberOfPackages = rawPackages != null ? parseInt(String(rawPackages), 10) : null;
-              console.log(`[CourialSocket] Pickup details extracted - photo: ${resolvedPhoto}, packages: ${numberOfPackages}, orderImages:`, orderImages);
-              onPickupDetails({
-                pickupPhoto: resolvedPhoto,
-                numberOfPackages: isNaN(numberOfPackages as number) ? null : numberOfPackages,
-              });
-            }
-          }
 
           // Extract drop-off proof photo
           if (onDropoffPhoto) {
@@ -314,7 +290,7 @@ export function useCourialSocket({ token, enabled, acceptedDriverId, onAccepted,
       socketRef.current = null;
       setConnected(false);
     };
-  }, [enabled, token, acceptedDriverId, onAccepted, onLocationUpdate, onStatusChange, onCompletionPhoto, onPickupDetails, onDropoffPhoto]);
+  }, [enabled, token, acceptedDriverId, onAccepted, onLocationUpdate, onStatusChange, onCompletionPhoto, onDropoffPhoto]);
 
   return { connected, disconnect };
 }
