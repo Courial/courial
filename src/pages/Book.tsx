@@ -3502,7 +3502,7 @@ const Book = () => {
                 )}
                 {deliveryStep >= (isWfhConcierge ? 3 : 5) && (
                   <button
-                    onClick={handleCancelBooking}
+                    onClick={handleDoneBooking}
                     className="flex-1 py-2.5 rounded-full text-sm font-semibold text-background bg-foreground hover:bg-foreground/90 transition-colors"
                   >
                     Done
