@@ -206,6 +206,9 @@ const Book = () => {
   const [showHomeAddressGate, setShowHomeAddressGate] = useState(false);
   const [showSettingsFromGate, setShowSettingsFromGate] = useState(false);
 
+  // Sign in gate
+  const [showSignInGate, setShowSignInGate] = useState(false);
+
   // Auto-select "Require 2 Courials" based on weight conditions
   useEffect(() => {
     if (over70lbs) {
