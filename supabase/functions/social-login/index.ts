@@ -61,8 +61,34 @@ serve(async (req) => {
     const data = await res.json();
     console.log("[social-login] Response:", JSON.stringify(data));
 
+    // If login succeeded and we got a token, fetch full profile to get image
+    let profileImageUrl: string | null = null;
+    const loginToken = data?.data?.token;
+    if (res.ok && loginToken) {
+      try {
+        console.log("[social-login] Fetching profile with token for image...");
+        const profileRes = await fetch(`${COURIAL_BASE}/view_profile`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+            "security_key": apiKey,
+            "Authorization": `Bearer ${apiKey}`,
+            "token": loginToken,
+          },
+          body: new URLSearchParams({}).toString(),
+        });
+        const profileData = await profileRes.json();
+        console.log("[social-login] Profile response:", JSON.stringify(profileData));
+        const profile = profileData?.data || profileData || {};
+        profileImageUrl = profile.image || profile.profileImage || profile.avatar || 
+                         profile.photo || profile.picture || profile.profile_image || null;
+      } catch (err) {
+        console.error("[social-login] Profile fetch error:", err);
+      }
+    }
+
     return new Response(
-      JSON.stringify({ success: res.ok, data }),
+      JSON.stringify({ success: res.ok, data: { ...data, profileImageUrl } }),
       {
         status: res.ok ? 200 : res.status,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
