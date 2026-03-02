@@ -799,6 +799,36 @@ const Book = () => {
     setWfhSearchPhase(null);
     setShowKeepSearching(false);
     if (wfhTimerRef.current) clearTimeout(wfhTimerRef.current);
+
+    // Reset form to default start
+    setSelectedService(null);
+    setShowAllServices(true);
+    setPickup("");
+    setDropoff("");
+    setPickupCoords(null);
+    setDropoffCoords(null);
+    setPickupPlaceName(null);
+    setDropoffPlaceName(null);
+    setTimeMode("now");
+    setSelectedDate(undefined);
+    setSelectedTime("12:00");
+    setSelectedVehicle(null);
+    setNotes("");
+    setOver70lbs(null);
+    setHeavyExpanded(false);
+    setHeavyWeight("70");
+    setHeavyItems("1");
+    setTwoCourials(null);
+    setHasStairs(null);
+    setDeliverLanguage(null);
+    setDeliverHasExpenses(null);
+    setDeliverOrderValue("");
+    setShowOrderDetails(false);
+    setCompletionPhotoUrl(null);
+    setShowChat(false);
+    setChatMessages([
+      { from: "courial", text: "Hey! I'm on my way to the pickup. Let me know if you have any instructions.", time: new Date().toLocaleTimeString([], { hour: "numeric", minute: "2-digit" }) },
+    ]);
   }, []);
 
   // Cancel with backend API — used when user actively cancels an in-progress order
