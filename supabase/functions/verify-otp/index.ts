@@ -13,7 +13,7 @@ serve(async (req) => {
   }
 
   try {
-    const { country_code, phone, otp, deviceId } = await req.json();
+    const { country_code, phone, otp, deviceId, type } = await req.json();
 
     if (!country_code || !phone || !otp) {
       return new Response(
@@ -50,7 +50,7 @@ serve(async (req) => {
         "Authorization": `Bearer ${apiKey}`,
       },
       body: new URLSearchParams({
-        type: "0",
+        type: type || "0",
         otp,
         country_code,
         phone: formattedPhone,
