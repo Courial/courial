@@ -232,7 +232,7 @@ export function useCourialSocket({ token, enabled, acceptedDriverId, onAccepted,
 
     Object.entries(statusListeners).forEach(([eventName, status]) => {
       socket.on(eventName, (rawData: any) => {
-        console.log(`[CourialSocket] ${eventName} received:`, rawData);
+        console.log(`[CourialSocket] ${eventName} RAW payload:`, JSON.stringify(rawData));
         if (onStatusChange) {
           onStatusChange(status);
         }
@@ -242,12 +242,22 @@ export function useCourialSocket({ token, enabled, acceptedDriverId, onAccepted,
           const parsed = typeof rawData === "string" ? JSON.parse(rawData) : rawData;
           const data = parsed?.data ?? parsed;
 
-          // Extract pickup photo + item count (available in confirmPickup and confirmDelivery)
+          // Flatten: also check nested objects like Provider, order, delivery
+          const flat = {
+            ...data,
+            ...(data?.Provider ?? {}),
+            ...(data?.provider ?? {}),
+            ...(data?.order ?? {}),
+            ...(data?.delivery ?? {}),
+          };
+
+          // Extract pickup photo + item count
           if (onPickupDetails) {
-            const pickupPhoto = data?.pickupLocationPhoto ?? data?.pickup_location_photo ?? data?.pickupPhoto ?? data?.pickup_photo ?? null;
-            const rawPackages = data?.numberOfPackages ?? data?.number_of_packages ?? data?.itemCount ?? data?.item_count ?? null;
+            const pickupPhoto = flat?.pickupLocationPhoto ?? flat?.pickup_location_photo ?? flat?.pickupPhoto ?? flat?.pickup_photo ?? null;
+            const rawPackages = flat?.numberOfPackages ?? flat?.number_of_packages ?? flat?.itemCount ?? flat?.item_count ?? flat?.noOfPackages ?? flat?.no_of_packages ?? null;
             if (pickupPhoto || rawPackages != null) {
               const numberOfPackages = rawPackages != null ? parseInt(String(rawPackages), 10) : null;
+              console.log(`[CourialSocket] Pickup details extracted - photo: ${!!pickupPhoto}, packages: ${numberOfPackages}`);
               onPickupDetails({
                 pickupPhoto: pickupPhoto || null,
                 numberOfPackages: isNaN(numberOfPackages as number) ? null : numberOfPackages,
@@ -255,10 +265,11 @@ export function useCourialSocket({ token, enabled, acceptedDriverId, onAccepted,
             }
           }
 
-          // Extract drop-off proof photo (available in confirmDeliveryPointArrival and confirmDelivery)
+          // Extract drop-off proof photo
           if (onDropoffPhoto) {
-            const photo = data?.takeDeliveryPhoto ?? data?.take_delivery_photo ?? data?.dropoffPhoto ?? data?.dropoff_photo ?? null;
+            const photo = flat?.takeDeliveryPhoto ?? flat?.take_delivery_photo ?? flat?.dropoffPhoto ?? flat?.dropoff_photo ?? flat?.deliveryPhoto ?? flat?.delivery_photo ?? null;
             if (photo) {
+              console.log(`[CourialSocket] Dropoff photo extracted:`, photo);
               onDropoffPhoto(photo);
             }
           }
