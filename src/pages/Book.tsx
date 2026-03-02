@@ -1046,6 +1046,7 @@ const Book = () => {
   }, []);
 
   return (
+    <>
     <div className="min-h-screen bg-background">
       <Helmet>
         <title>Book a Courier — Courial</title>
