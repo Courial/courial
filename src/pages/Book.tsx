@@ -235,6 +235,11 @@ const Book = () => {
   const [currentProfileIndex, setCurrentProfileIndex] = useState(0);
   const [showChat, setShowChat] = useState(false);
   const [completionPhotoUrl, setCompletionPhotoUrl] = useState<string | null>(null);
+  const [pickupPhotoUrl, setPickupPhotoUrl] = useState<string | null>(null);
+  const [dropoffPhotoUrl, setDropoffPhotoUrl] = useState<string | null>(null);
+  const [numberOfPackages, setNumberOfPackages] = useState<number | null>(null);
+  const [pickupPhotoLoading, setPickupPhotoLoading] = useState(false);
+  const [dropoffPhotoLoading, setDropoffPhotoLoading] = useState(false);
   const [chatMessages, setChatMessages] = useState<{ from: "user" | "courial"; text: string; time: string }[]>([
     { from: "courial", text: "Hey! I'm on my way to the pickup. Let me know if you have any instructions.", time: new Date().toLocaleTimeString([], { hour: "numeric", minute: "2-digit" }) },
   ]);
@@ -360,6 +365,23 @@ const Book = () => {
     setCompletionPhotoUrl(photoUrl);
   }, []);
 
+  const handlePickupDetails = useCallback((details: { pickupPhoto: string | null; numberOfPackages: number | null }) => {
+    console.log("[Book] Pickup details received:", details);
+    if (details.pickupPhoto) {
+      setPickupPhotoLoading(true);
+      setPickupPhotoUrl(details.pickupPhoto);
+    }
+    if (details.numberOfPackages != null) {
+      setNumberOfPackages(details.numberOfPackages);
+    }
+  }, []);
+
+  const handleDropoffPhoto = useCallback((photoUrl: string) => {
+    console.log("[Book] Dropoff photo received:", photoUrl);
+    setDropoffPhotoLoading(true);
+    setDropoffPhotoUrl(photoUrl);
+  }, []);
+
   useCourialSocket({
     token: courialToken,
     enabled: socketEnabled,
@@ -368,6 +390,8 @@ const Book = () => {
     onLocationUpdate: handleLocationUpdate,
     onStatusChange: handleStatusChange,
     onCompletionPhoto: handleCompletionPhoto,
+    onPickupDetails: handlePickupDetails,
+    onDropoffPhoto: handleDropoffPhoto,
   });
   const courialProfiles = useMemo(() => [
     "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300&h=400&fit=crop&crop=face&facepad=2",
@@ -825,6 +849,11 @@ const Book = () => {
     setDeliverOrderValue("");
     setShowOrderDetails(false);
     setCompletionPhotoUrl(null);
+    setPickupPhotoUrl(null);
+    setDropoffPhotoUrl(null);
+    setNumberOfPackages(null);
+    setPickupPhotoLoading(false);
+    setDropoffPhotoLoading(false);
     setShowChat(false);
     setChatMessages([
       { from: "courial", text: "Hey! I'm on my way to the pickup. Let me know if you have any instructions.", time: new Date().toLocaleTimeString([], { hour: "numeric", minute: "2-digit" }) },
@@ -3338,6 +3367,77 @@ const Book = () => {
                                   ? `${Math.floor(wfhTaskElapsed / 3600) > 0 && Math.floor((wfhTaskElapsed % 3600) / 60) > 0 ? `${Math.floor(wfhTaskElapsed / 3600)} hrs • ${Math.floor((wfhTaskElapsed % 3600) / 60)} mins` : Math.floor(wfhTaskElapsed / 3600) > 0 ? `${Math.floor(wfhTaskElapsed / 3600)} hrs` : `${Math.floor((wfhTaskElapsed % 3600) / 60)} mins`} task`
                                   : step.desc}
                               </motion.p>
+                            )}
+
+                            {/* Pickup photo + item count after "Courial Picked Up" step */}
+                            {step.label === "Courial Picked Up" && (isCompleted || isCurrent) && (
+                              <motion.div
+                                initial={{ opacity: 0, height: 0 }}
+                                animate={{ opacity: 1, height: "auto" }}
+                                className="mt-2 space-y-1.5"
+                              >
+                                {numberOfPackages != null && (
+                                  <p className="text-xs font-medium text-muted-foreground">
+                                    Items picked up: <span className="text-foreground font-semibold">{numberOfPackages}</span>
+                                  </p>
+                                )}
+                                {pickupPhotoLoading && !pickupPhotoUrl && (
+                                  <div className="w-full max-w-[200px] h-[120px] rounded-lg bg-muted animate-pulse" />
+                                )}
+                                {pickupPhotoUrl && (
+                                  <div className="relative w-full max-w-[200px] rounded-lg overflow-hidden border border-border shadow-sm">
+                                    {pickupPhotoLoading && (
+                                      <div className="absolute inset-0 bg-muted animate-pulse z-10" />
+                                    )}
+                                    <img
+                                      src={pickupPhotoUrl}
+                                      alt="Pickup photo"
+                                      className="w-full h-auto object-cover rounded-lg"
+                                      onLoad={() => setPickupPhotoLoading(false)}
+                                      onError={() => { setPickupPhotoLoading(false); setPickupPhotoUrl(null); }}
+                                    />
+                                    <button
+                                      onClick={() => window.open(pickupPhotoUrl, "_blank")}
+                                      className="absolute top-1.5 right-1.5 p-1 rounded-full bg-background/80 backdrop-blur-sm"
+                                    >
+                                      <Eye className="w-3.5 h-3.5 text-foreground" />
+                                    </button>
+                                  </div>
+                                )}
+                              </motion.div>
+                            )}
+
+                            {/* Drop-off proof photo after "Courial at Drop-off" step */}
+                            {step.label === "Courial at Drop-off" && (isCompleted || isCurrent) && (
+                              <motion.div
+                                initial={{ opacity: 0, height: 0 }}
+                                animate={{ opacity: 1, height: "auto" }}
+                                className="mt-2"
+                              >
+                                {dropoffPhotoLoading && !dropoffPhotoUrl && (
+                                  <div className="w-full max-w-[200px] h-[120px] rounded-lg bg-muted animate-pulse" />
+                                )}
+                                {dropoffPhotoUrl && (
+                                  <div className="relative w-full max-w-[200px] rounded-lg overflow-hidden border border-border shadow-sm">
+                                    {dropoffPhotoLoading && (
+                                      <div className="absolute inset-0 bg-muted animate-pulse z-10" />
+                                    )}
+                                    <img
+                                      src={dropoffPhotoUrl}
+                                      alt="Drop-off proof"
+                                      className="w-full h-auto object-cover rounded-lg"
+                                      onLoad={() => setDropoffPhotoLoading(false)}
+                                      onError={() => { setDropoffPhotoLoading(false); setDropoffPhotoUrl(null); }}
+                                    />
+                                    <button
+                                      onClick={() => window.open(dropoffPhotoUrl, "_blank")}
+                                      className="absolute top-1.5 right-1.5 p-1 rounded-full bg-background/80 backdrop-blur-sm"
+                                    >
+                                      <Eye className="w-3.5 h-3.5 text-foreground" />
+                                    </button>
+                                  </div>
+                                )}
+                              </motion.div>
                             )}
                           </div>
                         </div>

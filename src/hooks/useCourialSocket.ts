@@ -35,13 +35,17 @@ interface UseCourialSocketOptions {
   onStatusChange?: (status: string) => void;
   /** Callback when completion photo is received */
   onCompletionPhoto?: (photoUrl: string) => void;
+  /** Callback when pickup photo & item count are received */
+  onPickupDetails?: (details: { pickupPhoto: string | null; numberOfPackages: number | null }) => void;
+  /** Callback when drop-off proof photo is received */
+  onDropoffPhoto?: (photoUrl: string) => void;
 }
 
 /**
  * Connects to the Courial real-time socket after booking
  * and listens for the AcceptOrder_listener event.
  */
-export function useCourialSocket({ token, enabled, acceptedDriverId, onAccepted, onLocationUpdate, onStatusChange, onCompletionPhoto }: UseCourialSocketOptions) {
+export function useCourialSocket({ token, enabled, acceptedDriverId, onAccepted, onLocationUpdate, onStatusChange, onCompletionPhoto, onPickupDetails, onDropoffPhoto }: UseCourialSocketOptions) {
   const socketRef = useRef<Socket | null>(null);
   const [connected, setConnected] = useState(false);
 
@@ -232,6 +236,37 @@ export function useCourialSocket({ token, enabled, acceptedDriverId, onAccepted,
         if (onStatusChange) {
           onStatusChange(status);
         }
+
+        // Extract pickup photo + item count from confirmPickup_listener
+        if (eventName === "confirmPickup_listener" && onPickupDetails) {
+          try {
+            const parsed = typeof rawData === "string" ? JSON.parse(rawData) : rawData;
+            const data = parsed?.data ?? parsed;
+            const pickupPhoto = data?.pickupLocationPhoto ?? data?.pickup_location_photo ?? data?.pickupPhoto ?? data?.pickup_photo ?? null;
+            const rawPackages = data?.numberOfPackages ?? data?.number_of_packages ?? data?.itemCount ?? data?.item_count ?? null;
+            const numberOfPackages = rawPackages != null ? parseInt(String(rawPackages), 10) : null;
+            onPickupDetails({
+              pickupPhoto: pickupPhoto || null,
+              numberOfPackages: isNaN(numberOfPackages as number) ? null : numberOfPackages,
+            });
+          } catch (err) {
+            console.error(`[CourialSocket] Error parsing pickup details:`, err);
+          }
+        }
+
+        // Extract drop-off proof photo from confirmDeliveryPointArrival_listener
+        if (eventName === "confirmDeliveryPointArrival_listener" && onDropoffPhoto) {
+          try {
+            const parsed = typeof rawData === "string" ? JSON.parse(rawData) : rawData;
+            const data = parsed?.data ?? parsed;
+            const photo = data?.takeDeliveryPhoto ?? data?.take_delivery_photo ?? data?.dropoffPhoto ?? data?.dropoff_photo ?? null;
+            if (photo) {
+              onDropoffPhoto(photo);
+            }
+          } catch (err) {
+            console.error(`[CourialSocket] Error parsing dropoff photo:`, err);
+          }
+        }
       });
     });
 
@@ -261,7 +296,7 @@ export function useCourialSocket({ token, enabled, acceptedDriverId, onAccepted,
       socketRef.current = null;
       setConnected(false);
     };
-  }, [enabled, token, acceptedDriverId, onAccepted, onLocationUpdate, onStatusChange, onCompletionPhoto]);
+  }, [enabled, token, acceptedDriverId, onAccepted, onLocationUpdate, onStatusChange, onCompletionPhoto, onPickupDetails, onDropoffPhoto]);
 
   return { connected, disconnect };
 }
