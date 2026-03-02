@@ -258,7 +258,7 @@ export const Navbar = () => {
             <DialogTitle className="text-lg font-bold text-background mb-3">Sign In Required</DialogTitle>
             <p className="text-sm text-background/70 mb-6">Please sign in to book a service.</p>
             <Button
-              className="w-full rounded-xl bg-background text-foreground hover:bg-background/90"
+              className="rounded-xl bg-black/50 text-white border border-white/40 hover:bg-black/60 px-6"
               onClick={() => { setShowSignInGate(false); navigate("/auth"); }}
             >
               Got it!
