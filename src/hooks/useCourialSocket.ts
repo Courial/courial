@@ -121,7 +121,7 @@ export function useCourialSocket({ token, enabled, acceptedDriverId, onAccepted,
           5;
 
         const driver: CourialDriver = {
-          id:
+          id: String(
             provider?.id ||
             provider?.user_id ||
             provider?.userId ||
@@ -131,7 +131,8 @@ export function useCourialSocket({ token, enabled, acceptedDriverId, onAccepted,
             courialData?.driver_id ||
             courialData?.userId ||
             courialData?.user_id ||
-            "",
+            ""
+          ),
           name:
             fullNameFromParts ||
             courialData?.name ||
