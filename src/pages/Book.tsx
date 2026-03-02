@@ -3024,7 +3024,8 @@ const Book = () => {
               <p className="text-sm text-muted-foreground mt-0.5">
                 {selectedService === "concierge" && conciergeCategory
                   ? `${conciergeCategory.replace(/-/g, " ").replace(/\b\w/g, c => c.toUpperCase())}${conciergeSubCategory ? ` • ${conciergeSubCategory}` : ""}`
-                  : selectedService === "valet" ? "Valet Service" : "Delivery"}
+                  : selectedService === "valet" ? "Valet Service"
+                  : deliverMultiStop && deliverExtraStops.length > 0 ? "Multiple Stops" : "Single Pick-up and Drop-off"}
               </p>
             </div>
 
@@ -3107,6 +3108,11 @@ const Book = () => {
                 <h2 className="text-lg font-bold text-foreground">
                   {selectedService === "concierge" ? "Concierge Task" : selectedService === "valet" ? "Valet Service" : "Delivery"}
                 </h2>
+                {selectedService !== "concierge" && selectedService !== "valet" && (
+                  <p className="text-xs text-muted-foreground mt-0.5">
+                    {deliverMultiStop && deliverExtraStops.length > 0 ? "Multiple Stops" : "Single Pick-up and Drop-off"}
+                  </p>
+                )}
                 <p className="text-sm text-muted-foreground mt-0.5 flex items-center justify-center gap-1.5">
                   {/* Green pulsing dot for ETA */}
                   {(selectedService !== "concierge" && !isWfhConcierge && courialEta) && (
@@ -3419,7 +3425,7 @@ const Book = () => {
                 </button>
                 {showOrderDetails && (
                   <div className="mt-3 space-y-0 divide-y divide-border text-sm">
-                    {/* Row: Language (+ Rate & Mode for roadside) */}
+                    {/* Row: Language + Mode (for deliver) or Language + Rate + Mode (for roadside) */}
                     {(deliverLanguage || conciergeLanguage) && (
                       <div className="grid grid-cols-3 gap-4 py-2.5">
                         <div>
@@ -3440,6 +3446,36 @@ const Book = () => {
                             <p className="text-[11px] text-muted-foreground capitalize">{conciergeVehicle === "none" ? "None" : conciergeVehicle}</p>
                           </div>
                         )}
+                        {/* Deliver: show Mode (vehicle) on same row as Language */}
+                        {selectedService !== "concierge" && selectedVehicle && (
+                          <div>
+                            <p className="text-xs font-medium text-foreground mb-0.5">Mode</p>
+                            <p className="text-[11px] text-muted-foreground capitalize">{selectedVehicle}</p>
+                          </div>
+                        )}
+                      </div>
+                    )}
+                    {/* Stairs row — right after Language; conditionally share row with Weight/Items and 2 Courials */}
+                    {selectedService !== "concierge" && (hasStairs || (over70lbs && Number(heavyWeight) >= 70) || twoCourials) && (
+                      <div className={cn("grid gap-4 py-2.5", (hasStairs && (over70lbs || twoCourials)) ? "grid-cols-3" : (hasStairs || over70lbs || twoCourials) ? "grid-cols-2" : "grid-cols-1")}>
+                        {hasStairs && (
+                          <div>
+                            <p className="text-xs font-medium text-foreground mb-0.5">Stairs</p>
+                            <p className="text-[11px] text-muted-foreground">Yes</p>
+                          </div>
+                        )}
+                        {over70lbs && Number(heavyWeight) >= 70 && (
+                          <div>
+                            <p className="text-xs font-medium text-foreground mb-0.5">Heavy Items</p>
+                            <p className="text-[11px] text-muted-foreground">{heavyWeight} lbs / {heavyItems} {parseInt(heavyItems) === 1 ? "item" : "items"}</p>
+                          </div>
+                        )}
+                        {twoCourials && (
+                          <div>
+                            <p className="text-xs font-medium text-foreground mb-0.5">2 Courials</p>
+                            <p className="text-[11px] text-muted-foreground">Yes</p>
+                          </div>
+                        )}
                       </div>
                     )}
                     {/* Concierge Task Description — right after Language */}
@@ -3449,10 +3485,10 @@ const Book = () => {
                         <p className="text-[11px] text-muted-foreground whitespace-pre-wrap">{conciergeDescription}</p>
                       </div>
                     )}
-                    {/* Row: Rate & Vehicle (same row for concierge, skip for roadside) */}
-                    {((selectedService === "concierge" && conciergeCategory !== "roadside-assistance" && (conciergeServiceMode || conciergeVehicle)) || (selectedService !== "concierge" && selectedVehicle)) && (
+                    {/* Row: Rate & Vehicle (same row for concierge non-roadside) */}
+                    {selectedService === "concierge" && conciergeCategory !== "roadside-assistance" && (conciergeServiceMode || conciergeVehicle) && (
                     <div className="grid grid-cols-3 gap-4 py-2.5">
-                      {selectedService === "concierge" && conciergeCategory !== "roadside-assistance" && conciergeServiceMode && (
+                      {conciergeServiceMode && (
                         <div>
                           <p className="text-xs font-medium text-foreground mb-0.5">Rate</p>
                           <p className="text-[11px] text-muted-foreground">
@@ -3460,16 +3496,10 @@ const Book = () => {
                           </p>
                         </div>
                       )}
-                      {selectedService === "concierge" && conciergeCategory !== "roadside-assistance" && conciergeVehicle && (
+                      {conciergeVehicle && (
                         <div>
                           <p className="text-xs font-medium text-foreground mb-0.5">Vehicle</p>
                           <p className="text-[11px] text-muted-foreground capitalize">{conciergeVehicle === "none" ? "None" : conciergeVehicle}</p>
-                        </div>
-                      )}
-                      {selectedService !== "concierge" && selectedVehicle && (
-                        <div>
-                          <p className="text-xs font-medium text-foreground mb-0.5">Vehicle</p>
-                          <p className="text-[11px] text-muted-foreground capitalize">{selectedVehicle}</p>
                         </div>
                       )}
                     </div>
@@ -3492,7 +3522,31 @@ const Book = () => {
                         )}
                       </div>
                     )}
-                    {/* Expenses */}
+                    {/* Concierge: Stairs & 2 Courials */}
+                    {selectedService === "concierge" && (twoCourials || hasStairs) && (
+                      <div className="grid grid-cols-2 gap-4 py-2.5">
+                        {twoCourials && (
+                          <div>
+                            <p className="text-xs font-medium text-foreground mb-0.5">2 Courials</p>
+                            <p className="text-[11px] text-muted-foreground">Yes</p>
+                          </div>
+                        )}
+                        {hasStairs && (
+                          <div>
+                            <p className="text-xs font-medium text-foreground mb-0.5">Stairs</p>
+                            <p className="text-[11px] text-muted-foreground">Yes</p>
+                          </div>
+                        )}
+                      </div>
+                    )}
+                    {/* Notes — BEFORE Expenses */}
+                    {notes.trim() && selectedService !== "concierge" && (
+                      <div className="py-2.5">
+                        <p className="text-xs font-medium text-foreground mb-0.5">Notes</p>
+                        <p className="text-[11px] text-muted-foreground whitespace-pre-wrap">{notes}</p>
+                      </div>
+                    )}
+                    {/* Expenses — AFTER Notes */}
                     {deliverHasExpenses && deliverExpenseItems.some(e => e.description.trim()) && (
                       <div className="py-2.5">
                         <div className="flex items-center justify-between mb-1">
@@ -3550,39 +3604,6 @@ const Book = () => {
                             <p className="text-[11px] text-muted-foreground">{selectedDate.toLocaleDateString()} at {selectedTime}</p>
                           </div>
                         </div>
-                      </div>
-                    )}
-                    {/* Row: Heavy items */}
-                    {over70lbs && (
-                      <div className="grid grid-cols-2 gap-4 py-2.5">
-                        <div>
-                          <p className="text-xs font-medium text-foreground mb-0.5">Heavy Items</p>
-                          <p className="text-[11px] text-muted-foreground">{heavyWeight} lbs / {heavyItems} {parseInt(heavyItems) === 1 ? "item" : "items"}</p>
-                        </div>
-                      </div>
-                    )}
-                    {/* Row: 2 Courials & Stairs */}
-                    {(twoCourials || hasStairs) && (
-                      <div className="grid grid-cols-2 gap-4 py-2.5">
-                        {twoCourials && (
-                          <div>
-                            <p className="text-xs font-medium text-foreground mb-0.5">2 Courials</p>
-                            <p className="text-[11px] text-muted-foreground">Yes</p>
-                          </div>
-                        )}
-                        {hasStairs && (
-                          <div>
-                            <p className="text-xs font-medium text-foreground mb-0.5">Stairs</p>
-                            <p className="text-[11px] text-muted-foreground">Yes</p>
-                          </div>
-                        )}
-                      </div>
-                    )}
-                    {/* Notes */}
-                    {notes.trim() && (
-                      <div className="py-2.5">
-                        <p className="text-xs font-medium text-foreground mb-0.5">Notes</p>
-                        <p className="text-[11px] text-muted-foreground whitespace-pre-wrap">{notes}</p>
                       </div>
                     )}
                     {/* Estimated Fare */}
