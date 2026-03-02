@@ -17,6 +17,7 @@ export interface CourialDriver {
   memberSince: string;
   latitude: number | null;
   longitude: number | null;
+  language: string | null;
 }
 
 interface UseCourialSocketOptions {
