@@ -87,6 +87,12 @@ const conciergeCategories: ConciergeCategory[] = [
   { id: "something-else", label: "Something Else?", desc: "Whatever the task, consider it handled.", subs: [] },
 ];
 
+const valetCategories: ConciergeCategory[] = [
+  { id: "charge", label: "Charge", desc: "EV charging & battery care", subs: ["EV Charging", "Battery Top-Up", "Charging Station Drop-Off"] },
+  { id: "drive", label: "Drive", desc: "We drive, you ride or relax", subs: ["Airport Transfer", "Vehicle Relocation", "Personal Errand", "Multi-Stop Run"] },
+  { id: "park", label: "Park", desc: "Parking handled for you", subs: ["Event Parking", "Daily Parking", "Overnight Parking", "Garage Storage"] },
+];
+
 const serviceCards: { id: ServiceId; label: string; desc: string; href: string; external?: boolean; image: string; icons: LucideIcon[]; serviceIcon: string }[] = [
   { id: "deliver", label: "Deliver", desc: "Your products deserve more than just a driver. They deserve Courial.", href: "/book", image: "https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=400&q=80", icons: [Box], serviceIcon: deliverServiceIcon },
   { id: "concierge", label: "Concierge", desc: "Whatever. Whenever.\nIf it's possible, we'll get it done.", href: "/book", image: "https://images.unsplash.com/photo-1521791136064-7986c2920216?w=400&q=80", icons: [ConciergeBell], serviceIcon: conciergeServiceIcon },
@@ -235,6 +241,9 @@ const Book = () => {
   const [chatInput, setChatInput] = useState("");
   const chatEndRef = useRef<HTMLDivElement>(null);
 
+  const isConciergeStyle = selectedService === "concierge" || selectedService === "valet";
+  const activeCategories = selectedService === "valet" ? valetCategories : conciergeCategories;
+
   useEffect(() => {
     chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [chatMessages]);
@@ -291,7 +300,7 @@ const Book = () => {
   // Calculate ETA from Courial to pickup using Google Distance Matrix
   useEffect(() => {
     if (!courialCoords || !window.google?.maps) return;
-    const pickupPt = selectedService === "concierge" ? conciergeStartCoords : pickupCoords;
+    const pickupPt = isConciergeStyle ? conciergeStartCoords : pickupCoords;
     if (!pickupPt) return;
 
     const service = new window.google.maps.DistanceMatrixService();
@@ -407,17 +416,17 @@ const Book = () => {
   const activePayment = paymentMethods.find(p => p.id === selectedPaymentMethod) || paymentMethods[0];
 
   const needsVehicle = selectedService === "deliver";
-  const conciergeReady = selectedService === "concierge" && (conciergeSubCategory !== null || conciergeCategory === "something-else") && conciergeDescription.trim().length > 0;
-  const isBaseFormValid = selectedService === "concierge"
+  const conciergeReady = isConciergeStyle && (conciergeSubCategory !== null || conciergeCategory === "something-else") && conciergeDescription.trim().length > 0;
+  const isBaseFormValid = isConciergeStyle
     ? conciergeReady
     : pickup.trim().length > 0 && dropoff.trim().length > 0 && (!needsVehicle || selectedVehicle !== null) && notes.trim().length > 0;
-  const isFormValid = selectedService === "concierge"
+  const isFormValid = isConciergeStyle
     ? conciergeReady && conciergeOrderValue.trim().length > 0 && Number(conciergeOrderValue.replace(/,/g, '')) > 0
     : isBaseFormValid && deliverOrderValue.trim().length > 0 && Number(deliverOrderValue.replace(/,/g, '')) > 0;
 
   // Sync booking state to localStorage for Navbar
   const formStarted = selectedService !== null && (
-    selectedService === "concierge"
+    isConciergeStyle
       ? (conciergeCategory !== null)
       : (pickup.trim().length > 0 || dropoff.trim().length > 0)
   );
@@ -468,7 +477,7 @@ const Book = () => {
     setIsRedrafting(true);
     setRedraftSuggestion(null);
     try {
-      const selectedCat = conciergeCategories.find(c => c.id === conciergeCategory);
+      const selectedCat = activeCategories.find(c => c.id === conciergeCategory);
       const categoryLabel = conciergeSubCategory
         ? `${selectedCat?.label} > ${conciergeSubCategory}`
         : selectedCat?.label || "General";
@@ -493,7 +502,7 @@ const Book = () => {
     setIsExpenseRedrafting(index);
     setExpenseRedraftSuggestion(null);
     try {
-      const selectedCat = conciergeCategories.find(c => c.id === conciergeCategory);
+      const selectedCat = activeCategories.find(c => c.id === conciergeCategory);
       const categoryLabel = conciergeSubCategory
         ? `${selectedCat?.label} > ${conciergeSubCategory}`
         : selectedCat?.label || "General";
@@ -573,7 +582,7 @@ const Book = () => {
         return;
       }
 
-      const isConcierge = selectedService === "concierge";
+      const isConcierge = selectedService === "concierge" || selectedService === "valet";
 
       // For concierge: resolve best pickup/dropoff from available addresses, duplicating if only one exists
       let concPickup = { address: "N/A", lat: 0, lng: 0 };
@@ -634,7 +643,7 @@ const Book = () => {
       }
 
       if (isConcierge) {
-        const cat = conciergeCategories.find(c => c.id === conciergeCategory);
+        const cat = activeCategories.find(c => c.id === conciergeCategory);
         payload.conciergeCategory = cat?.label || conciergeCategory;
         payload.conciergeSubCategory = conciergeSubCategory === "__direct__" ? cat?.label : conciergeSubCategory;
         if (conciergeOrderValue) payload.orderValue = Number(conciergeOrderValue.replace(/,/g, ''));
@@ -1449,7 +1458,7 @@ const Book = () => {
 
               {/* Concierge Category Drill-Down */}
               {/* Vehicle type icons for Concierge */}
-              {selectedService === "concierge" && (
+              {isConciergeStyle && (
                 <div className="mb-6">
                   <div className="flex items-end justify-center gap-4">
                     {/* "None" icon - no vehicle needed */}
@@ -1520,8 +1529,8 @@ const Book = () => {
                 </div>
               )}
 
-              {/* Concierge Category Drill-Down */}
-              {selectedService === "concierge" && conciergeVehicle && (
+              {/* Category Drill-Down */}
+              {isConciergeStyle && conciergeVehicle && (
                 <div className="mb-4">
                   <AnimatePresence mode="wait">
                     {!conciergeCategory ? (
@@ -1534,7 +1543,7 @@ const Book = () => {
                         transition={{ duration: 0.15 }}
                         className="flex flex-wrap gap-2"
                       >
-                        {conciergeCategories.map((cat) => (
+                        {activeCategories.map((cat) => (
                           <button
                             key={cat.id}
                             onClick={() => {
@@ -1559,7 +1568,7 @@ const Book = () => {
                         transition={{ duration: 0.15 }}
                       >
                         {(() => {
-                          const cat = conciergeCategories.find(c => c.id === conciergeCategory)!;
+                          const cat = activeCategories.find(c => c.id === conciergeCategory)!;
                           return (
                             <>
                               <div className="flex items-center gap-2 mb-2">
@@ -1603,7 +1612,7 @@ const Book = () => {
                         transition={{ duration: 0.15 }}
                       >
                         {(() => {
-                          const cat = conciergeCategories.find(c => c.id === conciergeCategory)!;
+                          const cat = activeCategories.find(c => c.id === conciergeCategory)!;
                           return (
                             <>
                               <div className="flex items-center gap-2 mb-1">
@@ -1808,8 +1817,8 @@ const Book = () => {
               </div>
             )}
 
-            {/* Preferred Language for Concierge */}
-            {selectedService === "concierge" && conciergeSubCategory && (
+            {/* Preferred Language */}
+            {isConciergeStyle && conciergeSubCategory && (
               <div className="mb-4 mt-4">
                 {conciergeLanguage ? (
                   <>
@@ -1846,8 +1855,8 @@ const Book = () => {
               </div>
             )}
 
-            {/* Concierge Task Details Form */}
-            {selectedService === "concierge" && conciergeSubCategory && (
+            {/* Task Details Form */}
+            {isConciergeStyle && conciergeSubCategory && (
               <motion.div
                 initial={{ opacity: 0, height: 0 }}
                 animate={{ opacity: 1, height: "auto" }}
@@ -1857,6 +1866,7 @@ const Book = () => {
               >
                 {/* Address Toggle Pills + WFH — all on same row */}
                 <div className="flex items-center justify-center gap-2 mb-3">
+                  {selectedService === "concierge" && (
                   <button
                     onClick={() => {
                       setConciergeIsRemote(prev => {
@@ -1878,6 +1888,7 @@ const Book = () => {
                   >
                     🏠 WFH
                   </button>
+                  )}
                   {(["start", "stop", "final"] as const).map((type) => {
                     const labels: Record<string, string> = { start: "Start", stop: "Stop", final: "Finish" };
                     const iconColors: Record<string, string> = { start: "text-green-500", stop: "text-blue-500", final: "text-destructive" };
@@ -2016,7 +2027,7 @@ const Book = () => {
                 <div className="relative mb-1">
                   <div className="px-4 py-4 border border-border rounded-xl bg-background focus-within:border-border">
                     <textarea
-                      placeholder={conciergeCategory === "roadside-assistance" ? "Describe the situation and assistance needed, including, urgency level, access instructions, any safety notes, and any relevant contacts or gate codes. If you're out of gas, specify fuel type; if you have a flat tire, confirm whether a spare is available. You may also include external links if third-party coordination is required." : "Outline the scope of work, preferences, timing requirements, special instructions, relevant contact names and phone numbers, and any external links the Courial will need access to. You may choose to have AI refine your message for clarity and completeness before confirming your booking."}
+                      placeholder={selectedService === "valet" ? "Describe the valet service needed, including vehicle details (make, model, color, plate), location, timing, charging specifications, parking preferences, and any special instructions such as access codes or gate information." : conciergeCategory === "roadside-assistance" ? "Describe the situation and assistance needed, including, urgency level, access instructions, any safety notes, and any relevant contacts or gate codes. If you're out of gas, specify fuel type; if you have a flat tire, confirm whether a spare is available. You may also include external links if third-party coordination is required." : "Outline the scope of work, preferences, timing requirements, special instructions, relevant contact names and phone numbers, and any external links the Courial will need access to. You may choose to have AI refine your message for clarity and completeness before confirming your booking."}
                       className="w-full bg-transparent text-sm text-foreground placeholder:text-foreground/35 outline-none resize-none overflow-hidden"
                       rows={1}
                       value={conciergeDescription}
@@ -2394,7 +2405,7 @@ const Book = () => {
                 {/* Concierge Service Requirements */}
                 <Collapsible className="mt-5 text-xs text-foreground">
                   <CollapsibleTrigger className="flex items-center gap-1 font-semibold cursor-pointer hover:opacity-70 transition-opacity">
-                    Concierge Service Requirements
+                    {selectedService === "valet" ? "Valet" : "Concierge"} Service Requirements
                     <ChevronDown className="w-3.5 h-3.5 transition-transform duration-200 [&[data-state=open]]:rotate-180" />
                   </CollapsibleTrigger>
                   <CollapsibleContent className="space-y-3 mt-2">
@@ -2445,7 +2456,7 @@ const Book = () => {
                       className="rounded h-10 text-lg font-semibold px-6"
                       variant={isFormValid && !(Number(conciergeOrderValue) > 200 && !declineProtection) ? "hero" : "secondary"}
                     >
-                      Book Concierge
+                      Book {selectedService === "valet" ? "Valet" : "Concierge"}
                     </Button>
                   </div>
                 </div>
@@ -2454,7 +2465,7 @@ const Book = () => {
 
             {/* Deliver / Valet Form */}
             <AnimatePresence>
-              {!showAllServices && selectedService !== "concierge" && (selectedVehicle || selectedService === "valet") && (
+              {!showAllServices && !isConciergeStyle && selectedVehicle && (
                 <motion.div
                   initial={{ opacity: 0, height: 0 }}
                   animate={{ opacity: 1, height: "auto" }}
@@ -3071,12 +3082,11 @@ const Book = () => {
             {/* Heading — matches LIVE page */}
             <div className="text-center mb-6">
               <h2 className="text-lg font-bold text-foreground">
-                {selectedService === "concierge" ? "Concierge Task" : selectedService === "valet" ? "Valet Service" : "Delivery"}
+                 {selectedService === "concierge" ? "Concierge Task" : selectedService === "valet" ? "Valet Service" : "Delivery"}
               </h2>
               <p className="text-sm text-muted-foreground mt-0.5">
-                {selectedService === "concierge" && conciergeCategory
+                {isConciergeStyle && conciergeCategory
                   ? `${conciergeCategory.replace(/-/g, " ").replace(/\b\w/g, c => c.toUpperCase())}${conciergeSubCategory ? ` • ${conciergeSubCategory}` : ""}`
-                  : selectedService === "valet" ? "Valet Service"
                   : deliverMultiStop && deliverExtraStops.length > 0 ? "Multiple Stops" : "Single Pick-up and Drop-off"}
               </p>
             </div>
@@ -3158,9 +3168,9 @@ const Book = () => {
               {/* Active header */}
               <div className="text-center mb-6">
                 <h2 className="text-lg font-bold text-foreground">
-                  {selectedService === "concierge" ? "Concierge Task" : selectedService === "valet" ? "Valet Service" : "Delivery"}
+                 {selectedService === "concierge" ? "Concierge Task" : selectedService === "valet" ? "Valet Service" : "Delivery"}
                 </h2>
-                {selectedService !== "concierge" && selectedService !== "valet" && (
+                {!isConciergeStyle && (
                   <p className="text-xs text-muted-foreground mt-0.5">
                     {deliverMultiStop && deliverExtraStops.length > 0 ? "Multiple Stops" : "Single Pick-up and Drop-off"}
                   </p>
@@ -3173,7 +3183,7 @@ const Book = () => {
                       <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500" />
                     </span>
                   )}
-                  {selectedService === "concierge" && conciergeCategory
+                  {isConciergeStyle && conciergeCategory
                     ? `${conciergeCategory.replace(/-/g, " ").replace(/\b\w/g, c => c.toUpperCase())}${conciergeSubCategory ? ` • ${conciergeSubCategory}` : ""}${isWfhConcierge ? " • WFH Service" : ""}`
                     : !isWfhConcierge
                       ? courialEta ? `${courialEta.duration} away • ${new Date(Date.now() + parseInt(courialEta.duration) * 60000).toLocaleTimeString([], { hour: "numeric", minute: "2-digit" })} dropoff` : "Calculating ETA..."
@@ -3219,7 +3229,7 @@ const Book = () => {
                     </div>
                     <div className="text-xs text-foreground mt-0.5"><span className="font-normal text-muted-foreground">Plate No.</span> <span className="font-bold">{acceptedCourial?.licensePlate || "ABC1234"}</span></div>
                   </div>
-                  {selectedService === "concierge" ? (
+                  {isConciergeStyle ? (
                     conciergeVehicle === "none" || !conciergeVehicle ? (
                       <img src={noVehicleIcon} alt="No vehicle needed" className="h-[60px] w-[60px] shrink-0 object-contain" />
                     ) : (
@@ -3372,7 +3382,7 @@ const Book = () => {
 
 
                 {/* Trip Summary — addresses with colored dots */}
-                {selectedService === "concierge" && !isWfhConcierge ? (
+                {isConciergeStyle && !isWfhConcierge ? (
                   <div className="space-y-3 pt-2">
                     {conciergeStartAddress && (
                       <div className="flex items-start gap-3">
@@ -3400,7 +3410,7 @@ const Book = () => {
                       </div>
                     )}
                   </div>
-                ) : selectedService !== "concierge" && (
+                ) : !isConciergeStyle && (
                 <div className="space-y-3 pt-2">
                   <div className="flex items-start gap-3">
                     <div className="flex-shrink-0 w-2.5 h-2.5 rounded-full bg-green-500 mt-[5px]" />
@@ -3540,7 +3550,7 @@ const Book = () => {
                           </div>
                         )}
                         {/* Deliver: show Mode (vehicle) on same row as Language */}
-                        {selectedService !== "concierge" && selectedVehicle && (
+                        {!isConciergeStyle && selectedVehicle && (
                           <div>
                             <p className="text-xs font-medium text-foreground mb-0.5">Mode</p>
                             <p className="text-[11px] text-muted-foreground capitalize">{selectedVehicle}</p>
@@ -3549,7 +3559,7 @@ const Book = () => {
                       </div>
                     )}
                     {/* Extras row — right after Language */}
-                    {selectedService !== "concierge" && (hasStairs || (over70lbs && Number(heavyWeight) >= 70) || twoCourials) && (
+                    {!isConciergeStyle && (hasStairs || (over70lbs && Number(heavyWeight) >= 70) || twoCourials) && (
                       <div className="py-2.5">
                         <p className="text-xs font-medium text-foreground mb-0.5">Extras</p>
                         <p className="text-[11px] text-muted-foreground">
@@ -3562,14 +3572,14 @@ const Book = () => {
                       </div>
                     )}
                     {/* Concierge Task Description — right after Language */}
-                    {selectedService === "concierge" && conciergeDescription.trim() && (
+                    {isConciergeStyle && conciergeDescription.trim() && (
                       <div className="py-2.5">
                         <p className="text-xs font-medium text-foreground mb-0.5">Task Description</p>
                         <p className="text-[11px] text-muted-foreground whitespace-pre-wrap">{conciergeDescription}</p>
                       </div>
                     )}
                     {/* Row: Rate & Vehicle (same row for concierge non-roadside) */}
-                    {selectedService === "concierge" && conciergeCategory !== "roadside-assistance" && (conciergeServiceMode || conciergeVehicle) && (
+                    {isConciergeStyle && conciergeCategory !== "roadside-assistance" && (conciergeServiceMode || conciergeVehicle) && (
                     <div className="grid grid-cols-3 gap-4 py-2.5">
                       {conciergeServiceMode && (
                         <div>
@@ -3606,7 +3616,7 @@ const Book = () => {
                       </div>
                     )}
                     {/* Concierge: Stairs & 2 Courials */}
-                    {selectedService === "concierge" && (twoCourials || hasStairs) && (
+                    {isConciergeStyle && (twoCourials || hasStairs) && (
                       <div className="grid grid-cols-2 gap-4 py-2.5">
                         {twoCourials && (
                           <div>
@@ -3623,7 +3633,7 @@ const Book = () => {
                       </div>
                     )}
                     {/* Notes — BEFORE Expenses */}
-                    {notes.trim() && selectedService !== "concierge" && (
+                    {notes.trim() && !isConciergeStyle && (
                       <div className="py-2.5">
                         <p className="text-xs font-medium text-foreground mb-0.5">Notes</p>
                         <p className="text-[11px] text-muted-foreground whitespace-pre-wrap">{notes}</p>
@@ -3882,8 +3892,8 @@ const Book = () => {
         {/* Right Column — Map Placeholder */}
         <div className="hidden md:flex flex-1 relative overflow-hidden">
            {(() => {
-                const isConcierge = selectedService === "concierge";
-                // For concierge: map each address directly to its correct marker type
+                const isConcierge = isConciergeStyle;
+                // For concierge/valet: map each address directly to its correct marker type
                 // Start → green circle (pickup), Stop → blue octagon (stop), Final → red square (dropoff)
                 const mapPickup = isConcierge ? conciergeStartCoords : pickupCoords;
                 const mapDropoff = isConcierge ? conciergeFinalCoords : dropoffCoords;
@@ -3919,12 +3929,12 @@ const Book = () => {
       {/* Price Breakdown Dialog */}
       <Dialog open={showPriceBreakdown} onOpenChange={setShowPriceBreakdown}>
         <DialogContent className="sm:max-w-md bg-background border-border !rounded-[25px] p-0 overflow-y-auto max-h-[90vh] [&>button]:hidden">
-          {selectedService === "concierge" ? (
+          {isConciergeStyle ? (
             <>
               <div className="bg-muted/80 rounded-t-[25px] px-7 pt-7 pb-5">
                 <div className="flex items-center gap-3">
-                  <img src={conciergeIcon} alt="Concierge" className="w-8 h-8" />
-                  <span className="text-[1.65rem] font-bold text-foreground">Concierge</span>
+                  <img src={selectedService === "valet" ? valetBox : conciergeIcon} alt={selectedService === "valet" ? "Valet" : "Concierge"} className="w-8 h-8" />
+                  <span className="text-[1.65rem] font-bold text-foreground">{selectedService === "valet" ? "Valet" : "Concierge"}</span>
                 </div>
               </div>
               <div className="px-7">
