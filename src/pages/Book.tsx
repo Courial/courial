@@ -3003,7 +3003,7 @@ const Book = () => {
                   {/* Delivery Requirements Notice */}
                   <Collapsible className="mt-3 text-xs text-foreground">
                     <CollapsibleTrigger className="flex items-center gap-1 font-semibold cursor-pointer hover:opacity-70 transition-opacity">
-                      {selectedService === "valet" ? "Valet Service Requirements" : "Delivery Requirements"}
+                      Delivery Requirements
                       <ChevronDown className="w-3.5 h-3.5 transition-transform duration-200 [&[data-state=open]]:rotate-180" />
                     </CollapsibleTrigger>
                     <CollapsibleContent className="space-y-3 mt-2">
