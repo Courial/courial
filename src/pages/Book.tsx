@@ -770,7 +770,30 @@ const Book = () => {
     return () => clearInterval(interval);
   }, [bookingState]);
 
-  const handleCancelBooking = useCallback(() => {
+  const handleCancelBooking = useCallback(async () => {
+    // Call the cancel-delivery edge function if we have a deliveryId
+    const orderId = deliveryIdRef.current;
+    if (orderId) {
+      const courialToken = localStorage.getItem("courial_api_token");
+      if (courialToken) {
+        try {
+          console.log("[cancel-delivery] Cancelling orderId:", orderId);
+          const { data, error } = await supabase.functions.invoke("cancel-delivery", {
+            body: { orderId },
+            headers: { Authorization: `Bearer ${courialToken}` },
+          });
+          if (error) {
+            console.error("[cancel-delivery] Edge function error:", error);
+          } else {
+            console.log("[cancel-delivery] Response:", data);
+          }
+        } catch (err) {
+          console.error("[cancel-delivery] Exception:", err);
+        }
+      }
+      deliveryIdRef.current = null;
+    }
+
     setBookingState("input");
     setLoadingProgress(0);
     setDeliveryStep(0);
