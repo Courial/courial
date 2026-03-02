@@ -228,6 +228,7 @@ const Book = () => {
   const [nearbyCourials, setNearbyCourials] = useState<{ id: number; name: string; image: string; distance: string }[]>([]);
   const [currentProfileIndex, setCurrentProfileIndex] = useState(0);
   const [showChat, setShowChat] = useState(false);
+  const [completionPhotoUrl, setCompletionPhotoUrl] = useState<string | null>(null);
   const [chatMessages, setChatMessages] = useState<{ from: "user" | "courial"; text: string; time: string }[]>([
     { from: "courial", text: "Hey! I'm on my way to the pickup. Let me know if you have any instructions.", time: new Date().toLocaleTimeString([], { hour: "numeric", minute: "2-digit" }) },
   ]);
@@ -345,6 +346,11 @@ const Book = () => {
     }
   }, [selectedService, conciergeIsRemote]);
 
+  const handleCompletionPhoto = useCallback((photoUrl: string) => {
+    console.log("[Book] Completion photo received:", photoUrl);
+    setCompletionPhotoUrl(photoUrl);
+  }, []);
+
   useCourialSocket({
     token: courialToken,
     enabled: socketEnabled,
@@ -352,6 +358,7 @@ const Book = () => {
     onAccepted: handleCourialAccepted,
     onLocationUpdate: handleLocationUpdate,
     onStatusChange: handleStatusChange,
+    onCompletionPhoto: handleCompletionPhoto,
   });
   const courialProfiles = useMemo(() => [
     "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300&h=400&fit=crop&crop=face&facepad=2",
@@ -3418,6 +3425,35 @@ const Book = () => {
                 </div>
                 )}
               </div>
+
+              {/* Completion Photo — shown on Order Complete */}
+              {deliveryStep >= (isWfhConcierge ? 3 : 5) && completionPhotoUrl && (
+                <div className="rounded-2xl border border-border bg-background overflow-hidden mb-3">
+                  <div className="px-4 pt-3 pb-2 flex items-center gap-2">
+                    <div className="w-6 h-6 rounded-md bg-primary/10 flex items-center justify-center">
+                      <Check className="w-3.5 h-3.5 text-primary" />
+                    </div>
+                    <p className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Proof of Completion</p>
+                  </div>
+                  <div className="px-3 pb-3">
+                    <div className="relative rounded-xl overflow-hidden aspect-video bg-muted">
+                      <img
+                        src={completionPhotoUrl}
+                        alt="Order completion photo"
+                        className="w-full h-full object-cover"
+                        onClick={() => window.open(completionPhotoUrl, "_blank")}
+                      />
+                      <button
+                        onClick={() => window.open(completionPhotoUrl, "_blank")}
+                        className="absolute top-2 right-2 w-7 h-7 rounded-full bg-background/80 backdrop-blur-sm flex items-center justify-center hover:bg-background transition-colors"
+                        aria-label="View full photo"
+                      >
+                        <Eye className="w-3.5 h-3.5 text-foreground" />
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              )}
 
               {/* Contact, Chat & Action - centered row */}
               <div className="flex items-center justify-center gap-2 mb-3">
