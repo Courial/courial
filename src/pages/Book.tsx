@@ -3407,8 +3407,8 @@ const Book = () => {
                               </motion.div>
                             )}
 
-                            {/* Drop-off proof photo after "Courial at Drop-off" step */}
-                            {step.label === "Courial at Drop-off" && (isCompleted || isCurrent) && (
+                            {/* Drop-off proof photo after "Courial Dropped Off" step */}
+                            {step.label === "Courial Dropped Off" && (isCompleted || isCurrent) && (
                               <motion.div
                                 initial={{ opacity: 0, height: 0 }}
                                 animate={{ opacity: 1, height: "auto" }}
