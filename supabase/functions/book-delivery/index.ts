@@ -66,6 +66,9 @@ serve(async (req) => {
       );
     }
 
+    // Log the full payload for debugging
+    console.log("[book-delivery] Payload sent to Courial API:", JSON.stringify(payload, null, 2));
+
     // Forward request to Courial API
     const response = await fetch(COURIAL_API_URL, {
       method: "POST",
