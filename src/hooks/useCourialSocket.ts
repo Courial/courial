@@ -121,14 +121,18 @@ export function useCourialSocket({ token, enabled, acceptedDriverId, onAccepted,
           5;
 
         const driver: CourialDriver = {
-          id:
+          id: String(
+            provider?.id ||
+            provider?.user_id ||
+            provider?.userId ||
             courialData?.id ||
             courialData?.courial_id ||
             courialData?.driverId ||
             courialData?.driver_id ||
             courialData?.userId ||
             courialData?.user_id ||
-            "",
+            ""
+          ),
           name:
             fullNameFromParts ||
             courialData?.name ||
@@ -166,8 +170,8 @@ export function useCourialSocket({ token, enabled, acceptedDriverId, onAccepted,
             courialData?.createdAt ||
             courialData?.joinedAt ||
             "",
-          latitude: parseFloat(provider?.latitude) || null,
-          longitude: parseFloat(provider?.longitude) || null,
+          latitude: (() => { const v = provider?.latitude ?? courialData?.latitude; const n = v != null ? parseFloat(String(v)) : NaN; return isNaN(n) ? null : n; })(),
+          longitude: (() => { const v = provider?.longitude ?? courialData?.longitude; const n = v != null ? parseFloat(String(v)) : NaN; return isNaN(n) ? null : n; })(),
         };
 
         console.log("[CourialSocket] Parsed accepted courial:", driver);
@@ -190,11 +194,11 @@ export function useCourialSocket({ token, enabled, acceptedDriverId, onAccepted,
           const parsed = typeof rawData === "string" ? JSON.parse(rawData) : rawData;
           const data = parsed?.data ?? parsed;
 
-          // For driverLiveUpdate, match userId to accepted driver ID
+          // For driverLiveUpdate, match partnerId (driver) to accepted driver ID
           if (eventName === "driverLiveUpdate" && acceptedDriverId) {
-            const eventUserId = String(data?.userId ?? data?.user_id ?? "");
-            if (eventUserId && eventUserId !== String(acceptedDriverId)) {
-              console.log(`[CourialSocket] driverLiveUpdate skipped: userId ${eventUserId} !== accepted ${acceptedDriverId}`);
+            const eventPartnerId = String(data?.partnerId ?? data?.partner_id ?? "");
+            if (eventPartnerId && eventPartnerId !== String(acceptedDriverId)) {
+              // Don't log every skip to reduce noise
               return;
             }
           }
