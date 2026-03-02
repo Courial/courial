@@ -169,8 +169,8 @@ export function useCourialSocket({ token, enabled, acceptedDriverId, onAccepted,
             courialData?.createdAt ||
             courialData?.joinedAt ||
             "",
-          latitude: parseFloat(provider?.latitude) || null,
-          longitude: parseFloat(provider?.longitude) || null,
+          latitude: provider?.latitude != null ? parseFloat(String(provider.latitude)) : (courialData?.latitude != null ? parseFloat(String(courialData.latitude)) : null),
+          longitude: provider?.longitude != null ? parseFloat(String(provider.longitude)) : (courialData?.longitude != null ? parseFloat(String(courialData.longitude)) : null),
         };
 
         console.log("[CourialSocket] Parsed accepted courial:", driver);
