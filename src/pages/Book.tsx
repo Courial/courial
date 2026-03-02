@@ -3455,27 +3455,17 @@ const Book = () => {
                         )}
                       </div>
                     )}
-                    {/* Stairs row — right after Language; conditionally share row with Weight/Items and 2 Courials */}
+                    {/* Extras row — right after Language */}
                     {selectedService !== "concierge" && (hasStairs || (over70lbs && Number(heavyWeight) >= 70) || twoCourials) && (
-                      <div className={cn("grid gap-4 py-2.5", (hasStairs && (over70lbs || twoCourials)) ? "grid-cols-3" : (hasStairs || over70lbs || twoCourials) ? "grid-cols-2" : "grid-cols-1")}>
-                        {hasStairs && (
-                          <div>
-                            <p className="text-xs font-medium text-foreground mb-0.5">Stairs</p>
-                            <p className="text-[11px] text-muted-foreground">Yes</p>
-                          </div>
-                        )}
-                        {over70lbs && Number(heavyWeight) >= 70 && (
-                          <div>
-                            <p className="text-xs font-medium text-foreground mb-0.5">Heavy Items</p>
-                            <p className="text-[11px] text-muted-foreground">{heavyWeight} lbs / {heavyItems} {parseInt(heavyItems) === 1 ? "item" : "items"}</p>
-                          </div>
-                        )}
-                        {twoCourials && (
-                          <div>
-                            <p className="text-xs font-medium text-foreground mb-0.5">2 Courials</p>
-                            <p className="text-[11px] text-muted-foreground">Yes</p>
-                          </div>
-                        )}
+                      <div className="py-2.5">
+                        <p className="text-xs font-medium text-foreground mb-0.5">Extras</p>
+                        <p className="text-[11px] text-muted-foreground">
+                          {[
+                            hasStairs ? "Stairs" : null,
+                            over70lbs && Number(heavyWeight) >= 70 ? `${heavyWeight} lbs / ${heavyItems} ${parseInt(heavyItems) === 1 ? "item" : "items"}` : null,
+                            twoCourials ? "2 Courials Required" : null,
+                          ].filter(Boolean).join(", ")}
+                        </p>
                       </div>
                     )}
                     {/* Concierge Task Description — right after Language */}
