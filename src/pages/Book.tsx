@@ -189,6 +189,10 @@ const Book = () => {
   const [roadsideMakeOpen, setRoadsideMakeOpen] = useState(false);
   const [roadsideModelOpen, setRoadsideModelOpen] = useState(false);
   const [roadsideColorOpen, setRoadsideColorOpen] = useState(false);
+  const [roadsidePortType, setRoadsidePortType] = useState("");
+  const [roadsidePortTypeOpen, setRoadsidePortTypeOpen] = useState(false);
+  const [roadsidePortTypeSuggestions, setRoadsidePortTypeSuggestions] = useState<string[]>([]);
+  const [roadsidePortTypesLoading, setRoadsidePortTypesLoading] = useState(false);
 
   // Deliver-specific: multi-stop
   const [deliverMultiStop, setDeliverMultiStop] = useState(false);
