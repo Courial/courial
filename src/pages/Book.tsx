@@ -1356,7 +1356,7 @@ const Book = () => {
                   <div className="flex items-end justify-center gap-4">
                     {vehicleOptions.filter((v) => {
                       if (twoCourials === true && v.id !== "van" && v.id !== "truck") return false;
-                      if (over70lbs === true && (v.id === "walker" || v.id === "scooter")) return false;
+                      if (over70lbs === true && heavyWeight !== "<70" && (v.id === "walker" || v.id === "scooter")) return false;
                       return true;
                     }).map((v) => {
                       const isActive = selectedVehicle === v.id;
