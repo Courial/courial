@@ -83,9 +83,10 @@ serve(async (req) => {
     const data = await response.json();
 
     if (!response.ok) {
-      console.error("[book-delivery] Courial API error:", response.status, data);
+      const errorMsg = typeof data.msg === "string" ? data.msg : data.msg?.message || "Booking failed";
+      console.error("[book-delivery] Courial API error:", response.status, JSON.stringify(data));
       return new Response(
-        JSON.stringify({ error: data.msg || "Booking failed", details: data }),
+        JSON.stringify({ error: errorMsg, details: data }),
         { status: response.status, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
