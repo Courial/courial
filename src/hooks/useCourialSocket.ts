@@ -17,6 +17,7 @@ export interface CourialDriver {
   memberSince: string;
   latitude: number | null;
   longitude: number | null;
+  language: string | null;
 }
 
 interface UseCourialSocketOptions {
@@ -172,6 +173,7 @@ export function useCourialSocket({ token, enabled, acceptedDriverId, onAccepted,
             "",
           latitude: (() => { const v = provider?.latitude ?? courialData?.latitude; const n = v != null ? parseFloat(String(v)) : NaN; return isNaN(n) ? null : n; })(),
           longitude: (() => { const v = provider?.longitude ?? courialData?.longitude; const n = v != null ? parseFloat(String(v)) : NaN; return isNaN(n) ? null : n; })(),
+          language: provider?.language || provider?.preferred_language || courialData?.language || courialData?.preferred_language || null,
         };
 
         console.log("[CourialSocket] Parsed accepted courial:", driver);

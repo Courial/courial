@@ -3430,7 +3430,19 @@ const Book = () => {
                       <div className="grid grid-cols-3 gap-4 py-2.5">
                         <div>
                           <p className="text-xs font-medium text-foreground mb-0.5">Language</p>
-                          <p className="text-[11px] text-muted-foreground">{deliverLanguage || conciergeLanguage}</p>
+                          <p className="text-[11px] text-muted-foreground flex items-center gap-1">
+                            {deliverLanguage || conciergeLanguage}
+                            {acceptedCourial && (() => {
+                              const userLang = (deliverLanguage || conciergeLanguage || "").toLowerCase();
+                              const courialLang = (acceptedCourial.language || "").toLowerCase();
+                              const isMatch = courialLang && courialLang === userLang;
+                              const hasData = !!courialLang;
+                              if (!hasData) return null;
+                              return isMatch
+                                ? <Check className="w-3.5 h-3.5 text-green-500" />
+                                : <X className="w-3.5 h-3.5 text-red-500" />;
+                            })()}
+                          </p>
                         </div>
                         {selectedService === "concierge" && conciergeCategory === "roadside-assistance" && conciergeServiceMode && (
                           <div>
