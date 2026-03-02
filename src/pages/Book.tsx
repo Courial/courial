@@ -3359,7 +3359,7 @@ const Book = () => {
                                 isCurrent ? "text-foreground" : isCompleted ? "text-muted-foreground" : "text-muted-foreground/50"
                               )}
                             >
-                              {(step as any).isComplete && deliveryIdRef.current
+                              {step.isComplete && deliveryIdRef.current
                                 ? `Order ${deliveryIdRef.current} Complete`
                                 : step.label}
                               {isCompleted && <span className="ml-1.5 text-primary">✓</span>}
@@ -3370,7 +3370,7 @@ const Book = () => {
                                 animate={{ opacity: 1, y: 0 }}
                                 className="mt-0.5"
                               >
-                                {(step as any).isComplete && completionDate ? (
+                                {step.isComplete && completionDate ? (
                                   <p className="text-xs text-muted-foreground">
                                     {format(completionDate, "d MMMM yyyy")} at {format(completionDate, "h:mm a")}
                                   </p>
