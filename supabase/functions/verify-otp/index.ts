@@ -54,7 +54,7 @@ serve(async (req) => {
         otp,
         country_code,
         phone: formattedPhone,
-        ...(deviceId ? { deviceId } : {}),
+        ...(deviceId ? { deviceID: deviceId } : {}),
       }).toString(),
     });
 
