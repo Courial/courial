@@ -256,8 +256,10 @@ export function useCourialSocket({ token, enabled, acceptedDriverId, onAccepted,
             // Note: do NOT use flat.image as fallback — that's the driver's profile image from Provider
             const pickupPhoto = data?.pickupLocationPhoto ?? data?.pickup_location_photo ?? flat?.pickupLocationPhoto ?? flat?.pickup_location_photo ?? flat?.pickupPhoto ?? flat?.pickup_photo ?? flat?.Identification_image ?? flat?.identification_image ?? null;
             // Check data first (before flat) to avoid Provider fields overwriting real values
-            const rawPackages = data?.numberOfPackages ?? data?.number_of_packages ?? data?.noOfPackages ?? data?.no_of_packages ?? data?.itemCount ?? data?.item_count ?? data?.over45Lbs ?? flat?.numberOfPackages ?? flat?.number_of_packages ?? flat?.itemCount ?? flat?.item_count ?? flat?.noOfPackages ?? flat?.no_of_packages ?? flat?.over45Lbs ?? null;
-            console.log(`[CourialSocket] Package count debug - data keys:`, Object.keys(data || {}), `data.numberOfPackages:`, data?.numberOfPackages, `data.noOfPackages:`, data?.noOfPackages, `flat.numberOfPackages:`, flat?.numberOfPackages);
+            // over45Lbs is a boolean flag (0/1), NOT a count — exclude it from package count
+            const rawPackages = data?.numberOfPackages ?? data?.number_of_packages ?? data?.noOfPackages ?? data?.no_of_packages ?? data?.itemCount ?? data?.item_count ?? data?.packageCount ?? data?.package_count ?? data?.totalItems ?? data?.total_items ?? data?.parcels ?? flat?.numberOfPackages ?? flat?.number_of_packages ?? flat?.noOfPackages ?? flat?.no_of_packages ?? flat?.itemCount ?? flat?.item_count ?? flat?.packageCount ?? flat?.package_count ?? flat?.totalItems ?? flat?.total_items ?? flat?.parcels ?? null;
+            // Log ALL keys + full data to find the correct field
+            console.log(`[CourialSocket] Package count debug - rawPackages resolved:`, rawPackages, `| data keys:`, Object.keys(data || {}), `| flat keys:`, Object.keys(flat || {}), `| FULL data:`, JSON.stringify(data));
             // Also check orderimages array
             const orderImages = flat?.orderimages ?? flat?.orderImages ?? [];
             const firstOrderImage = Array.isArray(orderImages) && orderImages.length > 0 ? (orderImages[0]?.image ?? orderImages[0]?.url ?? orderImages[0]) : null;
