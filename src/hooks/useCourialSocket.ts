@@ -194,11 +194,11 @@ export function useCourialSocket({ token, enabled, acceptedDriverId, onAccepted,
           const parsed = typeof rawData === "string" ? JSON.parse(rawData) : rawData;
           const data = parsed?.data ?? parsed;
 
-          // For driverLiveUpdate, match userId to accepted driver ID
+          // For driverLiveUpdate, match partnerId (driver) to accepted driver ID
           if (eventName === "driverLiveUpdate" && acceptedDriverId) {
-            const eventUserId = String(data?.userId ?? data?.user_id ?? "");
-            if (eventUserId && eventUserId !== String(acceptedDriverId)) {
-              console.log(`[CourialSocket] driverLiveUpdate skipped: userId ${eventUserId} !== accepted ${acceptedDriverId}`);
+            const eventPartnerId = String(data?.partnerId ?? data?.partner_id ?? "");
+            if (eventPartnerId && eventPartnerId !== String(acceptedDriverId)) {
+              // Don't log every skip to reduce noise
               return;
             }
           }
