@@ -4087,6 +4087,28 @@ const Book = () => {
 
       {/* Settings Modal opened from gate */}
       <SettingsModal open={showSettingsFromGate} onOpenChange={setShowSettingsFromGate} />
+
+      {/* Sign In Required Gate */}
+      <Dialog open={showSignInGate} onOpenChange={setShowSignInGate}>
+        <DialogContent className="sm:max-w-[19.2rem] bg-transparent border-none !rounded-[20px] p-0 overflow-hidden [&>button]:hidden shadow-none">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.3 }}
+          >
+            <div className="rounded-[20px] bg-foreground/75 text-background px-6 py-6 shadow-2xl backdrop-blur-sm flex flex-col items-center text-center">
+              <DialogTitle className="text-lg font-bold text-background mb-3">Sign In Required</DialogTitle>
+              <p className="text-sm text-background/70 mb-6">Please sign in to book a service.</p>
+              <Button
+                className="w-full rounded-xl bg-background text-foreground hover:bg-background/90"
+                onClick={() => { setShowSignInGate(false); navigate("/auth"); }}
+              >
+                Got it!
+              </Button>
+            </div>
+          </motion.div>
+        </DialogContent>
+      </Dialog>
     </>
   );
 };
