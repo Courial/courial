@@ -64,28 +64,55 @@ serve(async (req) => {
     const courialToken = req.headers.get("x-courial-token") || "";
 
     if (apiKey) {
-      const courialHeaders: Record<string, string> = {
-        "Content-Type": "application/x-www-form-urlencoded",
+      const baseHeaders: Record<string, string> = {
         "security_key": apiKey,
         "Authorization": `Bearer ${apiKey}`,
       };
       if (courialToken) {
-        courialHeaders["token"] = courialToken;
+        baseHeaders["token"] = courialToken;
       }
 
-      const params: Record<string, string> = { first_name };
-      if (last_name) params.last_name = last_name;
-      if (avatar_url) params.image = avatar_url;
+      console.log("[update-profile] Updating Courial profile — first_name:", first_name, "last_name:", last_name, "has_avatar:", !!avatar_url);
 
-      console.log("[update-profile] Updating Courial profile:", params);
       try {
-        const res = await fetch(`${COURIAL_BASE}/edit_profile`, {
-          method: "POST",
-          headers: courialHeaders,
-          body: new URLSearchParams(params).toString(),
-        });
-        const data = await res.json();
-        console.log("[update-profile] Courial response:", JSON.stringify(data));
+        // If we have an avatar URL, download the image and send as multipart form-data
+        if (avatar_url) {
+          const imgRes = await fetch(avatar_url);
+          if (imgRes.ok) {
+            const imgBlob = await imgRes.blob();
+            const formData = new FormData();
+            formData.append("first_name", first_name);
+            if (last_name) formData.append("last_name", last_name);
+            formData.append("image", imgBlob, "profile.png");
+
+            const res = await fetch(`${COURIAL_BASE}/edit_profile`, {
+              method: "POST",
+              headers: baseHeaders, // No Content-Type — browser/fetch sets multipart boundary
+              body: formData,
+            });
+            const text = await res.text();
+            console.log("[update-profile] Courial multipart response:", text);
+          } else {
+            console.error("[update-profile] Failed to download avatar:", imgRes.status);
+            // Fall back to name-only update
+            const res = await fetch(`${COURIAL_BASE}/edit_profile`, {
+              method: "POST",
+              headers: { ...baseHeaders, "Content-Type": "application/x-www-form-urlencoded" },
+              body: new URLSearchParams({ first_name, ...(last_name ? { last_name } : {}) }).toString(),
+            });
+            const text = await res.text();
+            console.log("[update-profile] Courial name-only response:", text);
+          }
+        } else {
+          // Name-only update
+          const res = await fetch(`${COURIAL_BASE}/edit_profile`, {
+            method: "POST",
+            headers: { ...baseHeaders, "Content-Type": "application/x-www-form-urlencoded" },
+            body: new URLSearchParams({ first_name, ...(last_name ? { last_name } : {}) }).toString(),
+          });
+          const text = await res.text();
+          console.log("[update-profile] Courial name-only response:", text);
+        }
       } catch (err) {
         console.error("[update-profile] Courial API error:", err);
       }
