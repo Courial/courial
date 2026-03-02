@@ -15,7 +15,7 @@ serve(async (req) => {
   }
 
   try {
-    const { first_name, last_name } = await req.json();
+    const { first_name, last_name, avatar_url } = await req.json();
 
     if (!first_name) {
       return new Response(
@@ -42,13 +42,18 @@ serve(async (req) => {
 
     // 2. Update Supabase Auth user_metadata
     const fullName = last_name ? `${first_name} ${last_name}`.trim() : first_name;
+    const newMeta: Record<string, any> = {
+      ...user.user_metadata,
+      full_name: fullName,
+      first_name,
+      last_name: last_name || "",
+    };
+    if (avatar_url) {
+      newMeta.avatar_url = avatar_url;
+    }
+
     const { error: updateError } = await supabase.auth.admin.updateUserById(user.id, {
-      user_metadata: {
-        ...user.user_metadata,
-        full_name: fullName,
-        first_name,
-        last_name: last_name || "",
-      },
+      user_metadata: newMeta,
     });
     if (updateError) {
       console.error("[update-profile] Supabase auth update failed:", updateError);
@@ -70,6 +75,7 @@ serve(async (req) => {
 
       const params: Record<string, string> = { first_name };
       if (last_name) params.last_name = last_name;
+      if (avatar_url) params.image = avatar_url;
 
       console.log("[update-profile] Updating Courial profile:", params);
       try {
@@ -86,7 +92,7 @@ serve(async (req) => {
     }
 
     return new Response(
-      JSON.stringify({ success: true, full_name: fullName }),
+      JSON.stringify({ success: true, full_name: fullName, avatar_url: avatar_url || user.user_metadata?.avatar_url }),
       { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
   } catch (error) {

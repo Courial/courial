@@ -24,6 +24,7 @@ export const UpdateProfileModal = ({ open, onOpenChange }: UpdateProfileModalPro
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [editingName, setEditingName] = useState(false);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [saving, setSaving] = useState(false);
 
   const displayName =
@@ -36,7 +37,7 @@ export const UpdateProfileModal = ({ open, onOpenChange }: UpdateProfileModalPro
   const email = user?.email || "";
   const phone = user?.phone || user?.user_metadata?.phone || "";
 
-  const hasChanges = editName !== displayName || previewUrl !== null;
+  const hasChanges = editName !== displayName || selectedFile !== null;
 
   useEffect(() => {
     setEditName(displayName);
@@ -45,7 +46,30 @@ export const UpdateProfileModal = ({ open, onOpenChange }: UpdateProfileModalPro
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
+    setSelectedFile(file);
     setPreviewUrl(URL.createObjectURL(file));
+  };
+
+  const uploadProfileImage = async (file: File): Promise<string | null> => {
+    if (!user) return null;
+    const ext = file.name.split(".").pop() || "jpg";
+    const filePath = `avatars/${user.id}.${ext}`;
+
+    const { error } = await supabase.storage
+      .from("profile-images")
+      .upload(filePath, file, { upsert: true, contentType: file.type });
+
+    if (error) {
+      console.error("[profile] upload error:", error);
+      return null;
+    }
+
+    const { data: urlData } = supabase.storage
+      .from("profile-images")
+      .getPublicUrl(filePath);
+
+    // Append cache-buster to avoid stale CDN cache
+    return `${urlData.publicUrl}?t=${Date.now()}`;
   };
 
   const handleSave = async () => {
@@ -57,8 +81,22 @@ export const UpdateProfileModal = ({ open, onOpenChange }: UpdateProfileModalPro
     const lastName = nameParts.slice(1).join(" ") || "";
 
     try {
+      // Upload image if changed
+      let newAvatarUrl: string | null = null;
+      if (selectedFile) {
+        newAvatarUrl = await uploadProfileImage(selectedFile);
+        if (!newAvatarUrl) {
+          toast.error("Failed to upload image");
+          setSaving(false);
+          return;
+        }
+      }
+
       const { data: { session } } = await supabase.auth.getSession();
       const courialToken = localStorage.getItem("courial_api_token") || "";
+
+      const body: Record<string, string> = { first_name: firstName, last_name: lastName };
+      if (newAvatarUrl) body.avatar_url = newAvatarUrl;
 
       const res = await fetch(`${SUPABASE_URL}/functions/v1/update-profile`, {
         method: "POST",
@@ -68,7 +106,7 @@ export const UpdateProfileModal = ({ open, onOpenChange }: UpdateProfileModalPro
           "Authorization": `Bearer ${session?.access_token || ""}`,
           "x-courial-token": courialToken,
         },
-        body: JSON.stringify({ first_name: firstName, last_name: lastName }),
+        body: JSON.stringify(body),
       });
       const data = await res.json();
 
@@ -78,6 +116,8 @@ export const UpdateProfileModal = ({ open, onOpenChange }: UpdateProfileModalPro
         // Refresh local session to pick up new metadata
         await supabase.auth.refreshSession();
         toast.success("Profile updated");
+        setSelectedFile(null);
+        setPreviewUrl(null);
         onOpenChange(false);
       }
     } catch {
@@ -92,6 +132,7 @@ export const UpdateProfileModal = ({ open, onOpenChange }: UpdateProfileModalPro
       setEditingName(false);
       setEditName(displayName);
       setPreviewUrl(null);
+      setSelectedFile(null);
     }
   };
 
