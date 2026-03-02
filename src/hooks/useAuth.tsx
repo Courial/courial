@@ -77,7 +77,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         // Extract Courial profile data if user already exists
         const profile = d?.data?.data || d?.data || {};
         const courialPhone = profile.phone || profile.mobile || profile.phoneNumber || profile.phone_number;
-        const courialAvatar = profile.image || profile.profileImage || profile.avatar || profile.photo || profile.picture;
+        const courialAvatar = d?.data?.profileImageUrl || profile.image || profile.profileImage || profile.avatar || profile.photo || profile.picture;
         const courialToken = profile.token;
         const courialId = profile.id;
         const courialCountryCode = profile.country_code || profile.countryCode;
