@@ -65,6 +65,10 @@ export const RideChat: React.FC<RideChatProps> = ({
   const [input, setInput] = useState("");
   const [showQuickReplies, setShowQuickReplies] = useState(true);
   const [loadingHistory, setLoadingHistory] = useState(true);
+  const [quickReplies, setQuickReplies] = useState<string[]>(loadQuickReplies);
+  const [removeMode, setRemoveMode] = useState(false);
+  const [addingReply, setAddingReply] = useState(false);
+  const [newReplyText, setNewReplyText] = useState("");
   const chatEndRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const historyFetchedRef = useRef(false);
@@ -349,42 +353,129 @@ export const RideChat: React.FC<RideChatProps> = ({
         {/* Quick Replies (below input) */}
         <AnimatePresence>
           {showQuickReplies && (
-            <motion.div
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: "auto" }}
-              exit={{ opacity: 0, height: 0 }}
-              transition={{ duration: 0.15 }}
-              className="px-3 pb-3 flex flex-wrap gap-1.5 overflow-hidden"
-            >
-              {QUICK_REPLIES.map((reply) => (
-                <button
-                  key={reply}
-                  onClick={() => handleQuickReply(reply)}
-                  className={cn(
-                    "px-2.5 py-1 text-[10px] rounded-full border transition-colors",
-                    darkMode
-                      ? "border-background/15 bg-background/10 text-background hover:bg-background/20"
-                      : "border-border bg-muted/50 text-foreground hover:bg-muted"
-                  )}
-                >
-                  {reply}
-                </button>
-              ))}
-            </motion.div>
-          )}
-        </AnimatePresence>
+             <motion.div
+               initial={{ opacity: 0, height: 0 }}
+               animate={{ opacity: 1, height: "auto" }}
+               exit={{ opacity: 0, height: 0 }}
+               transition={{ duration: 0.15 }}
+               className="px-3 pb-3 flex flex-wrap gap-1.5 overflow-hidden"
+             >
+               {quickReplies.map((reply) => (
+                 <button
+                   key={reply}
+                   onClick={() => {
+                     if (removeMode) {
+                       const updated = quickReplies.filter((r) => r !== reply);
+                       setQuickReplies(updated);
+                       saveQuickReplies(updated);
+                       if (updated.length === 0) setRemoveMode(false);
+                     } else {
+                       handleQuickReply(reply);
+                     }
+                   }}
+                   className={cn(
+                     "px-2.5 py-1 text-[10px] rounded-full border transition-colors",
+                     removeMode
+                       ? "border-destructive/40 bg-destructive/10 text-destructive hover:bg-destructive/20"
+                       : darkMode
+                       ? "border-background/15 bg-background/10 text-background hover:bg-background/20"
+                       : "border-border bg-muted/50 text-foreground hover:bg-muted"
+                   )}
+                 >
+                   {removeMode && <X className="w-2.5 h-2.5 inline mr-0.5 -mt-px" />}
+                   {reply}
+                 </button>
+               ))}
+             </motion.div>
+           )}
+         </AnimatePresence>
 
-        {/* Add / Remove quick reply */}
-        <div className={cn("px-3 pb-3 flex items-center justify-center gap-1.5 text-[10px]", darkMode ? "text-background/60" : "text-muted-foreground")}>
-          <button className="px-2 py-0.5 rounded-full bg-background/85 text-foreground font-medium hover:bg-background/75 transition-colors">
-            Add
-          </button>
-          <button className={cn("px-2 py-0.5 rounded-full border font-medium transition-colors", darkMode ? "border-background/20 text-background hover:bg-background/10" : "border-border text-foreground hover:bg-muted")}>
-            Remove
-          </button>
-          <span className="text-primary font-normal">a Quick reply</span>
-        </div>
-      </div>
-    </motion.div>
-  );
-};
+         {/* Add new reply inline input */}
+         <AnimatePresence>
+           {addingReply && (
+             <motion.div
+               initial={{ opacity: 0, height: 0 }}
+               animate={{ opacity: 1, height: "auto" }}
+               exit={{ opacity: 0, height: 0 }}
+               transition={{ duration: 0.15 }}
+               className="px-3 pb-2 overflow-hidden"
+             >
+               <div className="flex gap-1.5 items-center">
+                 <Input
+                   value={newReplyText}
+                   onChange={(e) => setNewReplyText(e.target.value)}
+                   onKeyDown={(e) => {
+                     if (e.key === "Enter") {
+                       const text = newReplyText.trim();
+                       if (text && !quickReplies.includes(text)) {
+                         const updated = [...quickReplies, text];
+                         setQuickReplies(updated);
+                         saveQuickReplies(updated);
+                       }
+                       setNewReplyText("");
+                       setAddingReply(false);
+                     } else if (e.key === "Escape") {
+                       setNewReplyText("");
+                       setAddingReply(false);
+                     }
+                   }}
+                   placeholder="Type a quick reply…"
+                   autoFocus
+                   className={cn(
+                     "text-[10px] h-7 rounded-full focus-visible:ring-0 focus-visible:ring-offset-0",
+                     darkMode
+                       ? "bg-background/10 border-background/15 text-background placeholder:text-background/30"
+                       : "bg-muted/50 border-border placeholder:text-muted-foreground"
+                   )}
+                 />
+                 <button
+                   onClick={() => {
+                     const text = newReplyText.trim();
+                     if (text && !quickReplies.includes(text)) {
+                       const updated = [...quickReplies, text];
+                       setQuickReplies(updated);
+                       saveQuickReplies(updated);
+                     }
+                     setNewReplyText("");
+                     setAddingReply(false);
+                   }}
+                   className="shrink-0 text-primary text-[10px] font-medium px-2"
+                 >
+                   Save
+                 </button>
+                 <button
+                   onClick={() => { setNewReplyText(""); setAddingReply(false); }}
+                   className={cn("shrink-0 text-[10px] px-1", darkMode ? "text-background/50" : "text-muted-foreground")}
+                 >
+                   Cancel
+                 </button>
+               </div>
+             </motion.div>
+           )}
+         </AnimatePresence>
+
+         {/* Add / Remove quick reply */}
+         <div className={cn("px-3 pb-3 flex items-center justify-center gap-1.5 text-[10px]", darkMode ? "text-background/60" : "text-muted-foreground")}>
+           <button
+             onClick={() => { setAddingReply(true); setRemoveMode(false); }}
+             className="px-2 py-0.5 rounded-full bg-background/85 text-foreground font-medium hover:bg-background/75 transition-colors"
+           >
+             Add
+           </button>
+           <button
+             onClick={() => { setRemoveMode((p) => !p); setAddingReply(false); }}
+             className={cn(
+               "px-2 py-0.5 rounded-full border font-medium transition-colors",
+               removeMode
+                 ? "border-destructive/40 bg-destructive/10 text-destructive"
+                 : darkMode ? "border-background/20 text-background hover:bg-background/10" : "border-border text-foreground hover:bg-muted"
+             )}
+           >
+             {removeMode ? "Done" : "Remove"}
+           </button>
+           <span className="text-primary font-normal">a Quick reply</span>
+         </div>
+       </div>
+     </motion.div>
+   );
+ };
