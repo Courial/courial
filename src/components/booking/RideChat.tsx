@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Send, Camera, Image as ImageIcon, X, ChevronDown, ChevronUp, MessageSquare } from "lucide-react";
+import { Send, Camera, Image as ImageIcon, X, ChevronDown, ChevronUp, MessageSquare, Check, CheckCheck } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import { supabase } from "@/integrations/supabase/client";
@@ -12,6 +12,7 @@ interface ChatMessage {
   time: string;
   type?: "text" | "image";
   imageUrl?: string;
+  read?: boolean;
 }
 
 interface RideChatProps {
@@ -69,6 +70,8 @@ export const RideChat: React.FC<RideChatProps> = ({
   const [removeMode, setRemoveMode] = useState(false);
   const [addingReply, setAddingReply] = useState(false);
   const [newReplyText, setNewReplyText] = useState("");
+  const [isTyping, setIsTyping] = useState(false);
+  const typingTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const chatEndRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const historyFetchedRef = useRef(false);
@@ -76,7 +79,7 @@ export const RideChat: React.FC<RideChatProps> = ({
   // Scroll to bottom on new messages
   useEffect(() => {
     chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages]);
+  }, [messages, isTyping]);
 
   // Fetch chat history on mount
   useEffect(() => {
@@ -109,6 +112,7 @@ export const RideChat: React.FC<RideChatProps> = ({
             : "",
           type: m.messageType === 1 ? "image" as const : "text" as const,
           imageUrl: m.messageType === 1 ? m.message : undefined,
+          read: m.isRead ?? true,
         }));
 
         setMessages(parsed);
@@ -122,19 +126,17 @@ export const RideChat: React.FC<RideChatProps> = ({
     fetchHistory();
   }, [orderId]);
 
-  // Listen for incoming messages via socket
+  // Listen for incoming messages, typing, and read receipts via socket
   useEffect(() => {
     const socket = socketRef.current;
     if (!socket) return;
 
-    const handler = (rawData: any) => {
+    const messageHandler = (rawData: any) => {
       try {
         const parsed = typeof rawData === "string" ? JSON.parse(rawData) : rawData;
         const data = parsed?.data ?? parsed;
 
-        // Only process messages for this order
         if (data.orderId && String(data.orderId) !== String(orderId)) return;
-        // Only process messages from the driver
         if (data.senderType === "user") return;
 
         const msg: ChatMessage = {
@@ -143,18 +145,68 @@ export const RideChat: React.FC<RideChatProps> = ({
           time: formatTime(),
           type: data.messageType === 1 ? "image" : "text",
           imageUrl: data.messageType === 1 ? data.message : undefined,
+          read: false,
         };
         setMessages((prev) => [...prev, msg]);
+        setIsTyping(false);
       } catch (err) {
         console.error("[RideChat] Error parsing incoming message:", err);
       }
     };
 
-    socket.on("ride_chat_message", handler);
+    const typingHandler = (rawData: any) => {
+      try {
+        const parsed = typeof rawData === "string" ? JSON.parse(rawData) : rawData;
+        const data = parsed?.data ?? parsed;
+        if (data.orderId && String(data.orderId) !== String(orderId)) return;
+        if (data.senderType === "user") return;
+
+        setIsTyping(true);
+        if (typingTimeoutRef.current) clearTimeout(typingTimeoutRef.current);
+        typingTimeoutRef.current = setTimeout(() => setIsTyping(false), 3000);
+      } catch {}
+    };
+
+    const readHandler = (rawData: any) => {
+      try {
+        const parsed = typeof rawData === "string" ? JSON.parse(rawData) : rawData;
+        const data = parsed?.data ?? parsed;
+        if (data.orderId && String(data.orderId) !== String(orderId)) return;
+
+        // Mark all user messages as read
+        setMessages((prev) =>
+          prev.map((m) => (m.from === "user" ? { ...m, read: true } : m))
+        );
+      } catch {}
+    };
+
+    socket.on("ride_chat_message", messageHandler);
+    socket.on("ride_chat_typing", typingHandler);
+    socket.on("ride_chat_read", readHandler);
     return () => {
-      socket.off("ride_chat_message", handler);
+      socket.off("ride_chat_message", messageHandler);
+      socket.off("ride_chat_typing", typingHandler);
+      socket.off("ride_chat_read", readHandler);
+      if (typingTimeoutRef.current) clearTimeout(typingTimeoutRef.current);
     };
   }, [socketRef, orderId]);
+
+  // Emit typing event when user types
+  const handleInputChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      setInput(e.target.value);
+      const socket = socketRef.current;
+      if (socket && e.target.value.trim()) {
+        socket.emit("ride_chat_typing", {
+          senderId,
+          receiverId,
+          orderId,
+          senderType: "user",
+        });
+      }
+    },
+    [socketRef, senderId, receiverId, orderId]
+  );
 
   // Emit a chat message
   const emitMessage = useCallback(
@@ -187,7 +239,7 @@ export const RideChat: React.FC<RideChatProps> = ({
     const text = input.trim();
     if (!text) return;
 
-    setMessages((prev) => [...prev, { from: "user", text, time: formatTime(), type: "text" }]);
+    setMessages((prev) => [...prev, { from: "user", text, time: formatTime(), type: "text", read: false }]);
     emitMessage(text, 0);
     setInput("");
   }, [input, emitMessage]);
@@ -195,7 +247,7 @@ export const RideChat: React.FC<RideChatProps> = ({
   // Send quick reply
   const handleQuickReply = useCallback(
     (text: string) => {
-      setMessages((prev) => [...prev, { from: "user", text, time: formatTime(), type: "text" }]);
+      setMessages((prev) => [...prev, { from: "user", text, time: formatTime(), type: "text", read: false }]);
       emitMessage(text, 0);
     },
     [emitMessage]
@@ -211,22 +263,17 @@ export const RideChat: React.FC<RideChatProps> = ({
       const reader = new FileReader();
       reader.onload = () => {
         const result = reader.result as string;
-        // Extract base64 portion (remove data:image/...;base64, prefix)
         const base64 = result.includes(",") ? result.split(",")[1] : result;
-        const dataUrl = result; // Keep full data URL for local preview
+        const dataUrl = result;
 
-        // Add to local messages immediately
         setMessages((prev) => [
           ...prev,
-          { from: "user", text: "", time: formatTime(), type: "image", imageUrl: dataUrl },
+          { from: "user", text: "", time: formatTime(), type: "image", imageUrl: dataUrl, read: false },
         ]);
 
-        // Emit via socket
         emitMessage(base64, 1, ext);
       };
       reader.readAsDataURL(file);
-
-      // Reset input so same file can be selected again
       e.target.value = "";
     },
     [emitMessage]
@@ -243,12 +290,21 @@ export const RideChat: React.FC<RideChatProps> = ({
       className="overflow-hidden"
     >
       <div className={cn("rounded-xl p-2", darkMode ? "" : "border border-border bg-background")}>
-      {/* Header */}
-        <div className={cn("p-3 border-b flex items-center justify-center", darkMode ? "border-background/10" : "border-border")}>
-          <p className={cn("text-sm font-medium tracking-wide text-center", darkMode ? "text-white" : "text-muted-foreground")}>
+        {/* Header — solid black, no border */}
+        <div className={cn(
+          "p-3 flex items-center justify-center rounded-t-lg",
+          darkMode ? "bg-black" : "bg-foreground"
+        )}>
+          <p className={cn(
+            "text-sm font-medium tracking-wide text-center",
+            darkMode ? "text-white" : "text-background"
+          )}>
             Chat with {courialName.split(" ")[0]}
           </p>
         </div>
+
+        {/* Divider — same margins as the one below input */}
+        <div className={cn("mx-3 my-3", darkMode ? "border-t border-background/10" : "border-t border-border")} />
 
         {/* Messages */}
         <div className="p-3 space-y-2.5 max-h-[280px] overflow-y-auto">
@@ -277,22 +333,70 @@ export const RideChat: React.FC<RideChatProps> = ({
                 ) : (
                   <p className={cn("text-sm leading-snug", msg.from === "user" && "text-background/75")}>{msg.text}</p>
                 )}
-                <p
-                  className={cn(
-                    "text-[8px] mt-0.5",
-                    msg.from === "user" ? "text-right text-background/30" : darkMode ? "text-background/30" : "text-muted-foreground"
+                <div className={cn(
+                  "flex items-center gap-1 mt-0.5",
+                  msg.from === "user" ? "justify-end" : "justify-start"
+                )}>
+                  <span
+                    className={cn(
+                      "text-[8px]",
+                      msg.from === "user" ? "text-background/30" : darkMode ? "text-background/30" : "text-muted-foreground"
+                    )}
+                  >
+                    {msg.time}
+                  </span>
+                  {msg.from === "user" && (
+                    msg.read ? (
+                      <CheckCheck className={cn("w-3 h-3", darkMode ? "text-primary" : "text-primary")} />
+                    ) : (
+                      <Check className={cn("w-3 h-3", darkMode ? "text-background/30" : "text-muted-foreground")} />
+                    )
                   )}
-                >
-                  {msg.time}
-                </p>
+                </div>
               </div>
             </div>
           ))}
+
+          {/* Typing indicator */}
+          <AnimatePresence>
+            {isTyping && (
+              <motion.div
+                initial={{ opacity: 0, y: 4 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: 4 }}
+                transition={{ duration: 0.15 }}
+                className="flex justify-start"
+              >
+                <div className={cn(
+                  "rounded-2xl rounded-bl-md px-4 py-2.5",
+                  darkMode
+                    ? "border border-background/15 bg-background/10"
+                    : "bg-muted"
+                )}>
+                  <div className="flex items-center gap-1">
+                    <span className={cn(
+                      "w-1.5 h-1.5 rounded-full animate-bounce",
+                      darkMode ? "bg-background/40" : "bg-muted-foreground/50"
+                    )} style={{ animationDelay: "0ms" }} />
+                    <span className={cn(
+                      "w-1.5 h-1.5 rounded-full animate-bounce",
+                      darkMode ? "bg-background/40" : "bg-muted-foreground/50"
+                    )} style={{ animationDelay: "150ms" }} />
+                    <span className={cn(
+                      "w-1.5 h-1.5 rounded-full animate-bounce",
+                      darkMode ? "bg-background/40" : "bg-muted-foreground/50"
+                    )} style={{ animationDelay: "300ms" }} />
+                  </div>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+
           <div ref={chatEndRef} />
         </div>
 
         {/* Quick Messages header */}
-        <div className={cn("px-3 pt-2 pb-1.5 border-t", darkMode ? "border-background/10" : "border-border")}>
+        <div className={cn("px-3 pt-2 pb-1.5", darkMode ? "" : "")}>
           <button
             onClick={() => setShowQuickReplies((p) => !p)}
             className={cn("flex items-center gap-1.5 text-xs transition-colors w-full", darkMode ? "text-primary hover:text-primary/80" : "text-primary hover:text-primary/80")}
@@ -328,7 +432,7 @@ export const RideChat: React.FC<RideChatProps> = ({
 
           <Input
             value={input}
-            onChange={(e) => setInput(e.target.value)}
+            onChange={handleInputChange}
             onKeyDown={(e) => e.key === "Enter" && handleSend()}
             placeholder="Enter message"
             className={cn(
