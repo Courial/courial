@@ -225,7 +225,7 @@ export const RideChat: React.FC<RideChatProps> = ({
       className="overflow-hidden"
     >
       <div className={cn("rounded-xl", darkMode ? "" : "border border-border bg-background")}>
-        {/* Header */}
+      {/* Header */}
         <div className={cn("p-3 border-b flex items-center justify-between", darkMode ? "border-background/10" : "border-border")}>
           <p className={cn("text-xs font-medium tracking-wide", darkMode ? "text-background/50" : "text-muted-foreground")}>
             Chat with {courialName.split(" ")[0]}
@@ -233,7 +233,7 @@ export const RideChat: React.FC<RideChatProps> = ({
         </div>
 
         {/* Messages */}
-        <div className="p-3 space-y-2.5 max-h-[320px] overflow-y-auto">
+        <div className="p-3 space-y-2.5 max-h-[280px] overflow-y-auto">
           {loadingHistory && messages.length === 0 && (
             <p className={cn("text-xs text-center py-2", darkMode ? "text-background/40" : "text-muted-foreground")}>Loading messages…</p>
           )}
@@ -273,57 +273,33 @@ export const RideChat: React.FC<RideChatProps> = ({
           <div ref={chatEndRef} />
         </div>
 
-        {/* Quick Replies */}
-        <div className="px-3 pb-2">
+        {/* Quick Messages header */}
+        <div className={cn("px-3 pt-2 pb-1.5 border-t", darkMode ? "border-background/10" : "border-border")}>
           <button
             onClick={() => setShowQuickReplies((p) => !p)}
-            className={cn("flex items-center gap-1.5 text-xs font-semibold mb-1.5 transition-colors", darkMode ? "text-primary hover:text-primary/80" : "text-primary hover:text-primary/80")}
+            className={cn("flex items-center gap-1.5 text-xs transition-colors w-full", darkMode ? "text-primary hover:text-primary/80" : "text-primary hover:text-primary/80")}
           >
             <Zap className="w-3.5 h-3.5" />
             <span className="font-normal">Quick messages</span>
-            {showQuickReplies ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />}
+            <span className="ml-auto">
+              {showQuickReplies ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />}
+            </span>
           </button>
-          <AnimatePresence>
-            {showQuickReplies && (
-              <motion.div
-                initial={{ opacity: 0, height: 0 }}
-                animate={{ opacity: 1, height: "auto" }}
-                exit={{ opacity: 0, height: 0 }}
-                transition={{ duration: 0.15 }}
-                className="flex flex-wrap gap-1.5 overflow-hidden"
-              >
-                {QUICK_REPLIES.map((reply) => (
-                  <button
-                    key={reply}
-                    onClick={() => handleQuickReply(reply)}
-                    className={cn(
-                      "px-3 py-1.5 text-xs rounded-full border transition-colors",
-                      darkMode
-                        ? "border-background/15 bg-background/10 text-background hover:bg-background/20"
-                        : "border-border bg-muted/50 text-foreground hover:bg-muted"
-                    )}
-                  >
-                    {reply}
-                  </button>
-                ))}
-              </motion.div>
-            )}
-          </AnimatePresence>
         </div>
 
         {/* Input row */}
-        <div className={cn("p-2 border-t flex gap-2 items-center", darkMode ? "border-background/10" : "border-border")}>
+        <div className={cn("px-3 py-2 flex gap-2 items-center", darkMode ? "" : "")}>
           <button
             onClick={() => fileInputRef.current?.click()}
             className={cn(
-              "shrink-0 w-9 h-9 rounded-lg border flex items-center justify-center transition-colors",
+              "shrink-0 w-9 h-9 rounded-lg flex items-center justify-center transition-colors",
               darkMode
-                ? "border-background/15 text-background/50 hover:text-background hover:bg-background/10"
-                : "border-border text-muted-foreground hover:text-foreground hover:bg-muted"
+                ? "text-background/50 hover:text-background"
+                : "text-muted-foreground hover:text-foreground"
             )}
             aria-label="Send photo"
           >
-            <Camera className="w-4 h-4" />
+            <Camera className="w-5 h-5" />
           </button>
           <input
             ref={fileInputRef}
@@ -338,8 +314,13 @@ export const RideChat: React.FC<RideChatProps> = ({
             value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && handleSend()}
-            placeholder="Type a message..."
-            className={cn("text-sm h-9", darkMode && "bg-background/10 border-background/15 text-background placeholder:text-background/30")}
+            placeholder="Enter message"
+            className={cn(
+              "text-sm h-9 rounded-full",
+              darkMode
+                ? "bg-background/10 border-background/15 text-background placeholder:text-background/30"
+                : "bg-muted/50 border-border placeholder:text-muted-foreground"
+            )}
           />
           <button
             onClick={handleSend}
@@ -349,6 +330,34 @@ export const RideChat: React.FC<RideChatProps> = ({
             <Send className="w-4 h-4" />
           </button>
         </div>
+
+        {/* Quick Replies (below input) */}
+        <AnimatePresence>
+          {showQuickReplies && (
+            <motion.div
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: "auto" }}
+              exit={{ opacity: 0, height: 0 }}
+              transition={{ duration: 0.15 }}
+              className="px-3 pb-3 flex flex-wrap gap-1.5 overflow-hidden"
+            >
+              {QUICK_REPLIES.map((reply) => (
+                <button
+                  key={reply}
+                  onClick={() => handleQuickReply(reply)}
+                  className={cn(
+                    "px-3.5 py-2 text-xs rounded-full border transition-colors",
+                    darkMode
+                      ? "border-background/15 bg-background/10 text-background hover:bg-background/20"
+                      : "border-border bg-muted/50 text-foreground hover:bg-muted"
+                  )}
+                >
+                  {reply}
+                </button>
+              ))}
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
     </motion.div>
   );
