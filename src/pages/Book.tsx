@@ -247,6 +247,9 @@ const Book = () => {
   const [completionDate, setCompletionDate] = useState<Date | null>(null);
   const [dropoffPhotoUrl, setDropoffPhotoUrl] = useState<string | null>(null);
   const [dropoffPhotoLoading, setDropoffPhotoLoading] = useState(false);
+  const [pickupPhotoUrl, setPickupPhotoUrl] = useState<string | null>(null);
+  const [pickupPhotoLoading, setPickupPhotoLoading] = useState(false);
+  const [numberOfPackages, setNumberOfPackages] = useState<number | null>(null);
   const [chatMessages, setChatMessages] = useState<{ from: "user" | "courial"; text: string; time: string }[]>([
     { from: "courial", text: "Hey! I'm on my way to the pickup. Let me know if you have any instructions.", time: new Date().toLocaleTimeString([], { hour: "numeric", minute: "2-digit" }) },
   ]);
@@ -382,6 +385,17 @@ const Book = () => {
     setDropoffPhotoUrl(photoUrl);
   }, []);
 
+  const handlePickupPhoto = useCallback((photoUrl: string) => {
+    console.log("[Book] Pickup photo received:", photoUrl);
+    setPickupPhotoLoading(true);
+    setPickupPhotoUrl(photoUrl);
+  }, []);
+
+  const handleNumberOfPackages = useCallback((count: number) => {
+    console.log("[Book] Number of packages received:", count);
+    setNumberOfPackages(count);
+  }, []);
+
   useCourialSocket({
     token: courialToken,
     enabled: socketEnabled,
@@ -391,6 +405,8 @@ const Book = () => {
     onStatusChange: handleStatusChange,
     onCompletionPhoto: handleCompletionPhoto,
     onDropoffPhoto: handleDropoffPhoto,
+    onPickupPhoto: handlePickupPhoto,
+    onNumberOfPackages: handleNumberOfPackages,
   });
   const courialProfiles = useMemo(() => [
     "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300&h=400&fit=crop&crop=face&facepad=2",
@@ -874,6 +890,9 @@ const Book = () => {
     setCompletionDate(null);
     setDropoffPhotoUrl(null);
     setDropoffPhotoLoading(false);
+    setPickupPhotoUrl(null);
+    setPickupPhotoLoading(false);
+    setNumberOfPackages(null);
     setShowChat(false);
     setChatMessages([
       { from: "courial", text: "Hey! I'm on my way to the pickup. Let me know if you have any instructions.", time: new Date().toLocaleTimeString([], { hour: "numeric", minute: "2-digit" }) },
@@ -3497,6 +3516,44 @@ const Book = () => {
                               </motion.div>
                             )}
 
+
+                            {/* Pickup photo + item count after "Courial Picked Up" step (deliver/concierge only) */}
+                            {step.label === "Courial Picked Up" && (isCompleted || isCurrent) && (selectedService === "deliver" || selectedService === "concierge") && (
+                              <motion.div
+                                initial={{ opacity: 0, height: 0 }}
+                                animate={{ opacity: 1, height: "auto" }}
+                                className="mt-2 space-y-2"
+                              >
+                                {pickupPhotoLoading && !pickupPhotoUrl && (
+                                  <div className="w-full max-w-[200px] h-[120px] rounded-lg bg-muted animate-pulse" />
+                                )}
+                                {pickupPhotoUrl && (
+                                  <div className="relative w-full max-w-[200px] rounded-lg overflow-hidden border border-border shadow-sm">
+                                    {pickupPhotoLoading && (
+                                      <div className="absolute inset-0 bg-muted animate-pulse z-10" />
+                                    )}
+                                    <img
+                                      src={pickupPhotoUrl}
+                                      alt="Pickup proof"
+                                      className="w-full h-auto object-cover rounded-lg"
+                                      onLoad={() => setPickupPhotoLoading(false)}
+                                      onError={() => { setPickupPhotoLoading(false); setPickupPhotoUrl(null); }}
+                                    />
+                                    <button
+                                      onClick={() => window.open(pickupPhotoUrl, "_blank")}
+                                      className="absolute top-1.5 right-1.5 p-1 rounded-full bg-background/80 backdrop-blur-sm"
+                                    >
+                                      <Eye className="w-3.5 h-3.5 text-foreground" />
+                                    </button>
+                                  </div>
+                                )}
+                                {numberOfPackages != null && (
+                                  <p className="text-xs font-medium text-muted-foreground">
+                                    Items picked up: {numberOfPackages}
+                                  </p>
+                                )}
+                              </motion.div>
+                            )}
 
                             {/* Drop-off proof photo after "Courial Dropped Off" step */}
                             {step.label === "Courial Dropped Off" && (isCompleted || isCurrent) && (
