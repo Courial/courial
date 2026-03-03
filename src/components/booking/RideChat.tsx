@@ -243,7 +243,7 @@ export const RideChat: React.FC<RideChatProps> = ({
                 className={cn(
                   "max-w-[75%] rounded-2xl px-3 py-2",
                   msg.from === "user"
-                    ? "bg-background/30 text-foreground rounded-br-md"
+                    ? "bg-background/20 text-foreground rounded-br-md"
                     : darkMode
                     ? "border border-background/15 bg-background/10 text-background rounded-bl-md"
                     : "bg-muted text-foreground rounded-bl-md"
@@ -332,7 +332,7 @@ export const RideChat: React.FC<RideChatProps> = ({
         </div>
 
         {/* Divider */}
-        <div className={cn("mx-3", darkMode ? "border-t border-background/10" : "border-t border-border")} />
+        <div className={cn("mx-3 mb-2", darkMode ? "border-t border-background/10" : "border-t border-border")} />
 
         {/* Quick Replies (below input) */}
         <AnimatePresence>
