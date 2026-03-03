@@ -247,6 +247,9 @@ const Book = () => {
   const [completionDate, setCompletionDate] = useState<Date | null>(null);
   const [dropoffPhotoUrl, setDropoffPhotoUrl] = useState<string | null>(null);
   const [dropoffPhotoLoading, setDropoffPhotoLoading] = useState(false);
+  const [pickupPhotoUrl, setPickupPhotoUrl] = useState<string | null>(null);
+  const [pickupPhotoLoading, setPickupPhotoLoading] = useState(false);
+  const [numberOfPackages, setNumberOfPackages] = useState<number | null>(null);
   const [chatMessages, setChatMessages] = useState<{ from: "user" | "courial"; text: string; time: string }[]>([
     { from: "courial", text: "Hey! I'm on my way to the pickup. Let me know if you have any instructions.", time: new Date().toLocaleTimeString([], { hour: "numeric", minute: "2-digit" }) },
   ]);
@@ -382,6 +385,17 @@ const Book = () => {
     setDropoffPhotoUrl(photoUrl);
   }, []);
 
+  const handlePickupPhoto = useCallback((photoUrl: string) => {
+    console.log("[Book] Pickup photo received:", photoUrl);
+    setPickupPhotoLoading(true);
+    setPickupPhotoUrl(photoUrl);
+  }, []);
+
+  const handleNumberOfPackages = useCallback((count: number) => {
+    console.log("[Book] Number of packages received:", count);
+    setNumberOfPackages(count);
+  }, []);
+
   useCourialSocket({
     token: courialToken,
     enabled: socketEnabled,
@@ -391,6 +405,8 @@ const Book = () => {
     onStatusChange: handleStatusChange,
     onCompletionPhoto: handleCompletionPhoto,
     onDropoffPhoto: handleDropoffPhoto,
+    onPickupPhoto: handlePickupPhoto,
+    onNumberOfPackages: handleNumberOfPackages,
   });
   const courialProfiles = useMemo(() => [
     "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300&h=400&fit=crop&crop=face&facepad=2",
@@ -874,6 +890,9 @@ const Book = () => {
     setCompletionDate(null);
     setDropoffPhotoUrl(null);
     setDropoffPhotoLoading(false);
+    setPickupPhotoUrl(null);
+    setPickupPhotoLoading(false);
+    setNumberOfPackages(null);
     setShowChat(false);
     setChatMessages([
       { from: "courial", text: "Hey! I'm on my way to the pickup. Let me know if you have any instructions.", time: new Date().toLocaleTimeString([], { hour: "numeric", minute: "2-digit" }) },
