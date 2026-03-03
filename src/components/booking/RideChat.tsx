@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Send, Camera, Image as ImageIcon, X, ChevronDown, ChevronUp, Zap } from "lucide-react";
+import { Send, Camera, Image as ImageIcon, X, ChevronDown, ChevronUp, MessageSquare, Plus, Minus } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import { supabase } from "@/integrations/supabase/client";
@@ -226,8 +226,8 @@ export const RideChat: React.FC<RideChatProps> = ({
     >
       <div className={cn("rounded-xl", darkMode ? "" : "border border-border bg-background")}>
       {/* Header */}
-        <div className={cn("p-3 border-b flex items-center justify-between", darkMode ? "border-background/10" : "border-border")}>
-          <p className={cn("text-xs font-medium tracking-wide", darkMode ? "text-background/50" : "text-muted-foreground")}>
+        <div className={cn("p-3 border-b flex items-center justify-center", darkMode ? "border-background/10" : "border-border")}>
+          <p className={cn("text-xs font-medium tracking-wide text-center", darkMode ? "text-background/50" : "text-muted-foreground")}>
             Chat with {courialName.split(" ")[0]}
           </p>
         </div>
@@ -243,9 +243,9 @@ export const RideChat: React.FC<RideChatProps> = ({
                 className={cn(
                   "max-w-[75%] rounded-2xl px-3 py-2",
                   msg.from === "user"
-                    ? "bg-background/20 text-foreground rounded-br-md"
+                    ? "bg-background text-foreground rounded-br-md"
                     : darkMode
-                    ? "bg-background/10 text-background rounded-bl-md"
+                    ? "bg-background/8 text-background rounded-bl-md"
                     : "bg-muted text-foreground rounded-bl-md"
                 )}
               >
@@ -279,7 +279,7 @@ export const RideChat: React.FC<RideChatProps> = ({
             onClick={() => setShowQuickReplies((p) => !p)}
             className={cn("flex items-center gap-1.5 text-xs transition-colors w-full", darkMode ? "text-primary hover:text-primary/80" : "text-primary hover:text-primary/80")}
           >
-            <Zap className="w-3.5 h-3.5" />
+            <MessageSquare className="w-3.5 h-3.5" />
             <span className="font-normal">Quick messages</span>
             <span className="ml-auto">
               {showQuickReplies ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />}
@@ -299,7 +299,7 @@ export const RideChat: React.FC<RideChatProps> = ({
             )}
             aria-label="Send photo"
           >
-            <Camera className="w-5 h-5" />
+            <Camera className="w-5 h-5" strokeWidth={1.5} />
           </button>
           <input
             ref={fileInputRef}
@@ -316,9 +316,9 @@ export const RideChat: React.FC<RideChatProps> = ({
             onKeyDown={(e) => e.key === "Enter" && handleSend()}
             placeholder="Enter message"
             className={cn(
-              "text-sm h-9 rounded-full",
+              "text-sm h-9 rounded-md focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:border-border",
               darkMode
-                ? "bg-background/10 border-background/15 text-background placeholder:text-background/30"
+                ? "bg-background/10 border-background/15 text-background placeholder:text-background/30 focus-visible:border-background/15"
                 : "bg-muted/50 border-border placeholder:text-muted-foreground"
             )}
           />
@@ -358,6 +358,18 @@ export const RideChat: React.FC<RideChatProps> = ({
             </motion.div>
           )}
         </AnimatePresence>
+
+        {/* Add / Remove quick message */}
+        <div className={cn("px-3 pb-3 flex items-center gap-1.5 text-xs", darkMode ? "text-background/60" : "text-muted-foreground")}>
+          <button className="px-3 py-1 rounded-full bg-primary text-primary-foreground font-medium hover:bg-primary/90 transition-colors flex items-center gap-1">
+            <Plus className="w-3 h-3" /> Add
+          </button>
+          <span>or</span>
+          <button className={cn("px-3 py-1 rounded-full border font-medium transition-colors flex items-center gap-1", darkMode ? "border-background/20 text-background hover:bg-background/10" : "border-border text-foreground hover:bg-muted")}>
+            <Minus className="w-3 h-3" /> Remove
+          </button>
+          <span className="text-primary font-normal">a Quick message</span>
+        </div>
       </div>
     </motion.div>
   );
