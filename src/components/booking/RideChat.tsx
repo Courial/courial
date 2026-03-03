@@ -227,8 +227,8 @@ export const RideChat: React.FC<RideChatProps> = ({
       <div className={cn("rounded-xl", darkMode ? "" : "border border-border bg-background")}>
         {/* Header */}
         <div className={cn("p-3 border-b flex items-center justify-between", darkMode ? "border-background/10" : "border-border")}>
-          <p className={cn("text-xs font-bold uppercase tracking-wider", darkMode ? "text-background/50" : "text-muted-foreground")}>
-            Chat with {courialName}
+          <p className={cn("text-xs font-medium tracking-wide", darkMode ? "text-background/50" : "text-muted-foreground")}>
+            Chat with {courialName.split(" ")[0]}
           </p>
         </div>
 
@@ -243,9 +243,9 @@ export const RideChat: React.FC<RideChatProps> = ({
                 className={cn(
                   "max-w-[75%] rounded-2xl px-3 py-2",
                   msg.from === "user"
-                    ? "bg-primary text-primary-foreground rounded-br-md"
+                    ? "bg-background/20 text-foreground rounded-br-md"
                     : darkMode
-                    ? "bg-background/15 text-background rounded-bl-md"
+                    ? "bg-background/10 text-background rounded-bl-md"
                     : "bg-muted text-foreground rounded-bl-md"
                 )}
               >
@@ -262,7 +262,7 @@ export const RideChat: React.FC<RideChatProps> = ({
                 <p
                   className={cn(
                     "text-[10px] mt-0.5",
-                    msg.from === "user" ? "text-primary-foreground/60" : darkMode ? "text-background/30" : "text-muted-foreground"
+                    msg.from === "user" ? "text-muted-foreground/60" : darkMode ? "text-background/30" : "text-muted-foreground"
                   )}
                 >
                   {msg.time}
@@ -280,7 +280,7 @@ export const RideChat: React.FC<RideChatProps> = ({
             className={cn("flex items-center gap-1.5 text-xs font-semibold mb-1.5 transition-colors", darkMode ? "text-primary hover:text-primary/80" : "text-primary hover:text-primary/80")}
           >
             <Zap className="w-3.5 h-3.5" />
-            Quick messages
+            <span className="font-normal">Quick messages</span>
             {showQuickReplies ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />}
           </button>
           <AnimatePresence>
@@ -344,7 +344,7 @@ export const RideChat: React.FC<RideChatProps> = ({
           <button
             onClick={handleSend}
             disabled={!input.trim()}
-            className="shrink-0 w-9 h-9 rounded-lg bg-primary text-primary-foreground flex items-center justify-center hover:bg-primary/90 transition-colors disabled:opacity-40"
+            className="shrink-0 w-9 h-9 rounded-lg flex items-center justify-center text-primary hover:text-primary/80 transition-colors disabled:opacity-40"
           >
             <Send className="w-4 h-4" />
           </button>
