@@ -1943,7 +1943,7 @@ const Book = () => {
                     </button>
                     {batteryCurrentOpen && (
                       <div onClick={(e) => e.stopPropagation()} className="absolute z-50 mt-1 w-full max-h-48 overflow-y-auto rounded-lg border border-border/60 bg-background shadow-lg">
-                        {Array.from({ length: 101 }, (_, i) => i).map((v) => (
+                        {Array.from({ length: 11 }, (_, i) => i * 10).map((v) => (
                           <button
                             key={v}
                             onClick={() => { setBatteryCurrentCharge(String(v)); setBatteryCurrentOpen(false); }}
@@ -1966,7 +1966,7 @@ const Book = () => {
                     </button>
                     {batteryTargetOpen && (
                       <div onClick={(e) => e.stopPropagation()} className="absolute z-50 mt-1 w-full max-h-48 overflow-y-auto rounded-lg border border-border/60 bg-background shadow-lg">
-                        {Array.from({ length: 91 }, (_, i) => i + 10).map((v) => (
+                        {Array.from({ length: 10 }, (_, i) => (i + 1) * 10).map((v) => (
                           <button
                             key={v}
                             onClick={() => { setBatteryTargetCharge(String(v)); setBatteryTargetOpen(false); }}
