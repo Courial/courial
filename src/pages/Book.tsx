@@ -88,7 +88,7 @@ const conciergeCategories: ConciergeCategory[] = [
 ];
 
 const valetCategories: ConciergeCategory[] = [
-  { id: "charge", label: "Charge", desc: "EV charging & battery care", subs: ["EV Charging", "Battery Top-Up", "Charging Station Drop-Off"] },
+  { id: "charge", label: "Charge", desc: "EV charging & battery care", subs: ["Charging Station", "Mobile Charging Unit"] },
   { id: "drive", label: "Drive", desc: "We drive, you ride or relax", subs: ["Airport Transfer", "Vehicle Relocation", "Personal Errand", "Multi-Stop Run"] },
   { id: "park", label: "Park", desc: "Parking handled for you", subs: ["Event Parking", "Daily Parking", "Overnight Parking", "Garage Storage"] },
 ];
