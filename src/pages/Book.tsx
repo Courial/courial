@@ -2217,6 +2217,9 @@ const Book = () => {
                   <span className="text-xs font-medium text-muted-foreground">Service Type</span>
                   {(conciergeCategory === "roadside-assistance" ? [
                     { value: "hourly" as const, label: conciergeSubCategory === "Towing" ? "Hourly (+ truck fees)" : conciergeSubCategory === "Flat Tire" ? "Hourly (+ new tire if required)" : conciergeSubCategory === "Dead Battery / Jump Start" ? "Hourly (+ new battery if required)" : conciergeSubCategory === "Out of Gas" ? "Hourly (+ price of gas)" : "Hourly" },
+                  ] : selectedService === "valet" ? [
+                    { value: "hourly" as const, label: "Hourly + charging" },
+                    { value: "daily" as const, label: "Per Minute + charging" },
                   ] : [
                     { value: "hourly" as const, label: "Hourly" },
                     { value: "daily" as const, label: "Daily (8 Hrs)" },
