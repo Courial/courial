@@ -193,6 +193,10 @@ const Book = () => {
   const [roadsidePortTypeOpen, setRoadsidePortTypeOpen] = useState(false);
   const [roadsidePortTypeSuggestions, setRoadsidePortTypeSuggestions] = useState<string[]>([]);
   const [roadsidePortTypesLoading, setRoadsidePortTypesLoading] = useState(false);
+  const [batteryCurrentCharge, setBatteryCurrentCharge] = useState("");
+  const [batteryTargetCharge, setBatteryTargetCharge] = useState("");
+  const [batteryCurrentOpen, setBatteryCurrentOpen] = useState(false);
+  const [batteryTargetOpen, setBatteryTargetOpen] = useState(false);
 
   // Deliver-specific: multi-stop
   const [deliverMultiStop, setDeliverMultiStop] = useState(false);
@@ -1918,6 +1922,61 @@ const Book = () => {
                       onChange={(e) => setRoadsideLicensePlate(e.target.value)}
                       className={`${selectedService === "valet" ? "w-1/3" : "w-1/2"} min-w-0 px-2 py-2 rounded-lg border border-border/60 bg-background text-foreground text-xs placeholder:text-muted-foreground focus:outline-none focus:border-border transition-colors`}
                     />
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Battery Status - Valet only */}
+            {selectedService === "valet" && conciergeSubCategory && conciergeSubCategory !== "__direct__" && (
+              <div className="mb-4 mt-4 space-y-3">
+                <span className="text-xs font-medium text-muted-foreground">Battery Status</span>
+                <div className="flex gap-1.5 w-full min-w-0">
+                  {/* Current Charge */}
+                  <div className="w-1/2 min-w-0 relative">
+                    <button
+                      onClick={(e) => { e.stopPropagation(); setBatteryCurrentOpen(!batteryCurrentOpen); setBatteryTargetOpen(false); }}
+                      className="w-full px-2 py-2 rounded-lg border border-border/60 bg-background text-foreground text-xs text-left flex items-center justify-between hover:border-foreground/30 transition-colors"
+                    >
+                      <span className={batteryCurrentCharge ? "text-foreground" : "text-muted-foreground"}>{batteryCurrentCharge ? `${batteryCurrentCharge}%` : "Current Charge"}</span>
+                      <ChevronDown className="w-3 h-3 text-muted-foreground" />
+                    </button>
+                    {batteryCurrentOpen && (
+                      <div onClick={(e) => e.stopPropagation()} className="absolute z-50 mt-1 w-full max-h-48 overflow-y-auto rounded-lg border border-border/60 bg-background shadow-lg">
+                        {Array.from({ length: 101 }, (_, i) => i).map((v) => (
+                          <button
+                            key={v}
+                            onClick={() => { setBatteryCurrentCharge(String(v)); setBatteryCurrentOpen(false); }}
+                            className="w-full px-2 py-1.5 text-xs text-left text-foreground hover:bg-muted transition-colors"
+                          >
+                            {v}%
+                          </button>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                  {/* Target Charge */}
+                  <div className="w-1/2 min-w-0 relative">
+                    <button
+                      onClick={(e) => { e.stopPropagation(); setBatteryTargetOpen(!batteryTargetOpen); setBatteryCurrentOpen(false); }}
+                      className="w-full px-2 py-2 rounded-lg border border-border/60 bg-background text-foreground text-xs text-left flex items-center justify-between hover:border-foreground/30 transition-colors"
+                    >
+                      <span className={batteryTargetCharge ? "text-foreground" : "text-muted-foreground"}>{batteryTargetCharge ? `${batteryTargetCharge}%` : "Target Charge"}</span>
+                      <ChevronDown className="w-3 h-3 text-muted-foreground" />
+                    </button>
+                    {batteryTargetOpen && (
+                      <div onClick={(e) => e.stopPropagation()} className="absolute z-50 mt-1 w-full max-h-48 overflow-y-auto rounded-lg border border-border/60 bg-background shadow-lg">
+                        {Array.from({ length: 91 }, (_, i) => i + 10).map((v) => (
+                          <button
+                            key={v}
+                            onClick={() => { setBatteryTargetCharge(String(v)); setBatteryTargetOpen(false); }}
+                            className="w-full px-2 py-1.5 text-xs text-left text-foreground hover:bg-muted transition-colors"
+                          >
+                            {v}%
+                          </button>
+                        ))}
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>
