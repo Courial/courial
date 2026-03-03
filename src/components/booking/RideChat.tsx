@@ -257,12 +257,12 @@ export const RideChat: React.FC<RideChatProps> = ({
                     onClick={() => window.open(msg.imageUrl, "_blank")}
                   />
                 ) : (
-                  <p className="text-sm leading-snug">{msg.text}</p>
+                  <p className={cn("text-sm leading-snug", msg.from === "user" && "text-background/75")}>{msg.text}</p>
                 )}
                 <p
                   className={cn(
-                    "text-[10px] mt-0.5",
-                    msg.from === "user" ? "text-muted-foreground/60" : darkMode ? "text-background/30" : "text-muted-foreground"
+                    "text-[8px] mt-0.5",
+                    msg.from === "user" ? "text-right text-background/30" : darkMode ? "text-background/30" : "text-muted-foreground"
                   )}
                 >
                   {msg.time}
@@ -299,7 +299,7 @@ export const RideChat: React.FC<RideChatProps> = ({
             )}
             aria-label="Send photo"
           >
-            <Camera className="w-7 h-7" strokeWidth={1.5} />
+            <Camera className="w-9 h-9" strokeWidth={1.2} />
           </button>
           <input
             ref={fileInputRef}
@@ -332,7 +332,7 @@ export const RideChat: React.FC<RideChatProps> = ({
         </div>
 
         {/* Divider */}
-        <div className={cn("mx-3 mb-2", darkMode ? "border-t border-background/10" : "border-t border-border")} />
+        <div className={cn("mx-3 my-3", darkMode ? "border-t border-background/10" : "border-t border-border")} />
 
         {/* Quick Replies (below input) */}
         <AnimatePresence>
