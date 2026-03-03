@@ -6,7 +6,8 @@ const corsHeaders = {
     "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
 };
 
-const COURIAL_API_URL = "https://gocourial.com/userApis/deliveries/book";
+const COURIAL_DELIVER_URL = "https://gocourial.com/userApis/deliveries/book";
+const COURIAL_CONCIERGE_URL = "https://gocourial.com/userApis/concierge/book";
 
 serve(async (req) => {
   if (req.method === "OPTIONS") {
@@ -69,8 +70,9 @@ serve(async (req) => {
     // Log the full payload for debugging
     console.log("[book-delivery] Payload sent to Courial API:", JSON.stringify(payload, null, 2));
 
-    // Forward request to Courial API
-    const response = await fetch(COURIAL_API_URL, {
+    // Forward request to the appropriate Courial API endpoint
+    const apiUrl = isConcierge ? COURIAL_CONCIERGE_URL : COURIAL_DELIVER_URL;
+    const response = await fetch(apiUrl, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
