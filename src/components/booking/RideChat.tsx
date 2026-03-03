@@ -24,7 +24,7 @@ interface RideChatProps {
   darkMode?: boolean;
 }
 
-const QUICK_REPLIES = [
+const DEFAULT_QUICK_REPLIES = [
   "Are you on the way?",
   "Are you here?",
   "I'm on my way. Please wait me.",
@@ -34,6 +34,20 @@ const QUICK_REPLIES = [
   "Come closer",
   "On my way",
 ];
+
+const QR_STORAGE_KEY = "courial_quick_replies";
+
+const loadQuickReplies = (): string[] => {
+  try {
+    const saved = localStorage.getItem(QR_STORAGE_KEY);
+    if (saved) return JSON.parse(saved);
+  } catch {}
+  return [...DEFAULT_QUICK_REPLIES];
+};
+
+const saveQuickReplies = (replies: string[]) => {
+  localStorage.setItem(QR_STORAGE_KEY, JSON.stringify(replies));
+};
 
 const formatTime = () =>
   new Date().toLocaleTimeString([], { hour: "numeric", minute: "2-digit" });
