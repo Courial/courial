@@ -222,20 +222,20 @@ export const RideChat: React.FC<RideChatProps> = ({
       animate={{ opacity: 1, height: "auto" }}
       exit={{ opacity: 0, height: 0 }}
       transition={{ duration: 0.25 }}
-      className="overflow-hidden mb-3"
+      className="overflow-hidden"
     >
-      <div className="rounded-xl border border-border bg-background">
+      <div className={cn("rounded-xl", darkMode ? "" : "border border-border bg-background")}>
         {/* Header */}
-        <div className="p-3 border-b border-border flex items-center justify-between">
-          <p className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
+        <div className={cn("p-3 border-b flex items-center justify-between", darkMode ? "border-background/10" : "border-border")}>
+          <p className={cn("text-xs font-bold uppercase tracking-wider", darkMode ? "text-background/50" : "text-muted-foreground")}>
             Chat with {courialName}
           </p>
         </div>
 
         {/* Messages */}
-        <div className="p-3 space-y-2.5 max-h-[240px] overflow-y-auto">
+        <div className="p-3 space-y-2.5 max-h-[320px] overflow-y-auto">
           {loadingHistory && messages.length === 0 && (
-            <p className="text-xs text-muted-foreground text-center py-2">Loading messages…</p>
+            <p className={cn("text-xs text-center py-2", darkMode ? "text-background/40" : "text-muted-foreground")}>Loading messages…</p>
           )}
           {messages.map((msg, i) => (
             <div key={i} className={cn("flex", msg.from === "user" ? "justify-end" : "justify-start")}>
@@ -244,6 +244,8 @@ export const RideChat: React.FC<RideChatProps> = ({
                   "max-w-[75%] rounded-2xl px-3 py-2",
                   msg.from === "user"
                     ? "bg-primary text-primary-foreground rounded-br-md"
+                    : darkMode
+                    ? "bg-background/15 text-background rounded-bl-md"
                     : "bg-muted text-foreground rounded-bl-md"
                 )}
               >
@@ -260,7 +262,7 @@ export const RideChat: React.FC<RideChatProps> = ({
                 <p
                   className={cn(
                     "text-[10px] mt-0.5",
-                    msg.from === "user" ? "text-primary-foreground/60" : "text-muted-foreground"
+                    msg.from === "user" ? "text-primary-foreground/60" : darkMode ? "text-background/30" : "text-muted-foreground"
                   )}
                 >
                   {msg.time}
@@ -275,7 +277,7 @@ export const RideChat: React.FC<RideChatProps> = ({
         <div className="px-3 pb-2">
           <button
             onClick={() => setShowQuickReplies((p) => !p)}
-            className="flex items-center gap-1.5 text-xs font-semibold text-primary mb-1.5 hover:text-primary/80 transition-colors"
+            className={cn("flex items-center gap-1.5 text-xs font-semibold mb-1.5 transition-colors", darkMode ? "text-primary hover:text-primary/80" : "text-primary hover:text-primary/80")}
           >
             <Zap className="w-3.5 h-3.5" />
             Quick messages
@@ -294,7 +296,12 @@ export const RideChat: React.FC<RideChatProps> = ({
                   <button
                     key={reply}
                     onClick={() => handleQuickReply(reply)}
-                    className="px-3 py-1.5 text-xs rounded-full border border-border bg-muted/50 text-foreground hover:bg-muted transition-colors"
+                    className={cn(
+                      "px-3 py-1.5 text-xs rounded-full border transition-colors",
+                      darkMode
+                        ? "border-background/15 bg-background/10 text-background hover:bg-background/20"
+                        : "border-border bg-muted/50 text-foreground hover:bg-muted"
+                    )}
                   >
                     {reply}
                   </button>
@@ -305,11 +312,15 @@ export const RideChat: React.FC<RideChatProps> = ({
         </div>
 
         {/* Input row */}
-        <div className="p-2 border-t border-border flex gap-2 items-center">
-          {/* Camera / Photo button */}
+        <div className={cn("p-2 border-t flex gap-2 items-center", darkMode ? "border-background/10" : "border-border")}>
           <button
             onClick={() => fileInputRef.current?.click()}
-            className="shrink-0 w-9 h-9 rounded-lg border border-border flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
+            className={cn(
+              "shrink-0 w-9 h-9 rounded-lg border flex items-center justify-center transition-colors",
+              darkMode
+                ? "border-background/15 text-background/50 hover:text-background hover:bg-background/10"
+                : "border-border text-muted-foreground hover:text-foreground hover:bg-muted"
+            )}
             aria-label="Send photo"
           >
             <Camera className="w-4 h-4" />
@@ -328,7 +339,7 @@ export const RideChat: React.FC<RideChatProps> = ({
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && handleSend()}
             placeholder="Type a message..."
-            className="text-sm h-9"
+            className={cn("text-sm h-9", darkMode && "bg-background/10 border-background/15 text-background placeholder:text-background/30")}
           />
           <button
             onClick={handleSend}
