@@ -1,5 +1,4 @@
 import React, { useState, useCallback, useEffect, useMemo, useRef } from "react";
-import { Checkbox } from "@/components/ui/checkbox";
 import { getSavedAddresses, loadSavedAddressesFromDB } from "@/components/SavedAddressModal";
 import { useCourialSocket, type CourialDriver } from "@/hooks/useCourialSocket";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
@@ -1987,33 +1986,36 @@ const Book = () => {
             {/* Preferred Language */}
             {isConciergeStyle && conciergeSubCategory && (
               <div className="mb-4 mt-4">
-                <label className="flex items-center gap-2 cursor-pointer">
-                  <Checkbox
-                    checked={!!conciergeLanguage || conciergeShowLangPicker}
-                    onCheckedChange={(checked) => {
-                      if (!checked) { setConciergeLanguage(null); setConciergeShowLangPicker(false); }
+                <div className="flex items-center gap-2">
+                  <h4 className="text-xs font-medium text-foreground">Preferred Language</h4>
+                  <input
+                    type="checkbox"
+                    checked={conciergeShowLangPicker || !!conciergeLanguage}
+                    onChange={(e) => {
+                      if (!e.target.checked) { setConciergeLanguage(null); setConciergeShowLangPicker(false); }
                       else { setConciergeShowLangPicker(true); }
                     }}
+                    className="h-3 w-3 rounded border-border/60 accent-foreground cursor-pointer"
                   />
-                  <span className="text-xs font-medium text-muted-foreground">Preferred Language?</span>
-                  {conciergeLanguage && (
-                    <span className="px-2.5 py-1 rounded-full text-[11px] font-normal leading-none border border-primary text-foreground">
-                      {conciergeLanguage}
-                    </span>
-                  )}
-                </label>
-                {(conciergeShowLangPicker || conciergeLanguage) && (
+                </div>
+                {(conciergeShowLangPicker || !!conciergeLanguage) && (
                   <>
                     <div className="flex flex-wrap gap-2 mt-2">
-                      {["English", "Spanish", "French", "Portuguese", "Arabic", "Chinese", "Hindi", "Japanese", "Korean", "Thai"].map((lang) => (
-                        <button
-                          key={lang}
-                          onClick={() => { setConciergeLanguage(lang); setConciergeShowLangPicker(false); }}
-                          className={`px-2.5 py-1 rounded-full text-[11px] font-normal transition-all leading-none border ${conciergeLanguage === lang ? "border-primary text-foreground" : "border-border/60 bg-background text-foreground/75 hover:border-foreground/50"}`}
-                        >
-                          {lang}
-                        </button>
-                      ))}
+                      {["English", "Spanish", "French", "Portuguese", "Arabic", "Chinese", "Hindi", "Japanese", "Korean", "Thai"].map((lang) => {
+                        if (conciergeLanguage && conciergeLanguage !== lang) return null;
+                        return (
+                          <button
+                            key={lang}
+                            onClick={() => {
+                              if (conciergeLanguage === lang) { setConciergeLanguage(null); setConciergeShowLangPicker(true); }
+                              else { setConciergeLanguage(lang); }
+                            }}
+                            className={`px-2.5 py-1 rounded-full text-[11px] font-normal transition-all leading-none border ${conciergeLanguage === lang ? "border-primary text-foreground" : "border-border/60 bg-background text-foreground/75 hover:border-foreground/50"}`}
+                          >
+                            {lang}
+                          </button>
+                        );
+                      })}
                     </div>
                     <p className="text-[10px] text-muted-foreground mt-1.5 leading-snug italic">We will make our best efforts to match you with your preferred language; however, this is subject to availability.</p>
                   </>
@@ -2786,33 +2788,36 @@ const Book = () => {
 
                   {/* Preferred Language for Deliver/Valet */}
                   <div className="mb-4 mt-5">
-                    <label className="flex items-center gap-2 cursor-pointer">
-                      <Checkbox
-                        checked={!!deliverLanguage || deliverShowLangPicker}
-                        onCheckedChange={(checked) => {
-                          if (!checked) { setDeliverLanguage(null); setDeliverShowLangPicker(false); }
+                    <div className="flex items-center gap-2">
+                      <h4 className="text-xs font-medium text-foreground">Preferred Language</h4>
+                      <input
+                        type="checkbox"
+                        checked={deliverShowLangPicker || !!deliverLanguage}
+                        onChange={(e) => {
+                          if (!e.target.checked) { setDeliverLanguage(null); setDeliverShowLangPicker(false); }
                           else { setDeliverShowLangPicker(true); }
                         }}
+                        className="h-3 w-3 rounded border-border/60 accent-foreground cursor-pointer"
                       />
-                      <span className="text-xs font-medium text-muted-foreground">Preferred Language?</span>
-                      {deliverLanguage && (
-                        <span className="px-2.5 py-1 rounded-full text-[11px] font-normal leading-none border border-primary text-foreground">
-                          {deliverLanguage}
-                        </span>
-                      )}
-                    </label>
-                    {(deliverShowLangPicker || deliverLanguage) && (
+                    </div>
+                    {(deliverShowLangPicker || !!deliverLanguage) && (
                       <>
                         <div className="flex flex-wrap gap-2 mt-2">
-                          {["English", "Spanish", "French", "Portuguese", "Arabic", "Chinese", "Hindi", "Japanese", "Korean", "Thai"].map((lang) => (
-                            <button
-                              key={lang}
-                              onClick={() => { setDeliverLanguage(lang); setDeliverShowLangPicker(false); }}
-                              className={`px-2.5 py-1 rounded-full text-[11px] font-normal transition-all leading-none border ${deliverLanguage === lang ? "border-primary text-foreground" : "border-border/60 bg-background text-foreground/75 hover:border-foreground/50"}`}
-                            >
-                              {lang}
-                            </button>
-                          ))}
+                          {["English", "Spanish", "French", "Portuguese", "Arabic", "Chinese", "Hindi", "Japanese", "Korean", "Thai"].map((lang) => {
+                            if (deliverLanguage && deliverLanguage !== lang) return null;
+                            return (
+                              <button
+                                key={lang}
+                                onClick={() => {
+                                  if (deliverLanguage === lang) { setDeliverLanguage(null); setDeliverShowLangPicker(true); }
+                                  else { setDeliverLanguage(lang); }
+                                }}
+                                className={`px-2.5 py-1 rounded-full text-[11px] font-normal transition-all leading-none border ${deliverLanguage === lang ? "border-primary text-foreground" : "border-border/60 bg-background text-foreground/75 hover:border-foreground/50"}`}
+                              >
+                                {lang}
+                              </button>
+                            );
+                          })}
                         </div>
                         <p className="text-[10px] text-muted-foreground mt-1.5 leading-snug italic">We will make our best efforts to match you with your preferred language; however, this is subject to availability.</p>
                       </>
