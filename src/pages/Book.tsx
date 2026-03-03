@@ -2802,9 +2802,12 @@ const Book = () => {
                         className="h-3 w-3 rounded border-border/60 accent-foreground cursor-pointer"
                       />
                       {deliverLanguage && (
-                        <span className="px-2.5 py-1 rounded-full text-[11px] font-normal leading-none border border-primary text-foreground">
+                        <button
+                          onClick={() => { setDeliverLanguage(null); setDeliverShowLangPicker(true); }}
+                          className="px-2.5 py-1 rounded-full text-[11px] font-normal leading-none border border-primary text-foreground hover:opacity-70 transition-opacity"
+                        >
                           {deliverLanguage}
-                        </span>
+                        </button>
                       )}
                     </div>
                     {deliverShowLangPicker && !deliverLanguage && (
