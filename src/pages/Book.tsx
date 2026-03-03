@@ -90,7 +90,6 @@ const conciergeCategories: ConciergeCategory[] = [
 const valetCategories: ConciergeCategory[] = [
   { id: "charge", label: "Charge", desc: "EV charging & battery care", subs: ["Charging Station", "Mobile Charging Unit"] },
   { id: "drive", label: "Drive", desc: "We drive your car, so you can relax.", subs: ["Drive and wait", "Drive and park", "Personal Errand", "Car pick-up or drop-off"] },
-  { id: "park", label: "Park", desc: "Parking handled for you", subs: ["Event Parking", "Daily Parking", "Overnight Parking", "Garage Storage"] },
 ];
 
 const serviceCards: { id: ServiceId; label: string; desc: string; href: string; external?: boolean; image: string; icons: LucideIcon[]; serviceIcon: string }[] = [
@@ -1625,7 +1624,7 @@ const Book = () => {
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
                         transition={{ duration: 0.15 }}
-                        className="flex flex-wrap gap-2"
+                        className="flex flex-wrap gap-2 justify-center"
                       >
                         {activeCategories.map((cat) => (
                           <button
