@@ -1,4 +1,5 @@
 import React, { useState, useCallback, useEffect, useMemo, useRef } from "react";
+import { Checkbox } from "@/components/ui/checkbox";
 import { getSavedAddresses, loadSavedAddressesFromDB } from "@/components/SavedAddressModal";
 import { useCourialSocket, type CourialDriver } from "@/hooks/useCourialSocket";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
@@ -154,6 +155,7 @@ const Book = () => {
   const [conciergeFinalCoords, setConciergeFinalCoords] = useState<{ lat: number; lng: number } | null>(null);
   const [conciergeDescription, setConciergeDescription] = useState("");
   const [conciergeLanguage, setConciergeLanguage] = useState<string | null>(null);
+  const [conciergeShowLangPicker, setConciergeShowLangPicker] = useState(false);
   const [conciergeServiceMode, setConciergeServiceMode] = useState<"hourly" | "daily" | null>(null);
   const [conciergeHasExpenses, setConciergeHasExpenses] = useState<boolean | null>(null);
   const [conciergeExpenseItems, setConciergeExpenseItems] = useState<Array<{ description: string; amount: string }>>([{ description: "", amount: "0" }]);
@@ -204,6 +206,7 @@ const Book = () => {
 
   // Deliver-specific: language + expenses
   const [deliverLanguage, setDeliverLanguage] = useState<string | null>(null);
+  const [deliverShowLangPicker, setDeliverShowLangPicker] = useState(false);
    const [deliverHasExpenses, setDeliverHasExpenses] = useState<boolean | null>(null);
    const [deliverOrderValue, setDeliverOrderValue] = useState("");
     const [showHighValueDialog, setShowHighValueDialog] = useState(false);
