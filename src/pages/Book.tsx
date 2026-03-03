@@ -3517,6 +3517,44 @@ const Book = () => {
                             )}
 
 
+                            {/* Pickup photo + item count after "Courial Picked Up" step (deliver/concierge only) */}
+                            {step.label === "Courial Picked Up" && (isCompleted || isCurrent) && (selectedService === "deliver" || selectedService === "concierge") && (
+                              <motion.div
+                                initial={{ opacity: 0, height: 0 }}
+                                animate={{ opacity: 1, height: "auto" }}
+                                className="mt-2 space-y-2"
+                              >
+                                {pickupPhotoLoading && !pickupPhotoUrl && (
+                                  <div className="w-full max-w-[200px] h-[120px] rounded-lg bg-muted animate-pulse" />
+                                )}
+                                {pickupPhotoUrl && (
+                                  <div className="relative w-full max-w-[200px] rounded-lg overflow-hidden border border-border shadow-sm">
+                                    {pickupPhotoLoading && (
+                                      <div className="absolute inset-0 bg-muted animate-pulse z-10" />
+                                    )}
+                                    <img
+                                      src={pickupPhotoUrl}
+                                      alt="Pickup proof"
+                                      className="w-full h-auto object-cover rounded-lg"
+                                      onLoad={() => setPickupPhotoLoading(false)}
+                                      onError={() => { setPickupPhotoLoading(false); setPickupPhotoUrl(null); }}
+                                    />
+                                    <button
+                                      onClick={() => window.open(pickupPhotoUrl, "_blank")}
+                                      className="absolute top-1.5 right-1.5 p-1 rounded-full bg-background/80 backdrop-blur-sm"
+                                    >
+                                      <Eye className="w-3.5 h-3.5 text-foreground" />
+                                    </button>
+                                  </div>
+                                )}
+                                {numberOfPackages != null && (
+                                  <p className="text-xs font-medium text-muted-foreground">
+                                    Items picked up: {numberOfPackages}
+                                  </p>
+                                )}
+                              </motion.div>
+                            )}
+
                             {/* Drop-off proof photo after "Courial Dropped Off" step */}
                             {step.label === "Courial Dropped Off" && (isCompleted || isCurrent) && (
                               <motion.div
