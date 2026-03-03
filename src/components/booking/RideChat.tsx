@@ -262,7 +262,7 @@ export const RideChat: React.FC<RideChatProps> = ({
                 <p
                   className={cn(
                     "text-[10px] mt-0.5",
-                    msg.from === "user" ? "text-primary-foreground/60" : darkMode ? "text-background/30" : "text-muted-foreground"
+                    msg.from === "user" ? "text-muted-foreground/60" : darkMode ? "text-background/30" : "text-muted-foreground"
                   )}
                 >
                   {msg.time}
