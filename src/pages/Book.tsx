@@ -2030,6 +2030,9 @@ const Book = () => {
                 className="overflow-hidden"
               >
                 {/* Address Toggle Pills + WFH — all on same row */}
+                {selectedService === "valet" && (
+                  <span className="text-xs font-medium text-muted-foreground mb-1 block">Pick-up, Drop-off and Charging Station Info</span>
+                )}
                 <div className="flex items-center justify-center gap-2 mb-3">
                   {selectedService === "concierge" && (
                   <button
