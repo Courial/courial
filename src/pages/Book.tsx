@@ -1,4 +1,5 @@
 import React, { useState, useCallback, useEffect, useMemo, useRef } from "react";
+import { Checkbox } from "@/components/ui/checkbox";
 import { getSavedAddresses, loadSavedAddressesFromDB } from "@/components/SavedAddressModal";
 import { useCourialSocket, type CourialDriver } from "@/hooks/useCourialSocket";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
@@ -154,6 +155,7 @@ const Book = () => {
   const [conciergeFinalCoords, setConciergeFinalCoords] = useState<{ lat: number; lng: number } | null>(null);
   const [conciergeDescription, setConciergeDescription] = useState("");
   const [conciergeLanguage, setConciergeLanguage] = useState<string | null>(null);
+  const [conciergeShowLangPicker, setConciergeShowLangPicker] = useState(false);
   const [conciergeServiceMode, setConciergeServiceMode] = useState<"hourly" | "daily" | null>(null);
   const [conciergeHasExpenses, setConciergeHasExpenses] = useState<boolean | null>(null);
   const [conciergeExpenseItems, setConciergeExpenseItems] = useState<Array<{ description: string; amount: string }>>([{ description: "", amount: "0" }]);
@@ -204,6 +206,7 @@ const Book = () => {
 
   // Deliver-specific: language + expenses
   const [deliverLanguage, setDeliverLanguage] = useState<string | null>(null);
+  const [deliverShowLangPicker, setDeliverShowLangPicker] = useState(false);
    const [deliverHasExpenses, setDeliverHasExpenses] = useState<boolean | null>(null);
    const [deliverOrderValue, setDeliverOrderValue] = useState("");
     const [showHighValueDialog, setShowHighValueDialog] = useState(false);
@@ -1984,36 +1987,35 @@ const Book = () => {
             {/* Preferred Language */}
             {isConciergeStyle && conciergeSubCategory && (
               <div className="mb-4 mt-4">
-                {conciergeLanguage ? (
+                <label className="flex items-center gap-2 cursor-pointer">
+                  <Checkbox
+                    checked={!!conciergeLanguage || conciergeShowLangPicker}
+                    onCheckedChange={(checked) => {
+                      if (!checked) { setConciergeLanguage(null); setConciergeShowLangPicker(false); }
+                      else { setConciergeShowLangPicker(true); }
+                    }}
+                  />
+                  <span className="text-xs font-medium text-muted-foreground">Preferred Language?</span>
+                  {conciergeLanguage && (
+                    <span className="px-2.5 py-1 rounded-full text-[11px] font-normal leading-none border border-primary text-foreground">
+                      {conciergeLanguage}
+                    </span>
+                  )}
+                </label>
+                {(conciergeShowLangPicker || conciergeLanguage) && (
                   <>
-                    <div className="flex items-center gap-2">
-                      <button
-                        onClick={() => setConciergeLanguage(null)}
-                        className="p-0.5 hover:opacity-70 transition-opacity"
-                      >
-                        <ChevronLeft className="w-4 h-4 text-foreground" />
-                      </button>
-                      <span className="text-xs font-medium text-muted-foreground">Preferred Language</span>
-                      <span className="px-2.5 py-1 rounded-full text-[11px] font-normal leading-none border border-primary text-foreground">
-                        {conciergeLanguage}
-                      </span>
-                    </div>
-                    <p className="text-[10px] text-muted-foreground mt-1.5 leading-snug italic">We will make our best efforts to match you with your preferred language; however, this is subject to availability.</p>
-                  </>
-                ) : (
-                  <>
-                    <p className="text-xs font-medium text-muted-foreground mb-2">Select Preferred Language</p>
-                    <div className="flex flex-wrap gap-2">
+                    <div className="flex flex-wrap gap-2 mt-2">
                       {["English", "Spanish", "French", "Portuguese", "Arabic", "Chinese", "Hindi", "Japanese", "Korean", "Thai"].map((lang) => (
                         <button
                           key={lang}
-                          onClick={() => setConciergeLanguage(lang)}
-                          className="px-2.5 py-1 rounded-full text-[11px] font-normal transition-all leading-none border border-border/60 bg-background text-foreground/75 hover:border-foreground/50"
+                          onClick={() => { setConciergeLanguage(lang); setConciergeShowLangPicker(false); }}
+                          className={`px-2.5 py-1 rounded-full text-[11px] font-normal transition-all leading-none border ${conciergeLanguage === lang ? "border-primary text-foreground" : "border-border/60 bg-background text-foreground/75 hover:border-foreground/50"}`}
                         >
                           {lang}
                         </button>
                       ))}
                     </div>
+                    <p className="text-[10px] text-muted-foreground mt-1.5 leading-snug italic">We will make our best efforts to match you with your preferred language; however, this is subject to availability.</p>
                   </>
                 )}
               </div>
@@ -2784,36 +2786,35 @@ const Book = () => {
 
                   {/* Preferred Language for Deliver/Valet */}
                   <div className="mb-4 mt-5">
-                    {deliverLanguage ? (
+                    <label className="flex items-center gap-2 cursor-pointer">
+                      <Checkbox
+                        checked={!!deliverLanguage || deliverShowLangPicker}
+                        onCheckedChange={(checked) => {
+                          if (!checked) { setDeliverLanguage(null); setDeliverShowLangPicker(false); }
+                          else { setDeliverShowLangPicker(true); }
+                        }}
+                      />
+                      <span className="text-xs font-medium text-muted-foreground">Preferred Language?</span>
+                      {deliverLanguage && (
+                        <span className="px-2.5 py-1 rounded-full text-[11px] font-normal leading-none border border-primary text-foreground">
+                          {deliverLanguage}
+                        </span>
+                      )}
+                    </label>
+                    {(deliverShowLangPicker || deliverLanguage) && (
                       <>
-                        <div className="flex items-center gap-2">
-                          <button
-                            onClick={() => setDeliverLanguage(null)}
-                            className="p-0.5 hover:opacity-70 transition-opacity"
-                          >
-                            <ChevronLeft className="w-4 h-4 text-foreground" />
-                          </button>
-                          <span className="text-xs font-medium text-muted-foreground">Preferred Language</span>
-                          <span className="px-2.5 py-1 rounded-full text-[11px] font-normal leading-none border border-primary text-foreground">
-                            {deliverLanguage}
-                          </span>
-                        </div>
-                        <p className="text-[10px] text-muted-foreground mt-1.5 leading-snug italic">We will make our best efforts to match you with your preferred language; however, this is subject to availability.</p>
-                      </>
-                    ) : (
-                      <>
-                        <p className="text-xs font-medium text-muted-foreground mb-2">Select Preferred Language</p>
-                        <div className="flex flex-wrap gap-2">
+                        <div className="flex flex-wrap gap-2 mt-2">
                           {["English", "Spanish", "French", "Portuguese", "Arabic", "Chinese", "Hindi", "Japanese", "Korean", "Thai"].map((lang) => (
                             <button
                               key={lang}
-                              onClick={() => setDeliverLanguage(lang)}
-                              className="px-2.5 py-1 rounded-full text-[11px] font-normal transition-all leading-none border border-border/60 bg-background text-foreground/75 hover:border-foreground/50"
+                              onClick={() => { setDeliverLanguage(lang); setDeliverShowLangPicker(false); }}
+                              className={`px-2.5 py-1 rounded-full text-[11px] font-normal transition-all leading-none border ${deliverLanguage === lang ? "border-primary text-foreground" : "border-border/60 bg-background text-foreground/75 hover:border-foreground/50"}`}
                             >
                               {lang}
                             </button>
                           ))}
                         </div>
+                        <p className="text-[10px] text-muted-foreground mt-1.5 leading-snug italic">We will make our best efforts to match you with your preferred language; however, this is subject to availability.</p>
                       </>
                     )}
                   </div>
