@@ -1997,6 +1997,11 @@ const Book = () => {
                     }}
                     className="h-3 w-3 rounded border-border/60 accent-foreground cursor-pointer"
                   />
+                  {conciergeLanguage && (
+                    <span className="px-2.5 py-1 rounded-full text-[11px] font-normal leading-none border border-primary text-foreground">
+                      {conciergeLanguage}
+                    </span>
+                  )}
                 </div>
                 {(conciergeShowLangPicker || !!conciergeLanguage) && (
                   <>
@@ -2799,6 +2804,11 @@ const Book = () => {
                         }}
                         className="h-3 w-3 rounded border-border/60 accent-foreground cursor-pointer"
                       />
+                      {deliverLanguage && (
+                        <span className="px-2.5 py-1 rounded-full text-[11px] font-normal leading-none border border-primary text-foreground">
+                          {deliverLanguage}
+                        </span>
+                      )}
                     </div>
                     {(deliverShowLangPicker || !!deliverLanguage) && (
                       <>
