@@ -227,7 +227,7 @@ export const RideChat: React.FC<RideChatProps> = ({
       <div className={cn("rounded-xl", darkMode ? "" : "border border-border bg-background")}>
       {/* Header */}
         <div className={cn("p-3 border-b flex items-center justify-center", darkMode ? "border-background/10" : "border-border")}>
-          <p className={cn("text-xs font-medium tracking-wide text-center", darkMode ? "text-background/50" : "text-muted-foreground")}>
+          <p className={cn("text-sm font-medium tracking-wide text-center", darkMode ? "text-background/50" : "text-muted-foreground")}>
             Chat with {courialName.split(" ")[0]}
           </p>
         </div>
@@ -243,7 +243,7 @@ export const RideChat: React.FC<RideChatProps> = ({
                 className={cn(
                   "max-w-[75%] rounded-2xl px-3 py-2",
                   msg.from === "user"
-                    ? "bg-background text-foreground rounded-br-md"
+                    ? "bg-background/50 text-foreground rounded-br-md"
                     : darkMode
                     ? "bg-background/8 text-background rounded-bl-md"
                     : "bg-muted text-foreground rounded-bl-md"
@@ -280,7 +280,7 @@ export const RideChat: React.FC<RideChatProps> = ({
             className={cn("flex items-center gap-1.5 text-xs transition-colors w-full", darkMode ? "text-primary hover:text-primary/80" : "text-primary hover:text-primary/80")}
           >
             <MessageSquare className="w-3.5 h-3.5" />
-            <span className="font-normal">Quick messages</span>
+            <span className="font-normal">Quick replies</span>
             <span className="ml-auto">
               {showQuickReplies ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />}
             </span>
@@ -346,7 +346,7 @@ export const RideChat: React.FC<RideChatProps> = ({
                   key={reply}
                   onClick={() => handleQuickReply(reply)}
                   className={cn(
-                    "px-3.5 py-2 text-xs rounded-full border transition-colors",
+                    "px-2.5 py-1 text-[10px] rounded-full border transition-colors",
                     darkMode
                       ? "border-background/15 bg-background/10 text-background hover:bg-background/20"
                       : "border-border bg-muted/50 text-foreground hover:bg-muted"
@@ -359,16 +359,16 @@ export const RideChat: React.FC<RideChatProps> = ({
           )}
         </AnimatePresence>
 
-        {/* Add / Remove quick message */}
-        <div className={cn("px-3 pb-3 flex items-center gap-1.5 text-xs", darkMode ? "text-background/60" : "text-muted-foreground")}>
-          <button className="px-3 py-1 rounded-full bg-primary text-primary-foreground font-medium hover:bg-primary/90 transition-colors flex items-center gap-1">
-            <Plus className="w-3 h-3" /> Add
+        {/* Add / Remove quick reply */}
+        <div className={cn("px-3 pb-3 flex items-center justify-center gap-1 text-[10px]", darkMode ? "text-background/60" : "text-muted-foreground")}>
+          <button className="px-2 py-0.5 rounded-full bg-primary text-primary-foreground font-medium hover:bg-primary/90 transition-colors flex items-center gap-0.5">
+            <Plus className="w-2.5 h-2.5" /> Add
           </button>
           <span>or</span>
-          <button className={cn("px-3 py-1 rounded-full border font-medium transition-colors flex items-center gap-1", darkMode ? "border-background/20 text-background hover:bg-background/10" : "border-border text-foreground hover:bg-muted")}>
-            <Minus className="w-3 h-3" /> Remove
+          <button className={cn("px-2 py-0.5 rounded-full border font-medium transition-colors flex items-center gap-0.5", darkMode ? "border-background/20 text-background hover:bg-background/10" : "border-border text-foreground hover:bg-muted")}>
+            <Minus className="w-2.5 h-2.5" /> Remove
           </button>
-          <span className="text-primary font-normal">a Quick message</span>
+          <span className="text-primary font-normal">a Quick reply</span>
         </div>
       </div>
     </motion.div>
