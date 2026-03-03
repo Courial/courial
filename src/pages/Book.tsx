@@ -8,7 +8,8 @@ import { Link, useSearchParams, useNavigate } from "react-router-dom";
 import { ActivityPanel } from "@/components/booking/ActivityPanel";
 import { motion, AnimatePresence } from "framer-motion";
 import { Helmet } from "react-helmet-async";
-import { MapPin, Search, CarFront, ParkingCircle, Leaf, Box, ConciergeBell, Clock, CalendarIcon, ChevronDown, ChevronLeft, Info, Plus, Trash2, CreditCard, Star, X, Weight, Sparkles, Zap, ArrowLeft, Shield, Eye, EyeOff, MessageCircle, Headset, Send, Phone, Mail, Check, Pause, Play } from "lucide-react";
+import { MapPin, Search, CarFront, ParkingCircle, Leaf, Box, ConciergeBell, Clock, CalendarIcon, ChevronDown, ChevronLeft, Info, Plus, Trash2, CreditCard, Star, X, Weight, Sparkles, Zap, ArrowLeft, Shield, Eye, EyeOff, MessageCircle, Headset, Phone, Mail, Check, Pause, Play } from "lucide-react";
+import { RideChat } from "@/components/booking/RideChat";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import visaIcon from "@/assets/card-icons/visa.svg";
@@ -250,10 +251,6 @@ const Book = () => {
   const [pickupPhotoUrl, setPickupPhotoUrl] = useState<string | null>(null);
   const [pickupPhotoLoading, setPickupPhotoLoading] = useState(false);
   const [numberOfPackages, setNumberOfPackages] = useState<number | null>(null);
-  const [chatMessages, setChatMessages] = useState<{ from: "user" | "courial"; text: string; time: string }[]>([
-    { from: "courial", text: "Hey! I'm on my way to the pickup. Let me know if you have any instructions.", time: new Date().toLocaleTimeString([], { hour: "numeric", minute: "2-digit" }) },
-  ]);
-  const [chatInput, setChatInput] = useState("");
   const chatEndRef = useRef<HTMLDivElement>(null);
 
   const isConciergeStyle = selectedService === "concierge" || selectedService === "valet";
@@ -261,29 +258,7 @@ const Book = () => {
 
   useEffect(() => {
     chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [chatMessages]);
-
-  const handleSendChat = useCallback(() => {
-    if (!chatInput.trim()) return;
-    const now = new Date().toLocaleTimeString([], { hour: "numeric", minute: "2-digit" });
-    setChatMessages(prev => [...prev, { from: "user", text: chatInput.trim(), time: now }]);
-    setChatInput("");
-    // Simulate courial reply after 1.5s
-    setTimeout(() => {
-      const replies = [
-        "Got it, thanks for letting me know!",
-        "No problem, I'll handle that.",
-        "Sure thing! Almost there.",
-        "Thanks for the heads up 👍",
-        "On it!",
-      ];
-      setChatMessages(prev => [...prev, {
-        from: "courial",
-        text: replies[Math.floor(Math.random() * replies.length)],
-        time: new Date().toLocaleTimeString([], { hour: "numeric", minute: "2-digit" }),
-      }]);
-    }, 1500);
-  }, [chatInput]);
+  }, []);
 
   const [showContactSupport, setShowContactSupport] = useState(false);
   const [acceptedCourial, setAcceptedCourial] = useState<CourialDriver | null>(null);
@@ -399,7 +374,7 @@ const Book = () => {
     setNumberOfPackages(count);
   }, []);
 
-  useCourialSocket({
+  const { socketRef } = useCourialSocket({
     token: courialToken,
     enabled: socketEnabled,
     acceptedDriverId: acceptedCourial?.id || null,
