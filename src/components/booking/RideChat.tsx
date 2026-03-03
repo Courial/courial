@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Send, Camera, Image as ImageIcon, X, ChevronDown, ChevronUp, MessageSquare, Plus, Minus } from "lucide-react";
+import { Send, Camera, Image as ImageIcon, X, ChevronDown, ChevronUp, MessageSquare } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import { supabase } from "@/integrations/supabase/client";
@@ -224,10 +224,10 @@ export const RideChat: React.FC<RideChatProps> = ({
       transition={{ duration: 0.25 }}
       className="overflow-hidden"
     >
-      <div className={cn("rounded-xl", darkMode ? "" : "border border-border bg-background")}>
+      <div className={cn("rounded-xl p-2", darkMode ? "" : "border border-border bg-background")}>
       {/* Header */}
         <div className={cn("p-3 border-b flex items-center justify-center", darkMode ? "border-background/10" : "border-border")}>
-          <p className={cn("text-sm font-medium tracking-wide text-center", darkMode ? "text-background/50" : "text-muted-foreground")}>
+          <p className={cn("text-sm font-medium tracking-wide text-center", darkMode ? "text-white" : "text-muted-foreground")}>
             Chat with {courialName.split(" ")[0]}
           </p>
         </div>
@@ -243,9 +243,9 @@ export const RideChat: React.FC<RideChatProps> = ({
                 className={cn(
                   "max-w-[75%] rounded-2xl px-3 py-2",
                   msg.from === "user"
-                    ? "bg-background/50 text-foreground rounded-br-md"
+                    ? "bg-background/30 text-foreground rounded-br-md"
                     : darkMode
-                    ? "bg-background/8 text-background rounded-bl-md"
+                    ? "border border-background/15 bg-background/10 text-background rounded-bl-md"
                     : "bg-muted text-foreground rounded-bl-md"
                 )}
               >
@@ -299,7 +299,7 @@ export const RideChat: React.FC<RideChatProps> = ({
             )}
             aria-label="Send photo"
           >
-            <Camera className="w-5 h-5" strokeWidth={1.5} />
+            <Camera className="w-7 h-7" strokeWidth={1.5} />
           </button>
           <input
             ref={fileInputRef}
@@ -331,6 +331,9 @@ export const RideChat: React.FC<RideChatProps> = ({
           </button>
         </div>
 
+        {/* Divider */}
+        <div className={cn("mx-3", darkMode ? "border-t border-background/10" : "border-t border-border")} />
+
         {/* Quick Replies (below input) */}
         <AnimatePresence>
           {showQuickReplies && (
@@ -360,13 +363,12 @@ export const RideChat: React.FC<RideChatProps> = ({
         </AnimatePresence>
 
         {/* Add / Remove quick reply */}
-        <div className={cn("px-3 pb-3 flex items-center justify-center gap-1 text-[10px]", darkMode ? "text-background/60" : "text-muted-foreground")}>
-          <button className="px-2 py-0.5 rounded-full bg-primary text-primary-foreground font-medium hover:bg-primary/90 transition-colors flex items-center gap-0.5">
-            <Plus className="w-2.5 h-2.5" /> Add
+        <div className={cn("px-3 pb-3 flex items-center justify-center gap-1.5 text-[10px]", darkMode ? "text-background/60" : "text-muted-foreground")}>
+          <button className="px-2 py-0.5 rounded-full bg-primary text-primary-foreground font-medium hover:bg-primary/90 transition-colors">
+            Add
           </button>
-          <span>or</span>
-          <button className={cn("px-2 py-0.5 rounded-full border font-medium transition-colors flex items-center gap-0.5", darkMode ? "border-background/20 text-background hover:bg-background/10" : "border-border text-foreground hover:bg-muted")}>
-            <Minus className="w-2.5 h-2.5" /> Remove
+          <button className={cn("px-2 py-0.5 rounded-full border font-medium transition-colors", darkMode ? "border-background/20 text-background hover:bg-background/10" : "border-border text-foreground hover:bg-muted")}>
+            Remove
           </button>
           <span className="text-primary font-normal">a Quick reply</span>
         </div>
