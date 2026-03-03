@@ -299,7 +299,7 @@ export const RideChat: React.FC<RideChatProps> = ({
             )}
             aria-label="Send photo"
           >
-            <Camera className="w-9 h-9" strokeWidth={1.2} />
+            <Camera className="w-9 h-9" strokeWidth={0.8} />
           </button>
           <input
             ref={fileInputRef}
@@ -327,7 +327,7 @@ export const RideChat: React.FC<RideChatProps> = ({
             disabled={!input.trim()}
             className="shrink-0 w-9 h-9 rounded-lg flex items-center justify-center text-primary hover:text-primary/80 transition-colors disabled:opacity-40"
           >
-            <Send className="w-4 h-4" />
+            <Send className="w-6 h-6" />
           </button>
         </div>
 
@@ -364,7 +364,7 @@ export const RideChat: React.FC<RideChatProps> = ({
 
         {/* Add / Remove quick reply */}
         <div className={cn("px-3 pb-3 flex items-center justify-center gap-1.5 text-[10px]", darkMode ? "text-background/60" : "text-muted-foreground")}>
-          <button className="px-2 py-0.5 rounded-full bg-primary text-primary-foreground font-medium hover:bg-primary/90 transition-colors">
+          <button className="px-2 py-0.5 rounded-full bg-background text-foreground font-medium hover:bg-background/90 transition-colors">
             Add
           </button>
           <button className={cn("px-2 py-0.5 rounded-full border font-medium transition-colors", darkMode ? "border-background/20 text-background hover:bg-background/10" : "border-border text-foreground hover:bg-muted")}>
