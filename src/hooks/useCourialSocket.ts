@@ -272,9 +272,12 @@ export function useCourialSocket({ token, enabled, acceptedDriverId, onAccepted,
             }
           }
 
-          // Extract number of packages
+          // Extract number of packages — check data directly first, then flat
           if (onNumberOfPackages) {
-            const count = flat?.numberOfPackages ?? flat?.number_of_packages ?? flat?.packageCount ?? flat?.package_count ?? null;
+            const count =
+              data?.numberOfPackages ?? data?.number_of_packages ?? data?.no_of_packages ?? data?.total_items ??
+              flat?.numberOfPackages ?? flat?.number_of_packages ?? flat?.no_of_packages ?? flat?.total_items ??
+              flat?.packageCount ?? flat?.package_count ?? null;
             if (count != null && !isNaN(Number(count))) {
               console.log(`[CourialSocket] Number of packages:`, count);
               onNumberOfPackages(Number(count));

@@ -387,8 +387,11 @@ const Book = () => {
 
   const handlePickupPhoto = useCallback((photoUrl: string) => {
     console.log("[Book] Pickup photo received:", photoUrl);
-    setPickupPhotoLoading(true);
-    setPickupPhotoUrl(photoUrl);
+    setPickupPhotoUrl((prev) => {
+      if (prev === photoUrl) return prev; // same URL, skip to avoid flicker
+      setPickupPhotoLoading(true);
+      return photoUrl;
+    });
   }, []);
 
   const handleNumberOfPackages = useCallback((count: number) => {
