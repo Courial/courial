@@ -317,5 +317,5 @@ export function useCourialSocket({ token, enabled, acceptedDriverId, onAccepted,
     };
   }, [enabled, token, acceptedDriverId, onAccepted, onLocationUpdate, onStatusChange, onCompletionPhoto, onDropoffPhoto]);
 
-  return { connected, disconnect };
+  return { connected, disconnect, socketRef };
 }
