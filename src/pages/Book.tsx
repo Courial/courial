@@ -2003,24 +2003,18 @@ const Book = () => {
                     </span>
                   )}
                 </div>
-                {(conciergeShowLangPicker || !!conciergeLanguage) && (
+                {conciergeShowLangPicker && !conciergeLanguage && (
                   <>
                     <div className="flex flex-wrap gap-2 mt-2">
-                      {["English", "Spanish", "French", "Portuguese", "Arabic", "Chinese", "Hindi", "Japanese", "Korean", "Thai"].map((lang) => {
-                        if (conciergeLanguage && conciergeLanguage !== lang) return null;
-                        return (
-                          <button
-                            key={lang}
-                            onClick={() => {
-                              if (conciergeLanguage === lang) { setConciergeLanguage(null); setConciergeShowLangPicker(true); }
-                              else { setConciergeLanguage(lang); }
-                            }}
-                            className={`px-2.5 py-1 rounded-full text-[11px] font-normal transition-all leading-none border ${conciergeLanguage === lang ? "border-primary text-foreground" : "border-border/60 bg-background text-foreground/75 hover:border-foreground/50"}`}
-                          >
-                            {lang}
-                          </button>
-                        );
-                      })}
+                      {["English", "Spanish", "French", "Portuguese", "Arabic", "Chinese", "Hindi", "Japanese", "Korean", "Thai"].map((lang) => (
+                        <button
+                          key={lang}
+                          onClick={() => { setConciergeLanguage(lang); setConciergeShowLangPicker(false); }}
+                          className="px-2.5 py-1 rounded-full text-[11px] font-normal transition-all leading-none border border-border/60 bg-background text-foreground/75 hover:border-foreground/50"
+                        >
+                          {lang}
+                        </button>
+                      ))}
                     </div>
                     <p className="text-[10px] text-muted-foreground mt-1.5 leading-snug italic">We will make our best efforts to match you with your preferred language; however, this is subject to availability.</p>
                   </>
@@ -2810,24 +2804,18 @@ const Book = () => {
                         </span>
                       )}
                     </div>
-                    {(deliverShowLangPicker || !!deliverLanguage) && (
+                    {deliverShowLangPicker && !deliverLanguage && (
                       <>
                         <div className="flex flex-wrap gap-2 mt-2">
-                          {["English", "Spanish", "French", "Portuguese", "Arabic", "Chinese", "Hindi", "Japanese", "Korean", "Thai"].map((lang) => {
-                            if (deliverLanguage && deliverLanguage !== lang) return null;
-                            return (
-                              <button
-                                key={lang}
-                                onClick={() => {
-                                  if (deliverLanguage === lang) { setDeliverLanguage(null); setDeliverShowLangPicker(true); }
-                                  else { setDeliverLanguage(lang); }
-                                }}
-                                className={`px-2.5 py-1 rounded-full text-[11px] font-normal transition-all leading-none border ${deliverLanguage === lang ? "border-primary text-foreground" : "border-border/60 bg-background text-foreground/75 hover:border-foreground/50"}`}
-                              >
-                                {lang}
-                              </button>
-                            );
-                          })}
+                          {["English", "Spanish", "French", "Portuguese", "Arabic", "Chinese", "Hindi", "Japanese", "Korean", "Thai"].map((lang) => (
+                            <button
+                              key={lang}
+                              onClick={() => { setDeliverLanguage(lang); setDeliverShowLangPicker(false); }}
+                              className="px-2.5 py-1 rounded-full text-[11px] font-normal transition-all leading-none border border-border/60 bg-background text-foreground/75 hover:border-foreground/50"
+                            >
+                              {lang}
+                            </button>
+                          ))}
                         </div>
                         <p className="text-[10px] text-muted-foreground mt-1.5 leading-snug italic">We will make our best efforts to match you with your preferred language; however, this is subject to availability.</p>
                       </>
