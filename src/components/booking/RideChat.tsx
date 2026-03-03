@@ -21,6 +21,7 @@ interface RideChatProps {
   courialName: string;
   socketRef: React.MutableRefObject<Socket | null>;
   visible: boolean;
+  darkMode?: boolean;
 }
 
 const QUICK_REPLIES = [
@@ -44,6 +45,7 @@ export const RideChat: React.FC<RideChatProps> = ({
   courialName,
   socketRef,
   visible,
+  darkMode = false,
 }) => {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [input, setInput] = useState("");
