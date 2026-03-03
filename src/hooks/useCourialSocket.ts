@@ -37,13 +37,17 @@ interface UseCourialSocketOptions {
   onCompletionPhoto?: (photoUrl: string) => void;
   /** Callback when drop-off proof photo is received */
   onDropoffPhoto?: (photoUrl: string) => void;
+  /** Callback when pickup photo is received */
+  onPickupPhoto?: (photoUrl: string) => void;
+  /** Callback when number of packages is received */
+  onNumberOfPackages?: (count: number) => void;
 }
 
 /**
  * Connects to the Courial real-time socket after booking
  * and listens for the AcceptOrder_listener event.
  */
-export function useCourialSocket({ token, enabled, acceptedDriverId, onAccepted, onLocationUpdate, onStatusChange, onCompletionPhoto, onDropoffPhoto }: UseCourialSocketOptions) {
+export function useCourialSocket({ token, enabled, acceptedDriverId, onAccepted, onLocationUpdate, onStatusChange, onCompletionPhoto, onDropoffPhoto, onPickupPhoto, onNumberOfPackages }: UseCourialSocketOptions) {
   const socketRef = useRef<Socket | null>(null);
   const [connected, setConnected] = useState(false);
 
@@ -256,6 +260,24 @@ export function useCourialSocket({ token, enabled, acceptedDriverId, onAccepted,
             if (photo) {
               console.log(`[CourialSocket] Dropoff photo extracted:`, photo);
               onDropoffPhoto(photo);
+            }
+          }
+
+          // Extract pickup photo
+          if (onPickupPhoto) {
+            const pickupPhoto = flat?.pickupLocationPhoto ?? flat?.pickup_location_photo ?? flat?.pickupPhoto ?? flat?.pickup_photo ?? null;
+            if (pickupPhoto) {
+              console.log(`[CourialSocket] Pickup photo extracted:`, pickupPhoto);
+              onPickupPhoto(pickupPhoto);
+            }
+          }
+
+          // Extract number of packages
+          if (onNumberOfPackages) {
+            const count = flat?.numberOfPackages ?? flat?.number_of_packages ?? flat?.packageCount ?? flat?.package_count ?? null;
+            if (count != null && !isNaN(Number(count))) {
+              console.log(`[CourialSocket] Number of packages:`, count);
+              onNumberOfPackages(Number(count));
             }
           }
         } catch (err) {
