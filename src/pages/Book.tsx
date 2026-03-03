@@ -4110,7 +4110,7 @@ const Book = () => {
                {/* Chat Overlay — centered on map */}
                <AnimatePresence>
                  {showChat && acceptedCourial && deliveryIdRef.current && (
-                   <div className="absolute inset-0 z-30 flex items-center justify-center bg-black/50 backdrop-blur-md">
+                   <div className="absolute inset-0 z-30 flex items-center justify-center bg-black/30 backdrop-blur-md">
                      <motion.div
                        initial={{ opacity: 0, scale: 0.95 }}
                        animate={{ opacity: 1, scale: 1 }}
