@@ -1541,7 +1541,398 @@ const Book = () => {
                 </div>
               )}
 
+              {/* Vehicle type icons for Concierge */}
+              {isConciergeStyle && (
+                <div className="mb-6">
+                  <div className="flex items-end justify-center gap-4">
+                    {/* "None" icon - no vehicle needed */}
+                    {(() => {
+                      const isNoneActive = conciergeVehicle === "none";
+                      return (
+                        <button
+                          onClick={() => setConciergeVehicle(isNoneActive ? null : "none")}
+                          className="bg-transparent border-none outline-none cursor-pointer flex items-center"
+                        >
+                          <div className={cn(
+                            "h-[36px] flex items-end justify-center transition-all duration-300",
+                            isNoneActive ? "grayscale-0 opacity-100 scale-110"
+                              : conciergeVehicle === null ? "grayscale-0 opacity-100 scale-100"
+                              : "grayscale opacity-40 scale-100"
+                          )}>
+                            <img src={noVehicleIcon} alt="No vehicle" className="max-h-[28px] object-contain" />
+                          </div>
+                        </button>
+                      );
+                    })()}
+                    {vehicleOptions.filter(v => v.id !== "walker" && v.id !== "scooter").map((v) => {
+                      const isActive = conciergeVehicle === v.id;
+                      return (
+                        <button
+                          key={v.id}
+                          onClick={() => setConciergeVehicle(isActive ? null : v.id)}
+                          className="bg-transparent border-none outline-none cursor-pointer flex items-center"
+                        >
+                          <div className={cn(
+                            "h-[36px] flex items-end justify-center transition-all duration-300",
+                            isActive ? "grayscale-0 opacity-100 scale-110"
+                              : conciergeVehicle === null ? "grayscale-0 opacity-100 scale-100"
+                              : "grayscale opacity-40 scale-100"
+                          )}>
+                            <img src={v.image} alt={v.label} className={cn("object-contain", v.imgClass)} />
+                          </div>
+                        </button>
+                      );
+                    })}
+                  </div>
+                  <AnimatePresence mode="wait">
+                    {conciergeVehicle && (
+                      <motion.p
+                        key={conciergeVehicle}
+                        initial={{ opacity: 0, y: -4 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -4 }}
+                        transition={{ duration: 0.15 }}
+                        className="text-xs text-muted-foreground text-center mt-2"
+                      >
+                        {conciergeVehicle === "none" ? "No vehicle needed." : vehicleCaptions[conciergeVehicle as VehicleId]}
+                      </motion.p>
+                    )}
+                  </AnimatePresence>
 
+                  {/* Category Drill-Down */}
+                  <AnimatePresence mode="wait">
+                    {!conciergeSubCategory && (
+                      <motion.div
+                        key={conciergeCategory || "root"}
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -10 }}
+                        transition={{ duration: 0.15 }}
+                        className="mt-4"
+                      >
+                        {!conciergeCategory ? (
+                          <div className="grid grid-cols-2 gap-2">
+                            {activeCategories.map((cat) => (
+                              <button
+                                key={cat.id}
+                                onClick={() => {
+                                  if (cat.id === "something-else") {
+                                    setConciergeCategory(cat.id);
+                                    setConciergeSubCategory("__direct__");
+                                  } else {
+                                    setConciergeCategory(cat.id);
+                                  }
+                                }}
+                                className="text-left p-3 rounded-xl border border-border/60 hover:border-foreground/30 transition-all"
+                              >
+                                <p className="text-xs font-medium text-foreground">{cat.label}</p>
+                                <p className="text-[10px] text-muted-foreground mt-0.5">{cat.desc}</p>
+                              </button>
+                            ))}
+                          </div>
+                        ) : (
+                          <>
+                            <button
+                              onClick={() => setConciergeCategory(null)}
+                              className="flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground transition-colors mb-2"
+                            >
+                              <ChevronLeft className="w-3.5 h-3.5" />
+                              Back
+                            </button>
+                            <div className="grid grid-cols-2 gap-2">
+                              {activeCategories.find(c => c.id === conciergeCategory)?.subs.map((sub) => (
+                                <button
+                                  key={sub}
+                                  onClick={() => setConciergeSubCategory(sub)}
+                                  className="text-left p-3 rounded-xl border border-border/60 hover:border-foreground/30 transition-all"
+                                >
+                                  <p className="text-xs font-medium text-foreground">{sub}</p>
+                                </button>
+                              ))}
+                            </div>
+                          </>
+                        )}
+                      </motion.div>
+                    )}
+                    {conciergeSubCategory && conciergeSubCategory !== "__direct__" && (
+                      <motion.div
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -10 }}
+                        transition={{ duration: 0.15 }}
+                        className="mt-3"
+                      >
+                        {(() => {
+                          const catLabel = activeCategories.find(c => c.id === conciergeCategory)?.label || "";
+                          return (
+                            <>
+                              <button
+                                onClick={() => setConciergeSubCategory(null)}
+                                className="flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground transition-colors mb-1"
+                              >
+                                <ChevronLeft className="w-3.5 h-3.5" />
+                                {catLabel}
+                              </button>
+                              <p className="text-sm font-semibold text-foreground">{conciergeSubCategory}</p>
+                            </>
+                          );
+                        })()}
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
+              )}
+            </motion.div>
+            )}
+
+            {/* Vehicle Details - Roadside Assistance & Valet */}
+            {((selectedService === "concierge" && conciergeCategory === "roadside-assistance" && conciergeSubCategory && conciergeSubCategory !== "__direct__") || (selectedService === "valet" && conciergeSubCategory && conciergeSubCategory !== "__direct__")) && (
+              <div className="mb-4 mt-4 space-y-3">
+                <span className="text-xs font-medium text-muted-foreground">Vehicle Details</span>
+                <div className="space-y-2">
+                  {/* Make & Model row */}
+                  <div className="flex gap-1.5 w-full min-w-0">
+                    {/* Make dropdown */}
+                    <div className="w-1/2 min-w-0 relative">
+                      {roadsideCustomMake ? (
+                        <div className="flex gap-1">
+                          <input
+                            type="text"
+                            placeholder="Enter make"
+                            value={roadsideVehicleMake}
+                            onChange={(e) => setRoadsideVehicleMake(e.target.value)}
+                            className="w-full px-2 py-1.5 rounded-lg border border-border/60 bg-background text-xs text-foreground placeholder:text-muted-foreground outline-none"
+                          />
+                          <button onClick={() => { setRoadsideCustomMake(false); setRoadsideVehicleMake(""); }} className="text-muted-foreground hover:text-foreground"><X className="w-3 h-3" /></button>
+                        </div>
+                      ) : (
+                        <button
+                          onClick={(e) => { e.stopPropagation(); setRoadsideMakeOpen(!roadsideMakeOpen); setRoadsideModelOpen(false); setRoadsideColorOpen(false); }}
+                          className="w-full px-2 py-1.5 rounded-lg border border-border/60 bg-background text-xs text-left flex items-center justify-between"
+                        >
+                          <span className={roadsideVehicleMake ? "text-foreground" : "text-muted-foreground"}>{roadsideVehicleMake || "Make"}</span>
+                          <ChevronDown className="w-3 h-3 text-muted-foreground" />
+                        </button>
+                      )}
+                      {roadsideMakeOpen && (
+                        <div onClick={(e) => e.stopPropagation()} className="absolute z-50 mt-1 w-full max-h-48 overflow-y-auto rounded-lg border border-border/60 bg-background shadow-lg">
+                          {(selectedService === "valet" ? ["Acura","Audi","BMW","BYD","Cadillac","Chevrolet","Chrysler","Dodge","Ferrari","Fiat","Fisker","Ford","Genesis","GMC","Honda","Hyundai","Jaguar","Jeep","Kia","Land Rover","Lexus","Lincoln","Lucid","Mazda","McLaren","Mercedes-Benz","Mini","Mitsubishi","Nissan","Polestar","Porsche","Ram","Rivian","Rolls-Royce","Scout","Subaru","Tesla","Toyota","VinFast","Volkswagen","Volvo"] : ["Acura","Audi","BMW","Buick","Cadillac","Chevrolet","Chrysler","Dodge","Ford","Genesis","GMC","Honda","Hyundai","Infiniti","Jaguar","Jeep","Kia","Land Rover","Lexus","Lincoln","Mazda","Mercedes-Benz","Mini","Mitsubishi","Nissan","Porsche","Ram","Rivian","Subaru","Tesla","Toyota","Volkswagen","Volvo"]).map((make) => (
+                            <button
+                              key={make}
+                              onClick={() => {
+                                setRoadsideVehicleMake(make);
+                                setRoadsideMakeOpen(false);
+                                setRoadsideVehicleModel("");
+                                setRoadsideModelSuggestions([]);
+                                fetchVehicleModels(make);
+                              }}
+                              className="w-full px-2 py-1.5 text-xs text-left text-foreground hover:bg-muted transition-colors"
+                            >
+                              {make}
+                            </button>
+                          ))}
+                          <button
+                            onClick={() => { setRoadsideCustomMake(true); setRoadsideMakeOpen(false); setRoadsideVehicleMake(""); }}
+                            className="w-full px-2 py-1.5 text-xs text-left text-primary hover:bg-muted transition-colors border-t border-border/40"
+                          >
+                            Other (type manually)
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                    {/* Model dropdown */}
+                    <div className="w-1/2 min-w-0 relative">
+                      {roadsideCustomModel ? (
+                        <div className="flex gap-1">
+                          <input
+                            type="text"
+                            placeholder="Enter model"
+                            value={roadsideVehicleModel}
+                            onChange={(e) => setRoadsideVehicleModel(e.target.value)}
+                            className="w-full px-2 py-1.5 rounded-lg border border-border/60 bg-background text-xs text-foreground placeholder:text-muted-foreground outline-none"
+                          />
+                          <button onClick={() => { setRoadsideCustomModel(false); setRoadsideVehicleModel(""); }} className="text-muted-foreground hover:text-foreground"><X className="w-3 h-3" /></button>
+                        </div>
+                      ) : (
+                        <button
+                          onClick={(e) => { e.stopPropagation(); setRoadsideModelOpen(!roadsideModelOpen); setRoadsideMakeOpen(false); setRoadsideColorOpen(false); }}
+                          className="w-full px-2 py-1.5 rounded-lg border border-border/60 bg-background text-xs text-left flex items-center justify-between"
+                        >
+                          <span className={roadsideVehicleModel ? "text-foreground" : "text-muted-foreground"}>{roadsideVehicleModel || "Model"}</span>
+                          <ChevronDown className="w-3 h-3 text-muted-foreground" />
+                        </button>
+                      )}
+                      {roadsideModelOpen && (
+                        <div onClick={(e) => e.stopPropagation()} className="absolute z-50 mt-1 w-full max-h-48 overflow-y-auto rounded-lg border border-border/60 bg-background shadow-lg">
+                          {roadsideModelsLoading ? (
+                            <p className="px-2 py-1.5 text-xs text-muted-foreground">Loading...</p>
+                          ) : roadsideModelSuggestions.length > 0 ? (
+                            roadsideModelSuggestions.map((model) => (
+                              <button
+                                key={model}
+                                onClick={() => { setRoadsideVehicleModel(model); setRoadsideModelOpen(false); if (selectedService === "valet") fetchVehiclePortTypes(roadsideVehicleMake, model); }}
+                                className="w-full px-2 py-1.5 text-xs text-left text-foreground hover:bg-muted transition-colors"
+                              >
+                                {model}
+                              </button>
+                            ))
+                          ) : (
+                            <p className="px-2 py-1.5 text-xs text-muted-foreground">Select a make first</p>
+                          )}
+                          <button
+                            onClick={() => { setRoadsideCustomModel(true); setRoadsideModelOpen(false); setRoadsideVehicleModel(""); }}
+                            className="w-full px-2 py-1.5 text-xs text-left text-primary hover:bg-muted transition-colors border-t border-border/40"
+                          >
+                            Other (type manually)
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                  {/* Color, Port Type (valet), License Plate row */}
+                  <div className="flex gap-1.5 w-full min-w-0">
+                    {/* Color dropdown or custom input */}
+                    <div className={`${selectedService === "valet" ? "w-1/3" : "w-1/2"} min-w-0 relative`}>
+                      {roadsideCustomColor ? (
+                        <div className="flex gap-1">
+                          <input
+                            type="text"
+                            placeholder="Enter color"
+                            value={roadsideVehicleColor}
+                            onChange={(e) => setRoadsideVehicleColor(e.target.value)}
+                            className="w-full px-2 py-1.5 rounded-lg border border-border/60 bg-background text-xs text-foreground placeholder:text-muted-foreground outline-none"
+                          />
+                          <button onClick={() => { setRoadsideCustomColor(false); setRoadsideVehicleColor(""); }} className="text-muted-foreground hover:text-foreground"><X className="w-3 h-3" /></button>
+                        </div>
+                      ) : (
+                        <button
+                          onClick={(e) => { e.stopPropagation(); setRoadsideColorOpen(!roadsideColorOpen); setRoadsideMakeOpen(false); setRoadsideModelOpen(false); }}
+                          className="w-full px-2 py-1.5 rounded-lg border border-border/60 bg-background text-xs text-left flex items-center justify-between"
+                        >
+                          <span className={roadsideVehicleColor ? "text-foreground" : "text-muted-foreground"}>{roadsideVehicleColor || "Color"}</span>
+                          <ChevronDown className="w-3 h-3 text-muted-foreground" />
+                        </button>
+                      )}
+                      {roadsideColorOpen && (
+                        <div onClick={(e) => e.stopPropagation()} className="absolute z-50 mt-1 w-full max-h-48 overflow-y-auto rounded-lg border border-border/60 bg-background shadow-lg">
+                          {["White","Black","Silver","Gray","Red","Blue","Green","Brown","Beige","Gold","Orange","Yellow","Purple"].map((color) => (
+                            <button
+                              key={color}
+                              onClick={() => { setRoadsideVehicleColor(color); setRoadsideColorOpen(false); }}
+                              className="w-full px-2 py-1.5 text-xs text-left text-foreground hover:bg-muted transition-colors"
+                            >
+                              {color}
+                            </button>
+                          ))}
+                          <button
+                            onClick={() => { setRoadsideCustomColor(true); setRoadsideColorOpen(false); setRoadsideVehicleColor(""); }}
+                            className="w-full px-2 py-1.5 text-xs text-left text-primary hover:bg-muted transition-colors border-t border-border/40"
+                          >
+                            Other (type manually)
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                    {/* Port Type dropdown (valet only) */}
+                    {selectedService === "valet" && (
+                      <div className="w-1/3 min-w-0 relative">
+                        <button
+                          onClick={(e) => { e.stopPropagation(); setRoadsidePortTypeOpen(!roadsidePortTypeOpen); setRoadsideMakeOpen(false); setRoadsideModelOpen(false); setRoadsideColorOpen(false); }}
+                          className="w-full px-2 py-1.5 rounded-lg border border-border/60 bg-background text-xs text-left flex items-center justify-between"
+                        >
+                          <span className={roadsidePortType ? "text-foreground" : "text-muted-foreground"}>{roadsidePortType || "Port Type"}</span>
+                          <ChevronDown className="w-3 h-3 text-muted-foreground" />
+                        </button>
+                        {roadsidePortTypeOpen && (
+                          <div onClick={(e) => e.stopPropagation()} className="absolute z-50 mt-1 w-full max-h-48 overflow-y-auto rounded-lg border border-border/60 bg-background shadow-lg">
+                            {roadsidePortTypesLoading ? (
+                              <p className="px-2 py-1.5 text-xs text-muted-foreground">Loading...</p>
+                            ) : roadsidePortTypeSuggestions.length > 0 ? (
+                              roadsidePortTypeSuggestions.map((pt) => (
+                                <button
+                                  key={pt}
+                                  onClick={() => { setRoadsidePortType(pt); setRoadsidePortTypeOpen(false); }}
+                                  className="w-full px-2 py-1.5 text-xs text-left text-foreground hover:bg-muted transition-colors"
+                                >
+                                  {pt}
+                                </button>
+                              ))
+                            ) : (
+                              <p className="px-2 py-1.5 text-xs text-muted-foreground">Select make & model first</p>
+                            )}
+                          </div>
+                        )}
+                      </div>
+                    )}
+                    {/* License plate */}
+                    <div className={`${selectedService === "valet" ? "w-1/3" : "w-1/2"} min-w-0`}>
+                      <input
+                        type="text"
+                        placeholder="License Plate"
+                        value={roadsideLicensePlate}
+                        onChange={(e) => setRoadsideLicensePlate(e.target.value.toUpperCase())}
+                        className="w-full px-2 py-1.5 rounded-lg border border-border/60 bg-background text-xs text-foreground placeholder:text-muted-foreground outline-none"
+                      />
+                    </div>
+                  </div>
+                  {/* Battery charge fields (valet only) */}
+                  {selectedService === "valet" && (
+                    <div className="flex gap-1.5 w-full min-w-0 mt-1.5">
+                      {/* Current Charge */}
+                      <div className="w-1/2 min-w-0 relative">
+                        <button
+                          onClick={(e) => { e.stopPropagation(); setBatteryCurrentOpen(!batteryCurrentOpen); setBatteryTargetOpen(false); }}
+                          className="w-full px-2 py-1.5 rounded-lg border border-border/60 bg-background text-xs text-left flex items-center justify-between"
+                        >
+                          <span className={batteryCurrentCharge ? "text-foreground" : "text-muted-foreground"}>
+                            {batteryCurrentCharge ? `${batteryCurrentCharge}%` : "Current Charge"}
+                          </span>
+                          <ChevronDown className="w-3 h-3 text-muted-foreground" />
+                        </button>
+                        {batteryCurrentOpen && (
+                          <div onClick={(e) => e.stopPropagation()} className="absolute z-50 mt-1 w-full max-h-48 overflow-y-auto rounded-lg border border-border/60 bg-background shadow-lg">
+                            {Array.from({ length: 11 }, (_, i) => `${i * 10}`).map((val) => (
+                              <button
+                                key={val}
+                                onClick={() => { setBatteryCurrentCharge(val); setBatteryCurrentOpen(false); }}
+                                className="w-full px-2 py-1.5 text-xs text-left text-foreground hover:bg-muted transition-colors"
+                              >
+                                {val}%
+                              </button>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                      {/* Future Charge */}
+                      <div className="w-1/2 min-w-0 relative">
+                        <button
+                          onClick={(e) => { e.stopPropagation(); setBatteryTargetOpen(!batteryTargetOpen); setBatteryCurrentOpen(false); }}
+                          className="w-full px-2 py-1.5 rounded-lg border border-border/60 bg-background text-xs text-left flex items-center justify-between"
+                        >
+                          <span className={batteryTargetCharge ? "text-foreground" : "text-muted-foreground"}>
+                            {batteryTargetCharge ? `${batteryTargetCharge}%` : "Future Charge"}
+                          </span>
+                          <ChevronDown className="w-3 h-3 text-muted-foreground" />
+                        </button>
+                        {batteryTargetOpen && (
+                          <div onClick={(e) => e.stopPropagation()} className="absolute z-50 mt-1 w-full max-h-48 overflow-y-auto rounded-lg border border-border/60 bg-background shadow-lg">
+                            {Array.from({ length: 10 }, (_, i) => `${(i + 1) * 10}`).map((val) => (
+                              <button
+                                key={val}
+                                onClick={() => { setBatteryTargetCharge(val); setBatteryTargetOpen(false); }}
+                                className="w-full px-2 py-1.5 text-xs text-left text-foreground hover:bg-muted transition-colors"
+                              >
+                                {val}%
+                              </button>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
 
 
             {/* Task Details Form */}
