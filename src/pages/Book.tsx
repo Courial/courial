@@ -724,7 +724,7 @@ const Book = () => {
         }
       } else {
         // Deliver / Valet specific fields
-        payload.orderType = deliverHasExpenses ? "Courial Pays" : "Pre-paid";
+        payload.orderType = deliverHasExpenses ? "COURIAL PAYS" : "PRE-PAID";
         if (deliverLanguage) payload.preferredLanguage = deliverLanguage;
         if (deliverMultiStop && deliverExtraStops.length > 0) {
           payload.extraStops = deliverExtraStops.filter(s => s.address && s.coords).map(s => ({
