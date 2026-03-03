@@ -1,6 +1,5 @@
 import React, { useState, useCallback, useEffect, useMemo, useRef } from "react";
 import { getSavedAddresses, loadSavedAddressesFromDB } from "@/components/SavedAddressModal";
-import { getSavedAddresses, loadSavedAddressesFromDB } from "@/components/SavedAddressModal";
 import { useCourialSocket, type CourialDriver } from "@/hooks/useCourialSocket";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
