@@ -159,10 +159,11 @@ export const RideChat: React.FC<RideChatProps> = ({
         const unwrapped = Array.isArray(parsed) ? parsed[0] : parsed;
         const data = unwrapped?.data ?? unwrapped;
 
-        console.log("[RideChat] Incoming message data:", { incomingOrderId: data.orderId, myOrderId: orderId, senderType: data.senderType, message: data.message });
+        const matchesOrder =
+          (data.orderId && String(data.orderId) === String(orderId)) ||
+          (data.deliveryId && String(data.deliveryId) === String(orderId));
 
-        if (data.orderId && String(data.orderId) !== String(orderId)) {
-          console.log("[RideChat] Skipping — orderId mismatch:", String(data.orderId), "!==", String(orderId));
+        if (data.orderId && !matchesOrder) {
           return;
         }
         if (data.senderType === "user") {
