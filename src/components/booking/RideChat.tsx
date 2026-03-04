@@ -95,7 +95,7 @@ export const RideChat: React.FC<RideChatProps> = ({
   const typingTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const chatEndRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const historyFetchedRef = useRef(false);
+  const prevOrderIdRef = useRef<string | null>(null);
 
   // Scroll to bottom on new messages
   useEffect(() => {
@@ -104,8 +104,10 @@ export const RideChat: React.FC<RideChatProps> = ({
 
   // Fetch chat history on mount
   useEffect(() => {
-    if (!orderId || historyFetchedRef.current) return;
-    historyFetchedRef.current = true;
+    if (!orderId) return;
+    // Re-fetch if orderId changed
+    if (prevOrderIdRef.current === orderId && messages.length > 0) return;
+    prevOrderIdRef.current = orderId;
 
     const fetchHistory = async () => {
       try {
@@ -190,7 +192,10 @@ export const RideChat: React.FC<RideChatProps> = ({
       try {
         const parsed = typeof rawData === "string" ? JSON.parse(rawData) : rawData;
         const data = parsed?.data ?? parsed;
-        if (data.orderId && String(data.orderId) !== String(orderId)) return;
+        const matchesOrder =
+          (data.orderId && String(data.orderId) === String(orderId)) ||
+          (data.deliveryId && String(data.deliveryId) === String(orderId));
+        if (data.orderId && !matchesOrder) return;
         if (data.senderType === "user") return;
 
         setIsTyping(true);
@@ -203,7 +208,10 @@ export const RideChat: React.FC<RideChatProps> = ({
       try {
         const parsed = typeof rawData === "string" ? JSON.parse(rawData) : rawData;
         const data = parsed?.data ?? parsed;
-        if (data.orderId && String(data.orderId) !== String(orderId)) return;
+        const matchesOrder =
+          (data.orderId && String(data.orderId) === String(orderId)) ||
+          (data.deliveryId && String(data.deliveryId) === String(orderId));
+        if (data.orderId && !matchesOrder) return;
 
         // Mark all user messages as read
         setMessages((prev) =>
