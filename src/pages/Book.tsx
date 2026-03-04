@@ -788,12 +788,13 @@ const Book = () => {
 
       if (data?.success === 1 && data?.data?.deliveryId) {
         deliveryIdRef.current = data.data.deliveryId;
+        orderIdRef.current = data.data.orderId ? String(data.data.orderId) : null;
         if (data.data.nearbyCourials?.length) {
           setNearbyCourials(data.data.nearbyCourials);
         }
         // Enable socket connection to listen for courial acceptance
         setSocketEnabled(true);
-        console.log("[book-delivery] Delivery created:", data.data.deliveryId, "— socket enabled, listening for AcceptOrder_listener");
+        console.log("[book-delivery] Delivery created:", data.data.deliveryId, "orderId:", data.data.orderId, "— socket enabled");
       } else {
         console.error("[book-delivery] Unexpected response:", data);
         toast.error(data?.msg || "Booking failed — unexpected response.");
@@ -831,6 +832,7 @@ const Book = () => {
   // Reset UI only — used when delivery is complete ("Done" button)
   const handleDoneBooking = useCallback(() => {
     deliveryIdRef.current = null;
+    orderIdRef.current = null;
     setBookingState("input");
     setLoadingProgress(0);
     setDeliveryStep(0);
@@ -943,9 +945,10 @@ const Book = () => {
       });
       if (!error && data?.success === 1 && data?.data?.deliveryId) {
         deliveryIdRef.current = data.data.deliveryId;
+        orderIdRef.current = data.data.orderId ? String(data.data.orderId) : null;
         if (data.data.nearbyCourials?.length) setNearbyCourials(data.data.nearbyCourials);
         setSocketEnabled(true);
-        console.log("[WFH cascade] Re-submitted with location:", loc.address, "deliveryId:", data.data.deliveryId);
+        console.log("[WFH cascade] Re-submitted with location:", loc.address, "deliveryId:", data.data.deliveryId, "orderId:", data.data.orderId);
       }
     } catch (err) {
       console.error("[WFH cascade] resubmit error:", err);
