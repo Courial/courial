@@ -330,7 +330,7 @@ export const RideChat: React.FC<RideChatProps> = ({
                   msg.from === "user"
                     ? "bg-background/20 text-foreground rounded-br-md"
                     : darkMode
-                    ? "border border-background/15 bg-background/10 text-background rounded-bl-md"
+                    ? "bg-background/10 text-background rounded-bl-md"
                     : "bg-muted text-foreground rounded-bl-md"
                 )}
               >

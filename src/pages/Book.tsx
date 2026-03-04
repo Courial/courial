@@ -3339,7 +3339,7 @@ const Book = () => {
               </h2>
               <p className="text-sm text-muted-foreground mt-0.5">
                 {isConciergeStyle && conciergeCategory
-                  ? `${conciergeCategory.replace(/-/g, " ").replace(/\b\w/g, c => c.toUpperCase())}${conciergeSubCategory ? ` • ${conciergeSubCategory}` : ""}`
+                  ? `${activeCategories.find(c => c.id === conciergeCategory)?.label || conciergeCategory.replace(/-/g, " ").replace(/\b\w/g, c => c.toUpperCase())}${conciergeSubCategory && conciergeSubCategory !== "__direct__" ? ` • ${conciergeSubCategory}` : ""}`
                   : deliverMultiStop && deliverExtraStops.length > 0 ? "Multiple Stops" : "Single Pick-up and Drop-off"}
               </p>
             </div>
