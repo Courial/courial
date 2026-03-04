@@ -1575,7 +1575,7 @@ const Book = () => {
                             setConciergeVehicle(isActive ? null : v.id);
                             if (!isActive && isValet && v.id === "van") {
                               setConciergeCategory("charge");
-                              setConciergeSubCategory("Valet Charging");
+                              setConciergeSubCategory("On-Site Charging");
                             }
                           }}
                           className="bg-transparent border-none outline-none cursor-pointer flex items-center"
