@@ -108,6 +108,7 @@ const Book = () => {
   const showActivity = searchParams.get("view") === "activity";
   const sidebarRef = useRef<HTMLDivElement>(null);
   const deliveryIdRef = useRef<string | null>(null);
+  const orderIdRef = useRef<string | null>(null);
   const [selectedService, setSelectedService] = useState<ServiceId | null>(null);
   const [pickup, setPickup] = useState("");
   const [dropoff, setDropoff] = useState("");
@@ -787,12 +788,13 @@ const Book = () => {
 
       if (data?.success === 1 && data?.data?.deliveryId) {
         deliveryIdRef.current = data.data.deliveryId;
+        orderIdRef.current = data.data.orderId ? String(data.data.orderId) : null;
         if (data.data.nearbyCourials?.length) {
           setNearbyCourials(data.data.nearbyCourials);
         }
         // Enable socket connection to listen for courial acceptance
         setSocketEnabled(true);
-        console.log("[book-delivery] Delivery created:", data.data.deliveryId, "— socket enabled, listening for AcceptOrder_listener");
+        console.log("[book-delivery] Delivery created:", data.data.deliveryId, "orderId:", data.data.orderId, "— socket enabled");
       } else {
         console.error("[book-delivery] Unexpected response:", data);
         toast.error(data?.msg || "Booking failed — unexpected response.");
@@ -830,6 +832,7 @@ const Book = () => {
   // Reset UI only — used when delivery is complete ("Done" button)
   const handleDoneBooking = useCallback(() => {
     deliveryIdRef.current = null;
+    orderIdRef.current = null;
     setBookingState("input");
     setLoadingProgress(0);
     setDeliveryStep(0);
@@ -942,9 +945,10 @@ const Book = () => {
       });
       if (!error && data?.success === 1 && data?.data?.deliveryId) {
         deliveryIdRef.current = data.data.deliveryId;
+        orderIdRef.current = data.data.orderId ? String(data.data.orderId) : null;
         if (data.data.nearbyCourials?.length) setNearbyCourials(data.data.nearbyCourials);
         setSocketEnabled(true);
-        console.log("[WFH cascade] Re-submitted with location:", loc.address, "deliveryId:", data.data.deliveryId);
+        console.log("[WFH cascade] Re-submitted with location:", loc.address, "deliveryId:", data.data.deliveryId, "orderId:", data.data.orderId);
       }
     } catch (err) {
       console.error("[WFH cascade] resubmit error:", err);
@@ -4119,14 +4123,15 @@ const Book = () => {
                        className="w-full max-w-sm mx-4"
                      >
                        <div className="rounded-[20px] bg-foreground/75 backdrop-blur-sm shadow-2xl overflow-hidden">
-                         <RideChat
-                           orderId={deliveryIdRef.current}
-                           senderId={user?.user_metadata?.courial_id || user?.id || ""}
-                           receiverId={acceptedCourial.id}
-                           courialName={acceptedCourial.name || "Your Courial"}
-                           socketRef={socketRef}
-                           visible={showChat}
-                           darkMode
+                          <RideChat
+                            orderId={deliveryIdRef.current}
+                            numericOrderId={orderIdRef.current || undefined}
+                            senderId={user?.user_metadata?.courial_id || user?.id || ""}
+                            receiverId={acceptedCourial.id}
+                            courialName={acceptedCourial.name || "Your Courial"}
+                            socketRef={socketRef}
+                            visible={showChat}
+                            darkMode
                          />
                        </div>
                      </motion.div>

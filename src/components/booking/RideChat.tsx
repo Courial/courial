@@ -17,6 +17,7 @@ interface ChatMessage {
 
 interface RideChatProps {
   orderId: string;
+  numericOrderId?: string;
   senderId: string;
   receiverId: string;
   courialName: string;
@@ -76,6 +77,7 @@ const formatTime = () =>
 
 export const RideChat: React.FC<RideChatProps> = ({
   orderId,
+  numericOrderId,
   senderId,
   receiverId,
   courialName,
@@ -114,9 +116,10 @@ export const RideChat: React.FC<RideChatProps> = ({
         const token = localStorage.getItem("courial_api_token");
         if (!token) return;
 
-        console.log("[RideChat] Fetching history for orderId:", orderId);
+        const historyId = numericOrderId || orderId;
+        console.log("[RideChat] Fetching history for id:", historyId, "(numericOrderId:", numericOrderId, "deliveryId:", orderId, ")");
         const res = await fetch(
-          `https://gocourial.com/userApis/ride/${orderId}/messages`,
+          `https://gocourial.com/userApis/ride/${historyId}/messages`,
           {
             headers: { Authorization: `Bearer ${token}` },
           }
