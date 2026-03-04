@@ -289,10 +289,10 @@ export const RideChat: React.FC<RideChatProps> = ({
       transition={{ duration: 0.25 }}
       className="overflow-hidden"
     >
-      <div className={cn("rounded-xl p-2", darkMode ? "" : "border border-border bg-background")}>
-        {/* Header — solid black, no border */}
+      <div className={cn("rounded-xl overflow-hidden", darkMode ? "" : "border border-border bg-background")}>
+        {/* Header — solid black, full-bleed */}
         <div className={cn(
-          "p-3 flex items-center justify-center rounded-t-lg",
+          "p-3 flex items-center justify-center",
           darkMode ? "bg-black" : "bg-foreground"
         )}>
           <p className={cn(
@@ -302,9 +302,6 @@ export const RideChat: React.FC<RideChatProps> = ({
             Chat with {courialName.split(" ")[0]}
           </p>
         </div>
-
-        {/* Divider — same margins as the one below input */}
-        <div className={cn("mx-3 my-3", darkMode ? "border-t border-background/10" : "border-t border-border")} />
 
         {/* Messages */}
         <div className="p-3 space-y-2.5 max-h-[280px] overflow-y-auto">
@@ -451,8 +448,7 @@ export const RideChat: React.FC<RideChatProps> = ({
           </button>
         </div>
 
-        {/* Divider */}
-        <div className={cn("mx-3 my-3", darkMode ? "border-t border-background/10" : "border-t border-border")} />
+        {/* Quick Replies (below input) — no divider */}
 
         {/* Quick Replies (below input) */}
         <AnimatePresence>
