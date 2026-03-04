@@ -108,6 +108,7 @@ const Book = () => {
   const showActivity = searchParams.get("view") === "activity";
   const sidebarRef = useRef<HTMLDivElement>(null);
   const deliveryIdRef = useRef<string | null>(null);
+  const orderIdRef = useRef<string | null>(null);
   const [selectedService, setSelectedService] = useState<ServiceId | null>(null);
   const [pickup, setPickup] = useState("");
   const [dropoff, setDropoff] = useState("");
