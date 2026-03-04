@@ -2247,7 +2247,7 @@ const Book = () => {
                           if (!e.target.checked) { setConciergeLanguage(null); setConciergeShowLangPicker(false); }
                           else { setConciergeShowLangPicker(true); }
                         }}
-                        className="h-3 w-3 rounded border-border/35 accent-foreground cursor-pointer"
+                        className="h-3 w-3 rounded border-border/20 accent-foreground cursor-pointer"
                       />
                       {conciergeLanguage && (
                         <button
@@ -2286,7 +2286,7 @@ const Book = () => {
                       id="concierge-expenses"
                       checked={conciergeHasExpenses === true}
                       onChange={(e) => setConciergeHasExpenses(e.target.checked)}
-                      className="h-3 w-3 rounded border-border/35 accent-foreground cursor-pointer"
+                      className="h-3 w-3 rounded border-border/20 accent-foreground cursor-pointer"
                     />
                   </div>
                   <p className="text-[10px] text-muted-foreground mt-0.5 leading-relaxed">
@@ -2439,7 +2439,7 @@ const Book = () => {
                             type="checkbox"
                             checked={conciergeAllowOverage}
                             onChange={(e) => setConciergeAllowOverage(e.target.checked)}
-                            className="h-3 w-3 rounded border-border/35 accent-foreground cursor-pointer"
+                            className="h-3 w-3 rounded border-border/20 accent-foreground cursor-pointer"
                           />
                           <span className="text-[10px] text-foreground">
                             Allow minor overages up to:
@@ -2530,7 +2530,7 @@ const Book = () => {
                               type="checkbox"
                               checked={declineProtection}
                               onChange={(e) => setDeclineProtection(e.target.checked)}
-                              className="h-3 w-3 rounded border-border/35 accent-foreground cursor-pointer"
+                              className="h-3 w-3 rounded border-border/20 accent-foreground cursor-pointer"
                             />
                             <span className="text-[10px] text-muted-foreground">I decline additional protection coverage and wish to proceed without it.</span>
                           </label>
@@ -2564,7 +2564,7 @@ const Book = () => {
                               type="checkbox"
                               checked={declineProtection}
                               onChange={(e) => setDeclineProtection(e.target.checked)}
-                            className="h-3 w-3 rounded border-border/35 accent-foreground cursor-pointer"
+                            className="h-3 w-3 rounded border-border/20 accent-foreground cursor-pointer"
                             />
                             <span className="text-[10px] text-muted-foreground">I decline additional protection coverage and wish to proceed without it.</span>
                           </label>
@@ -2658,7 +2658,7 @@ const Book = () => {
                           setDeliverMultiStop(e.target.checked);
                           if (!e.target.checked) setDeliverExtraStops([]);
                         }}
-                        className="h-3 w-3 rounded border-border/35 accent-foreground cursor-pointer"
+                        className="h-3 w-3 rounded border-border/20 accent-foreground cursor-pointer"
                       />
                     </div>
                     {deliverMultiStop ? (
@@ -2835,7 +2835,7 @@ const Book = () => {
                             if (!e.target.checked) { setDeliverLanguage(null); setDeliverShowLangPicker(false); }
                             else { setDeliverShowLangPicker(true); }
                           }}
-                          className="h-3 w-3 rounded border-border/35 accent-foreground cursor-pointer"
+                          className="h-3 w-3 rounded border-border/20 accent-foreground cursor-pointer"
                         />
                         {deliverLanguage && (
                           <button
@@ -2873,7 +2873,7 @@ const Book = () => {
                         type="checkbox"
                         checked={deliverHasExpenses === true}
                         onChange={(e) => setDeliverHasExpenses(e.target.checked)}
-                        className="h-3 w-3 rounded border-border/35 accent-foreground cursor-pointer"
+                        className="h-3 w-3 rounded border-border/20 accent-foreground cursor-pointer"
                       />
                     </div>
                     <p className="text-[10px] text-muted-foreground mt-0.5 leading-relaxed">
@@ -3020,7 +3020,7 @@ const Book = () => {
                               type="checkbox"
                               checked={deliverAllowOverage}
                               onChange={(e) => setDeliverAllowOverage(e.target.checked)}
-                              className="h-3 w-3 rounded border-border/35 accent-foreground cursor-pointer"
+                              className="h-3 w-3 rounded border-border/20 accent-foreground cursor-pointer"
                             />
                             <span className="text-[10px] text-foreground">
                               Allow minor overages up to:
@@ -3111,7 +3111,7 @@ const Book = () => {
                                 type="checkbox"
                                 checked={declineProtection}
                                 onChange={(e) => setDeclineProtection(e.target.checked)}
-                                className="h-3 w-3 rounded border-border/35 accent-foreground cursor-pointer"
+                                className="h-3 w-3 rounded border-border/20 accent-foreground cursor-pointer"
                               />
                               <span className="text-[10px] text-muted-foreground">I decline additional protection coverage and wish to proceed without it.</span>
                             </label>
@@ -3145,7 +3145,7 @@ const Book = () => {
                                 type="checkbox"
                                 checked={declineProtection}
                                 onChange={(e) => setDeclineProtection(e.target.checked)}
-                                className="h-3 w-3 rounded border-border/35 accent-foreground cursor-pointer"
+                                className="h-3 w-3 rounded border-border/20 accent-foreground cursor-pointer"
                               />
                               <span className="text-[10px] text-muted-foreground">I decline additional protection coverage and wish to proceed without it.</span>
                             </label>
