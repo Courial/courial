@@ -77,6 +77,7 @@ const formatTime = () =>
 
 export const RideChat: React.FC<RideChatProps> = ({
   orderId,
+  numericOrderId,
   senderId,
   receiverId,
   courialName,
