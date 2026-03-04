@@ -3791,8 +3791,8 @@ const Book = () => {
                 </button>
                 {showOrderDetails && (
                   <div className="mt-3 space-y-0 divide-y divide-border text-sm">
-                    {/* Row: Language + Mode (for deliver) or Language + Rate + Mode (for roadside) */}
-                    {(deliverLanguage || conciergeLanguage) && (
+                    {/* Row: Language + Mode (for deliver) or Language + Rate + Mode (for roadside) — skip Language for valet (moved below) */}
+                    {(deliverLanguage || (conciergeLanguage && selectedService !== "valet")) && (
                       <div className="grid grid-cols-3 gap-4 py-2.5">
                         <div>
                           <p className="text-xs font-medium text-foreground mb-0.5">Language</p>
@@ -3829,6 +3829,25 @@ const Book = () => {
                           <div>
                             <p className="text-xs font-medium text-foreground mb-0.5">Mode</p>
                             <p className="text-[11px] text-muted-foreground capitalize">{selectedVehicle}</p>
+                          </div>
+                        )}
+                      </div>
+                    )}
+                    {/* Valet: Rate + Mode row (no Language here) */}
+                    {selectedService === "valet" && (conciergeServiceMode || conciergeVehicle) && (
+                      <div className="grid grid-cols-3 gap-4 py-2.5">
+                        {conciergeServiceMode && (
+                          <div>
+                            <p className="text-xs font-medium text-foreground mb-0.5">Rate</p>
+                            <p className="text-[11px] text-muted-foreground">
+                              {conciergeServiceMode === "hourly" ? "$65 per Hour" : conciergeServiceMode === "daily" ? "$480 Daily" : conciergeServiceMode}
+                            </p>
+                          </div>
+                        )}
+                        {conciergeVehicle && (
+                          <div>
+                            <p className="text-xs font-medium text-foreground mb-0.5">Mode</p>
+                            <p className="text-[11px] text-muted-foreground capitalize">{conciergeVehicle === "none" ? "None" : conciergeVehicle}</p>
                           </div>
                         )}
                       </div>
