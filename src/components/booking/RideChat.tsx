@@ -118,10 +118,15 @@ export const RideChat: React.FC<RideChatProps> = ({
 
         const historyId = numericOrderId || orderId;
         console.log("[RideChat] Fetching history for id:", historyId, "(numericOrderId:", numericOrderId, "deliveryId:", orderId, ")");
+        const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+        const supabaseKey = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY;
         const res = await fetch(
-          `https://gocourial.com/userApis/ride/${historyId}/messages`,
+          `${supabaseUrl}/functions/v1/ride-chat-history?orderId=${historyId}`,
           {
-            headers: { Authorization: `Bearer ${token}` },
+            headers: {
+              Authorization: `Bearer ${token}`,
+              apikey: supabaseKey,
+            },
           }
         );
         if (!res.ok) {
