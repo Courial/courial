@@ -91,7 +91,7 @@ const conciergeCategories: ConciergeCategory[] = [
 
 const valetCategories: ConciergeCategory[] = [
   { id: "charge", label: "EV Charging", desc: "No more range anxiety", subs: ["Valet Charging", "On-Site Charging"] },
-  { id: "drive", label: "Drive", desc: "We drive your car, so you can relax.", subs: ["Drive and wait", "Drive and park", "Personal Errand", "Car pick-up or drop-off"] },
+  { id: "drive", label: "Drive", desc: "We drive your car, so you can relax.", subs: ["Drive and wait", "Drive and park", "Car pick-up or drop-off"] },
 ];
 
 const serviceCards: { id: ServiceId; label: string; desc: string; href: string; external?: boolean; image: string; icons: LucideIcon[]; serviceIcon: string }[] = [
