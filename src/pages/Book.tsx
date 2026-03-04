@@ -1548,7 +1548,13 @@ const Book = () => {
                       const isNoneActive = conciergeVehicle === "none";
                       return (
                         <button
-                          onClick={() => setConciergeVehicle(isNoneActive ? null : "none")}
+                          onClick={() => {
+                            setConciergeVehicle(isNoneActive ? null : "none");
+                            if (!isNoneActive && selectedService === "valet") {
+                              setConciergeCategory("charge");
+                              setConciergeSubCategory("Valet Charging");
+                            }
+                          }}
                           className="bg-transparent border-none outline-none cursor-pointer flex items-center"
                         >
                           <div className={cn(
