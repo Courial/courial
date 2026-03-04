@@ -182,6 +182,7 @@ const Book = () => {
   const [roadsideVehicleMake, setRoadsideVehicleMake] = useState("");
   const [roadsideVehicleModel, setRoadsideVehicleModel] = useState("");
   const [roadsideVehicleColor, setRoadsideVehicleColor] = useState("");
+  const [roadsideVehicleYear, setRoadsideVehicleYear] = useState("");
   const [roadsideLicensePlate, setRoadsideLicensePlate] = useState("");
   const [roadsideSafeLocation, setRoadsideSafeLocation] = useState<boolean | null>(null);
   const [roadsideCustomMake, setRoadsideCustomMake] = useState(false);
