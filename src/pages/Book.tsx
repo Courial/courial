@@ -2049,11 +2049,19 @@ const Book = () => {
                           setConciergeIsRemote(false);
                           setConciergeAddressToggles(prev => {
                             const newVal = !prev[type];
-                            // Clear all address data first
+                            if (selectedService === "valet") {
+                              // Valet: allow multiple toggles, clear only the toggled-off field
+                              if (!newVal) {
+                                if (type === "start") { setConciergeStartAddress(""); setConciergeStartPlaceName(null); setConciergeStartCoords(null); }
+                                if (type === "stop") { setConciergeStopAddress(""); setConciergeStopPlaceName(null); setConciergeStopCoords(null); }
+                                if (type === "final") { setConciergeFinalAddress(""); setConciergeFinalPlaceName(null); setConciergeFinalCoords(null); }
+                              }
+                              return { ...prev, [type]: newVal };
+                            }
+                            // Concierge: only allow one at a time
                             setConciergeStartAddress(""); setConciergeStartPlaceName(null); setConciergeStartCoords(null);
                             setConciergeStopAddress(""); setConciergeStopPlaceName(null); setConciergeStopCoords(null);
                             setConciergeFinalAddress(""); setConciergeFinalPlaceName(null); setConciergeFinalCoords(null);
-                            // Only allow one at a time
                             return { start: type === "start" && newVal, stop: type === "stop" && newVal, final: type === "final" && newVal };
                           });
                         }}
