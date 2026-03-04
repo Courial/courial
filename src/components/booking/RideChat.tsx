@@ -51,7 +51,18 @@ const QR_STORAGE_KEY = "courial_quick_replies";
 const loadQuickReplies = (): string[] => {
   try {
     const saved = localStorage.getItem(QR_STORAGE_KEY);
-    if (saved) return JSON.parse(saved);
+    if (saved) {
+      const parsed: string[] = JSON.parse(saved);
+      // Merge in any new defaults not already present
+      const merged = [...parsed];
+      for (const d of DEFAULT_QUICK_REPLIES) {
+        if (!merged.includes(d)) merged.push(d);
+      }
+      if (merged.length !== parsed.length) {
+        localStorage.setItem(QR_STORAGE_KEY, JSON.stringify(merged));
+      }
+      return merged;
+    }
   } catch {}
   return [...DEFAULT_QUICK_REPLIES];
 };
