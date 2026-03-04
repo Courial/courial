@@ -393,6 +393,7 @@ export const RideChat: React.FC<RideChatProps> = ({
         </div>
 
         {/* Quick Messages header */}
+        <div className={cn("mx-3 border-t", darkMode ? "border-background/15" : "border-border")} />
         <div className={cn("px-3 pt-2 pb-1.5", darkMode ? "" : "")}>
           <button
             onClick={() => setShowQuickReplies((p) => !p)}
