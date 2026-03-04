@@ -34,6 +34,16 @@ const DEFAULT_QUICK_REPLIES = [
   "How far away are you from me?",
   "Come closer",
   "On my way",
+  "I'll be right there.",
+  "Please leave it at the door.",
+  "I'm waiting outside.",
+  "Please don't ring the bell/knock.",
+  "Be there in 2 minutes.",
+  "Can you call me when you arrive?",
+  "The gate code is in the notes.",
+  "Keys are at the front desk.",
+  "Thank you so much!",
+  "Got it!",
 ];
 
 const QR_STORAGE_KEY = "courial_quick_replies";
