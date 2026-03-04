@@ -1602,7 +1602,7 @@ const Book = () => {
                         transition={{ duration: 0.15 }}
                         className="text-xs text-muted-foreground text-center mt-2"
                       >
-                        {selectedService === "valet" && conciergeVehicle === "van" ? "Valet Charging" : vehicleCaptions[conciergeVehicle as VehicleId]}
+                        {selectedService === "valet" && conciergeVehicle === "van" ? "We come charge it where it's parked" : vehicleCaptions[conciergeVehicle as VehicleId]}
                       </motion.p>
                     )}
                     {conciergeVehicle === "none" && (
