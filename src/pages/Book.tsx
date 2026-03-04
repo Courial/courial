@@ -1735,6 +1735,9 @@ const Book = () => {
                                     {conciergeSubCategory === "Valet Charging" && (
                                       <span className="text-[11px] text-muted-foreground">we pick up, charge, and return it</span>
                                     )}
+                                    {conciergeSubCategory === "On-Site Charging" && (
+                                      <span className="text-[11px] text-muted-foreground">We bring the charge to you</span>
+                                    )}
                                 </div>
                               )}
                             </>
