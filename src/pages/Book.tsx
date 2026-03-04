@@ -1729,9 +1729,12 @@ const Book = () => {
                                    >
                                      <ChevronLeft className="w-4 h-4 text-foreground" />
                                    </button>
-                                   <span className="px-2.5 py-1 rounded-full text-[11px] font-normal border border-primary text-foreground leading-none">
-                                     {conciergeSubCategory}
-                                   </span>
+                                    <span className="px-2.5 py-1 rounded-full text-[11px] font-normal border border-primary text-foreground leading-none">
+                                      {conciergeSubCategory}
+                                    </span>
+                                    {conciergeSubCategory === "Valet Charging" && (
+                                      <span className="text-[11px] text-muted-foreground">we pick up, charge, and return it</span>
+                                    )}
                                 </div>
                               )}
                             </>
