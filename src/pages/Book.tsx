@@ -1561,7 +1561,7 @@ const Book = () => {
                         </button>
                       );
                     })()}
-                    {vehicleOptions.map((v) => {
+                    {vehicleOptions.filter(v => selectedService !== "valet" || v.id === "van").map((v) => {
                       const isActive = conciergeVehicle === v.id;
                       return (
                         <button
