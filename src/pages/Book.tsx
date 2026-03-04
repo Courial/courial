@@ -3872,8 +3872,27 @@ const Book = () => {
                         <p className="text-[11px] text-muted-foreground whitespace-pre-wrap">{conciergeDescription}</p>
                       </div>
                     )}
-                    {/* Row: Rate & Vehicle (same row for concierge non-roadside) */}
-                    {isConciergeStyle && conciergeCategory !== "roadside-assistance" && (conciergeServiceMode || conciergeVehicle) && (
+                    {/* Valet: Service Details — after Task Description */}
+                    {selectedService === "valet" && (roadsideVehicleColor || roadsideVehicleYear || roadsideVehicleMake || roadsideVehicleModel || roadsidePortType || batteryCurrentCharge || batteryTargetCharge) && (
+                      <div className="py-2.5">
+                        <p className="text-xs font-medium text-foreground mb-0.5">Service Details</p>
+                        <p className="text-[11px] text-muted-foreground">
+                          {[roadsideVehicleColor, roadsideVehicleYear, roadsideVehicleMake, roadsideVehicleModel].filter(Boolean).join(" ")}
+                        </p>
+                        {roadsidePortType && (
+                          <p className="text-[11px] text-muted-foreground">Port: {roadsidePortType}</p>
+                        )}
+                        {(batteryCurrentCharge || batteryTargetCharge) && (
+                          <p className="text-[11px] text-muted-foreground">
+                            {batteryCurrentCharge ? `Current Charge: ${batteryCurrentCharge}%` : ""}
+                            {batteryCurrentCharge && batteryTargetCharge ? " • " : ""}
+                            {batteryTargetCharge ? `Final Charge: ${batteryTargetCharge}%` : ""}
+                          </p>
+                        )}
+                      </div>
+                    )}
+                    {/* Row: Rate & Vehicle (same row for concierge non-roadside, excluding valet) */}
+                    {isConciergeStyle && selectedService !== "valet" && conciergeCategory !== "roadside-assistance" && (conciergeServiceMode || conciergeVehicle) && (
                     <div className="grid grid-cols-3 gap-4 py-2.5">
                       {conciergeServiceMode && (
                         <div>
@@ -3931,6 +3950,25 @@ const Book = () => {
                       <div className="py-2.5">
                         <p className="text-xs font-medium text-foreground mb-0.5">Notes</p>
                         <p className="text-[11px] text-muted-foreground whitespace-pre-wrap">{notes}</p>
+                      </div>
+                    )}
+                    {/* Valet: Preferred Language — just above Expenses */}
+                    {selectedService === "valet" && conciergeLanguage && (
+                      <div className="py-2.5">
+                        <p className="text-xs font-medium text-foreground mb-0.5">Preferred Language</p>
+                        <p className="text-[11px] text-muted-foreground flex items-center gap-1">
+                          {conciergeLanguage}
+                          {acceptedCourial && (() => {
+                            const userLang = (conciergeLanguage || "").toLowerCase();
+                            const courialLang = (acceptedCourial.language || "").toLowerCase();
+                            const isMatch = courialLang && courialLang === userLang;
+                            const hasData = !!courialLang;
+                            if (!hasData) return null;
+                            return isMatch
+                              ? <Check className="w-3.5 h-3.5 text-green-500" />
+                              : <X className="w-3.5 h-3.5 text-red-500" />;
+                          })()}
+                        </p>
                       </div>
                     )}
                     {/* Expenses — AFTER Notes */}
