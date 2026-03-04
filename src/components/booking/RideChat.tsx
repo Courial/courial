@@ -95,7 +95,7 @@ export const RideChat: React.FC<RideChatProps> = ({
   const typingTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const chatEndRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const historyFetchedRef = useRef(false);
+  const prevOrderIdRef = useRef<string | null>(null);
 
   // Scroll to bottom on new messages
   useEffect(() => {
