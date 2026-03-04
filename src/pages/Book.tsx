@@ -2661,9 +2661,23 @@ const Book = () => {
                         className="h-3 w-3 rounded border-border/60 accent-foreground cursor-pointer"
                       />
                     </div>
-                    <p className="text-[10px] text-muted-foreground mt-0.5 leading-relaxed">
-                      Check box if the Courial is required to make multiple stops.
-                    </p>
+                    {deliverMultiStop ? (
+                      <p className="text-[10px] text-muted-foreground mt-1.5 leading-relaxed bg-muted/60 rounded-lg p-3">
+                        Our 'Multiple Stops' option is temporarily disabled while we complete updates to our mobile apps over the next few weeks. If you'd still like to proceed, please contact our{" "}
+                        <button
+                          type="button"
+                          onClick={() => setShowContactSupport(true)}
+                          className="text-primary font-semibold hover:opacity-80 transition-opacity"
+                        >
+                          OPS Support
+                        </button>{" "}
+                        team and they'll be happy to set up the booking for you.
+                      </p>
+                    ) : (
+                      <p className="text-[10px] text-muted-foreground mt-0.5 leading-relaxed">
+                        Check box if the Courial is required to make multiple stops.
+                      </p>
+                    )}
                   </div>
 
                   {/* Input Fields — Draggable to swap */}
