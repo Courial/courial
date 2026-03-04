@@ -90,7 +90,7 @@ const conciergeCategories: ConciergeCategory[] = [
 ];
 
 const valetCategories: ConciergeCategory[] = [
-  { id: "charge", label: "Charge", desc: "EV charging & battery care", subs: ["Charging Station", "Mobile Charging Unit"] },
+  { id: "charge", label: "Charge", desc: "EV Battery Care", subs: ["Mobile Charging Unit"] },
   { id: "drive", label: "Drive", desc: "We drive your car, so you can relax.", subs: ["Drive and wait", "Drive and park", "Personal Errand", "Car pick-up or drop-off"] },
 ];
 
