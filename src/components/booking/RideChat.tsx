@@ -17,6 +17,7 @@ interface ChatMessage {
 
 interface RideChatProps {
   orderId: string;
+  numericOrderId?: string;
   senderId: string;
   receiverId: string;
   courialName: string;

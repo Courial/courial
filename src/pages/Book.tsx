@@ -4123,14 +4123,15 @@ const Book = () => {
                        className="w-full max-w-sm mx-4"
                      >
                        <div className="rounded-[20px] bg-foreground/75 backdrop-blur-sm shadow-2xl overflow-hidden">
-                         <RideChat
-                           orderId={deliveryIdRef.current}
-                           senderId={user?.user_metadata?.courial_id || user?.id || ""}
-                           receiverId={acceptedCourial.id}
-                           courialName={acceptedCourial.name || "Your Courial"}
-                           socketRef={socketRef}
-                           visible={showChat}
-                           darkMode
+                          <RideChat
+                            orderId={deliveryIdRef.current}
+                            numericOrderId={orderIdRef.current || undefined}
+                            senderId={user?.user_metadata?.courial_id || user?.id || ""}
+                            receiverId={acceptedCourial.id}
+                            courialName={acceptedCourial.name || "Your Courial"}
+                            socketRef={socketRef}
+                            visible={showChat}
+                            darkMode
                          />
                        </div>
                      </motion.div>
