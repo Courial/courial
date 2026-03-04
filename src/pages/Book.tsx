@@ -51,6 +51,7 @@ import vehicleScooter from "@/assets/vehicle-scooter.png";
 import vehicleCar from "@/assets/vehicle-car.png";
 import vehicleVan from "@/assets/vehicle-van.png";
 import vehicleTruck from "@/assets/vehicle-truck.png";
+import vehicleMobileCharge from "@/assets/vehicle-mobile-charge.png";
 
 
 type VehicleId = "walker" | "scooter" | "car" | "van" | "truck";
@@ -1563,6 +1564,10 @@ const Book = () => {
                     })()}
                     {vehicleOptions.filter(v => selectedService !== "valet" || v.id === "van").map((v) => {
                       const isActive = conciergeVehicle === v.id;
+                      const isValet = selectedService === "valet";
+                      const displayImage = isValet && v.id === "van" ? vehicleMobileCharge : v.image;
+                      const displayLabel = isValet && v.id === "van" ? "Mobile Charging" : v.label;
+                      const displayImgClass = isValet && v.id === "van" ? "max-h-[30px]" : v.imgClass;
                       return (
                         <button
                           key={v.id}
@@ -1575,7 +1580,7 @@ const Book = () => {
                               : conciergeVehicle === null ? "grayscale-0 opacity-100 scale-100"
                               : "grayscale opacity-40 scale-100"
                           )}>
-                            <img src={v.image} alt={v.label} className={cn("object-contain", v.imgClass)} />
+                            <img src={displayImage} alt={displayLabel} className={cn("object-contain", displayImgClass)} />
                           </div>
                         </button>
                       );
