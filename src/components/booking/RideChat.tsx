@@ -104,11 +104,20 @@ export const RideChat: React.FC<RideChatProps> = ({
     chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, isTyping]);
 
-  // Clear messages when orderId changes (new order = clean slate)
+  // Clear messages when orderId changes (new order = clean slate) and inject welcome message
   useEffect(() => {
     if (!orderId) return;
+    const welcomeMsg: ChatMessage = {
+      from: "courial",
+      text: "I received your order and I am on my way!",
+      time: formatTime(),
+      type: "text",
+      read: false,
+    };
     if (prevOrderIdRef.current && prevOrderIdRef.current !== orderId) {
-      setMessages([]);
+      setMessages([welcomeMsg]);
+    } else if (!prevOrderIdRef.current) {
+      setMessages([welcomeMsg]);
     }
     prevOrderIdRef.current = orderId;
     setLoadingHistory(false);
