@@ -440,7 +440,7 @@ const Book = () => {
     : pickup.trim().length > 0 && dropoff.trim().length > 0 && (!needsVehicle || selectedVehicle !== null) && notes.trim().length > 0;
   const isFormValid = isConciergeStyle
     ? conciergeReady && conciergeOrderValue.trim().length > 0 && Number(conciergeOrderValue.replace(/,/g, '')) > 0
-    : isBaseFormValid && deliverOrderValue.trim().length > 0 && Number(deliverOrderValue.replace(/,/g, '')) > 0;
+    : isBaseFormValid && deliverOrderValue.trim().length > 0 && Number(deliverOrderValue.replace(/,/g, '')) > 0 && !deliverMultiStop;
 
   // Sync booking state to localStorage for Navbar
   const formStarted = selectedService !== null && (
