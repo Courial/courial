@@ -1679,15 +1679,19 @@ const Book = () => {
                               </div>
                               {cat.subs.length > 0 && (
                                 <div className="flex flex-wrap gap-2">
-                                  {cat.subs.map((sub) => (
-                                     <button
-                                      key={sub}
-                                      onClick={() => setConciergeSubCategory(sub)}
-                                      className="px-2.5 py-1 rounded-full text-[11px] font-normal border border-border/60 bg-background text-foreground hover:border-foreground/50 transition-all leading-none"
-                                    >
-                                      {sub}
-                                    </button>
-                                  ))}
+                                  {cat.subs.map((sub) => {
+                                    const isDisabled = selectedService === "valet" && conciergeVehicle === "none" && sub === "On-Site Charging";
+                                    return (
+                                      <button
+                                        key={sub}
+                                        onClick={() => !isDisabled && setConciergeSubCategory(sub)}
+                                        disabled={isDisabled}
+                                        className={`px-2.5 py-1 rounded-full text-[11px] font-normal border transition-all leading-none ${isDisabled ? "border-border/30 bg-muted text-muted-foreground/50 cursor-not-allowed" : "border-border/60 bg-background text-foreground hover:border-foreground/50"}`}
+                                      >
+                                        {sub}
+                                      </button>
+                                    );
+                                  })}
                                 </div>
                               )}
                             </>
