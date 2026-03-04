@@ -1575,7 +1575,7 @@ const Book = () => {
                             setConciergeVehicle(isActive ? null : v.id);
                             if (!isActive && isValet && v.id === "van") {
                               setConciergeCategory("charge");
-                              setConciergeSubCategory("Mobile Charging Unit");
+                              setConciergeSubCategory("Valet Charging");
                             }
                           }}
                           className="bg-transparent border-none outline-none cursor-pointer flex items-center"
@@ -1602,7 +1602,7 @@ const Book = () => {
                         transition={{ duration: 0.15 }}
                         className="text-xs text-muted-foreground text-center mt-2"
                       >
-                        {selectedService === "valet" && conciergeVehicle === "van" ? "Mobile Charging Unit" : vehicleCaptions[conciergeVehicle as VehicleId]}
+                        {selectedService === "valet" && conciergeVehicle === "van" ? "Valet Charging" : vehicleCaptions[conciergeVehicle as VehicleId]}
                       </motion.p>
                     )}
                     {conciergeVehicle === "none" && (
