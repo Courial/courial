@@ -104,58 +104,14 @@ export const RideChat: React.FC<RideChatProps> = ({
     chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, isTyping]);
 
-  // Fetch chat history on mount
+  // Clear messages when orderId changes (new order = clean slate)
   useEffect(() => {
     if (!orderId) return;
-    // Re-fetch if orderId changed
-    if (prevOrderIdRef.current === orderId && messages.length > 0) return;
+    if (prevOrderIdRef.current && prevOrderIdRef.current !== orderId) {
+      setMessages([]);
+    }
     prevOrderIdRef.current = orderId;
-
-    const fetchHistory = async () => {
-      try {
-        const token = localStorage.getItem("courial_api_token");
-        if (!token) return;
-
-        const historyId = numericOrderId || orderId;
-        console.log("[RideChat] Fetching history for id:", historyId, "(numericOrderId:", numericOrderId, "deliveryId:", orderId, ")");
-        const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
-        const supabaseKey = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY;
-        const res = await fetch(
-          `${supabaseUrl}/functions/v1/ride-chat-history?orderId=${historyId}`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-              apikey: supabaseKey,
-            },
-          }
-        );
-        if (!res.ok) {
-          console.warn("[RideChat] Failed to fetch history:", res.status);
-          return;
-        }
-        const data = await res.json();
-        const history = Array.isArray(data?.data) ? data.data : Array.isArray(data) ? data : [];
-
-        const parsed: ChatMessage[] = history.map((m: any) => ({
-          from: m.senderType === "user" ? "user" as const : "courial" as const,
-          text: m.messageType === 1 ? "" : (m.message || ""),
-          time: m.createdAt
-            ? new Date(m.createdAt).toLocaleTimeString([], { hour: "numeric", minute: "2-digit" })
-            : "",
-          type: m.messageType === 1 ? "image" as const : "text" as const,
-          imageUrl: m.messageType === 1 ? m.message : undefined,
-          read: m.isRead ?? true,
-        }));
-
-        setMessages(parsed);
-      } catch (err) {
-        console.error("[RideChat] Error fetching history:", err);
-      } finally {
-        setLoadingHistory(false);
-      }
-    };
-
-    fetchHistory();
+    setLoadingHistory(false);
   }, [orderId]);
 
   // Listen for incoming messages, typing, and read receipts via socket
