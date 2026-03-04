@@ -1859,7 +1859,7 @@ const Book = () => {
                                 {roadsideModelSuggestions.map((model) => (
                                   <button
                                     key={model}
-                                    onClick={() => { setRoadsideVehicleModel(model); setRoadsideModelOpen(false); if (selectedService === "valet") fetchVehiclePortTypes(roadsideVehicleMake, model); }}
+                                    onClick={() => { setRoadsideVehicleModel(model); setRoadsideModelOpen(false); }}
                                     className="w-full px-2 py-1.5 text-xs text-left text-foreground hover:bg-muted transition-colors"
                                   >
                                     {model}
