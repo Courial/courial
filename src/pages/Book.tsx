@@ -1614,7 +1614,7 @@ const Book = () => {
                         transition={{ duration: 0.15 }}
                         className="text-xs text-muted-foreground text-center mt-2"
                       >
-                        No vehicle needed
+                        Pick up, charge and return
                       </motion.p>
                     )}
                   </AnimatePresence>
