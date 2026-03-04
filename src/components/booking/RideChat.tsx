@@ -155,7 +155,9 @@ export const RideChat: React.FC<RideChatProps> = ({
     const messageHandler = (rawData: any) => {
       try {
         const parsed = typeof rawData === "string" ? JSON.parse(rawData) : rawData;
-        const data = parsed?.data ?? parsed;
+        // Server sends an array — unwrap the first element
+        const unwrapped = Array.isArray(parsed) ? parsed[0] : parsed;
+        const data = unwrapped?.data ?? unwrapped;
 
         if (data.orderId && String(data.orderId) !== String(orderId)) return;
         if (data.senderType === "user") return;
