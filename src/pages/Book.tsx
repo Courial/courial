@@ -1863,6 +1863,19 @@ const Book = () => {
                       )}
                     </div>
                   </div>
+                  {/* Year input - Valet only */}
+                  {selectedService === "valet" && (
+                    <div className="flex gap-1.5 w-full min-w-0">
+                      <input
+                        type="text"
+                        placeholder="Year (e.g. 2023)"
+                        value={roadsideVehicleYear}
+                        onChange={(e) => setRoadsideVehicleYear(e.target.value.replace(/\D/g, "").slice(0, 4))}
+                        maxLength={4}
+                        className="w-full min-w-0 px-2 py-2 rounded-lg border border-border/60 bg-background text-foreground text-xs placeholder:text-muted-foreground focus:outline-none focus:border-border transition-colors"
+                      />
+                    </div>
+                  )}
                   <div className="flex gap-1.5 w-full min-w-0">
                     {/* Color dropdown or custom input */}
                     <div className={`${selectedService === "valet" ? "w-1/3" : "w-1/2"} min-w-0 relative`}>
