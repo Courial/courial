@@ -2680,30 +2680,15 @@ const Book = () => {
                     )}
                   </div>
 
-                  {/* Input Fields — Draggable to swap */}
+                  {/* Input Fields — hidden when multi-stop temporarily disabled */}
+                  {!deliverMultiStop && (
                   <div>
                     {(() => {
                       type FieldDef = { id: string; dotClass: string; placeName: string | null; coords: any; value: string; placeholder: string; onChange: (v: string) => void; onPlaceSelect: (p: any) => void; onClear: () => void; onDoubleClickDot?: () => void };
                       const allFields: FieldDef[] = [
                         { id: "pickup", dotClass: "rounded-full bg-green-500", placeName: pickupPlaceName, coords: pickupCoords, value: pickup, placeholder: "Pickup location", onChange: (v: string) => { setPickup(v); if (!v) { setPickupPlaceName(null); setPickupCoords(null); } }, onPlaceSelect: handlePickupSelect, onClear: () => { setPickup(""); setPickupPlaceName(null); setPickupCoords(null); } },
-                        { id: "dropoff", dotClass: "bg-red-500", placeName: dropoffPlaceName, coords: dropoffCoords, value: dropoff, placeholder: deliverMultiStop ? "Dropoff #1" : "Dropoff location", onChange: (v: string) => { setDropoff(v); if (!v) { setDropoffPlaceName(null); setDropoffCoords(null); } }, onPlaceSelect: handleDropoffSelect, onClear: () => { setDropoff(""); setDropoffPlaceName(null); setDropoffCoords(null); } },
+                        { id: "dropoff", dotClass: "bg-red-500", placeName: dropoffPlaceName, coords: dropoffCoords, value: dropoff, placeholder: "Dropoff location", onChange: (v: string) => { setDropoff(v); if (!v) { setDropoffPlaceName(null); setDropoffCoords(null); } }, onPlaceSelect: handleDropoffSelect, onClear: () => { setDropoff(""); setDropoffPlaceName(null); setDropoffCoords(null); } },
                       ];
-                      if (deliverMultiStop) {
-                        deliverExtraStops.forEach((stop, i) => {
-                          allFields.push({
-                            id: `extra-${i}`,
-                            dotClass: "bg-red-500",
-                            placeName: stop.placeName,
-                            coords: stop.coords,
-                            value: stop.address,
-                            placeholder: `Dropoff #${i + 2}`,
-                            onChange: (v: string) => { setDeliverExtraStops(prev => { const u = [...prev]; u[i] = { ...u[i], address: v, ...(v ? {} : { placeName: null, coords: null }) }; return u; }); },
-                            onPlaceSelect: (place: any) => handleExtraStopSelect(i, place),
-                            onClear: () => { setDeliverExtraStops(prev => { const u = [...prev]; u[i] = { address: "", placeName: null, coords: null }; return u; }); },
-                            onDoubleClickDot: () => setDeliverExtraStops(prev => prev.filter((_, idx) => idx !== i)),
-                          });
-                        });
-                      }
                       const swapByIndex = (a: number, b: number) => {
                         if (a < 0 || b < 0 || a >= allFields.length || b >= allFields.length) return;
                         const getState = (idx: number) => {
@@ -2776,31 +2761,8 @@ const Book = () => {
                         </div>
                       ));
                     })()}
-
-                    {/* Add Stop button */}
-                    {deliverMultiStop && (
-                      <div className="pt-2 mt-1 flex items-center gap-3 pl-6">
-                        <Button
-                          type="button"
-                          variant="hero"
-                          className="rounded-lg h-auto py-1.5 text-sm font-semibold px-4"
-                          onClick={() => {
-                            if (deliverExtraStops.length >= 19) {
-                              toast.error("Maximum of 20 dropoffs reached.");
-                              return;
-                            }
-                            setDeliverExtraStops(prev => [...prev, { address: "", placeName: null, coords: null }]);
-                          }}
-                        >
-                          Add Stop
-                        </Button>
-                        <p className="text-[13px] text-muted-foreground leading-tight">
-                          Double tap<br /><span className="inline-block w-2.5 h-2.5 bg-red-500 align-middle mx-0.5" /> to remove
-                        </p>
-                      </div>
-                    )}
-
                   </div>
+                  )}
 
 
                   {/* Notes Field with Redraft */}
