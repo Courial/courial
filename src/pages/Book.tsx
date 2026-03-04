@@ -2049,11 +2049,19 @@ const Book = () => {
                           setConciergeIsRemote(false);
                           setConciergeAddressToggles(prev => {
                             const newVal = !prev[type];
-                            // Clear all address data first
+                            if (selectedService === "valet") {
+                              // Valet: allow multiple toggles, clear only the toggled-off field
+                              if (!newVal) {
+                                if (type === "start") { setConciergeStartAddress(""); setConciergeStartPlaceName(null); setConciergeStartCoords(null); }
+                                if (type === "stop") { setConciergeStopAddress(""); setConciergeStopPlaceName(null); setConciergeStopCoords(null); }
+                                if (type === "final") { setConciergeFinalAddress(""); setConciergeFinalPlaceName(null); setConciergeFinalCoords(null); }
+                              }
+                              return { ...prev, [type]: newVal };
+                            }
+                            // Concierge: only allow one at a time
                             setConciergeStartAddress(""); setConciergeStartPlaceName(null); setConciergeStartCoords(null);
                             setConciergeStopAddress(""); setConciergeStopPlaceName(null); setConciergeStopCoords(null);
                             setConciergeFinalAddress(""); setConciergeFinalPlaceName(null); setConciergeFinalCoords(null);
-                            // Only allow one at a time
                             return { start: type === "start" && newVal, stop: type === "stop" && newVal, final: type === "final" && newVal };
                           });
                         }}
@@ -2086,9 +2094,10 @@ const Book = () => {
                       {(() => {
                         type ConcFieldDef = { id: string; dotClass: string; placeName: string | null; coords: any; value: string; placeholder: string; onChange: (v: string) => void; onPlaceSelect: (p: any) => void; onClear: () => void };
                         const concFields: ConcFieldDef[] = [];
-                        if (conciergeAddressToggles.start) concFields.push({ id: "start", dotClass: "rounded-full bg-green-500", placeName: conciergeStartPlaceName, coords: conciergeStartCoords, value: conciergeStartAddress, placeholder: "Start here", onChange: (v) => { setConciergeStartAddress(v); if (!v) { setConciergeStartPlaceName(null); setConciergeStartCoords(null); } }, onPlaceSelect: handleConciergeStartSelect, onClear: () => { setConciergeStartAddress(""); setConciergeStartPlaceName(null); setConciergeStartCoords(null); } });
-                        if (conciergeAddressToggles.stop) concFields.push({ id: "stop", dotClass: "rounded-none bg-blue-500", placeName: conciergeStopPlaceName, coords: conciergeStopCoords, value: conciergeStopAddress, placeholder: "Stop here", onChange: (v) => { setConciergeStopAddress(v); if (!v) { setConciergeStopPlaceName(null); setConciergeStopCoords(null); } }, onPlaceSelect: handleConciergeStopSelect, onClear: () => { setConciergeStopAddress(""); setConciergeStopPlaceName(null); setConciergeStopCoords(null); } });
-                        if (conciergeAddressToggles.final) concFields.push({ id: "final", dotClass: "rounded-none bg-destructive", placeName: conciergeFinalPlaceName, coords: conciergeFinalCoords, value: conciergeFinalAddress, placeholder: "Finish here", onChange: (v) => { setConciergeFinalAddress(v); if (!v) { setConciergeFinalPlaceName(null); setConciergeFinalCoords(null); } }, onPlaceSelect: handleConciergeFinalSelect, onClear: () => { setConciergeFinalAddress(""); setConciergeFinalPlaceName(null); setConciergeFinalCoords(null); } });
+                        const isValet = selectedService === "valet";
+                        if (conciergeAddressToggles.start) concFields.push({ id: "start", dotClass: "rounded-full bg-green-500", placeName: conciergeStartPlaceName, coords: conciergeStartCoords, value: conciergeStartAddress, placeholder: isValet ? "Pick-up address" : "Start here", onChange: (v) => { setConciergeStartAddress(v); if (!v) { setConciergeStartPlaceName(null); setConciergeStartCoords(null); } }, onPlaceSelect: handleConciergeStartSelect, onClear: () => { setConciergeStartAddress(""); setConciergeStartPlaceName(null); setConciergeStartCoords(null); } });
+                        if (conciergeAddressToggles.stop) concFields.push({ id: "stop", dotClass: "rounded-none bg-blue-500", placeName: conciergeStopPlaceName, coords: conciergeStopCoords, value: conciergeStopAddress, placeholder: isValet ? "Charging station address" : "Stop here", onChange: (v) => { setConciergeStopAddress(v); if (!v) { setConciergeStopPlaceName(null); setConciergeStopCoords(null); } }, onPlaceSelect: handleConciergeStopSelect, onClear: () => { setConciergeStopAddress(""); setConciergeStopPlaceName(null); setConciergeStopCoords(null); } });
+                        if (conciergeAddressToggles.final) concFields.push({ id: "final", dotClass: "rounded-none bg-destructive", placeName: conciergeFinalPlaceName, coords: conciergeFinalCoords, value: conciergeFinalAddress, placeholder: isValet ? "Drop-off address" : "Finish here", onChange: (v) => { setConciergeFinalAddress(v); if (!v) { setConciergeFinalPlaceName(null); setConciergeFinalCoords(null); } }, onPlaceSelect: handleConciergeFinalSelect, onClear: () => { setConciergeFinalAddress(""); setConciergeFinalPlaceName(null); setConciergeFinalCoords(null); } });
 
                         const concSwap = (a: number, b: number) => {
                           if (a < 0 || b < 0 || a >= concFields.length || b >= concFields.length) return;
