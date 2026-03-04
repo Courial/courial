@@ -1571,7 +1571,13 @@ const Book = () => {
                       return (
                         <button
                           key={v.id}
-                          onClick={() => setConciergeVehicle(isActive ? null : v.id)}
+                          onClick={() => {
+                            setConciergeVehicle(isActive ? null : v.id);
+                            if (!isActive && isValet && v.id === "van") {
+                              setConciergeCategory("charge");
+                              setConciergeSubCategory("Mobile Charging Unit");
+                            }
+                          }}
                           className="bg-transparent border-none outline-none cursor-pointer flex items-center"
                         >
                           <div className={cn(
