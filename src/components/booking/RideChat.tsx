@@ -104,8 +104,10 @@ export const RideChat: React.FC<RideChatProps> = ({
 
   // Fetch chat history on mount
   useEffect(() => {
-    if (!orderId || historyFetchedRef.current) return;
-    historyFetchedRef.current = true;
+    if (!orderId) return;
+    // Re-fetch if orderId changed
+    if (prevOrderIdRef.current === orderId && messages.length > 0) return;
+    prevOrderIdRef.current = orderId;
 
     const fetchHistory = async () => {
       try {
