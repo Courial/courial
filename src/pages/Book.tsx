@@ -90,7 +90,7 @@ const conciergeCategories: ConciergeCategory[] = [
 ];
 
 const valetCategories: ConciergeCategory[] = [
-  { id: "charge", label: "Charge", desc: "EV charging & battery care", subs: ["Charging Station", "Mobile Charging Unit"] },
+  { id: "charge", label: "Charge", desc: "EV Battery Care", subs: ["Mobile Charging Unit"] },
   { id: "drive", label: "Drive", desc: "We drive your car, so you can relax.", subs: ["Drive and wait", "Drive and park", "Personal Errand", "Car pick-up or drop-off"] },
 ];
 
@@ -2002,7 +2002,7 @@ const Book = () => {
               >
                 {/* Address Toggle Pills + WFH — all on same row */}
                 {selectedService === "valet" && (
-                  <span className="text-xs font-medium text-muted-foreground mb-1 block">Pick-up, Drop-off and Charging Station Info</span>
+                  <span className="text-xs font-medium text-muted-foreground mb-1 block">Pick-up, Drop-off and Charging Info</span>
                 )}
                 <div className="flex items-center justify-center gap-2 mb-3">
                   {selectedService === "concierge" && (
