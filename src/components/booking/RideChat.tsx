@@ -556,26 +556,28 @@ export const RideChat: React.FC<RideChatProps> = ({
          </AnimatePresence>
 
          {/* Add / Remove quick reply */}
+         {showQuickReplies && (
          <div className={cn("px-3 pb-3 flex items-center justify-center gap-1.5 text-[10px]", darkMode ? "text-background/60" : "text-muted-foreground")}>
-           <button
-             onClick={() => { setAddingReply(true); setRemoveMode(false); }}
-             className="px-2 py-0.5 rounded-full bg-background/85 text-foreground font-medium hover:bg-background/75 transition-colors"
-           >
-             Add
-           </button>
-           <button
-             onClick={() => { setRemoveMode((p) => !p); setAddingReply(false); }}
-             className={cn(
-               "px-2 py-0.5 rounded-full border font-medium transition-colors",
-               removeMode
-                 ? "border-destructive/40 bg-destructive/10 text-destructive"
-                 : darkMode ? "border-background/20 text-background hover:bg-background/10" : "border-border text-foreground hover:bg-muted"
-             )}
-           >
-             {removeMode ? "Done" : "Remove"}
-           </button>
-           <span className="text-primary font-normal">a Quick reply</span>
-         </div>
+            <button
+              onClick={() => { setAddingReply(true); setRemoveMode(false); }}
+              className="px-2 py-0.5 rounded-full bg-background/85 text-foreground font-medium hover:bg-background/75 transition-colors"
+            >
+              Add
+            </button>
+            <button
+              onClick={() => { setRemoveMode((p) => !p); setAddingReply(false); }}
+              className={cn(
+                "px-2 py-0.5 rounded-full border font-medium transition-colors",
+                removeMode
+                  ? "border-destructive/40 bg-destructive/10 text-destructive"
+                  : darkMode ? "border-background/20 text-background hover:bg-background/10" : "border-border text-foreground hover:bg-muted"
+              )}
+            >
+              {removeMode ? "Done" : "Remove"}
+            </button>
+            <span className="text-primary font-normal">a Quick reply</span>
+          </div>
+         )}
        </div>
      </motion.div>
    );
