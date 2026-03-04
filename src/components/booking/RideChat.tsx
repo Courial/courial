@@ -448,8 +448,7 @@ export const RideChat: React.FC<RideChatProps> = ({
           </button>
         </div>
 
-        {/* Divider */}
-        <div className={cn("mx-3 my-3", darkMode ? "border-t border-background/10" : "border-t border-border")} />
+        {/* Quick Replies (below input) — no divider */}
 
         {/* Quick Replies (below input) */}
         <AnimatePresence>
