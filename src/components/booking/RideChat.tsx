@@ -114,6 +114,7 @@ export const RideChat: React.FC<RideChatProps> = ({
         const token = localStorage.getItem("courial_api_token");
         if (!token) return;
 
+        console.log("[RideChat] Fetching history for orderId:", orderId);
         const res = await fetch(
           `https://gocourial.com/userApis/ride/${orderId}/messages`,
           {
