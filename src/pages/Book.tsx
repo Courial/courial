@@ -1596,7 +1596,7 @@ const Book = () => {
                         transition={{ duration: 0.15 }}
                         className="text-xs text-muted-foreground text-center mt-2"
                       >
-                        {vehicleCaptions[conciergeVehicle as VehicleId]}
+                        {selectedService === "valet" && conciergeVehicle === "van" ? "Mobile Charging Unit" : vehicleCaptions[conciergeVehicle as VehicleId]}
                       </motion.p>
                     )}
                     {conciergeVehicle === "none" && (
