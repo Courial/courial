@@ -2667,7 +2667,7 @@ const Book = () => {
                         <button
                           type="button"
                           onClick={() => setShowContactSupport(true)}
-                          className="text-primary font-semibold hover:opacity-80 transition-opacity"
+                          className="text-primary hover:opacity-80 transition-opacity"
                         >
                           OPS Support
                         </button>{" "}
@@ -2764,7 +2764,7 @@ const Book = () => {
                   </div>
                   )}
 
-
+                  {!deliverMultiStop && (<>
                   {/* Notes Field with Redraft */}
                    <div className="relative mb-1 mt-2">
                     <div className="px-4 py-4 border border-border rounded-xl bg-background focus-within:border-border">
@@ -3226,6 +3226,7 @@ const Book = () => {
                       </Button>
                     </div>
                   </div>
+                </>)}
                 </motion.div>
               )}
             </AnimatePresence>
