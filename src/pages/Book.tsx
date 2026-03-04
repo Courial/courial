@@ -2002,7 +2002,7 @@ const Book = () => {
 
 
             {/* Task Details Form */}
-            {isConciergeStyle && conciergeSubCategory && (
+            {isConciergeStyle && conciergeSubCategory && (selectedService !== "valet" || (roadsideVehicleMake && roadsideVehicleModel && roadsideVehicleColor)) && (
               <motion.div
                 initial={{ opacity: 0, height: 0 }}
                 animate={{ opacity: 1, height: "auto" }}
