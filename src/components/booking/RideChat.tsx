@@ -208,7 +208,10 @@ export const RideChat: React.FC<RideChatProps> = ({
       try {
         const parsed = typeof rawData === "string" ? JSON.parse(rawData) : rawData;
         const data = parsed?.data ?? parsed;
-        if (data.orderId && String(data.orderId) !== String(orderId)) return;
+        const matchesOrder =
+          (data.orderId && String(data.orderId) === String(orderId)) ||
+          (data.deliveryId && String(data.deliveryId) === String(orderId));
+        if (data.orderId && !matchesOrder) return;
 
         // Mark all user messages as read
         setMessages((prev) =>
