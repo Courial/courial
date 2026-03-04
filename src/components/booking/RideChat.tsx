@@ -159,8 +159,16 @@ export const RideChat: React.FC<RideChatProps> = ({
         const unwrapped = Array.isArray(parsed) ? parsed[0] : parsed;
         const data = unwrapped?.data ?? unwrapped;
 
-        if (data.orderId && String(data.orderId) !== String(orderId)) return;
-        if (data.senderType === "user") return;
+        console.log("[RideChat] Incoming message data:", { incomingOrderId: data.orderId, myOrderId: orderId, senderType: data.senderType, message: data.message });
+
+        if (data.orderId && String(data.orderId) !== String(orderId)) {
+          console.log("[RideChat] Skipping — orderId mismatch:", String(data.orderId), "!==", String(orderId));
+          return;
+        }
+        if (data.senderType === "user") {
+          console.log("[RideChat] Skipping — message from self (user)");
+          return;
+        }
 
         const msg: ChatMessage = {
           from: "courial",
