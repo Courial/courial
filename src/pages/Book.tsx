@@ -4111,33 +4111,59 @@ const Book = () => {
              <div className="flex-1 relative">
                <BookingMap pickupCoords={mapPickup} dropoffCoords={mapPickup !== mapDropoff ? mapDropoff : null} stopCoords={mapStop} extraStops={mapExtraStops} pickupAddress={mapPickupAddr} dropoffAddress={mapDropoffAddr} stopAddress={mapStopAddr} pickupPlaceName={mapPickupName} dropoffPlaceName={mapDropoffName} stopPlaceName={mapStopName} bookingState={bookingState} vehicleType={mapVehicle} courialCoords={courialCoords} />
               
-               {/* Chat Overlay — centered on map */}
-               <AnimatePresence>
-                 {showChat && acceptedCourial && deliveryIdRef.current && (
-                   <div className="absolute inset-0 z-30 flex items-center justify-center bg-black/30 backdrop-blur-md">
-                     <motion.div
-                       initial={{ opacity: 0, scale: 0.95 }}
-                       animate={{ opacity: 1, scale: 1 }}
-                       exit={{ opacity: 0, scale: 0.95 }}
-                       transition={{ duration: 0.3 }}
-                       className="w-full max-w-sm mx-4"
-                     >
-                       <div className="rounded-[20px] bg-foreground/75 backdrop-blur-sm shadow-2xl overflow-hidden">
-                          <RideChat
-                            orderId={deliveryIdRef.current}
-                            numericOrderId={orderIdRef.current || undefined}
-                            senderId={user?.user_metadata?.courial_id || user?.id || ""}
-                            receiverId={acceptedCourial.id}
-                            courialName={acceptedCourial.name || "Your Courial"}
-                            socketRef={socketRef}
-                            visible={showChat}
-                            darkMode
-                         />
-                       </div>
-                     </motion.div>
-                   </div>
-                 )}
-               </AnimatePresence>
+                {/* Chat — always mounted to preserve messages, visibility toggled */}
+                {acceptedCourial && deliveryIdRef.current && (
+                  <>
+                    <AnimatePresence>
+                      {showChat && (
+                        <motion.div
+                          key="chat-overlay"
+                          initial={{ opacity: 0 }}
+                          animate={{ opacity: 1 }}
+                          exit={{ opacity: 0 }}
+                          transition={{ duration: 0.2 }}
+                          className="absolute inset-0 z-30 flex items-center justify-center bg-black/30 backdrop-blur-md"
+                        >
+                          <motion.div
+                            initial={{ opacity: 0, scale: 0.95 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            exit={{ opacity: 0, scale: 0.95 }}
+                            transition={{ duration: 0.3 }}
+                            className="w-full max-w-sm mx-4"
+                          >
+                            <div className="rounded-[20px] bg-foreground/75 backdrop-blur-sm shadow-2xl overflow-hidden">
+                              <RideChat
+                                orderId={deliveryIdRef.current}
+                                numericOrderId={orderIdRef.current || undefined}
+                                senderId={user?.user_metadata?.courial_id || user?.id || ""}
+                                receiverId={acceptedCourial.id}
+                                courialName={acceptedCourial.name || "Your Courial"}
+                                socketRef={socketRef}
+                                visible={showChat}
+                                darkMode
+                              />
+                            </div>
+                          </motion.div>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                    {/* Hidden mount to keep socket listeners active when chat is closed */}
+                    {!showChat && (
+                      <div className="hidden">
+                        <RideChat
+                          orderId={deliveryIdRef.current}
+                          numericOrderId={orderIdRef.current || undefined}
+                          senderId={user?.user_metadata?.courial_id || user?.id || ""}
+                          receiverId={acceptedCourial.id}
+                          courialName={acceptedCourial.name || "Your Courial"}
+                          socketRef={socketRef}
+                          visible={false}
+                          darkMode
+                        />
+                      </div>
+                    )}
+                  </>
+                )}
             </div>
           ) : (
             <div className="flex-1 overflow-y-auto">
