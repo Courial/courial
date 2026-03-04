@@ -406,7 +406,7 @@ export const RideChat: React.FC<RideChatProps> = ({
         </div>
 
         {/* Input row */}
-        <div className={cn("px-3 py-2 flex gap-2 items-center", darkMode ? "" : "")}>
+        <div className={cn("px-3 pt-2 pb-3.5 flex gap-2 items-center", darkMode ? "" : "")}>
           <button
             onClick={() => fileInputRef.current?.click()}
             className={cn(
