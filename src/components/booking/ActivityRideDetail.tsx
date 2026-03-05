@@ -395,7 +395,7 @@ const ActivityRideDetail = ({ ride, onBack, hasLiveSession, onBackToLive }: Prop
             onClick={() => setShowOrderDetails(p => !p)}
             className="flex items-center justify-between w-full"
           >
-            <p className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Service {ride.orderid} Details</p>
+            <p className="text-xs font-bold uppercase tracking-wider text-muted-foreground">{ride.orderid} • Service Details</p>
             <ChevronDown className={cn("w-3.5 h-3.5 text-muted-foreground transition-transform", showOrderDetails && "rotate-180")} />
           </button>
           {showOrderDetails && (
