@@ -119,6 +119,9 @@ const ActivityRideDetail = ({ ride, onBack }: Props) => {
 
   const vehicle = ride.transport_mode || ride.conciergeVehicle || ride.concierge_vehicle || null;
 
+  const isLive = !isCancelled && !isComplete;
+  const hasProvider = !!(ride.providerId || provider);
+
   // Category info
   const category = ride.category || ride.subCategory || ride.sub_category || null;
 
