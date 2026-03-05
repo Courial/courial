@@ -75,12 +75,12 @@ const ActivityRideDetail = ({ ride, onBack }: Props) => {
           <h2 className="text-lg font-bold text-foreground">Ride Details</h2>
         </div>
 
-        {/* Map */}
-        {hasAddress && (
-          <div className="mx-4 h-44 rounded-xl overflow-hidden bg-muted mb-4">
+        {/* Map frame — always visible */}
+        <div className="mx-4 h-44 rounded-xl overflow-hidden bg-muted mb-4">
+          {hasAddress && (
             <ActivityDetailMap origin={mapOrigin} destination={mapDest} />
-          </div>
-        )}
+          )}
+        </div>
 
         <div className="px-5 pb-5">
           {/* Driver name + rating + photo */}
