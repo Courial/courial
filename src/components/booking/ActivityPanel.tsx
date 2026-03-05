@@ -34,8 +34,10 @@ const statusBadgeBg: Record<string, string> = {
   Active: "text-blue-600",
 };
 
-function formatActivityDate(iso: string) {
+function formatActivityDate(iso: string | null | undefined) {
+  if (!iso) return "—";
   const d = new Date(iso);
+  if (isNaN(d.getTime())) return "—";
   return d.toLocaleDateString("en-US", { day: "2-digit", month: "short" }) +
     " • " +
     d.toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit" });
