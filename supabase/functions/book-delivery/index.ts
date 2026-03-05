@@ -71,7 +71,7 @@ serve(async (req) => {
     console.log("[book-delivery] Payload sent to Courial API:", JSON.stringify(payload, null, 2));
 
     // Forward request to the appropriate Courial API endpoint
-    const apiUrl = isConcierge ? COURIAL_CONCIERGE_URL : COURIAL_DELIVER_URL;
+    const apiUrl = serviceType === "concierge" ? COURIAL_CONCIERGE_URL : COURIAL_DELIVER_URL;
     const response = await fetch(apiUrl, {
       method: "POST",
       headers: {
