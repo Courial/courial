@@ -1,74 +1,18 @@
 import { useState, useRef, useMemo } from "react";
 import { motion } from "framer-motion";
-import { ArrowLeft, Star, Calendar, Zap, ChevronDown, Headset, MessageCircle, RotateCcw, Phone, Mail, ChevronLeft, Check, X } from "lucide-react";
+import { ArrowLeft, Star, Calendar, Zap, ChevronDown, Phone, Mail, RotateCcw, Headset, MessageCircle, Check, X } from "lucide-react";
 import { RideChat } from "./RideChat";
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
 import ActivityDetailMap from "./ActivityDetailMap";
 import type { ActivityItem } from "@/hooks/useActivities";
-import deliverIcon from "@/assets/service-icons/deliver.png";
-import conciergeIcon from "@/assets/service-icons/concierge.png";
-import chauffeurIcon from "@/assets/service-icons/chauffeur.png";
-import valetIcon from "@/assets/service-icons/valet.png";
-import noVehicleIcon from "@/assets/no-vehicle-icon.png";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { toast } from "sonner";
-import type { Socket } from "socket.io-client";
-
-const serviceIconSrc: Record<string, string> = {
-  Deliver: deliverIcon, deliver: deliverIcon,
-  Concierge: conciergeIcon, concierge: conciergeIcon,
-  Chauffeur: chauffeurIcon, chauffeur: chauffeurIcon,
-  Valet: valetIcon, valet: valetIcon,
-  "Scheduled Ride": deliverIcon, "scheduled ride": deliverIcon,
-};
 
 function formatFee(fee: number | string) {
   const n = typeof fee === "string" ? parseFloat(fee) : fee;
   if (isNaN(n)) return "$0.00";
   return `$${n.toFixed(2)}`;
-}
-
-function getStepsForService(serviceType: string | null | undefined): { label: string; desc: string }[] {
-  const st = (serviceType || "").toLowerCase();
-  if (st === "concierge") {
-    return [
-      { label: "Service Accepted", desc: "Your service is confirmed" },
-      { label: "Courial Arrived", desc: "Courial has arrived" },
-      { label: "Service In Progress", desc: "Your task is being handled" },
-      { label: "Service Completed", desc: "Task complete" },
-      { label: "Service Complete", desc: "" },
-    ];
-  }
-  if (st === "valet") {
-    return [
-      { label: "Service Accepted", desc: "Your valet service is confirmed" },
-      { label: "Valet Arrived", desc: "Valet has arrived" },
-      { label: "Service In Progress", desc: "Your vehicle is being serviced" },
-      { label: "Service Completed", desc: "Service complete" },
-      { label: "Service Complete", desc: "" },
-    ];
-  }
-  return [
-    { label: "Courial Accepted", desc: "Your delivery is confirmed" },
-    { label: "Courial Arrived", desc: "Courial has arrived at pickup" },
-    { label: "Courial Picked Up", desc: "Package picked up" },
-    { label: "Courial Dropped Off", desc: "Package delivered" },
-    { label: "Delivery Complete", desc: "" },
-  ];
-}
-
-function getDeliveryStep(status: string): number {
-  const s = status.toLowerCase();
-  if (s === "completed" || s === "complete") return 99; // will clamp to maxStep
-  if (s === "cancelled" || s === "canceled") return -1;
-  if (s === "pending" || s === "waiting") return 0;
-  if (s === "accepted" || s === "active") return 0;
-  if (s === "arrived") return 1;
-  if (s === "picked_up" || s === "pickedup" || s === "picked up") return 2;
-  if (s === "in_progress" || s === "inprogress" || s === "in progress") return 2;
-  if (s === "dropped_off" || s === "droppedoff") return 3;
-  return 0;
 }
 
 interface Props {
@@ -79,16 +23,13 @@ interface Props {
 }
 
 const ActivityRideDetail = ({ ride, onBack, hasLiveSession, onBackToLive }: Props) => {
-  const [showOrderDetails, setShowOrderDetails] = useState(false);
+  const [showServiceDetails, setShowServiceDetails] = useState(false);
   const [showContactSupport, setShowContactSupport] = useState(false);
   const [showChat, setShowChat] = useState(false);
   const socketRef = useRef<any>(null);
 
-  
-
-  const st = ride.serviceType?.toLowerCase() || "deliver";
+  const st = (ride.serviceType || "").toLowerCase();
   const isConciergeStyle = st === "concierge" || st === "valet";
-  const iconSrc = serviceIconSrc[ride.serviceType] || deliverIcon;
 
   const origin = ride.pickupInfo?.placeName || ride.pickupInfo?.fullAddress || ride.pickupInfo?.address || "";
   const originFull = ride.pickupInfo?.fullAddress || ride.pickupInfo?.address || "";
@@ -97,14 +38,11 @@ const ActivityRideDetail = ({ ride, onBack, hasLiveSession, onBackToLive }: Prop
   const hasAddress = !!(origin || destination);
 
   const isScheduled = ride.scheduleType === "later";
-  const steps = getStepsForService(ride.serviceType);
-  const maxStep = steps.length - 1;
-  const rawStep = getDeliveryStep(ride.status);
-  const deliveryStep = rawStep === -1 ? -1 : Math.min(rawStep, maxStep);
   const isCancelled = ride.status?.toLowerCase() === "cancelled" || ride.status?.toLowerCase() === "canceled";
-  const isComplete = deliveryStep >= maxStep;
+  const isCompleted = ride.status?.toLowerCase() === "completed";
+  const isLive = !isCancelled && !isCompleted;
 
-  // Full booking details from localStorage (must be before provider logic)
+  // Stored details from localStorage
   const storedDetails = useMemo(() => {
     try {
       const stored = JSON.parse(localStorage.getItem("courial_order_details") || "{}");
@@ -112,7 +50,7 @@ const ActivityRideDetail = ({ ride, onBack, hasLiveSession, onBackToLive }: Prop
     } catch { return null; }
   }, [ride.orderid]);
 
-  // Provider / Driver info — prefer API data, fall back to localStorage
+  // Provider / Driver info
   const apiProvider = ride.Provider || ride.provider || null;
   const storedProvider = storedDetails?.provider || null;
   const provider = apiProvider || storedProvider;
@@ -121,27 +59,21 @@ const ActivityRideDetail = ({ ride, onBack, hasLiveSession, onBackToLive }: Prop
     : null;
   const driverImage = provider?.image || provider?.profile_image || null;
   const driverRating = provider?.rating ? parseFloat(String(provider.rating)) : null;
-  const driverSince = provider?.since_year || provider?.sinceYear || null;
   const driverVehicle = provider?.UserVehicle || ride.UserVehicle || null;
   const vehicleDesc = driverVehicle
     ? `${driverVehicle.color ? driverVehicle.color + " " : ""}${driverVehicle.year ? driverVehicle.year + " " : ""}${driverVehicle.make || ""} ${driverVehicle.model || ""}`.trim()
     : null;
-  const licensePlate = driverVehicle?.license_plate || driverVehicle?.licensePlate || null;
+  const hasProvider = !!(ride.providerId || provider);
 
   const vehicle = ride.transport_mode || ride.conciergeVehicle || ride.concierge_vehicle || null;
 
-  const isLive = !isCancelled && !isComplete;
-  const hasProvider = !!(ride.providerId || provider);
-
+  // Categories
   const storedCategories = (() => {
     try {
       const stored = JSON.parse(localStorage.getItem("courial_order_categories") || "{}");
       return stored[String(ride.orderid)] || null;
     } catch { return null; }
   })();
-  const categoryName = ride.category || storedDetails?.category || storedCategories?.category || null;
-  const subCategoryName = ride.subCategory || ride.sub_category || storedDetails?.subCategory || storedCategories?.subCategory || null;
-  const categoryDisplay = [categoryName, subCategoryName].filter(Boolean).join(" • ") || null;
 
   // Format date
   const orderDate = (() => {
@@ -151,546 +83,252 @@ const ActivityRideDetail = ({ ride, onBack, hasLiveSession, onBackToLive }: Prop
     return d;
   })();
 
+  const serviceLabel = ride.serviceType === "Scheduled Ride"
+    ? "Scheduled Ride"
+    : vehicleDesc || vehicle || ride.serviceType || "Delivery";
+
   return (
     <div className="h-full flex flex-col">
-      {/* Map */}
-      {hasAddress && (
-        <div className="relative mx-6 mt-6 h-48 rounded-2xl overflow-hidden bg-muted border border-border shadow-sm">
-          <ActivityDetailMap origin={origin || originFull} destination={destination || destinationFull} />
-          <button
-            onClick={onBack}
-            className="absolute top-3 left-3 w-7 h-7 rounded-full bg-background/50 backdrop-blur-sm flex items-center justify-center shadow-md hover:bg-background/70 transition-colors z-10"
-          >
-            <ArrowLeft className="w-3.5 h-3.5 text-foreground" />
-          </button>
-        </div>
-      )}
-
       {/* Scrollable content */}
-      <div className="flex-1 overflow-y-auto p-6 space-y-3">
-        {/* If no map, show back button */}
-        {!hasAddress && (
+      <div className="flex-1 overflow-y-auto">
+        <div className="p-6">
+          {/* Back button */}
           <button
             onClick={onBack}
-            className="flex items-center gap-1 pl-2 pr-3 py-1.5 rounded-full bg-foreground text-background hover:bg-foreground/80 transition-colors mb-2 font-semibold text-xs"
+            className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors mb-4"
           >
-            <ChevronLeft className="w-3.5 h-3.5" />
-            Pending
+            <ArrowLeft className="w-4 h-4" />
+            Back
           </button>
-        )}
 
-        {/* Header — matches live tracking */}
-        <div className="text-center mb-4">
-          <h2 className="text-lg font-bold text-foreground capitalize">
-            {st === "concierge" ? "Concierge Service" : st === "valet" ? "Valet Service" : "Delivery"}
-          </h2>
-          {categoryDisplay && (
-            <p className="text-sm font-medium text-muted-foreground mt-0.5">
-              {categoryDisplay}
-            </p>
-          )}
-          {isScheduled ? (
-            <div className="flex items-center justify-center gap-2 mt-1">
-              <span className="px-2.5 py-0.5 rounded-full bg-blue-100 text-foreground text-[11px] font-normal">Scheduled</span>
-              {orderDate instanceof Date && (
-                <span className="text-sm text-foreground font-semibold">
-                  {format(orderDate, "d MMMM")} • {format(orderDate, "h:mm a")}
-                </span>
-              )}
+          {/* Card container */}
+          <div className="rounded-2xl border border-border bg-card overflow-hidden">
+            {/* Header */}
+            <div className="pt-5 pb-3 text-center">
+              <h2 className="text-lg font-bold text-foreground">Ride Details</h2>
             </div>
-          ) : (
-            !isCancelled && !isComplete && (
-              <p className="text-sm font-medium text-muted-foreground mt-0.5 flex items-center justify-center gap-1.5">
-                <span className="relative flex h-2 w-2 shrink-0">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75" />
-                  <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500" />
-                </span>
-                Live
-              </p>
-            )
-          )}
-        </div>
 
-        {/* Driver Card */}
-        {(driverName || ride.providerId) && (
-          <div className="rounded-xl border border-border bg-background p-4">
-            <div className="flex items-center gap-4">
-              {driverImage ? (
-                <img src={driverImage} alt={driverName || "Courial"} className="w-[60px] h-[60px] rounded-full object-cover border border-border" />
-              ) : (
-                <div className="rounded-full bg-muted flex items-center justify-center text-xl font-bold text-foreground" style={{ width: 60, height: 60 }}>
-                  {(driverName || "C").charAt(0)}
-                </div>
-              )}
-              <div className="flex-1">
-                <div className="flex items-center gap-2">
-                  <h3 className="text-base font-bold text-foreground">{driverName?.split(" ")[0] || "Courial"}</h3>
+            {/* Map */}
+            {hasAddress && (
+              <div className="mx-4 h-44 rounded-xl overflow-hidden bg-muted mb-4">
+                <ActivityDetailMap origin={origin || originFull} destination={destination || destinationFull} />
+              </div>
+            )}
+
+            {/* Driver info section */}
+            <div className="px-5 pb-5">
+              {/* Driver name + rating + photo */}
+              <div className="flex items-start justify-between mb-1">
+                <div className="flex items-center gap-3">
+                  <h3 className="text-2xl font-bold text-foreground">
+                    {driverName?.split(" ")[0] || "Unassigned"}
+                  </h3>
                   {driverRating && (
-                    <>
-                      <Star className="w-3.5 h-3.5 text-primary fill-primary" />
-                      <span className="text-sm text-muted-foreground">{driverRating.toFixed(2)}</span>
-                    </>
+                    <div className="flex items-center gap-1">
+                      <Star className="w-4 h-4 text-primary fill-primary" />
+                      <span className="text-lg font-bold text-foreground">
+                        {driverRating.toFixed(1)}
+                      </span>
+                    </div>
                   )}
                 </div>
-                {driverSince && (
-                  <div className="text-xs text-muted-foreground mt-0.5">
-                    Courial Since {driverSince}
-                  </div>
-                )}
-                {vehicleDesc && (
-                  <div className="text-xs text-muted-foreground mt-0.5">{vehicleDesc}</div>
-                )}
-                {licensePlate && (
-                  <div className="text-xs text-foreground mt-0.5">
-                    <span className="font-normal text-muted-foreground">Plate No.</span>{" "}
-                    <span className="font-bold">{licensePlate}</span>
+                {driverImage ? (
+                  <img
+                    src={driverImage}
+                    alt={driverName || "Driver"}
+                    className="w-12 h-12 rounded-full object-cover border border-border"
+                  />
+                ) : (
+                  <div className="w-12 h-12 rounded-full bg-muted flex items-center justify-center">
+                    <svg className="w-6 h-6 text-muted-foreground" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                      <circle cx="12" cy="7" r="4" />
+                    </svg>
                   </div>
                 )}
               </div>
-              {isConciergeStyle && (!vehicle || vehicle === "none") ? (
-                <img src={noVehicleIcon} alt="No vehicle needed" className="h-[60px] w-[60px] shrink-0 object-contain" />
-              ) : (
-                <img src={iconSrc} alt={ride.serviceType} className="w-10 h-10 object-contain" />
-              )}
-            </div>
-          </div>
-        )}
 
-        {/* Status & Progress Stepper */}
-        {!isCancelled && (
-          <div className="rounded-xl border border-border bg-background p-4">
-            <div className="space-y-0 relative">
-              {steps.map((step, i) => {
-                const isCompleted = deliveryStep > i;
-                const isCurrent = deliveryStep === i;
-                const isFuture = i > deliveryStep;
-                return (
-                  <div key={step.label} className="flex gap-3">
-                    <div className="flex flex-col items-center">
-                      <div
-                        className={cn(
-                          "w-3 h-3 rounded-full border-2 shrink-0 transition-all duration-300",
-                          isCompleted
-                            ? "bg-primary border-primary"
-                            : isCurrent
-                            ? "bg-primary border-primary ring-4 ring-primary/20"
-                            : "bg-muted border-border"
-                        )}
-                      />
-                      {i < steps.length - 1 && (
-                        <div
-                          className={cn(
-                            "w-0.5 flex-1 min-h-[24px] transition-colors duration-300",
-                            isCompleted ? "bg-primary" : "bg-border"
-                          )}
-                        />
-                      )}
-                    </div>
-                    <div className={cn("pb-3", i === steps.length - 1 && "pb-0")}>
-                      <p
-                        className={cn(
-                          "text-sm font-semibold leading-tight transition-colors",
-                          isCurrent ? "text-foreground" : isCompleted ? "text-muted-foreground" : "text-muted-foreground/50"
-                        )}
-                      >
-                        {step.label === steps[steps.length - 1].label && isComplete
-                          ? `Service ${ride.orderid} Complete`
-                          : step.label}
-                        {isCompleted && <span className="ml-1.5 text-primary">✓</span>}
-                      </p>
-                      {isCurrent && step.desc && (
-                        <motion.div
-                          initial={{ opacity: 0, y: -4 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          className="mt-0.5"
-                        >
-                          <p className="text-xs text-muted-foreground">{step.desc}</p>
-                        </motion.div>
-                      )}
-                    </div>
-                  </div>
-                );
-              })}
+              {/* Vehicle type */}
+              <p className="text-sm text-muted-foreground mb-1">{serviceLabel}</p>
+
+              {/* Fee + icon + vehicle */}
+              <div className="flex items-center gap-2 text-sm font-bold text-foreground mb-0.5">
+                <span>{formatFee(ride.deliveryFee)}</span>
+                {isScheduled ? (
+                  <Calendar className="w-3.5 h-3.5 text-muted-foreground" />
+                ) : (
+                  <Zap className="w-3.5 h-3.5 text-muted-foreground" />
+                )}
+                <span className="text-muted-foreground font-normal capitalize">
+                  {vehicleDesc || vehicle || st || "delivery"}
+                </span>
+              </div>
+
+              {/* Date + Order ID */}
+              <p className="text-sm text-muted-foreground mb-2">
+                {orderDate instanceof Date
+                  ? `${format(orderDate, "d MMM")} • ${format(orderDate, "hh:mm a")}`
+                  : typeof orderDate === "string" ? orderDate : "—"
+                }
+                {ride.orderid && ` • Order ID ${ride.orderid}`}
+              </p>
+
+              {/* Payment + Status */}
+              <div className="flex items-center gap-2">
+                <span className="text-sm">💵</span>
+                <span className="text-sm text-muted-foreground">Cash</span>
+                <span className="text-muted-foreground/40">•</span>
+                <span
+                  className={`text-xs font-semibold px-2.5 py-0.5 rounded-full ${
+                    isCompleted
+                      ? "text-green-500 bg-green-500/10"
+                      : isCancelled
+                      ? "text-red-500 bg-red-500/10"
+                      : "text-yellow-500 bg-yellow-500/10"
+                  }`}
+                >
+                  {ride.status}
+                </span>
+              </div>
             </div>
+
+            {/* Receipt message (for completed) */}
+            {isCompleted && (
+              <>
+                <div className="mx-5 border-t border-border" />
+                <p className="text-sm text-muted-foreground text-center py-4 px-5 italic">
+                  A detailed receipt has been sent to your email.
+                </p>
+                <div className="mx-5 border-t border-border" />
+              </>
+            )}
 
             {/* Addresses */}
-            <div className="space-y-3 pt-3 mt-3 border-t border-border">
-              {(origin || originFull) && (
-                <div className="flex items-start gap-3">
-                  <div className="flex-shrink-0 w-2.5 h-2.5 rounded-full bg-green-500 mt-[5px]" />
-                  <p className="text-xs text-muted-foreground">
-                    {ride.pickupInfo?.placeName
-                      ? `${ride.pickupInfo.placeName}, ${originFull}`
-                      : originFull || origin}
-                  </p>
-                </div>
-              )}
-              {(destination || destinationFull) && (
-                <div className="flex items-start gap-3">
-                  <div className="flex-shrink-0 w-2.5 h-2.5 bg-red-500 mt-[5px]" />
-                  <p className="text-xs text-muted-foreground">
-                    {ride.deliveryInfo?.placeName
-                      ? `${ride.deliveryInfo.placeName}, ${destinationFull}`
-                      : destinationFull || destination}
-                  </p>
-                </div>
-              )}
-            </div>
-          </div>
-        )}
-
-        {/* Cancelled status */}
-        {isCancelled && (
-          <div className="rounded-xl border border-destructive/30 bg-destructive/5 p-4 text-center">
-            <p className="text-sm font-semibold text-destructive">Order Cancelled</p>
-            {orderDate instanceof Date && (
-              <p className="text-xs text-muted-foreground mt-1">
-                {format(orderDate, "d MMMM yyyy")} at {format(orderDate, "h:mm a")}
-              </p>
+            {hasAddress && (
+              <div className="px-5 py-4 space-y-4">
+                {(origin || originFull) && (
+                  <div className="flex items-start gap-3">
+                    <div className="flex-shrink-0 w-3 h-3 rounded-full bg-green-500 mt-1" />
+                    <div>
+                      {ride.pickupInfo?.placeName && (
+                        <p className="text-sm font-bold text-foreground">
+                          {ride.pickupInfo.placeName}
+                        </p>
+                      )}
+                      <p className="text-sm text-muted-foreground">
+                        {originFull || origin}
+                      </p>
+                    </div>
+                  </div>
+                )}
+                {(destination || destinationFull) && (
+                  <div className="flex items-start gap-3">
+                    <div className="flex-shrink-0 w-3 h-3 bg-red-500 mt-1" />
+                    <div>
+                      {ride.deliveryInfo?.placeName && (
+                        <p className="text-sm font-bold text-foreground">
+                          {ride.deliveryInfo.placeName}
+                        </p>
+                      )}
+                      <p className="text-sm text-muted-foreground">
+                        {destinationFull || destination}
+                      </p>
+                    </div>
+                  </div>
+                )}
+              </div>
             )}
           </div>
-        )}
 
-        {/* Action buttons row — always visible */}
-        <div className="flex items-center justify-center gap-2">
+          {/* Need help? button */}
           <button
             onClick={() => setShowContactSupport(true)}
-            className="w-10 h-10 flex items-center justify-center rounded-full bg-emerald-500 hover:bg-emerald-600 transition-colors"
-            aria-label="Contact Support"
+            className="w-full mt-4 py-3.5 rounded-full border border-border text-sm font-semibold text-foreground hover:bg-muted transition-colors"
           >
-            <Headset className="w-4.5 h-4.5 text-white" />
+            Need help?
           </button>
-          <button
-            onClick={() => {
-              if (hasLiveSession && onBackToLive) {
-                onBackToLive();
-              }
-            }}
-            disabled={!hasLiveSession}
-            className={cn(
-              "h-10 px-5 flex items-center justify-center rounded-lg text-sm font-semibold transition-colors",
-              hasLiveSession
-                ? "bg-foreground text-background hover:bg-foreground/80"
-                : "bg-muted text-muted-foreground border border-foreground/10 cursor-not-allowed"
-            )}
-          >
-            Back to Live
-          </button>
-          <button
-            onClick={() => setShowChat(prev => !prev)}
-            className="w-10 h-10 flex items-center justify-center rounded-full bg-foreground hover:bg-foreground/80 transition-colors"
-            aria-label="Message"
-          >
-            <MessageCircle className="w-4.5 h-4.5 text-background" />
-          </button>
-        </div>
 
-        {/* Chat */}
-        {showChat && (
-          <RideChat
-            orderId={String(ride.orderid || "")}
-            numericOrderId={String(ride.orderid || "")}
-            senderId={String(ride.userId || "")}
-            receiverId={hasProvider ? String(ride.providerId || "") : "support"}
-            courialName={hasProvider && driverName ? driverName : "Courial Support"}
-            socketRef={socketRef}
-            visible={showChat}
-          />
-        )}
-
-        {/* Service Details accordion */}
-        <div className="rounded-xl border border-border bg-background px-4 py-2.5">
-          <button
-            onClick={() => setShowOrderDetails(p => !p)}
-            className="flex items-center justify-between w-full"
-          >
-            <p className="text-xs font-bold uppercase tracking-wider text-muted-foreground">{ride.orderid} • Service Details</p>
-            <ChevronDown className={cn("w-3.5 h-3.5 text-muted-foreground transition-transform", showOrderDetails && "rotate-180")} />
-          </button>
-          {showOrderDetails && (
-            <div className="mt-3 space-y-0 divide-y divide-border text-sm">
-              {/* Language + Rate + Mode row */}
-              {(() => {
-                const lang = storedDetails?.language || null;
-                const rate = storedDetails?.rate || null;
-                const mode = storedDetails?.mode || vehicle || ride.transport_mode || null;
-                const isRoadside = storedDetails?.category?.toLowerCase()?.includes("roadside");
-                const isValet = st === "valet";
-                const providerLang = provider?.language || null;
-
-                // Valet: Rate + Mode + Language Prefs row
-                if (isValet && (rate || mode || lang)) {
-                  return (
-                    <div className="grid grid-cols-3 gap-4 py-2.5">
-                      {rate && (
-                        <div>
-                          <p className="text-xs font-medium text-foreground mb-0.5">Rate</p>
-                          <p className="text-[11px] text-muted-foreground">
-                            {rate === "hourly" ? "$65 per Hour" : rate === "daily" ? "$480 Daily" : rate}
-                          </p>
-                        </div>
-                      )}
-                      {mode && (
-                        <div>
-                          <p className="text-xs font-medium text-foreground mb-0.5">Mode</p>
-                          <p className="text-[11px] text-muted-foreground capitalize">{mode === "none" ? "None" : mode}</p>
-                        </div>
-                      )}
-                      {lang && (
-                        <div>
-                          <p className="text-xs font-medium text-foreground mb-0.5">Language Prefs</p>
-                          <p className="text-[11px] text-muted-foreground flex items-center gap-1">
-                            {lang}
-                            {providerLang && (
-                              providerLang.toLowerCase() === lang.toLowerCase()
-                                ? <Check className="w-3.5 h-3.5 text-green-500" />
-                                : <X className="w-3.5 h-3.5 text-red-500" />
-                            )}
-                          </p>
-                        </div>
-                      )}
-                    </div>
-                  );
-                }
-
-                // Concierge/Deliver: Language + Rate/Mode row
-                if (lang || (isConciergeStyle && (rate || mode))) {
-                  return (
-                    <div className="grid grid-cols-3 gap-4 py-2.5">
-                      {lang && (
-                        <div>
-                          <p className="text-xs font-medium text-foreground mb-0.5">Language</p>
-                          <p className="text-[11px] text-muted-foreground flex items-center gap-1">
-                            {lang}
-                            {providerLang && (
-                              providerLang.toLowerCase() === lang.toLowerCase()
-                                ? <Check className="w-3.5 h-3.5 text-green-500" />
-                                : <X className="w-3.5 h-3.5 text-red-500" />
-                            )}
-                          </p>
-                        </div>
-                      )}
-                      {isRoadside && rate && (
-                        <div>
-                          <p className="text-xs font-medium text-foreground mb-0.5">Rate</p>
-                          <p className="text-[11px] text-muted-foreground">
-                            {rate === "hourly" ? "$65 per Hour" : rate === "daily" ? "$480 Daily" : rate}
-                          </p>
-                        </div>
-                      )}
-                      {(isRoadside || !isConciergeStyle) && mode && (
-                        <div>
-                          <p className="text-xs font-medium text-foreground mb-0.5">{isConciergeStyle ? "Mode" : "Mode"}</p>
-                          <p className="text-[11px] text-muted-foreground capitalize">{mode === "none" ? "None" : mode}</p>
-                        </div>
-                      )}
-                    </div>
-                  );
-                }
-                return null;
-              })()}
-
-              {/* Extras (deliver) */}
-              {!isConciergeStyle && (storedDetails?.hasStairs || (storedDetails?.over70lbs && Number(storedDetails?.heavyWeight) >= 70) || storedDetails?.twoCourials) && (
-                <div className="py-2.5">
-                  <p className="text-xs font-medium text-foreground mb-0.5">Extras</p>
-                  <p className="text-[11px] text-muted-foreground">
-                    {[
-                      storedDetails.hasStairs ? "Stairs" : null,
-                      storedDetails.over70lbs && Number(storedDetails.heavyWeight) >= 70 ? `${storedDetails.heavyWeight} lbs / ${storedDetails.heavyItems} ${parseInt(storedDetails.heavyItems) === 1 ? "item" : "items"}` : null,
-                      storedDetails.twoCourials ? "2 Courials Required" : null,
-                    ].filter(Boolean).join(", ")}
-                  </p>
-                </div>
+          {/* Action buttons for live orders */}
+          {isLive && (
+            <div className="flex items-center gap-2 mt-3">
+              <button
+                onClick={() => setShowChat((prev) => !prev)}
+                className="flex-1 py-3 rounded-full bg-foreground text-background text-sm font-semibold hover:bg-foreground/90 transition-colors flex items-center justify-center gap-2"
+              >
+                <MessageCircle className="w-4 h-4" />
+                Chat
+              </button>
+              {hasLiveSession && onBackToLive && (
+                <button
+                  onClick={onBackToLive}
+                  className="flex-1 py-3 rounded-full border border-border text-sm font-semibold text-foreground hover:bg-muted transition-colors"
+                >
+                  Back to Live
+                </button>
               )}
-
-              {/* Rate & Mode (concierge non-roadside, non-valet) */}
-              {isConciergeStyle && st !== "valet" && !storedDetails?.category?.toLowerCase()?.includes("roadside") && (storedDetails?.rate || storedDetails?.mode) && (
-                <div className="grid grid-cols-3 gap-4 py-2.5">
-                  {storedDetails.rate && (
-                    <div>
-                      <p className="text-xs font-medium text-foreground mb-0.5">Rate</p>
-                      <p className="text-[11px] text-muted-foreground">
-                        {storedDetails.rate === "hourly" ? "$65 per Hour" : storedDetails.rate === "daily" ? "$480 Daily" : storedDetails.rate}
-                      </p>
-                    </div>
-                  )}
-                  {storedDetails.mode && (
-                    <div>
-                      <p className="text-xs font-medium text-foreground mb-0.5">Mode</p>
-                      <p className="text-[11px] text-muted-foreground capitalize">{storedDetails.mode === "none" ? "None" : storedDetails.mode}</p>
-                    </div>
-                  )}
-                </div>
-              )}
-
-              {/* Service Description (concierge/valet) */}
-              {isConciergeStyle && (storedDetails?.description || ride.description) && (
-                <div className="py-2.5">
-                  <p className="text-xs font-medium text-foreground mb-0.5">Service Description</p>
-                  <p className="text-[11px] text-muted-foreground whitespace-pre-wrap">{storedDetails?.description || ride.description}</p>
-                </div>
-              )}
-
-              {/* Valet Service Details (vehicle info) */}
-              {st === "valet" && storedDetails?.vehicleDetails && (
-                <div className="py-2.5">
-                  <p className="text-xs font-medium text-foreground mb-0.5">Service Details</p>
-                  <p className="text-[11px] text-muted-foreground">
-                    {[storedDetails.vehicleDetails.year, storedDetails.vehicleDetails.color, storedDetails.vehicleDetails.make, storedDetails.vehicleDetails.model].filter(Boolean).join(" ")}
-                    {storedDetails.vehicleDetails.portType ? ` • ${storedDetails.vehicleDetails.portType} Port Type` : ""}
-                    {storedDetails.vehicleDetails.licensePlate ? ` • Plate #${storedDetails.vehicleDetails.licensePlate}` : ""}
-                  </p>
-                  {(storedDetails.vehicleDetails.currentCharge || storedDetails.vehicleDetails.targetCharge) && (
-                    <p className="text-[11px] text-muted-foreground">
-                      {storedDetails.vehicleDetails.currentCharge ? `Current Range of ${storedDetails.vehicleDetails.currentCharge}%` : ""}
-                      {storedDetails.vehicleDetails.currentCharge && storedDetails.vehicleDetails.targetCharge ? " • " : ""}
-                      {storedDetails.vehicleDetails.targetCharge ? `Charge to ${storedDetails.vehicleDetails.targetCharge}%` : ""}
-                    </p>
-                  )}
-                </div>
-              )}
-
-              {/* Roadside vehicle details (concierge roadside) */}
-              {st === "concierge" && storedDetails?.vehicleDetails && (storedDetails.vehicleDetails.make || storedDetails.vehicleDetails.model) && (
-                <div className="py-2.5">
-                  <p className="text-xs font-medium text-foreground mb-0.5">Service Vehicle</p>
-                  <p className="text-[11px] text-muted-foreground">
-                    {[storedDetails.vehicleDetails.color, storedDetails.vehicleDetails.make, storedDetails.vehicleDetails.model].filter(Boolean).join(" ")}
-                    {storedDetails.vehicleDetails.licensePlate ? ` • Plate #${storedDetails.vehicleDetails.licensePlate}` : ""}
-                  </p>
-                  {storedDetails.roadsideSafeLocation !== null && storedDetails.roadsideSafeLocation !== undefined && (
-                    <div className="mt-1">
-                      <p className="text-xs font-medium text-foreground mb-0.5">Safe Location</p>
-                      <p className="text-[11px] text-muted-foreground">{storedDetails.roadsideSafeLocation ? "Yes" : "No"}</p>
-                    </div>
-                  )}
-                </div>
-              )}
-
-              {/* Concierge: Stairs & 2 Courials */}
-              {isConciergeStyle && (storedDetails?.twoCourials || storedDetails?.hasStairs) && (
-                <div className="grid grid-cols-2 gap-4 py-2.5">
-                  {storedDetails.twoCourials && (
-                    <div>
-                      <p className="text-xs font-medium text-foreground mb-0.5">2 Courials</p>
-                      <p className="text-[11px] text-muted-foreground">Yes</p>
-                    </div>
-                  )}
-                  {storedDetails.hasStairs && (
-                    <div>
-                      <p className="text-xs font-medium text-foreground mb-0.5">Stairs</p>
-                      <p className="text-[11px] text-muted-foreground">Yes</p>
-                    </div>
-                  )}
-                </div>
-              )}
-
-              {/* Notes (deliver) */}
-              {!isConciergeStyle && (storedDetails?.notes || ride.notes) && (
-                <div className="py-2.5">
-                  <p className="text-xs font-medium text-foreground mb-0.5">Notes</p>
-                  <p className="text-[11px] text-muted-foreground whitespace-pre-wrap">{storedDetails?.notes || ride.notes}</p>
-                </div>
-              )}
-
-              {/* Expenses */}
-              {storedDetails?.expenses && storedDetails.expenses.items?.length > 0 && (
-                <div className="py-2.5">
-                  <div className="flex items-center justify-between mb-1">
-                    <p className="text-xs font-medium text-foreground">Expenses</p>
-                    <span className="text-[11px] text-muted-foreground">
-                      ${storedDetails.expenses.items.reduce((sum: number, e: any) => sum + Number(e.amount), 0).toLocaleString()}
-                      {storedDetails.expenses.allowOverage && Number(storedDetails.expenses.overageLimit) > 0 ? ` ($${storedDetails.expenses.overageLimit})` : ""}
-                    </span>
-                  </div>
-                  {storedDetails.expenses.items.map((e: any, i: number) => (
-                    <p key={i} className="text-[11px] text-muted-foreground leading-relaxed">{e.description}</p>
-                  ))}
-                </div>
-              )}
-
-              {/* Order Value & Protection */}
-              {storedDetails?.orderValue && (
-                <div className="grid grid-cols-3 gap-4 py-2.5">
-                  <div>
-                    <p className="text-xs font-medium text-foreground mb-0.5">Order Value</p>
-                    <p className="text-[11px] text-muted-foreground">${storedDetails.orderValue}</p>
-                  </div>
-                  {Number(storedDetails.orderValue) > 100 && (
-                    <div>
-                      <p className="text-xs font-medium text-foreground mb-0.5">Protection</p>
-                      <p className="text-[11px] text-muted-foreground">
-                        {storedDetails.declineProtection ? "Declined ($0)" : (() => {
-                          const val = Number(storedDetails.orderValue);
-                          if (val > 200) return "Accepted (Contact Support)";
-                          if (val > 100) return `Accepted ($${(val * 0.05).toFixed(0)})`;
-                          return "Accepted ($0)";
-                        })()}
-                      </p>
-                    </div>
-                  )}
-                </div>
-              )}
-
-              {/* Fallback: Vehicle / Mode (from API when no stored details) */}
-              {!storedDetails && (vehicle || ride.transport_mode) && (
-                <div className="py-2.5">
-                  <p className="text-xs font-medium text-foreground mb-0.5">{isConciergeStyle ? "Mode" : "Vehicle"}</p>
-                  <p className="text-[11px] text-muted-foreground capitalize">{vehicle || ride.transport_mode}</p>
-                </div>
-              )}
-
-              {/* Fallback: Description (from API when no stored details) */}
-              {!storedDetails && (ride.description || ride.notes) && (
-                <div className="py-2.5">
-                  <p className="text-xs font-medium text-foreground mb-0.5">Description</p>
-                  <p className="text-[11px] text-muted-foreground whitespace-pre-wrap">{ride.description || ride.notes}</p>
-                </div>
-              )}
-
-              {/* Fallback: Vehicle details from API */}
-              {!storedDetails && ride.UserVehicle && (ride.UserVehicle.make || ride.UserVehicle.model) && (
-                <div className="py-2.5">
-                  <p className="text-xs font-medium text-foreground mb-0.5">Vehicle Details</p>
-                  <p className="text-[11px] text-muted-foreground">
-                    {[ride.UserVehicle.year, ride.UserVehicle.color, ride.UserVehicle.make, ride.UserVehicle.model].filter(Boolean).join(" ")}
-                  </p>
-                </div>
-              )}
-
-              {/* Estimated Fare */}
-              <div className="flex items-center justify-between py-2.5">
-                <span className="text-sm font-bold text-foreground">Estimated Fare</span>
-                <span className="text-sm font-bold text-foreground">{formatFee(ride.deliveryFee)}</span>
-              </div>
             </div>
           )}
-        </div>
 
-        {/* Rebook for cancelled */}
-        {isCancelled && (
-          <button className="w-full flex items-center justify-center gap-2 text-sm font-semibold text-background bg-foreground rounded-lg h-10 hover:bg-foreground/90 transition-colors">
-            <RotateCcw className="w-4 h-4" />
-            Rebook
-          </button>
-        )}
+          {/* Chat */}
+          {showChat && (
+            <div className="mt-3">
+              <RideChat
+                orderId={String(ride.orderid || "")}
+                numericOrderId={String(ride.orderid || "")}
+                senderId={String(ride.userId || "")}
+                receiverId={hasProvider ? String(ride.providerId || "") : "support"}
+                courialName={hasProvider && driverName ? driverName : "Courial Support"}
+                socketRef={socketRef}
+                visible={showChat}
+              />
+            </div>
+          )}
 
-        {/* Cancel button */}
-        {!isCancelled && !isComplete && (
-          <button
-            onClick={() => hasLiveSession && toast.info("To cancel, please contact support.")}
-            disabled={!hasLiveSession}
-            className={cn(
-              "w-full py-3 rounded-full text-sm font-semibold transition-colors",
-              hasLiveSession
-                ? "text-white bg-destructive hover:bg-destructive/90"
-                : "bg-muted text-muted-foreground border border-foreground/10 cursor-not-allowed"
+          {/* Cancel for live orders */}
+          {isLive && (
+            <button
+              onClick={() => hasLiveSession && toast.info("To cancel, please contact support.")}
+              disabled={!hasLiveSession}
+              className={cn(
+                "w-full mt-3 py-3 rounded-full text-sm font-semibold transition-colors",
+                hasLiveSession
+                  ? "text-white bg-destructive hover:bg-destructive/90"
+                  : "bg-muted text-muted-foreground border border-foreground/10 cursor-not-allowed"
+              )}
+            >
+              Cancel {st === "concierge" ? "Concierge" : st === "valet" ? "Valet" : "Delivery"}
+            </button>
+          )}
+
+          {/* Rebook for cancelled */}
+          {isCancelled && (
+            <button className="w-full mt-3 flex items-center justify-center gap-2 text-sm font-semibold text-background bg-foreground rounded-full py-3 hover:bg-foreground/90 transition-colors">
+              <RotateCcw className="w-4 h-4" />
+              Rebook
+            </button>
+          )}
+
+          {/* Service Details accordion */}
+          <div className="mt-3 rounded-2xl border border-border bg-card px-4 py-3">
+            <button
+              onClick={() => setShowServiceDetails((p) => !p)}
+              className="flex items-center justify-between w-full"
+            >
+              <p className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
+                {ride.orderid} • Service Details
+              </p>
+              <ChevronDown
+                className={cn(
+                  "w-3.5 h-3.5 text-muted-foreground transition-transform",
+                  showServiceDetails && "rotate-180"
+                )}
+              />
+            </button>
+            {showServiceDetails && (
+              <ServiceDetailsContent ride={ride} storedDetails={storedDetails} provider={provider} isConciergeStyle={isConciergeStyle} st={st} vehicle={vehicle} />
             )}
-          >
-            Cancel {st === "concierge" ? "Concierge" : st === "valet" ? "Valet" : "Delivery"}
-          </button>
-        )}
+          </div>
+        </div>
       </div>
 
       {/* Contact Support Dialog */}
@@ -715,9 +353,12 @@ const ActivityRideDetail = ({ ride, onBack, hasLiveSession, onBackToLive }: Prop
                     href={item.href}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className={`${item.color} w-14 h-14 rounded-full flex items-center justify-center hover:opacity-90 transition-opacity`}
+                    className="flex flex-col items-center gap-2 group"
                   >
-                    <item.icon className="w-6 h-6 text-white" />
+                    <div className={`${item.color} w-14 h-14 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform`}>
+                      <item.icon className="w-6 h-6 text-white" />
+                    </div>
+                    <span className="text-xs text-background/70 group-hover:text-background">{item.title}</span>
                   </a>
                 ))}
               </div>
@@ -728,5 +369,274 @@ const ActivityRideDetail = ({ ride, onBack, hasLiveSession, onBackToLive }: Prop
     </div>
   );
 };
+
+/* ─── Service Details Content (extracted for cleanliness) ─── */
+function ServiceDetailsContent({
+  ride,
+  storedDetails,
+  provider,
+  isConciergeStyle,
+  st,
+  vehicle,
+}: {
+  ride: ActivityItem;
+  storedDetails: any;
+  provider: any;
+  isConciergeStyle: boolean;
+  st: string;
+  vehicle: string | null;
+}) {
+  return (
+    <div className="mt-3 space-y-0 divide-y divide-border text-sm">
+      {/* Language + Rate + Mode */}
+      {(() => {
+        const lang = storedDetails?.language || null;
+        const rate = storedDetails?.rate || null;
+        const mode = storedDetails?.mode || vehicle || ride.transport_mode || null;
+        const isRoadside = storedDetails?.category?.toLowerCase()?.includes("roadside");
+        const isValet = st === "valet";
+        const providerLang = provider?.language || null;
+
+        if (isValet && (rate || mode || lang)) {
+          return (
+            <div className="grid grid-cols-3 gap-4 py-2.5">
+              {rate && (
+                <div>
+                  <p className="text-xs font-medium text-foreground mb-0.5">Rate</p>
+                  <p className="text-[11px] text-muted-foreground">
+                    {rate === "hourly" ? "$65 per Hour" : rate === "daily" ? "$480 Daily" : rate}
+                  </p>
+                </div>
+              )}
+              {mode && (
+                <div>
+                  <p className="text-xs font-medium text-foreground mb-0.5">Mode</p>
+                  <p className="text-[11px] text-muted-foreground capitalize">{mode === "none" ? "None" : mode}</p>
+                </div>
+              )}
+              {lang && (
+                <div>
+                  <p className="text-xs font-medium text-foreground mb-0.5">Language Prefs</p>
+                  <p className="text-[11px] text-muted-foreground flex items-center gap-1">
+                    {lang}
+                    {providerLang && (
+                      providerLang.toLowerCase() === lang.toLowerCase()
+                        ? <Check className="w-3.5 h-3.5 text-green-500" />
+                        : <X className="w-3.5 h-3.5 text-red-500" />
+                    )}
+                  </p>
+                </div>
+              )}
+            </div>
+          );
+        }
+
+        if (lang || (isConciergeStyle && (rate || mode))) {
+          return (
+            <div className="grid grid-cols-3 gap-4 py-2.5">
+              {lang && (
+                <div>
+                  <p className="text-xs font-medium text-foreground mb-0.5">Language</p>
+                  <p className="text-[11px] text-muted-foreground flex items-center gap-1">
+                    {lang}
+                    {providerLang && (
+                      providerLang.toLowerCase() === lang.toLowerCase()
+                        ? <Check className="w-3.5 h-3.5 text-green-500" />
+                        : <X className="w-3.5 h-3.5 text-red-500" />
+                    )}
+                  </p>
+                </div>
+              )}
+              {isRoadside && rate && (
+                <div>
+                  <p className="text-xs font-medium text-foreground mb-0.5">Rate</p>
+                  <p className="text-[11px] text-muted-foreground">
+                    {rate === "hourly" ? "$65 per Hour" : rate === "daily" ? "$480 Daily" : rate}
+                  </p>
+                </div>
+              )}
+              {(isRoadside || !isConciergeStyle) && mode && (
+                <div>
+                  <p className="text-xs font-medium text-foreground mb-0.5">Mode</p>
+                  <p className="text-[11px] text-muted-foreground capitalize">{mode === "none" ? "None" : mode}</p>
+                </div>
+              )}
+            </div>
+          );
+        }
+        return null;
+      })()}
+
+      {/* Extras (deliver) */}
+      {!isConciergeStyle && (storedDetails?.hasStairs || (storedDetails?.over70lbs && Number(storedDetails?.heavyWeight) >= 70) || storedDetails?.twoCourials) && (
+        <div className="py-2.5">
+          <p className="text-xs font-medium text-foreground mb-0.5">Extras</p>
+          <p className="text-[11px] text-muted-foreground">
+            {[
+              storedDetails.hasStairs ? "Stairs" : null,
+              storedDetails.over70lbs && Number(storedDetails.heavyWeight) >= 70 ? `${storedDetails.heavyWeight} lbs / ${storedDetails.heavyItems} ${parseInt(storedDetails.heavyItems) === 1 ? "item" : "items"}` : null,
+              storedDetails.twoCourials ? "2 Courials Required" : null,
+            ].filter(Boolean).join(", ")}
+          </p>
+        </div>
+      )}
+
+      {/* Rate & Mode (concierge non-roadside, non-valet) */}
+      {isConciergeStyle && st !== "valet" && !storedDetails?.category?.toLowerCase()?.includes("roadside") && (storedDetails?.rate || storedDetails?.mode) && (
+        <div className="grid grid-cols-3 gap-4 py-2.5">
+          {storedDetails.rate && (
+            <div>
+              <p className="text-xs font-medium text-foreground mb-0.5">Rate</p>
+              <p className="text-[11px] text-muted-foreground">
+                {storedDetails.rate === "hourly" ? "$65 per Hour" : storedDetails.rate === "daily" ? "$480 Daily" : storedDetails.rate}
+              </p>
+            </div>
+          )}
+          {storedDetails.mode && (
+            <div>
+              <p className="text-xs font-medium text-foreground mb-0.5">Mode</p>
+              <p className="text-[11px] text-muted-foreground capitalize">{storedDetails.mode === "none" ? "None" : storedDetails.mode}</p>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Service Description */}
+      {isConciergeStyle && (storedDetails?.description || ride.description) && (
+        <div className="py-2.5">
+          <p className="text-xs font-medium text-foreground mb-0.5">Service Description</p>
+          <p className="text-[11px] text-muted-foreground whitespace-pre-wrap">{storedDetails?.description || ride.description}</p>
+        </div>
+      )}
+
+      {/* Valet vehicle details */}
+      {st === "valet" && storedDetails?.vehicleDetails && (
+        <div className="py-2.5">
+          <p className="text-xs font-medium text-foreground mb-0.5">Service Details</p>
+          <p className="text-[11px] text-muted-foreground">
+            {[storedDetails.vehicleDetails.year, storedDetails.vehicleDetails.color, storedDetails.vehicleDetails.make, storedDetails.vehicleDetails.model].filter(Boolean).join(" ")}
+            {storedDetails.vehicleDetails.portType ? ` • ${storedDetails.vehicleDetails.portType} Port Type` : ""}
+            {storedDetails.vehicleDetails.licensePlate ? ` • Plate #${storedDetails.vehicleDetails.licensePlate}` : ""}
+          </p>
+          {(storedDetails.vehicleDetails.currentCharge || storedDetails.vehicleDetails.targetCharge) && (
+            <p className="text-[11px] text-muted-foreground">
+              {storedDetails.vehicleDetails.currentCharge ? `Current Range of ${storedDetails.vehicleDetails.currentCharge}%` : ""}
+              {storedDetails.vehicleDetails.currentCharge && storedDetails.vehicleDetails.targetCharge ? " • " : ""}
+              {storedDetails.vehicleDetails.targetCharge ? `Charge to ${storedDetails.vehicleDetails.targetCharge}%` : ""}
+            </p>
+          )}
+        </div>
+      )}
+
+      {/* Concierge roadside vehicle */}
+      {st === "concierge" && storedDetails?.vehicleDetails && (storedDetails.vehicleDetails.make || storedDetails.vehicleDetails.model) && (
+        <div className="py-2.5">
+          <p className="text-xs font-medium text-foreground mb-0.5">Service Vehicle</p>
+          <p className="text-[11px] text-muted-foreground">
+            {[storedDetails.vehicleDetails.color, storedDetails.vehicleDetails.make, storedDetails.vehicleDetails.model].filter(Boolean).join(" ")}
+            {storedDetails.vehicleDetails.licensePlate ? ` • Plate #${storedDetails.vehicleDetails.licensePlate}` : ""}
+          </p>
+        </div>
+      )}
+
+      {/* Concierge stairs/2 courials */}
+      {isConciergeStyle && (storedDetails?.twoCourials || storedDetails?.hasStairs) && (
+        <div className="grid grid-cols-2 gap-4 py-2.5">
+          {storedDetails.twoCourials && (
+            <div>
+              <p className="text-xs font-medium text-foreground mb-0.5">2 Courials</p>
+              <p className="text-[11px] text-muted-foreground">Yes</p>
+            </div>
+          )}
+          {storedDetails.hasStairs && (
+            <div>
+              <p className="text-xs font-medium text-foreground mb-0.5">Stairs</p>
+              <p className="text-[11px] text-muted-foreground">Yes</p>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Notes */}
+      {!isConciergeStyle && (storedDetails?.notes || ride.notes) && (
+        <div className="py-2.5">
+          <p className="text-xs font-medium text-foreground mb-0.5">Notes</p>
+          <p className="text-[11px] text-muted-foreground whitespace-pre-wrap">{storedDetails?.notes || ride.notes}</p>
+        </div>
+      )}
+
+      {/* Expenses */}
+      {storedDetails?.expenses && storedDetails.expenses.items?.length > 0 && (
+        <div className="py-2.5">
+          <div className="flex items-center justify-between mb-1">
+            <p className="text-xs font-medium text-foreground">Expenses</p>
+            <span className="text-[11px] text-muted-foreground">
+              ${storedDetails.expenses.items.reduce((sum: number, e: any) => sum + Number(e.amount), 0).toLocaleString()}
+              {storedDetails.expenses.allowOverage && Number(storedDetails.expenses.overageLimit) > 0 ? ` ($${storedDetails.expenses.overageLimit})` : ""}
+            </span>
+          </div>
+          {storedDetails.expenses.items.map((e: any, i: number) => (
+            <p key={i} className="text-[11px] text-muted-foreground leading-relaxed">{e.description}</p>
+          ))}
+        </div>
+      )}
+
+      {/* Order Value */}
+      {storedDetails?.orderValue && (
+        <div className="grid grid-cols-3 gap-4 py-2.5">
+          <div>
+            <p className="text-xs font-medium text-foreground mb-0.5">Order Value</p>
+            <p className="text-[11px] text-muted-foreground">${storedDetails.orderValue}</p>
+          </div>
+          {Number(storedDetails.orderValue) > 100 && (
+            <div>
+              <p className="text-xs font-medium text-foreground mb-0.5">Protection</p>
+              <p className="text-[11px] text-muted-foreground">
+                {storedDetails.declineProtection ? "Declined ($0)" : (() => {
+                  const val = Number(storedDetails.orderValue);
+                  if (val > 200) return "Accepted (Contact Support)";
+                  if (val > 100) return `Accepted ($${(val * 0.05).toFixed(0)})`;
+                  return "Accepted ($0)";
+                })()}
+              </p>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Fallback vehicle/mode */}
+      {!storedDetails && (vehicle || ride.transport_mode) && (
+        <div className="py-2.5">
+          <p className="text-xs font-medium text-foreground mb-0.5">{isConciergeStyle ? "Mode" : "Vehicle"}</p>
+          <p className="text-[11px] text-muted-foreground capitalize">{vehicle || ride.transport_mode}</p>
+        </div>
+      )}
+
+      {/* Fallback description */}
+      {!storedDetails && (ride.description || ride.notes) && (
+        <div className="py-2.5">
+          <p className="text-xs font-medium text-foreground mb-0.5">Description</p>
+          <p className="text-[11px] text-muted-foreground whitespace-pre-wrap">{ride.description || ride.notes}</p>
+        </div>
+      )}
+
+      {/* Fallback vehicle details */}
+      {!storedDetails && ride.UserVehicle && (ride.UserVehicle.make || ride.UserVehicle.model) && (
+        <div className="py-2.5">
+          <p className="text-xs font-medium text-foreground mb-0.5">Vehicle Details</p>
+          <p className="text-[11px] text-muted-foreground">
+            {[ride.UserVehicle.year, ride.UserVehicle.color, ride.UserVehicle.make, ride.UserVehicle.model].filter(Boolean).join(" ")}
+          </p>
+        </div>
+      )}
+
+      {/* Estimated Fare */}
+      <div className="flex items-center justify-between py-2.5">
+        <span className="text-sm font-bold text-foreground">Estimated Fare</span>
+        <span className="text-sm font-bold text-foreground">{formatFee(ride.deliveryFee)}</span>
+      </div>
+    </div>
+  );
+}
 
 export default ActivityRideDetail;
