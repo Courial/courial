@@ -127,15 +127,15 @@ export const ActivityPanel = ({ onBack }: { onBack: () => void }) => {
               exit={{ opacity: 0, y: -10 }}
               className="space-y-3"
             >
-              {rides.map((ride) => {
+              {rides.map((ride, idx) => {
                 const iconSrc = serviceIconSrc[ride.serviceType] || serviceIconSrc[ride.type] || deliverIcon;
-                const destination = ride.deliveryInfo?.address || ride.deliveryInfo?.name || "—";
-                const isScheduled = ride.type?.toLowerCase() === "scheduled";
+                const destination = ride.deliveryInfo?.address || ride.deliveryInfo?.name || ride.serviceType || "—";
+                const isScheduled = ride.type?.toLowerCase() === "scheduled" || ride.serviceType?.toLowerCase().includes("scheduled");
                 const vehicle = ride.transport_mode || ride.UserVehicle?.make || null;
 
                 return (
                   <div
-                    key={ride.orderid}
+                    key={`${ride.orderid}-${idx}`}
                     onClick={() => setSelectedRide(ride)}
                     className="rounded-2xl border border-border bg-card p-4 hover:border-primary/30 transition-colors cursor-pointer"
                   >
