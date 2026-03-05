@@ -3627,11 +3627,15 @@ const Book = () => {
                                     </button>
                                   </div>
                                 )}
-                                {numberOfPackages != null && (
+                                {numberOfPackages != null && numberOfPackages >= 1 && selectedService === "valet" ? (
+                                  <p className="text-xs font-medium text-muted-foreground flex items-center gap-1">
+                                    Vehicle picked up <CheckCircle2 className="w-3.5 h-3.5 text-green-500" />
+                                  </p>
+                                ) : numberOfPackages != null ? (
                                   <p className="text-xs font-medium text-muted-foreground">
                                     Items picked up: {numberOfPackages}
                                   </p>
-                                )}
+                                ) : null}
                               </motion.div>
                             )}
 
