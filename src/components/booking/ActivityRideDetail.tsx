@@ -82,7 +82,6 @@ const ActivityRideDetail = ({ ride, onBack, hasLiveSession, onBackToLive }: Prop
   const [showOrderDetails, setShowOrderDetails] = useState(false);
   const [showContactSupport, setShowContactSupport] = useState(false);
   const [showChat, setShowChat] = useState(false);
-  const navigate = useNavigate();
   const socketRef = useRef<any>(null);
 
   
