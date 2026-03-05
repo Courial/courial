@@ -1093,7 +1093,7 @@ const Book = () => {
       { label: "Service Complete", desc: "Invoice sent — thank you!", isComplete: true },
     ],
     concierge: [
-      { label: "Service Accepted", desc: "Your concierge request has been confirmed" },
+      { label: "Service Accepted", desc: "Service has been accepted" },
       { label: "Concierge Arrived", desc: "Your concierge has arrived" },
       { label: "Service In Progress", desc: "Service has begun" },
       { label: "Service Completed", desc: "Service completed" },
