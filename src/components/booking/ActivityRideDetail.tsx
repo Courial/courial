@@ -1,6 +1,6 @@
 import { useState, useRef } from "react";
 import { motion } from "framer-motion";
-import { ArrowLeft, Star, Calendar, Zap, ChevronDown, Headset, MessageCircle, RotateCcw, Phone, Mail, Radio } from "lucide-react";
+import { ArrowLeft, Star, Calendar, Zap, ChevronDown, Headset, MessageCircle, RotateCcw, Phone, Mail } from "lucide-react";
 import { RideChat } from "./RideChat";
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
@@ -351,13 +351,12 @@ const ActivityRideDetail = ({ ride, onBack, hasLiveSession, onBackToLive }: Prop
             }}
             disabled={!hasLiveSession}
             className={cn(
-              "h-10 px-4 flex items-center justify-center gap-1.5 rounded-full text-xs font-semibold transition-colors",
+              "h-10 px-5 flex items-center justify-center rounded-lg text-sm font-semibold transition-colors",
               hasLiveSession
                 ? "bg-foreground text-background hover:bg-foreground/80"
-                : "bg-muted text-muted-foreground cursor-not-allowed"
+                : "bg-muted text-muted-foreground border border-foreground/50 cursor-not-allowed"
             )}
           >
-            <Radio className="w-3.5 h-3.5" />
             Back to Live
           </button>
           <button
