@@ -818,6 +818,17 @@ const Book = () => {
         // Enable socket connection to listen for courial acceptance
         setSocketEnabled(true);
         console.log("[book-delivery] Delivery created:", data.data.deliveryId, "orderId:", data.data.orderId, "— socket enabled");
+
+        // Persist category info for activity detail view
+        if (isConciergeStyle && data.data.orderId) {
+          const catLabel = activeCategories.find(c => c.id === conciergeCategory)?.label || conciergeCategory || "";
+          const subCatLabel = conciergeSubCategory === "__direct__" ? catLabel : (conciergeSubCategory || "");
+          try {
+            const stored = JSON.parse(localStorage.getItem("courial_order_categories") || "{}");
+            stored[String(data.data.orderId)] = { category: catLabel, subCategory: subCatLabel };
+            localStorage.setItem("courial_order_categories", JSON.stringify(stored));
+          } catch {}
+        }
       } else {
         console.error("[book-delivery] Unexpected response:", data);
         toast.error(data?.msg || "Booking failed — unexpected response.");
@@ -993,6 +1004,17 @@ const Book = () => {
         if (data.data.nearbyCourials?.length) setNearbyCourials(data.data.nearbyCourials);
         setSocketEnabled(true);
         console.log("[WFH cascade] Re-submitted with location:", loc.address, "deliveryId:", data.data.deliveryId, "orderId:", data.data.orderId);
+
+        // Persist category info for activity detail view
+        if (data.data.orderId) {
+          const catLabel = activeCategories.find(c => c.id === conciergeCategory)?.label || conciergeCategory || "";
+          const subCatLabel = conciergeSubCategory === "__direct__" ? catLabel : (conciergeSubCategory || "");
+          try {
+            const stored = JSON.parse(localStorage.getItem("courial_order_categories") || "{}");
+            stored[String(data.data.orderId)] = { category: catLabel, subCategory: subCatLabel };
+            localStorage.setItem("courial_order_categories", JSON.stringify(stored));
+          } catch {}
+        }
       }
     } catch (err) {
       console.error("[WFH cascade] resubmit error:", err);
