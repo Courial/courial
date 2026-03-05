@@ -9,7 +9,7 @@ serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
   try {
-    const { make, model } = await req.json();
+    const { make, model, includeAll } = await req.json();
     if (!make || !model) {
       return new Response(JSON.stringify({ portTypes: [] }), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
@@ -34,7 +34,9 @@ serve(async (req) => {
           },
           {
             role: "user",
-            content: `What EV charging port type(s) does the ${make} ${model} use? Consider all model years from 2000-2025. List the charging port connector types this vehicle supports for DC fast charging and Level 2 charging. Common types include: NACS (Tesla), CCS (Combined Charging System), CHAdeMO, J1772, Type 2. Only list the port types that this specific vehicle actually uses. If a vehicle switched port types across years (e.g., Tesla switching to NACS), list all applicable types.`
+            content: includeAll
+              ? `What fuel/port type(s) does the ${make} ${model} use? Consider all model years from 2000-2025. Include all applicable types from: Gas, Diesel, Hybrid, NACS (Tesla), CCS, CHAdeMO, J1772, Type 2. For gas/diesel/hybrid vehicles, return "Gas", "Diesel", or "Hybrid" as appropriate. For EVs and PHEVs, list the charging port types. List all types that apply to this vehicle across model years.`
+              : `What EV charging port type(s) does the ${make} ${model} use? Consider all model years from 2000-2025. List the charging port connector types this vehicle supports for DC fast charging and Level 2 charging. Common types include: NACS (Tesla), CCS (Combined Charging System), CHAdeMO, J1772, Type 2. Only list the port types that this specific vehicle actually uses. If a vehicle switched port types across years (e.g., Tesla switching to NACS), list all applicable types.`
           }
         ],
         tools: [

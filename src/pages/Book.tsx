@@ -468,8 +468,9 @@ const Book = () => {
     setRoadsideModelsLoading(true);
     setRoadsideModelSuggestions([]);
     try {
+      const isEvOnly = selectedService === "valet" && conciergeCategory === "charge";
       const { data, error } = await supabase.functions.invoke("vehicle-models", {
-        body: { make, evOnly: selectedService === "valet" },
+        body: { make, evOnly: isEvOnly },
       });
       if (error) throw error;
       if (data?.models && Array.isArray(data.models)) {
@@ -480,16 +481,16 @@ const Book = () => {
     } finally {
       setRoadsideModelsLoading(false);
     }
-  }, [roadsideCustomModel, selectedService]);
+  }, [roadsideCustomModel, selectedService, conciergeCategory]);
 
-  const fetchVehiclePortTypes = useCallback(async (make: string, model: string) => {
+   const fetchVehiclePortTypes = useCallback(async (make: string, model: string) => {
     if (!make || !model || selectedService !== "valet") return;
     setRoadsidePortTypesLoading(true);
     setRoadsidePortTypeSuggestions([]);
     setRoadsidePortType("");
     try {
       const { data, error } = await supabase.functions.invoke("vehicle-port-types", {
-        body: { make, model },
+        body: { make, model, includeAll: conciergeCategory === "drive" },
       });
       if (error) throw error;
       if (data?.portTypes && Array.isArray(data.portTypes)) {
@@ -503,7 +504,7 @@ const Book = () => {
     } finally {
       setRoadsidePortTypesLoading(false);
     }
-  }, [selectedService]);
+  }, [selectedService, conciergeCategory]);
 
   // Close roadside dropdowns on outside click
   useEffect(() => {
