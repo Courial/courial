@@ -46,6 +46,11 @@ serve(async (req) => {
     });
 
     const data = await response.json();
+    const items = Array.isArray(data) ? data : data?.data ?? [];
+    if (Array.isArray(items) && items.length > 0) {
+      console.log("[fetch-activities] First item ALL keys:", JSON.stringify(Object.keys(items[0])));
+      console.log("[fetch-activities] First item full:", JSON.stringify(items[0]).slice(0, 4000));
+    }
     console.log("[fetch-activities] Raw response sample:", JSON.stringify(Array.isArray(data) ? data.slice(0, 2) : data).slice(0, 2000));
 
     if (!response.ok) {
