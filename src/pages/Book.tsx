@@ -1085,34 +1085,34 @@ const Book = () => {
 
   const deliveryStepsMap: Record<string, { label: string; desc: string; isComplete?: boolean }[]> = {
     deliver: [
-      { label: "Order Accepted", desc: "Your delivery request has been confirmed" },
+      { label: "Service Accepted", desc: "Your delivery request has been confirmed" },
       { label: "Courial at Pickup", desc: "Your courier has arrived at the pickup location" },
       { label: "Courial Picked Up", desc: "Package has been collected" },
       { label: "Courial at Drop-off", desc: "Your courier has arrived at the destination" },
       { label: "Courial Dropped Off", desc: "Package has been delivered" },
-      { label: "Order Complete", desc: "Invoice sent — thank you!", isComplete: true },
+      { label: "Service Complete", desc: "Invoice sent — thank you!", isComplete: true },
     ],
     concierge: [
-      { label: "Request Accepted", desc: "Concierge confirmed" },
+      { label: "Service Accepted", desc: "Your concierge request has been confirmed" },
       { label: "Concierge En Route", desc: "Your concierge is on the way" },
       { label: "Concierge Arrived", desc: "Your concierge has arrived" },
-      { label: "Task In Progress", desc: "Task has begun" },
-      { label: "Task Completed", desc: "Task completed" },
-      { label: "Order Complete", desc: "Invoice sent — thank you!", isComplete: true },
+      { label: "Service In Progress", desc: "Service has begun" },
+      { label: "Service Completed", desc: "Service completed" },
+      { label: "Service Complete", desc: "Invoice sent — thank you!", isComplete: true },
     ],
     concierge_wfh: [
       { label: "Request Accepted", desc: "Concierge confirmed" },
-      { label: "Task In Progress", desc: "Task has begun" },
-      { label: "Task Completed", desc: "Task completed" },
-      { label: "Order Complete", desc: "Invoice sent — thank you!", isComplete: true },
+      { label: "Service In Progress", desc: "Service has begun" },
+      { label: "Service Completed", desc: "Service completed" },
+      { label: "Service Complete", desc: "Invoice sent — thank you!", isComplete: true },
     ],
     valet: [
-      { label: "Request Accepted", desc: "Your valet request has been confirmed" },
+      { label: "Service Accepted", desc: "Your valet request has been confirmed" },
       { label: "Valet En Route", desc: "Your valet is on the way" },
       { label: "Valet Arrived", desc: "Your valet has arrived" },
-      { label: "Task In Progress", desc: "Service has begun" },
-      { label: "Task Completed", desc: "Service completed" },
-      { label: "Order Complete", desc: "Invoice sent — thank you!", isComplete: true },
+      { label: "Service In Progress", desc: "Service has begun" },
+      { label: "Service Completed", desc: "Service completed" },
+      { label: "Service Complete", desc: "Invoice sent — thank you!", isComplete: true },
     ],
   };
   const isWfhConcierge = selectedService === "concierge" && conciergeIsRemote;
@@ -3872,13 +3872,13 @@ const Book = () => {
                 )}
               </div>
 
-              {/* Order Details */}
+              {/* Service Details */}
               <div className="rounded-xl border border-border bg-background px-4 py-2.5 mb-4">
                 <button
                   onClick={() => setShowOrderDetails(p => !p)}
                   className="flex items-center justify-between w-full"
                 >
-                  <p className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Order Details</p>
+                  <p className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Service Details</p>
                   <ChevronDown className={cn("w-3.5 h-3.5 text-muted-foreground transition-transform", showOrderDetails && "rotate-180")} />
                 </button>
                 {showOrderDetails && (
