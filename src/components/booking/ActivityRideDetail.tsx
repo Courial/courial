@@ -198,7 +198,17 @@ const ActivityRideDetail = ({ ride, onBack, hasLiveSession, onBackToLive }: Prop
                 </span>
               )}
             </div>
-          ) : null}
+          ) : (
+            !isCancelled && !isComplete && (
+              <p className="text-sm font-medium text-muted-foreground mt-0.5 flex items-center justify-center gap-1.5">
+                <span className="relative flex h-2 w-2 shrink-0">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75" />
+                  <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500" />
+                </span>
+                Live
+              </p>
+            )
+          )}
         </div>
 
         {/* Driver Card */}
@@ -341,6 +351,39 @@ const ActivityRideDetail = ({ ride, onBack, hasLiveSession, onBackToLive }: Prop
           </div>
         )}
 
+        {/* Action buttons row — always visible */}
+        <div className="flex items-center justify-center gap-2">
+          <button
+            onClick={() => setShowContactSupport(true)}
+            className="w-10 h-10 flex items-center justify-center rounded-full bg-emerald-500 hover:bg-emerald-600 transition-colors"
+            aria-label="Contact Support"
+          >
+            <Headset className="w-4.5 h-4.5 text-white" />
+          </button>
+          <button
+            onClick={() => {
+              if (hasLiveSession && onBackToLive) {
+                onBackToLive();
+              }
+            }}
+            disabled={!hasLiveSession}
+            className={cn(
+              "h-10 px-5 flex items-center justify-center rounded-lg text-sm font-semibold transition-colors",
+              hasLiveSession
+                ? "bg-foreground text-background hover:bg-foreground/80"
+                : "bg-muted text-muted-foreground border border-foreground/10 cursor-not-allowed"
+            )}
+          >
+            Back to Live
+          </button>
+          <button
+            onClick={() => setShowChat(prev => !prev)}
+            className="w-10 h-10 flex items-center justify-center rounded-full bg-foreground hover:bg-foreground/80 transition-colors"
+            aria-label="Message"
+          >
+            <MessageCircle className="w-4.5 h-4.5 text-background" />
+          </button>
+        </div>
 
         {/* Chat */}
         {showChat && (
@@ -633,6 +676,21 @@ const ActivityRideDetail = ({ ride, onBack, hasLiveSession, onBackToLive }: Prop
           </button>
         )}
 
+        {/* Cancel button */}
+        {!isCancelled && !isComplete && (
+          <button
+            onClick={() => hasLiveSession && toast.info("To cancel, please contact support.")}
+            disabled={!hasLiveSession}
+            className={cn(
+              "w-full py-3 rounded-full text-sm font-semibold transition-colors",
+              hasLiveSession
+                ? "text-white bg-destructive hover:bg-destructive/90"
+                : "bg-muted text-muted-foreground border border-foreground/10 cursor-not-allowed"
+            )}
+          >
+            Cancel {st === "concierge" ? "Concierge" : st === "valet" ? "Valet" : "Delivery"}
+          </button>
+        )}
       </div>
 
       {/* Contact Support Dialog */}
