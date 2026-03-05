@@ -2257,8 +2257,8 @@ const Book = () => {
                   <div className="flex items-center gap-2 px-4 py-3 border border-border rounded-xl bg-muted/50 mb-3">
                     <span className="text-sm">🏠</span>
                     <div>
-                      <p className="text-sm font-semibold text-foreground">Remote Task</p>
-                      <p className="text-xs text-muted-foreground">The Courial will complete this task from their own location — no travel required.</p>
+                      <p className="text-sm font-semibold text-foreground">Remote Service</p>
+                      <p className="text-xs text-muted-foreground">The Courial will complete this service from their own location — no travel required.</p>
                     </div>
                   </div>
                 )}
@@ -2617,7 +2617,7 @@ const Book = () => {
                     </div>
                   </div>
                   <p className="text-[10px] text-muted-foreground mt-1 leading-relaxed">
-                    Estimated value of the task or items involved. Complimentary coverage is included for values up to $100.
+                    Estimated value of the service or items involved. Complimentary coverage is included for values up to $100.
                   </p>
 
                   <AnimatePresence>
