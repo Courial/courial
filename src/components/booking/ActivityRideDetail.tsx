@@ -19,7 +19,16 @@ const ActivityRideDetail = ({ ride, onBack }: Props) => {
   const originFull = ride.pickupInfo?.fullAddress || ride.pickupInfo?.address || "";
   const destination = ride.deliveryInfo?.placeName || ride.deliveryInfo?.fullAddress || ride.deliveryInfo?.address || "";
   const destinationFull = ride.deliveryInfo?.fullAddress || ride.deliveryInfo?.address || "";
-  const hasAddress = !!(origin || destination);
+
+  // Fall back to lat/lng if no text address
+  const originLatLng = ride.pickupInfo?.latitude && ride.pickupInfo?.longitude
+    ? `${ride.pickupInfo.latitude},${ride.pickupInfo.longitude}` : "";
+  const destLatLng = ride.deliveryInfo?.latitude && ride.deliveryInfo?.longitude
+    ? `${ride.deliveryInfo.latitude},${ride.deliveryInfo.longitude}` : "";
+
+  const mapOrigin = origin || originFull || originLatLng;
+  const mapDest = destination || destinationFull || destLatLng;
+  const hasAddress = !!(mapOrigin || mapDest);
 
   const isScheduled = ride.scheduleType === "later";
   const isCancelled = ride.status?.toLowerCase() === "cancelled" || ride.status?.toLowerCase() === "canceled";

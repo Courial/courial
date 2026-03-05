@@ -46,7 +46,13 @@ const statusColors: Record<string, string> = {
 function FeaturedCard({ ride, onClick }: { ride: ActivityItem; onClick: () => void }) {
   const origin = ride.pickupInfo?.placeName || ride.pickupInfo?.fullAddress || ride.pickupInfo?.address || "";
   const destination = ride.deliveryInfo?.placeName || ride.deliveryInfo?.fullAddress || ride.deliveryInfo?.address || "";
-  const hasAddress = !!(origin || destination);
+  const originLatLng = ride.pickupInfo?.latitude && ride.pickupInfo?.longitude
+    ? `${ride.pickupInfo.latitude},${ride.pickupInfo.longitude}` : "";
+  const destLatLng = ride.deliveryInfo?.latitude && ride.deliveryInfo?.longitude
+    ? `${ride.deliveryInfo.latitude},${ride.deliveryInfo.longitude}` : "";
+  const mapOrigin = origin || originLatLng;
+  const mapDest = destination || destLatLng;
+  const hasAddress = !!(mapOrigin || mapDest);
   const isScheduled = ride.scheduleType === "later";
   const isCancelled = ride.status?.toLowerCase() === "cancelled" || ride.status?.toLowerCase() === "canceled";
   const isCompleted = ride.status?.toLowerCase() === "completed";
