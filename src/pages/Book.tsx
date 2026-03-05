@@ -1036,9 +1036,9 @@ const Book = () => {
     if (selectedService !== "concierge" && selectedService !== "valet") return;
     const isWfh = selectedService === "concierge" && conciergeIsRemote;
     // WFH: step 1 = Service In Progress, step 2 = completed
-    // In-person / valet: step 3 = Service In Progress, step 4 = completed
-    const startStep = isWfh ? 1 : 3;
-    const stopStep = isWfh ? 2 : 4;
+    // In-person / valet: step 2 = Service In Progress, step 3 = completed
+    const startStep = isWfh ? 1 : 2;
+    const stopStep = isWfh ? 2 : 3;
     if (deliveryStep >= startStep && deliveryStep < stopStep) {
       setWfhTaskRunning(true);
     } else if (deliveryStep >= stopStep) {
@@ -1094,7 +1094,6 @@ const Book = () => {
     ],
     concierge: [
       { label: "Service Accepted", desc: "Your concierge request has been confirmed" },
-      { label: "Concierge En Route", desc: "Your concierge is on the way" },
       { label: "Concierge Arrived", desc: "Your concierge has arrived" },
       { label: "Service In Progress", desc: "Service has begun" },
       { label: "Service Completed", desc: "Service completed" },
@@ -1108,7 +1107,6 @@ const Book = () => {
     ],
     valet: [
       { label: "Service Accepted", desc: "Your valet request has been confirmed" },
-      { label: "Valet En Route", desc: "Your valet is on the way" },
       { label: "Valet Arrived", desc: "Your valet has arrived" },
       { label: "Service In Progress", desc: "Service has begun" },
       { label: "Service Completed", desc: "Service completed" },
@@ -1118,6 +1116,7 @@ const Book = () => {
   const isWfhConcierge = selectedService === "concierge" && conciergeIsRemote;
   const deliveryStepsKey = isWfhConcierge ? "concierge_wfh" : (selectedService || "deliver");
   const deliverySteps = deliveryStepsMap[deliveryStepsKey] || deliveryStepsMap.deliver;
+  const maxStep = deliverySteps.length - 1;
 
   const handlePickupSelect = useCallback((place: any) => {
     if (place.geometry?.location) {
@@ -3852,12 +3851,12 @@ const Book = () => {
                     className="flex-1 py-2.5 rounded-full text-sm font-semibold text-primary-foreground bg-primary hover:bg-primary/90 transition-colors"
                   >
                     {isWfhConcierge
-                      ? ["Begin Task", "Complete Task", "Finish"][deliveryStep]
+                      ? ["Begin Service", "Complete Service", "Finish"][deliveryStep]
                       : selectedService === "concierge"
-                      ? ["En Route", "Arrive", "Begin Task", "Complete Task", "Finish"][deliveryStep]
+                      ? ["Arrive", "Begin Service", "Complete Service", "Finish"][deliveryStep]
                       : selectedService === "valet"
-                      ? ["En Route", "Arrive", "Take Vehicle", "Park Vehicle", "Finish"][deliveryStep]
-                      : ["Arrive at Pickup", "Pick Up Package", "Arrive at Drop-off", "Drop Off Package", "Complete Order"][deliveryStep]}
+                      ? ["Arrive", "Take Vehicle", "Park Vehicle", "Finish"][deliveryStep]
+                      : ["Arrive at Pickup", "Pick Up Package", "Arrive at Drop-off", "Drop Off Package", "Complete Service"][deliveryStep]}
                   </button>
                 )}
                 {deliveryStep >= (isWfhConcierge ? 3 : 5) && (
