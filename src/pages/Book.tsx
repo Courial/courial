@@ -1662,7 +1662,8 @@ const Book = () => {
                         transition={{ duration: 0.15 }}
                       >
                         {(() => {
-                          const cat = activeCategories.find(c => c.id === conciergeCategory)!;
+                          const cat = activeCategories.find(c => c.id === conciergeCategory);
+                          if (!cat) return null;
                           return (
                             <>
                               <div className="flex items-center gap-2 mb-2">
@@ -1710,7 +1711,8 @@ const Book = () => {
                         transition={{ duration: 0.15 }}
                       >
                         {(() => {
-                          const cat = activeCategories.find(c => c.id === conciergeCategory)!;
+                          const cat = activeCategories.find(c => c.id === conciergeCategory);
+                          if (!cat) return null;
                           return (
                             <>
                               <div className="flex items-center gap-2 mb-1">
