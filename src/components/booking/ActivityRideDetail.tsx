@@ -1,7 +1,6 @@
 import { useState, useRef } from "react";
 import { motion } from "framer-motion";
 import { ArrowLeft, Star, Calendar, Zap, ChevronDown, Headset, MessageCircle, RotateCcw, Phone, Mail, Radio } from "lucide-react";
-import { useNavigate } from "react-router-dom";
 import { RideChat } from "./RideChat";
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
@@ -75,13 +74,14 @@ function getDeliveryStep(status: string): number {
 interface Props {
   ride: ActivityItem;
   onBack: () => void;
+  hasLiveSession?: boolean;
+  onBackToLive?: () => void;
 }
 
-const ActivityRideDetail = ({ ride, onBack }: Props) => {
+const ActivityRideDetail = ({ ride, onBack, hasLiveSession, onBackToLive }: Props) => {
   const [showOrderDetails, setShowOrderDetails] = useState(false);
   const [showContactSupport, setShowContactSupport] = useState(false);
   const [showChat, setShowChat] = useState(false);
-  const navigate = useNavigate();
   const socketRef = useRef<any>(null);
 
   
@@ -345,14 +345,14 @@ const ActivityRideDetail = ({ ride, onBack }: Props) => {
           </button>
           <button
             onClick={() => {
-              if (isLive) {
-                navigate("/book");
+              if (hasLiveSession && onBackToLive) {
+                onBackToLive();
               }
             }}
-            disabled={!isLive}
+            disabled={!hasLiveSession}
             className={cn(
               "h-10 px-4 flex items-center justify-center gap-1.5 rounded-full text-xs font-semibold transition-colors",
-              isLive
+              hasLiveSession
                 ? "bg-foreground text-background hover:bg-foreground/80"
                 : "bg-muted text-muted-foreground cursor-not-allowed"
             )}
