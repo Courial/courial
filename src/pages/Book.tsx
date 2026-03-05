@@ -2026,7 +2026,7 @@ const Book = () => {
                             {Array.from({ length: 11 }, (_, i) => i * 10).map((v) => (
                               <button
                                 key={v}
-                                onClick={() => { setBatteryCurrentCharge(String(v)); setBatteryCurrentOpen(false); }}
+                                onClick={() => { setBatteryCurrentCharge(String(v)); setBatteryCurrentOpen(false); if (batteryTargetCharge && Number(batteryTargetCharge) <= v) setBatteryTargetCharge(""); }}
                                 className="w-full px-2 py-1.5 text-xs text-left text-foreground hover:bg-muted transition-colors"
                               >
                                 {v}%
@@ -2046,7 +2046,7 @@ const Book = () => {
                         </button>
                         {batteryTargetOpen && (
                           <div onClick={(e) => e.stopPropagation()} className="absolute z-50 mt-1 w-full max-h-48 overflow-y-auto rounded-lg border border-border/60 bg-background shadow-lg">
-                            {Array.from({ length: 10 }, (_, i) => (i + 1) * 10).map((v) => (
+                            {Array.from({ length: 10 }, (_, i) => (i + 1) * 10).filter((v) => !batteryCurrentCharge || v > Number(batteryCurrentCharge)).map((v) => (
                               <button
                                 key={v}
                                 onClick={() => { setBatteryTargetCharge(String(v)); setBatteryTargetOpen(false); }}
