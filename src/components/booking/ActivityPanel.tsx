@@ -1,7 +1,7 @@
 import { useState, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Clock, RotateCcw, Calendar, MapPin, ArrowLeft, Zap, Loader2 } from "lucide-react";
-import ActivityDetailMap from "./ActivityDetailMap";
+import ActivityRideDetail from "./ActivityRideDetail";
 import noScheduledIllustration from "@/assets/no-scheduled-illustration.png";
 import { useNavigate } from "react-router-dom";
 import deliverIcon from "@/assets/service-icons/deliver.png";
