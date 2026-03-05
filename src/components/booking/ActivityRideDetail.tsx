@@ -29,8 +29,8 @@ function formatFee(fee: number | string) {
   return `$${n.toFixed(2)}`;
 }
 
-function getStepsForService(serviceType: string): { label: string; desc: string }[] {
-  const st = serviceType.toLowerCase();
+function getStepsForService(serviceType: string | null | undefined): { label: string; desc: string }[] {
+  const st = (serviceType || "").toLowerCase();
   if (st === "concierge") {
     return [
       { label: "Service Accepted", desc: "Your service is confirmed" },
