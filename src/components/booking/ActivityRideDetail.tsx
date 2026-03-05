@@ -146,29 +146,36 @@ const ActivityRideDetail = ({ ride }: Props) => {
 
         {/* Addresses */}
         {hasAddress && (
-          <div className="px-5 py-4 space-y-4">
-            {(origin || originFull) && (
-              <div className="flex items-start gap-3">
-                <div className="flex-shrink-0 w-3 h-3 rounded-full bg-green-500 mt-1" />
-                <div>
-                  {ride.pickupInfo?.placeName && (
-                    <p className="text-sm font-bold text-foreground">{ride.pickupInfo.placeName}</p>
-                  )}
-                  <p className="text-sm text-muted-foreground">{originFull || origin}</p>
+          <div className="px-5 py-4">
+            <div className="relative pl-6">
+              {/* Vertical connector line */}
+              {(origin || originFull) && (destination || destinationFull) && (
+                <div className="absolute left-[5px] top-3 bottom-3 w-0.5 bg-border" />
+              )}
+
+              {(origin || originFull) && (
+                <div className="relative flex items-start gap-3 pb-6">
+                  <div className="absolute left-[-18px] top-1 w-3 h-3 rounded-full bg-green-500" />
+                  <div>
+                    {ride.pickupInfo?.placeName && (
+                      <p className="text-sm font-bold text-foreground">{ride.pickupInfo.placeName}</p>
+                    )}
+                    <p className="text-sm text-muted-foreground">{originFull || origin}</p>
+                  </div>
                 </div>
-              </div>
-            )}
-            {(destination || destinationFull) && (
-              <div className="flex items-start gap-3">
-                <div className="flex-shrink-0 w-3 h-3 bg-red-500 mt-1" />
-                <div>
-                  {ride.deliveryInfo?.placeName && (
-                    <p className="text-sm font-bold text-foreground">{ride.deliveryInfo.placeName}</p>
-                  )}
-                  <p className="text-sm text-muted-foreground">{destinationFull || destination}</p>
+              )}
+              {(destination || destinationFull) && (
+                <div className="relative flex items-start gap-3">
+                  <div className="absolute left-[-18px] top-1 w-3 h-3 bg-red-500" />
+                  <div>
+                    {ride.deliveryInfo?.placeName && (
+                      <p className="text-sm font-bold text-foreground">{ride.deliveryInfo.placeName}</p>
+                    )}
+                    <p className="text-sm text-muted-foreground">{destinationFull || destination}</p>
+                  </div>
                 </div>
-              </div>
-            )}
+              )}
+            </div>
           </div>
         )}
       </div>
