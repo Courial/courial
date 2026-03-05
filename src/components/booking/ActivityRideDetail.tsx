@@ -127,7 +127,7 @@ const ActivityRideDetail = ({ ride }: Props) => {
           <div className="flex items-center gap-2 text-sm font-bold text-foreground mb-0.5">
             <span>{formatFee(ride.deliveryFee)}</span>
             {isScheduled ? <Calendar className="w-3.5 h-3.5 text-muted-foreground" /> : <Zap className="w-3.5 h-3.5 text-muted-foreground" />}
-            <span className="text-muted-foreground font-normal capitalize">{transportMode}</span>
+            <span className="text-muted-foreground font-normal capitalize">{optionCategory}</span>
           </div>
 
           {/* Date + Order ID */}
