@@ -3444,29 +3444,39 @@ const Book = () => {
                     {deliverMultiStop && deliverExtraStops.length > 0 ? "Multiple Stops" : "Single Pick-up and Drop-off"}
                   </p>
                 )}
-                <p className="text-sm font-medium text-muted-foreground mt-0.5 flex items-center justify-center gap-1.5">
-                  {/* Green pulsing dot for ETA */}
-                  {(selectedService !== "concierge" && !isWfhConcierge && courialEta) && (
-                    <span className="relative flex h-2 w-2 shrink-0">
-                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75" />
-                      <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500" />
+                {timeMode === "later" ? (
+                  <div className="flex items-center justify-center gap-2 mt-1">
+                    <span className="px-2.5 py-0.5 rounded-full bg-muted text-foreground text-[11px] font-semibold">Scheduled</span>
+                    <span className="text-sm text-muted-foreground font-medium">
+                      {selectedDate ? format(selectedDate, "d MMMM") : format(new Date(), "d MMMM")} • {(() => { const [h, m] = selectedTime.split(":"); const d = new Date(); d.setHours(Number(h), Number(m)); return d.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" }); })()}
                     </span>
-                  )}
-                  {isConciergeStyle && conciergeCategory
-                    ? `${conciergeCategory.replace(/-/g, " ").replace(/\b\w/g, c => c.toUpperCase())}${conciergeSubCategory ? ` • ${conciergeSubCategory}` : ""}${isWfhConcierge ? " • WFH Service" : ""}`
-                    : !isWfhConcierge
-                      ? courialEta ? `${courialEta.duration} away • ${new Date(Date.now() + parseInt(courialEta.duration) * 60000).toLocaleTimeString([], { hour: "numeric", minute: "2-digit" })} dropoff` : "Calculating ETA..."
-                      : "WFH Service"
-                  }
-                </p>
-                {selectedService === "concierge" && !isWfhConcierge && (
-                  <p className="text-sm font-medium text-muted-foreground mt-0.5 flex items-center justify-center gap-1.5">
-                    <span className="relative flex h-2 w-2 shrink-0">
-                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75" />
-                      <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500" />
-                    </span>
-                    {courialEta ? `${courialEta.duration} away • ${courialEta.distance}` : "Calculating..."}
-                  </p>
+                  </div>
+                ) : (
+                  <>
+                    <p className="text-sm font-medium text-muted-foreground mt-0.5 flex items-center justify-center gap-1.5">
+                      {(selectedService !== "concierge" && !isWfhConcierge && courialEta) && (
+                        <span className="relative flex h-2 w-2 shrink-0">
+                          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75" />
+                          <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500" />
+                        </span>
+                      )}
+                      {isConciergeStyle && conciergeCategory
+                        ? `${conciergeCategory.replace(/-/g, " ").replace(/\b\w/g, c => c.toUpperCase())}${conciergeSubCategory ? ` • ${conciergeSubCategory}` : ""}${isWfhConcierge ? " • WFH Service" : ""}`
+                        : !isWfhConcierge
+                          ? courialEta ? `${courialEta.duration} away • ${new Date(Date.now() + parseInt(courialEta.duration) * 60000).toLocaleTimeString([], { hour: "numeric", minute: "2-digit" })} dropoff` : "Calculating ETA..."
+                          : "WFH Service"
+                      }
+                    </p>
+                    {selectedService === "concierge" && !isWfhConcierge && (
+                      <p className="text-sm font-medium text-muted-foreground mt-0.5 flex items-center justify-center gap-1.5">
+                        <span className="relative flex h-2 w-2 shrink-0">
+                          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75" />
+                          <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500" />
+                        </span>
+                        {courialEta ? `${courialEta.duration} away • ${courialEta.distance}` : "Calculating..."}
+                      </p>
+                    )}
+                  </>
                 )}
               </div>
 
@@ -3978,10 +3988,12 @@ const Book = () => {
                     <div className="py-2.5">
                       <div className="grid grid-cols-3 gap-4">
                         <div>
-                          <p className="text-xs font-medium text-foreground mb-0.5">Type</p>
-                          <p className="text-[11px] text-muted-foreground">
-                            {timeMode === "later" ? "Scheduled" : "ASAP"}
-                          </p>
+                          <p className="text-xs font-medium text-foreground mb-1">Type</p>
+                          {timeMode === "later" ? (
+                            <span className="inline-block px-2 py-0.5 rounded-full bg-blue-100 text-blue-700 text-[10px] font-semibold">Scheduled</span>
+                          ) : (
+                            <span className="inline-block px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-700 text-[10px] font-semibold">Now</span>
+                          )}
                         </div>
                         <div>
                           <p className="text-xs font-medium text-foreground mb-0.5">Pickup Date</p>
