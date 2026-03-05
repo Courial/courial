@@ -4012,7 +4012,7 @@ const Book = () => {
                       )}
                       {conciergeVehicle && (
                         <div>
-                          <p className="text-xs font-medium text-foreground mb-0.5">Vehicle</p>
+                          <p className="text-xs font-medium text-foreground mb-0.5">Mode</p>
                           <p className="text-[11px] text-muted-foreground capitalize">{conciergeVehicle === "none" ? "None" : conciergeVehicle}</p>
                         </div>
                       )}
