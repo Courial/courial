@@ -38,10 +38,18 @@ async function fetchActivities(type: "past" | "pending", page: number, token: st
       "Content-Type": "application/json",
     },
   });
-  if (!res.ok) {
-    throw new Error(`Failed to fetch activities: ${res.status}`);
-  }
   const raw = await res.json();
+
+  // Handle 401 / Invalid Token — clear stale token so user re-authenticates
+  if (!res.ok || raw?.code === 401) {
+    const msg = raw?.msg?.message || raw?.error?.message || "Invalid Token";
+    if (msg.includes("Invalid Token") || res.status === 401) {
+      localStorage.removeItem("courial_api_token");
+      console.warn("[useActivities] Courial token expired — cleared from storage");
+    }
+    throw new Error(`Failed to fetch activities: ${res.status} — ${msg}`);
+  }
+
   // The API wraps data in { success, code, msg, data: [...] }
   const arr = Array.isArray(raw) ? raw : raw.data ?? raw.activities ?? [];
   return Array.isArray(arr) ? arr : [];
