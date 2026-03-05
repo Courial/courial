@@ -3451,8 +3451,8 @@ const Book = () => {
                 )}
                 {timeMode === "later" ? (
                   <div className="flex items-center justify-center gap-2 mt-1">
-                    <span className="px-2.5 py-0.5 rounded-full bg-blue-500 text-white text-[11px] font-normal">Scheduled</span>
-                    <span className="text-sm text-muted-foreground font-medium">
+                    <span className="px-2.5 py-0.5 rounded-full bg-blue-100 text-foreground text-[11px] font-normal">Scheduled</span>
+                    <span className="text-sm text-foreground font-semibold">
                       {selectedDate ? format(selectedDate, "d MMMM") : format(new Date(), "d MMMM")} • {(() => { const [h, m] = selectedTime.split(":"); const d = new Date(); d.setHours(Number(h), Number(m)); return d.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" }); })()}
                     </span>
                   </div>
@@ -3977,14 +3977,7 @@ const Book = () => {
                     )}
                     {/* Pickup Date & Time — global for all services */}
                     <div className="py-1.5">
-                      <div className="grid grid-cols-3 gap-4">
-                        <div className="flex items-center">
-                          {timeMode === "later" ? (
-                            <span className="inline-block px-2.5 py-0.5 rounded-full bg-blue-500 text-white text-[11px] font-normal">Scheduled</span>
-                          ) : (
-                            <span className="inline-block px-2.5 py-0.5 rounded-full bg-emerald-500 text-white text-[11px] font-normal">Now</span>
-                          )}
-                        </div>
+                      <div className="grid grid-cols-2 gap-4">
                         <div>
                           <p className="text-xs font-medium text-foreground mb-0.5">Pickup Date</p>
                           <p className="text-[11px] text-muted-foreground">
