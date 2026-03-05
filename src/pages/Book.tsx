@@ -3974,6 +3974,25 @@ const Book = () => {
                         </p>
                       </div>
                     )}
+                    {/* Row: Rate & Mode (for concierge non-roadside, excluding valet) — ABOVE Service Description */}
+                    {isConciergeStyle && selectedService !== "valet" && conciergeCategory !== "roadside-assistance" && (conciergeServiceMode || conciergeVehicle) && (
+                    <div className="grid grid-cols-3 gap-4 py-2.5">
+                      {conciergeServiceMode && (
+                        <div>
+                          <p className="text-xs font-medium text-foreground mb-0.5">Rate</p>
+                          <p className="text-[11px] text-muted-foreground">
+                            {conciergeServiceMode === "hourly" ? "$65 per Hour" : conciergeServiceMode === "daily" ? "$480 Daily" : conciergeServiceMode}
+                          </p>
+                        </div>
+                      )}
+                      {conciergeVehicle && (
+                        <div>
+                          <p className="text-xs font-medium text-foreground mb-0.5">Mode</p>
+                          <p className="text-[11px] text-muted-foreground capitalize">{conciergeVehicle === "none" ? "None" : conciergeVehicle}</p>
+                        </div>
+                      )}
+                    </div>
+                    )}
                     {/* Concierge Service Description */}
                     {isConciergeStyle && conciergeDescription.trim() && (
                       <div className="py-2.5">
@@ -3998,25 +4017,6 @@ const Book = () => {
                           </p>
                         )}
                       </div>
-                    )}
-                    {/* Row: Rate & Vehicle (same row for concierge non-roadside, excluding valet) */}
-                    {isConciergeStyle && selectedService !== "valet" && conciergeCategory !== "roadside-assistance" && (conciergeServiceMode || conciergeVehicle) && (
-                    <div className="grid grid-cols-3 gap-4 py-2.5">
-                      {conciergeServiceMode && (
-                        <div>
-                          <p className="text-xs font-medium text-foreground mb-0.5">Rate</p>
-                          <p className="text-[11px] text-muted-foreground">
-                            {conciergeServiceMode === "hourly" ? "$65 per Hour" : conciergeServiceMode === "daily" ? "$480 Daily" : conciergeServiceMode}
-                          </p>
-                        </div>
-                      )}
-                      {conciergeVehicle && (
-                        <div>
-                          <p className="text-xs font-medium text-foreground mb-0.5">Mode</p>
-                          <p className="text-[11px] text-muted-foreground capitalize">{conciergeVehicle === "none" ? "None" : conciergeVehicle}</p>
-                        </div>
-                      )}
-                    </div>
                     )}
                     {/* Roadside vehicle details */}
                     {selectedService === "concierge" && conciergeCategory === "roadside-assistance" && (roadsideVehicleMake || roadsideVehicleModel || roadsideVehicleColor || roadsideLicensePlate) && (
@@ -4109,8 +4109,8 @@ const Book = () => {
                         )}
                       </div>
                     )}
-                    {/* Row: Scheduled */}
-                    {selectedDate && (
+                    {/* Row: Scheduled (deliver only) */}
+                    {selectedDate && !isConciergeStyle && (
                       <div className="py-2.5">
                         <div className="grid grid-cols-2 gap-4">
                           <div>
