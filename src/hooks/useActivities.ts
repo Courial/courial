@@ -37,6 +37,39 @@ export interface ActivityItem {
     year?: string | number;
     [key: string]: any;
   } | null;
+  Provider?: {
+    first_name?: string;
+    last_name?: string;
+    image?: string;
+    profile_image?: string;
+    rating?: number | string;
+    since_year?: string;
+    latitude?: number | string;
+    longitude?: number | string;
+    language?: string;
+    UserVehicle?: {
+      make?: string;
+      model?: string;
+      color?: string;
+      year?: string | number;
+      license_plate?: string;
+      [key: string]: any;
+    } | null;
+    [key: string]: any;
+  } | null;
+  provider?: ActivityItem["Provider"];
+  category?: string;
+  subCategory?: string;
+  sub_category?: string;
+  description?: string;
+  notes?: string;
+  scheduledDate?: string;
+  scheduled_date?: string;
+  scheduledTime?: string;
+  scheduled_time?: string;
+  concierge_vehicle?: string;
+  conciergeVehicle?: string;
+  [key: string]: any;
 }
 
 async function fetchActivities(type: "past" | "pending", page: number, token: string): Promise<ActivityItem[]> {
