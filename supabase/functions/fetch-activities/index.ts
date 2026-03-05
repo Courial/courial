@@ -46,6 +46,7 @@ serve(async (req) => {
     });
 
     const data = await response.json();
+    console.log("[fetch-activities] Raw response sample:", JSON.stringify(Array.isArray(data) ? data.slice(0, 2) : data).slice(0, 2000));
 
     if (!response.ok) {
       console.error("[fetch-activities] Courial API error:", response.status, data);
