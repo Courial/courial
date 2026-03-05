@@ -104,8 +104,10 @@ const ActivityRideDetail = ({ ride, onBack, hasLiveSession, onBackToLive }: Prop
   const isCancelled = ride.status?.toLowerCase() === "cancelled" || ride.status?.toLowerCase() === "canceled";
   const isComplete = deliveryStep >= maxStep;
 
-  // Provider / Driver info
-  const provider = ride.Provider || ride.provider || null;
+  // Provider / Driver info — prefer API data, fall back to localStorage
+  const apiProvider = ride.Provider || ride.provider || null;
+  const storedProvider = storedDetails?.provider || null;
+  const provider = apiProvider || storedProvider;
   const driverName = provider
     ? `${provider.first_name || ""} ${provider.last_name || ""}`.trim()
     : null;
