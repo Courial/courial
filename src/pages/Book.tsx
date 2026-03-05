@@ -3696,7 +3696,7 @@ const Book = () => {
                     })}
 
                     {/* WFH Clock - circular arc timer */}
-                    {selectedService === "concierge" && (() => {
+                    {(selectedService === "concierge" || selectedService === "valet") && (() => {
                       const isActive = wfhTaskRunning && !wfhTaskPaused;
                       const size = 110;
                       const stroke = 6;
