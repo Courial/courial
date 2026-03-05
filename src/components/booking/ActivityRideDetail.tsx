@@ -26,13 +26,13 @@ function getCategoryLine(ride: ActivityItem): string {
   return "";
 }
 
-/** Derive the transport mode label */
-function getTransportModeLabel(ride: ActivityItem): string {
-  const vehicle = ride.transport_mode || ride.conciergeVehicle || ride.concierge_vehicle || null;
-  if (vehicle) return vehicle;
-  const st = (ride.serviceType || "").toLowerCase();
-  if (st) return st;
-  return "delivery";
+/** Derive the option-category label (e.g. "Roadside Assistance", "Single Pick-up / Drop") */
+function getOptionCategoryLabel(ride: ActivityItem): string {
+  const sub = ride.subCategory || ride.sub_category || "";
+  if (sub) return sub;
+  const cat = ride.category || "";
+  if (cat) return cat;
+  return ride.description || "Delivery";
 }
 
 interface Props {
