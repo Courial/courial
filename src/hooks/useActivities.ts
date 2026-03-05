@@ -11,7 +11,10 @@ export interface ActivityItem {
   transport_mode: string | null;
   serviceType: string;
   type: string;
+  scheduleType: string;
   pickupInfo: {
+    fullAddress?: string;
+    placeName?: string;
     address?: string;
     name?: string;
     [key: string]: any;
