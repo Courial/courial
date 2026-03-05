@@ -333,24 +333,52 @@ const ActivityRideDetail = ({ ride, onBack }: Props) => {
           </div>
         )}
 
-        {/* Action buttons row */}
-        {!isCancelled && !isComplete && (
-          <div className="flex items-center justify-center gap-2">
-            <button
-              onClick={() => setShowContactSupport(true)}
-              className="w-10 h-10 flex items-center justify-center rounded-full bg-emerald-500 hover:bg-emerald-600 transition-colors"
-              aria-label="Contact Support"
-            >
-              <Headset className="w-4.5 h-4.5 text-white" />
-            </button>
-            <button
-              onClick={() => toast.info("Chat is available on the live tracking page")}
-              className="w-10 h-10 flex items-center justify-center rounded-full bg-foreground hover:bg-foreground/80 transition-colors"
-              aria-label="Message Courial"
-            >
-              <MessageCircle className="w-4.5 h-4.5 text-background" />
-            </button>
-          </div>
+        {/* Action buttons row — always visible */}
+        <div className="flex items-center justify-center gap-2">
+          <button
+            onClick={() => setShowContactSupport(true)}
+            className="w-10 h-10 flex items-center justify-center rounded-full bg-emerald-500 hover:bg-emerald-600 transition-colors"
+            aria-label="Contact Support"
+          >
+            <Headset className="w-4.5 h-4.5 text-white" />
+          </button>
+          <button
+            onClick={() => {
+              if (isLive) {
+                navigate("/book");
+              }
+            }}
+            disabled={!isLive}
+            className={cn(
+              "h-10 px-4 flex items-center justify-center gap-1.5 rounded-full text-xs font-semibold transition-colors",
+              isLive
+                ? "bg-foreground text-background hover:bg-foreground/80"
+                : "bg-muted text-muted-foreground cursor-not-allowed"
+            )}
+          >
+            <Radio className="w-3.5 h-3.5" />
+            Back to Live
+          </button>
+          <button
+            onClick={() => setShowChat(prev => !prev)}
+            className="w-10 h-10 flex items-center justify-center rounded-full bg-foreground hover:bg-foreground/80 transition-colors"
+            aria-label="Message"
+          >
+            <MessageCircle className="w-4.5 h-4.5 text-background" />
+          </button>
+        </div>
+
+        {/* Chat */}
+        {showChat && (
+          <RideChat
+            orderId={ride.orderid || ""}
+            numericOrderId={ride.orderid || ""}
+            senderId={ride.userId || ""}
+            receiverId={hasProvider ? (ride.providerId || "") : "support"}
+            courialName={hasProvider && driverName ? driverName : "Courial Support"}
+            socketRef={socketRef}
+            visible={showChat}
+          />
         )}
 
         {/* Service Details accordion */}
