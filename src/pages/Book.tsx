@@ -2348,8 +2348,8 @@ const Book = () => {
                   )}
                 </AnimatePresence>
 
-                {/* Service Mode Toggle — only show after description has at least 2 words */}
-                {conciergeDescription.trim().split(/\s+/).filter(Boolean).length >= 2 && (
+                {/* Service Mode Toggle — for valet, only show after description has at least 2 words */}
+                {(selectedService !== "valet" || conciergeDescription.trim().split(/\s+/).filter(Boolean).length >= 2) && (
                 <>
                 <div className="flex items-center gap-2 mb-3 pt-2">
                   <span className="text-xs font-medium text-muted-foreground">Service Type</span>
