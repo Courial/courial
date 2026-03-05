@@ -26,13 +26,13 @@ function getCategoryLine(ride: ActivityItem): string {
   return "";
 }
 
-/** Derive the transport mode label */
-function getTransportModeLabel(ride: ActivityItem): string {
-  const vehicle = ride.transport_mode || ride.conciergeVehicle || ride.concierge_vehicle || null;
-  if (vehicle) return vehicle;
-  const st = (ride.serviceType || "").toLowerCase();
-  if (st) return st;
-  return "delivery";
+/** Derive the option-category label (e.g. "Roadside Assistance", "Single Pick-up / Drop") */
+function getOptionCategoryLabel(ride: ActivityItem): string {
+  const sub = ride.subCategory || ride.sub_category || "";
+  if (sub) return sub;
+  const cat = ride.category || "";
+  if (cat) return cat;
+  return ride.description || "Delivery";
 }
 
 interface Props {
@@ -68,7 +68,7 @@ const ActivityRideDetail = ({ ride }: Props) => {
 
   const serviceTypeLabel = getServiceTypeLabel(ride);
   const categoryLine = getCategoryLine(ride);
-  const transportMode = getTransportModeLabel(ride);
+  const optionCategory = getOptionCategoryLabel(ride);
 
   const orderDate = (() => {
     if (!ride.orderDateTime) return null;
@@ -127,7 +127,7 @@ const ActivityRideDetail = ({ ride }: Props) => {
           <div className="flex items-center gap-2 text-sm font-bold text-foreground mb-0.5">
             <span>{formatFee(ride.deliveryFee)}</span>
             {isScheduled ? <Calendar className="w-3.5 h-3.5 text-muted-foreground" /> : <Zap className="w-3.5 h-3.5 text-muted-foreground" />}
-            <span className="text-muted-foreground font-normal capitalize">{transportMode}</span>
+            <span className="text-muted-foreground font-normal capitalize">{optionCategory}</span>
           </div>
 
           {/* Date + Order ID */}
