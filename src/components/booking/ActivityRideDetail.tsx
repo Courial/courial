@@ -75,9 +75,11 @@ function getDeliveryStep(status: string): number {
 interface Props {
   ride: ActivityItem;
   onBack: () => void;
+  hasLiveSession?: boolean;
+  onBackToLive?: () => void;
 }
 
-const ActivityRideDetail = ({ ride, onBack }: Props) => {
+const ActivityRideDetail = ({ ride, onBack, hasLiveSession, onBackToLive }: Props) => {
   const [showOrderDetails, setShowOrderDetails] = useState(false);
   const [showContactSupport, setShowContactSupport] = useState(false);
   const [showChat, setShowChat] = useState(false);
