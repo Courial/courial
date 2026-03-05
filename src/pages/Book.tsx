@@ -697,12 +697,24 @@ const Book = () => {
         if (conciergeStopAddress) payload.stopAddress = conciergeStopAddress;
         if (conciergeLanguage) payload.preferredLanguage = conciergeLanguage;
         if (conciergeServiceMode) payload.serviceMode = conciergeServiceMode;
+        if (conciergeVehicle) payload.vehicleMode = conciergeVehicle;
         if (conciergeHasExpenses && conciergeExpenseItems.length > 0) {
           payload.expenseItems = conciergeExpenseItems.filter(e => e.description.trim());
           payload.allowOverage = conciergeAllowOverage;
           if (conciergeAllowOverage && conciergeOverageLimit !== "0") {
             payload.overageLimit = Number(conciergeOverageLimit);
           }
+        }
+        // Valet-specific vehicle detail fields
+        if (selectedService === "valet") {
+          if (roadsideVehicleMake) payload.vehicleMake = roadsideVehicleMake;
+          if (roadsideVehicleModel) payload.vehicleModel = roadsideVehicleModel;
+          if (roadsideVehicleYear) payload.vehicleYear = roadsideVehicleYear;
+          if (roadsideVehicleColor) payload.vehicleColor = roadsideVehicleColor;
+          if (roadsideLicensePlate) payload.licensePlate = roadsideLicensePlate;
+          if (roadsidePortType) payload.portType = roadsidePortType;
+          if (batteryCurrentCharge) payload.currentCharge = Number(batteryCurrentCharge);
+          if (batteryTargetCharge) payload.finalCharge = Number(batteryTargetCharge);
         }
       } else {
         // Deliver / Valet specific fields
