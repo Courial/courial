@@ -69,7 +69,7 @@ function FeaturedCard({ ride, onClick }: { ride: ActivityItem; onClick: () => vo
     <div onClick={onClick} className="rounded-2xl border border-border bg-card p-4 cursor-pointer hover:border-primary/30 transition-colors">
       {hasAddress && (
         <div className="h-40 rounded-xl overflow-hidden mb-4 bg-muted">
-          <ActivityDetailMap origin={origin} destination={destination} />
+          <ActivityDetailMap origin={mapOrigin} destination={mapDest} />
         </div>
       )}
 

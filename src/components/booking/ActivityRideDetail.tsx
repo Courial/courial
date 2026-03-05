@@ -78,7 +78,7 @@ const ActivityRideDetail = ({ ride, onBack }: Props) => {
         {/* Map */}
         {hasAddress && (
           <div className="mx-4 h-44 rounded-xl overflow-hidden bg-muted mb-4">
-            <ActivityDetailMap origin={origin || originFull} destination={destination || destinationFull} />
+            <ActivityDetailMap origin={mapOrigin} destination={mapDest} />
           </div>
         )}
 
