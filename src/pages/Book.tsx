@@ -2111,7 +2111,7 @@ const Book = () => {
 
 
             {/* Task Details Form */}
-            {isConciergeStyle && conciergeSubCategory && (selectedService !== "valet" || (roadsideVehicleMake && roadsideVehicleModel && roadsideVehicleColor)) && (
+            {isConciergeStyle && conciergeSubCategory && (selectedService !== "valet" || (roadsideVehicleMake && roadsideVehicleModel && roadsideVehicleColor && roadsideVehicleYear && roadsideLicensePlate && (conciergeCategory === "drive" || (roadsidePortType && batteryCurrentCharge && batteryTargetCharge)))) && (
               <motion.div
                 initial={{ opacity: 0, height: 0 }}
                 animate={{ opacity: 1, height: "auto" }}
@@ -2348,7 +2348,9 @@ const Book = () => {
                   )}
                 </AnimatePresence>
 
-                {/* Service Mode Toggle */}
+                {/* Service Mode Toggle — for valet, only show after description has at least 2 words */}
+                {(selectedService !== "valet" || conciergeDescription.trim().split(/\s+/).filter(Boolean).length >= 2) && (
+                <>
                 <div className="flex items-center gap-2 mb-3 pt-2">
                   <span className="text-xs font-medium text-muted-foreground">Service Type</span>
                   {(conciergeCategory === "roadside-assistance" ? [
@@ -2772,6 +2774,8 @@ const Book = () => {
                     </Button>
                   </div>
                 </div>
+                </>
+                )}
               </motion.div>
             )}
 
