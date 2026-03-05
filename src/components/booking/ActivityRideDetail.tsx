@@ -1,4 +1,4 @@
-import { ArrowLeft, Star, Calendar, Zap } from "lucide-react";
+import { Star, Calendar, Zap } from "lucide-react";
 import { format } from "date-fns";
 import ActivityDetailMap from "./ActivityDetailMap";
 import type { ActivityItem } from "@/hooks/useActivities";
@@ -14,7 +14,7 @@ interface Props {
   onBack: () => void;
 }
 
-const ActivityRideDetail = ({ ride, onBack }: Props) => {
+const ActivityRideDetail = ({ ride }: Props) => {
   const origin = ride.pickupInfo?.placeName || ride.pickupInfo?.fullAddress || ride.pickupInfo?.address || "";
   const originFull = ride.pickupInfo?.fullAddress || ride.pickupInfo?.address || "";
   const destination = ride.deliveryInfo?.placeName || ride.deliveryInfo?.fullAddress || ride.deliveryInfo?.address || "";
@@ -58,15 +58,7 @@ const ActivityRideDetail = ({ ride, onBack }: Props) => {
   })();
 
   return (
-    <div className="h-full overflow-y-auto p-6">
-      {/* Back */}
-      <button
-        onClick={onBack}
-        className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors mb-4"
-      >
-        <ArrowLeft className="w-4 h-4" />
-        Back
-      </button>
+    <div>
 
       {/* Card */}
       <div className="rounded-2xl border border-border bg-card overflow-hidden">
