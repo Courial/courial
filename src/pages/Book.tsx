@@ -3655,6 +3655,29 @@ const Book = () => {
                                 )}
                               </motion.div>
                             )}
+
+                            {/* Completion photo after "Task Completed" step (concierge/valet) */}
+                            {step.label === "Task Completed" && (isCompleted || isCurrent) && (selectedService === "concierge" || selectedService === "valet") && completionPhotoUrl && (
+                              <motion.div
+                                initial={{ opacity: 0, height: 0 }}
+                                animate={{ opacity: 1, height: "auto" }}
+                                className="mt-2"
+                              >
+                                <div className="relative w-full max-w-[200px] rounded-lg overflow-hidden border border-border shadow-sm">
+                                  <img
+                                    src={completionPhotoUrl}
+                                    alt="Task completion photo"
+                                    className="w-full h-auto object-cover rounded-lg"
+                                  />
+                                  <button
+                                    onClick={() => window.open(completionPhotoUrl, "_blank")}
+                                    className="absolute top-1.5 right-1.5 p-1 rounded-full bg-background/80 backdrop-blur-sm"
+                                  >
+                                    <Eye className="w-3.5 h-3.5 text-foreground" />
+                                  </button>
+                                </div>
+                              </motion.div>
+                            )}
                           </div>
                         </div>
                       );
