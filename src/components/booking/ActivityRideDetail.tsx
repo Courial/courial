@@ -371,10 +371,10 @@ const ActivityRideDetail = ({ ride, onBack }: Props) => {
         {/* Chat */}
         {showChat && (
           <RideChat
-            orderId={ride.orderid || ""}
-            numericOrderId={ride.orderid || ""}
-            senderId={ride.userId || ""}
-            receiverId={hasProvider ? (ride.providerId || "") : "support"}
+            orderId={String(ride.orderid || "")}
+            numericOrderId={String(ride.orderid || "")}
+            senderId={String(ride.userId || "")}
+            receiverId={hasProvider ? String(ride.providerId || "") : "support"}
             courialName={hasProvider && driverName ? driverName : "Courial Support"}
             socketRef={socketRef}
             visible={showChat}
