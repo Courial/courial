@@ -1,6 +1,6 @@
 import { useState, useRef } from "react";
 import { motion } from "framer-motion";
-import { ArrowLeft, Star, Calendar, Zap, ChevronDown, Headset, MessageCircle, RotateCcw, Phone, Mail } from "lucide-react";
+import { ArrowLeft, Star, Calendar, Zap, ChevronDown, Headset, MessageCircle, RotateCcw, Phone, Mail, ChevronLeft } from "lucide-react";
 import { RideChat } from "./RideChat";
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
@@ -155,10 +155,10 @@ const ActivityRideDetail = ({ ride, onBack, hasLiveSession, onBackToLive }: Prop
         {!hasAddress && (
           <button
             onClick={onBack}
-            className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors mb-2"
+            className="flex items-center gap-1.5 px-5 py-2 rounded-full bg-foreground text-background hover:bg-foreground/80 transition-colors mb-2 font-semibold text-sm"
           >
-            <ArrowLeft className="w-4 h-4" />
-            Back
+            <ChevronLeft className="w-5 h-5" />
+            Pending
           </button>
         )}
 
