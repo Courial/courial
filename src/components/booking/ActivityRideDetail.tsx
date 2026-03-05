@@ -68,7 +68,7 @@ const ActivityRideDetail = ({ ride }: Props) => {
 
   const serviceTypeLabel = getServiceTypeLabel(ride);
   const categoryLine = getCategoryLine(ride);
-  const transportMode = getTransportModeLabel(ride);
+  const optionCategory = getOptionCategoryLabel(ride);
 
   const orderDate = (() => {
     if (!ride.orderDateTime) return null;
