@@ -119,7 +119,10 @@ const Book = () => {
   const [dropoffPlaceName, setDropoffPlaceName] = useState<string | null>(null);
   const [timeMode, setTimeMode] = useState<"now" | "later">("now");
   const [selectedDate, setSelectedDate] = useState<Date>();
-  const [selectedTime, setSelectedTime] = useState("12:00");
+  const [selectedTime, setSelectedTime] = useState(() => {
+    const now = new Date();
+    return `${String(now.getHours()).padStart(2, "0")}:${String(now.getMinutes()).padStart(2, "0")}`;
+  });
   const [selectedVehicle, setSelectedVehicle] = useState<VehicleId | null>(null);
   const [showAllServices, setShowAllServices] = useState(true);
   const [notes, setNotes] = useState("");
@@ -723,8 +726,13 @@ const Book = () => {
       }
 
       if (timeMode === "later" && selectedDate) {
-        payload.date = format(selectedDate, "yyyy-MM-dd");
-        payload.time = selectedTime;
+        // Build a local Date from selected date + time, then convert to UTC
+        const [hh, mm] = selectedTime.split(":").map(Number);
+        const localDt = new Date(selectedDate);
+        localDt.setHours(hh, mm, 0, 0);
+        payload.date = localDt.toISOString().split("T")[0]; // UTC date
+        payload.time = localDt.toISOString().split("T")[1].substring(0, 5); // UTC HH:mm
+        payload.timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
       }
 
       if (over70lbs) {
@@ -857,7 +865,8 @@ const Book = () => {
     setDropoffPlaceName(null);
     setTimeMode("now");
     setSelectedDate(undefined);
-    setSelectedTime("12:00");
+    const nowReset = new Date();
+    setSelectedTime(`${String(nowReset.getHours()).padStart(2, "0")}:${String(nowReset.getMinutes()).padStart(2, "0")}`);
     setSelectedVehicle(null);
     setNotes("");
     setOver70lbs(null);
@@ -937,8 +946,12 @@ const Book = () => {
       }
     }
     if (timeMode === "later" && selectedDate) {
-      payload.date = format(selectedDate, "yyyy-MM-dd");
-      payload.time = selectedTime;
+      const [hh, mm] = selectedTime.split(":").map(Number);
+      const localDt = new Date(selectedDate);
+      localDt.setHours(hh, mm, 0, 0);
+      payload.date = localDt.toISOString().split("T")[0];
+      payload.time = localDt.toISOString().split("T")[1].substring(0, 5);
+      payload.timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
     }
 
     try {
