@@ -14,7 +14,7 @@ interface Props {
   onBack: () => void;
 }
 
-const ActivityRideDetail = ({ ride, onBack }: Props) => {
+const ActivityRideDetail = ({ ride }: Props) => {
   const origin = ride.pickupInfo?.placeName || ride.pickupInfo?.fullAddress || ride.pickupInfo?.address || "";
   const originFull = ride.pickupInfo?.fullAddress || ride.pickupInfo?.address || "";
   const destination = ride.deliveryInfo?.placeName || ride.deliveryInfo?.fullAddress || ride.deliveryInfo?.address || "";
