@@ -9,6 +9,32 @@ function formatFee(fee: number | string) {
   return `$${n.toFixed(2)}`;
 }
 
+/** Derive the primary service type label: Deliver, Valet, or Concierge */
+function getServiceTypeLabel(ride: ActivityItem): string {
+  const st = (ride.serviceType || "").toLowerCase();
+  if (st.includes("valet")) return "Valet";
+  if (st.includes("concierge")) return "Concierge";
+  return "Deliver";
+}
+
+/** Derive category • subcategory line, e.g. "Drive • Drive my Car" */
+function getCategoryLine(ride: ActivityItem): string {
+  const cat = ride.category || ride.serviceType || "";
+  const sub = ride.subCategory || ride.sub_category || ride.description || "";
+  if (cat && sub) return `${cat} • ${sub}`;
+  if (cat) return cat;
+  return "";
+}
+
+/** Derive the transport mode label */
+function getTransportModeLabel(ride: ActivityItem): string {
+  const vehicle = ride.transport_mode || ride.conciergeVehicle || ride.concierge_vehicle || null;
+  if (vehicle) return vehicle;
+  const st = (ride.serviceType || "").toLowerCase();
+  if (st) return st;
+  return "delivery";
+}
+
 interface Props {
   ride: ActivityItem;
   onBack: () => void;
@@ -20,7 +46,6 @@ const ActivityRideDetail = ({ ride }: Props) => {
   const destination = ride.deliveryInfo?.placeName || ride.deliveryInfo?.fullAddress || ride.deliveryInfo?.address || "";
   const destinationFull = ride.deliveryInfo?.fullAddress || ride.deliveryInfo?.address || "";
 
-  // Fall back to lat/lng if no text address
   const originLatLng = ride.pickupInfo?.latitude && ride.pickupInfo?.longitude
     ? `${ride.pickupInfo.latitude},${ride.pickupInfo.longitude}` : "";
   const destLatLng = ride.deliveryInfo?.latitude && ride.deliveryInfo?.longitude
@@ -40,15 +65,10 @@ const ActivityRideDetail = ({ ride }: Props) => {
     : null;
   const driverImage = provider?.image || provider?.profile_image || null;
   const driverRating = provider?.rating ? parseFloat(String(provider.rating)) : null;
-  const driverVehicle = provider?.UserVehicle || ride.UserVehicle || null;
-  const vehicleDesc = driverVehicle
-    ? `${driverVehicle.color ? driverVehicle.color + " " : ""}${driverVehicle.year ? driverVehicle.year + " " : ""}${driverVehicle.make || ""} ${driverVehicle.model || ""}`.trim()
-    : null;
 
-  const vehicle = ride.transport_mode || ride.conciergeVehicle || ride.concierge_vehicle || null;
-  const st = (ride.serviceType || "").toLowerCase();
-
-  const serviceLabel = vehicleDesc || (ride.serviceType === "Scheduled Ride" ? "Scheduled Ride" : vehicle || ride.serviceType || "Delivery");
+  const serviceTypeLabel = getServiceTypeLabel(ride);
+  const categoryLine = getCategoryLine(ride);
+  const transportMode = getTransportModeLabel(ride);
 
   const orderDate = (() => {
     if (!ride.orderDateTime) return null;
@@ -57,29 +77,27 @@ const ActivityRideDetail = ({ ride }: Props) => {
     return d;
   })();
 
+  const handleNeedHelp = () => {
+    window.open("/help#contact", "_blank");
+  };
+
   return (
     <div>
-
       {/* Card */}
       <div className="rounded-2xl border border-border bg-card overflow-hidden">
-        {/* Header */}
-        <div className="pt-5 pb-3 text-center">
-          <h2 className="text-lg font-bold text-foreground">Ride Details</h2>
-        </div>
-
-        {/* Map frame — always visible */}
-        <div className="mx-4 h-44 rounded-xl overflow-hidden bg-muted mb-4">
+        {/* Map frame — no header, always visible */}
+        <div className="mx-4 mt-4 h-44 rounded-xl overflow-hidden bg-muted mb-4">
           {hasAddress && (
             <ActivityDetailMap origin={mapOrigin} destination={mapDest} />
           )}
         </div>
 
         <div className="px-5 pb-5">
-          {/* Driver name + rating + photo */}
+          {/* Service type label + rating + Courial profile photo */}
           <div className="flex items-start justify-between mb-1">
             <div className="flex items-center gap-3">
               <h3 className="text-2xl font-bold text-foreground">
-                {driverName?.split(" ")[0] || "Unassigned"}
+                {driverName?.split(" ")[0] || serviceTypeLabel}
               </h3>
               {driverRating && (
                 <div className="flex items-center gap-1">
@@ -89,7 +107,7 @@ const ActivityRideDetail = ({ ride }: Props) => {
               )}
             </div>
             {driverImage ? (
-              <img src={driverImage} alt={driverName || "Driver"} className="w-12 h-12 rounded-full object-cover border border-border" />
+              <img src={driverImage} alt={driverName || "Courial"} className="w-12 h-12 rounded-full object-cover border border-border" />
             ) : (
               <div className="w-12 h-12 rounded-full bg-muted flex items-center justify-center">
                 <svg className="w-6 h-6 text-muted-foreground" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -100,14 +118,16 @@ const ActivityRideDetail = ({ ride }: Props) => {
             )}
           </div>
 
-          {/* Vehicle type */}
-          <p className="text-sm text-muted-foreground mb-1 capitalize">{serviceLabel}</p>
+          {/* Category • Subcategory line */}
+          {categoryLine && (
+            <p className="text-sm text-muted-foreground mb-1 capitalize">{categoryLine}</p>
+          )}
 
-          {/* Fee + icon + vehicle */}
+          {/* Fee + icon + transport mode */}
           <div className="flex items-center gap-2 text-sm font-bold text-foreground mb-0.5">
             <span>{formatFee(ride.deliveryFee)}</span>
             {isScheduled ? <Calendar className="w-3.5 h-3.5 text-muted-foreground" /> : <Zap className="w-3.5 h-3.5 text-muted-foreground" />}
-            <span className="text-muted-foreground font-normal capitalize">{vehicleDesc || vehicle || st || "delivery"}</span>
+            <span className="text-muted-foreground font-normal capitalize">{transportMode}</span>
           </div>
 
           {/* Date + Order ID */}
@@ -133,22 +153,17 @@ const ActivityRideDetail = ({ ride }: Props) => {
           </div>
         </div>
 
-        {/* Receipt message */}
+        {/* Receipt message — no horizontal dividers */}
         {isCompleted && (
-          <>
-            <div className="mx-5 border-t border-border" />
-            <p className="text-sm text-muted-foreground text-center py-4 px-5">
-              A detailed receipt has been sent to your email.
-            </p>
-            <div className="mx-5 border-t border-border" />
-          </>
+          <p className="text-sm text-muted-foreground text-center py-4 px-5">
+            A detailed receipt has been sent to your email.
+          </p>
         )}
 
-        {/* Addresses */}
+        {/* Addresses — no horizontal lines */}
         {hasAddress && (
-          <div className="px-5 py-4">
+          <div className="px-5 pb-4">
             <div className="relative pl-6">
-              {/* Vertical connector line */}
               {(origin || originFull) && (destination || destinationFull) && (
                 <div className="absolute left-[5px] top-3 bottom-3 w-0.5 bg-border" />
               )}
@@ -180,8 +195,11 @@ const ActivityRideDetail = ({ ride }: Props) => {
         )}
       </div>
 
-      {/* Need help? */}
-      <button className="w-full mt-4 py-3.5 rounded-full border border-border text-sm font-semibold text-foreground hover:bg-muted transition-colors">
+      {/* Need help? — opens contact page in new window */}
+      <button
+        onClick={handleNeedHelp}
+        className="w-full mt-4 py-3.5 rounded-full border border-border text-sm font-semibold text-foreground hover:bg-muted transition-colors"
+      >
         Need help?
       </button>
     </div>
