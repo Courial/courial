@@ -830,7 +830,23 @@ const Book = () => {
     }
   }, [isFormValid, user, timeMode, selectedService, selectedVehicle, notes, pickup, pickupCoords, dropoff, dropoffCoords, selectedDate, selectedTime, over70lbs, heavyWeight, heavyItems, twoCourials, hasStairs, conciergeDescription, conciergeCategory, conciergeSubCategory, conciergeIsRemote, conciergeStartAddress, conciergeStartCoords, conciergeStopAddress, conciergeStopCoords, conciergeFinalAddress, conciergeFinalCoords, conciergeLanguage, conciergeServiceMode, conciergeVehicle, conciergeHasExpenses, conciergeExpenseItems, conciergeAllowOverage, conciergeOverageLimit, conciergeOrderValue, deliverLanguage, deliverMultiStop, deliverExtraStops, deliverHasExpenses, deliverExpenseItems, deliverAllowOverage, deliverOverageLimit, roadsideVehicleMake, roadsideVehicleModel, roadsideVehicleYear, roadsideVehicleColor, roadsideLicensePlate, roadsidePortType, batteryCurrentCharge, batteryTargetCharge]);
 
-  // Scroll sidebar to top when entering loading/active states or toggling chat
+   // Determine which vehicle detail field should highlight red (last missing field)
+   const vehicleFieldRedMap = useMemo(() => {
+     const isValet = selectedService === "valet";
+     const isRoadside = selectedService === "concierge" && conciergeCategory === "roadside-assistance";
+     const isDrive = isValet && conciergeCategory === "drive";
+     if (!isValet && !isRoadside) return {};
+
+     const fields: Record<string, string> = { make: roadsideVehicleMake, model: roadsideVehicleModel, color: roadsideVehicleColor, plate: roadsideLicensePlate };
+     if (isValet) { fields.year = roadsideVehicleYear; fields.port = roadsidePortType; }
+     if (isValet && !isDrive) { fields.currentCharge = batteryCurrentCharge; fields.finalCharge = batteryTargetCharge; }
+
+     const empty = Object.entries(fields).filter(([, v]) => !v?.trim());
+     if (empty.length === 1) return { [empty[0][0]]: true };
+     return {};
+   }, [selectedService, conciergeCategory, roadsideVehicleMake, roadsideVehicleModel, roadsideVehicleColor, roadsideLicensePlate, roadsideVehicleYear, roadsidePortType, batteryCurrentCharge, batteryTargetCharge]);
+
+   // Scroll sidebar to top when entering loading/active states or toggling chat
   useEffect(() => {
     if (bookingState === "loading" || bookingState === "active") {
       sidebarRef.current?.scrollTo({ top: 0, behavior: "smooth" });
