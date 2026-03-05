@@ -21,7 +21,7 @@ serve(async (req) => {
 
     const userPrompt = evOnly
       ? `List ALL electric (EV), plug-in hybrid (PHEV), and hybrid models made by "${make}" from 2000 to 2025 that require EV charging (have a charging port). Include every fully electric and plug-in hybrid model. Do NOT include standard hybrids that cannot be plugged in (like regular Toyota Prius). Return as a JSON array of model name strings. Be comprehensive.`
-      : `List ALL current and recent models (2015-2025) sold by "${make}" in the US market. Include every sedan, SUV, truck, coupe, convertible, wagon, and electric model. For BMW include 3 Series, 5 Series, 7 Series, X1, X3, X5, X7, i4, iX, M3, M5, Z4, etc. Return as a JSON array of model name strings. Be comprehensive — include at least 15 models for major brands.`;
+      : `List ALL current and recent models (2010-2025) sold by "${make}" worldwide including US, European, and Chinese markets. Include every sedan, SUV, truck, coupe, convertible, wagon, electric, hybrid, and diesel model. For BMW include 3 Series, 5 Series, 7 Series, X1, X3, X5, X7, i4, iX, M3, M5, Z4, etc. Return as a JSON array of model name strings. Be comprehensive — include at least 15 models for major brands.`;
 
     const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
       method: "POST",
