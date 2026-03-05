@@ -104,6 +104,14 @@ const ActivityRideDetail = ({ ride, onBack, hasLiveSession, onBackToLive }: Prop
   const isCancelled = ride.status?.toLowerCase() === "cancelled" || ride.status?.toLowerCase() === "canceled";
   const isComplete = deliveryStep >= maxStep;
 
+  // Full booking details from localStorage (must be before provider logic)
+  const storedDetails = useMemo(() => {
+    try {
+      const stored = JSON.parse(localStorage.getItem("courial_order_details") || "{}");
+      return stored[String(ride.orderid)] || null;
+    } catch { return null; }
+  }, [ride.orderid]);
+
   // Provider / Driver info — prefer API data, fall back to localStorage
   const apiProvider = ride.Provider || ride.provider || null;
   const storedProvider = storedDetails?.provider || null;
@@ -124,14 +132,6 @@ const ActivityRideDetail = ({ ride, onBack, hasLiveSession, onBackToLive }: Prop
 
   const isLive = !isCancelled && !isComplete;
   const hasProvider = !!(ride.providerId || provider);
-
-  // Full booking details from localStorage
-  const storedDetails = useMemo(() => {
-    try {
-      const stored = JSON.parse(localStorage.getItem("courial_order_details") || "{}");
-      return stored[String(ride.orderid)] || null;
-    } catch { return null; }
-  }, [ride.orderid]);
 
   const storedCategories = (() => {
     try {
