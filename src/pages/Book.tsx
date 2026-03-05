@@ -333,9 +333,9 @@ const Book = () => {
     const isWfh = selectedService === "concierge" && conciergeIsRemote;
     const statusStepMap: Record<string, number> = isWfh
       ? {
-          "Courial at Pickup": 1, // maps to "Task In Progress"
+          "Courial at Pickup": 1, // maps to "Service In Progress"
           "Courial Picked Up": 1,
-          "Courial at Drop-off": 2, // maps to "Task Completed"
+          "Courial at Drop-off": 2, // maps to "Service Completed"
           "Order Complete": 3,
         }
       : {
@@ -1031,12 +1031,12 @@ const Book = () => {
     };
   }, [bookingState, conciergeIsRemote, wfhSearchPhase, acceptedCourial, user, resubmitWithLocation, conciergeStartAddress, conciergeStartCoords, conciergeStopAddress, conciergeStopCoords, conciergeFinalAddress, conciergeFinalCoords]);
 
-   // Concierge/Valet task timer — start on "Task In Progress", stop on "Task Completed"
+   // Concierge/Valet service timer — start on "Service In Progress", stop on "Service Completed"
   useEffect(() => {
     if (selectedService !== "concierge" && selectedService !== "valet") return;
     const isWfh = selectedService === "concierge" && conciergeIsRemote;
-    // WFH: step 1 = Task In Progress, step 2 = completed
-    // In-person / valet: step 3 = Task In Progress, step 4 = completed
+    // WFH: step 1 = Service In Progress, step 2 = completed
+    // In-person / valet: step 3 = Service In Progress, step 4 = completed
     const startStep = isWfh ? 1 : 3;
     const stopStep = isWfh ? 2 : 4;
     if (deliveryStep >= startStep && deliveryStep < stopStep) {
@@ -3561,7 +3561,7 @@ const Book = () => {
                               )}
                             >
                               {step.isComplete && deliveryIdRef.current
-                                ? `Order ${deliveryIdRef.current} Complete`
+                                ? `Service ${deliveryIdRef.current} Complete`
                                 : step.label}
                               {isCompleted && <span className="ml-1.5 text-primary">✓</span>}
                             </p>
@@ -3577,8 +3577,8 @@ const Book = () => {
                                   </p>
                                 ) : (
                                   <p className="text-xs text-muted-foreground">
-                                    {step.label === "Task Completed" && wfhTaskElapsed > 0
-                                      ? `${Math.floor(wfhTaskElapsed / 3600) > 0 && Math.floor((wfhTaskElapsed % 3600) / 60) > 0 ? `${Math.floor(wfhTaskElapsed / 3600)} hrs • ${Math.floor((wfhTaskElapsed % 3600) / 60)} mins` : Math.floor(wfhTaskElapsed / 3600) > 0 ? `${Math.floor(wfhTaskElapsed / 3600)} hrs` : `${Math.floor((wfhTaskElapsed % 3600) / 60)} mins`} task`
+                                    {step.label === "Service Completed" && wfhTaskElapsed > 0
+                                      ? `${Math.floor(wfhTaskElapsed / 3600) > 0 && Math.floor((wfhTaskElapsed % 3600) / 60) > 0 ? `${Math.floor(wfhTaskElapsed / 3600)} hrs • ${Math.floor((wfhTaskElapsed % 3600) / 60)} mins` : Math.floor(wfhTaskElapsed / 3600) > 0 ? `${Math.floor(wfhTaskElapsed / 3600)} hrs` : `${Math.floor((wfhTaskElapsed % 3600) / 60)} mins`} service`
                                       : step.desc}
                                   </p>
                                 )}
@@ -3657,8 +3657,8 @@ const Book = () => {
                               </motion.div>
                             )}
 
-                            {/* Completion photo after "Task Completed" step (concierge/valet) */}
-                            {step.label === "Task Completed" && (isCompleted || isCurrent) && (selectedService === "concierge" || selectedService === "valet") && completionPhotoUrl && (
+                            {/* Completion photo after "Service Completed" step (concierge/valet) */}
+                            {step.label === "Service Completed" && (isCompleted || isCurrent) && (selectedService === "concierge" || selectedService === "valet") && completionPhotoUrl && (
                               <motion.div
                                 initial={{ opacity: 0, height: 0 }}
                                 animate={{ opacity: 1, height: "auto" }}
@@ -3667,7 +3667,7 @@ const Book = () => {
                                 <div className="relative w-full max-w-[200px] rounded-lg overflow-hidden border border-border shadow-sm">
                                   <img
                                     src={completionPhotoUrl}
-                                    alt="Task completion photo"
+                                    alt="Service completion photo"
                                     className="w-full h-auto object-cover rounded-lg"
                                   />
                                   <button
@@ -3811,12 +3811,12 @@ const Book = () => {
                 )}
               </div>
 
-              {/* Completion Photo — shown on Order Complete */}
+              {/* Completion Photo — shown on Service Complete */}
               {deliveryStep >= (isWfhConcierge ? 3 : 5) && completionPhotoUrl && (
                 <div className="relative rounded-2xl overflow-hidden mb-3 border border-border">
                   <img
                     src={completionPhotoUrl}
-                    alt="Order completion photo"
+                    alt="Service completion photo"
                     className="w-full h-auto object-cover cursor-pointer"
                     onClick={() => window.open(completionPhotoUrl, "_blank")}
                   />
@@ -3975,10 +3975,10 @@ const Book = () => {
                         </p>
                       </div>
                     )}
-                    {/* Concierge Task Description — right after Pickup Date & Time */}
+                    {/* Concierge Service Description */}
                     {isConciergeStyle && conciergeDescription.trim() && (
                       <div className="py-2.5">
-                        <p className="text-xs font-medium text-foreground mb-0.5">Task Description</p>
+                        <p className="text-xs font-medium text-foreground mb-0.5">Service Description</p>
                         <p className="text-[11px] text-muted-foreground whitespace-pre-wrap">{conciergeDescription}</p>
                       </div>
                     )}
