@@ -84,7 +84,7 @@ const ActivityRideDetail = ({ ride, onBack }: Props) => {
   const navigate = useNavigate();
   const socketRef = useRef<any>(null);
 
-  // moved below after declarations
+  
 
   const st = ride.serviceType?.toLowerCase() || "deliver";
   const isConciergeStyle = st === "concierge" || st === "valet";
