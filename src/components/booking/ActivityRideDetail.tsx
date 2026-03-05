@@ -123,9 +123,15 @@ const ActivityRideDetail = ({ ride, onBack, hasLiveSession, onBackToLive }: Prop
   const isLive = !isCancelled && !isComplete;
   const hasProvider = !!(ride.providerId || provider);
 
-  // Category info
-  const categoryName = ride.category || null;
-  const subCategoryName = ride.subCategory || ride.sub_category || null;
+  // Category info — from API or localStorage fallback
+  const storedCategories = (() => {
+    try {
+      const stored = JSON.parse(localStorage.getItem("courial_order_categories") || "{}");
+      return stored[String(ride.orderid)] || null;
+    } catch { return null; }
+  })();
+  const categoryName = ride.category || storedCategories?.category || null;
+  const subCategoryName = ride.subCategory || ride.sub_category || storedCategories?.subCategory || null;
   const categoryDisplay = [categoryName, subCategoryName].filter(Boolean).join(" • ") || null;
 
   // Format date
