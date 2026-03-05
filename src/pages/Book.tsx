@@ -2041,7 +2041,7 @@ const Book = () => {
                           onClick={(e) => { e.stopPropagation(); setBatteryTargetOpen(!batteryTargetOpen); setBatteryCurrentOpen(false); }}
                           className="w-full px-2 py-2 rounded-lg border border-border/60 bg-background text-foreground text-xs text-left flex items-center justify-between hover:border-foreground/30 transition-colors"
                         >
-                          <span className={batteryTargetCharge ? "text-foreground" : "text-muted-foreground"}>{batteryTargetCharge ? `${batteryTargetCharge}%` : "Future Charge"}</span>
+                          <span className={batteryTargetCharge ? "text-foreground" : "text-muted-foreground"}>{batteryTargetCharge ? `${batteryTargetCharge}%` : "Final Charge Request"}</span>
                           <ChevronDown className="w-3 h-3 text-muted-foreground" />
                         </button>
                         {batteryTargetOpen && (
