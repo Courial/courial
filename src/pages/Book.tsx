@@ -3965,7 +3965,6 @@ const Book = () => {
                         </div>
                       </div>
                     </div>
-                    </div>
                     {/* Concierge Task Description — right after Pickup Date & Time */}
                     {isConciergeStyle && conciergeDescription.trim() && (
                       <div className="py-2.5">
