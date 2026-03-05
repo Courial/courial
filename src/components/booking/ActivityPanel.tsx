@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Clock, RotateCcw, Calendar, MapPin, ArrowLeft, Zap } from "lucide-react";
+import { Clock, RotateCcw, Calendar, MapPin, ArrowLeft, Zap, Loader2 } from "lucide-react";
 import ActivityDetailMap from "./ActivityDetailMap";
 import noScheduledIllustration from "@/assets/no-scheduled-illustration.png";
 import { useNavigate } from "react-router-dom";
@@ -8,105 +8,53 @@ import deliverIcon from "@/assets/service-icons/deliver.png";
 import conciergeIcon from "@/assets/service-icons/concierge.png";
 import chauffeurIcon from "@/assets/service-icons/chauffeur.png";
 import valetIcon from "@/assets/service-icons/valet.png";
+import { useActivities, type ActivityItem } from "@/hooks/useActivities";
 
 type Tab = "pending" | "past";
 
-// Mock data for demo — will be replaced with real data
-const mockPendingRides: any[] = [];
-
-const mockPastRides = [
-  {
-    id: "1",
-    orderNumber: "CRL-20250226-001",
-    type: "Deliver",
-    destination: "350 Fifth Avenue, New York",
-    origin: "200 Park Avenue, New York",
-    date: "26 Feb • 02:15 PM",
-    price: "$21.59",
-    status: "Completed",
-    vehicle: "Car",
-    vehicleDetail: "2023 Toyota Camry",
-    scheduled: false,
-  },
-  {
-    id: "2",
-    orderNumber: "CRL-20250224-002",
-    type: "Concierge",
-    destination: "SoHo House NYC",
-    origin: "Central Park West, New York",
-    date: "24 Feb • 10:30 AM",
-    price: "$65.00",
-    status: "Completed",
-    vehicle: null,
-    vehicleDetail: null,
-    scheduled: true,
-  },
-  {
-    id: "3",
-    orderNumber: "CRL-20250220-003",
-    type: "Deliver",
-    destination: "Brooklyn Navy Yard",
-    origin: "Wall Street, New York",
-    date: "20 Feb • 04:45 PM",
-    price: "$18.30",
-    status: "Cancelled",
-    vehicle: "Van",
-    vehicleDetail: "2022 Ford Transit",
-    scheduled: false,
-  },
-  {
-    id: "4",
-    orderNumber: "CRL-20250218-004",
-    type: "Valet",
-    destination: "The Plaza Hotel",
-    origin: "Times Square, New York",
-    date: "18 Feb • 08:00 PM",
-    price: "$35.00",
-    status: "Completed",
-    vehicle: null,
-    vehicleDetail: null,
-    scheduled: true,
-  },
-  {
-    id: "5",
-    orderNumber: "CRL-20250215-005",
-    type: "Deliver",
-    destination: "Hudson Yards",
-    origin: "Chelsea Market, New York",
-    date: "15 Feb • 11:20 AM",
-    price: "$14.75",
-    status: "Cancelled",
-    vehicle: "Scooter",
-    vehicleDetail: "2024 Honda PCX",
-    scheduled: false,
-  },
-];
-
 const serviceIconSrc: Record<string, string> = {
   Deliver: deliverIcon,
+  deliver: deliverIcon,
   Concierge: conciergeIcon,
+  concierge: conciergeIcon,
   Chauffeur: chauffeurIcon,
+  chauffeur: chauffeurIcon,
   Valet: valetIcon,
-};
-
-const statusColor: Record<string, string> = {
-  Completed: "text-primary",
-  Cancelled: "text-red-400",
-  Pending: "text-yellow-500",
+  valet: valetIcon,
 };
 
 const statusBadgeBg: Record<string, string> = {
   Completed: "text-green-700",
+  completed: "text-green-700",
   Cancelled: "text-red-700",
+  cancelled: "text-red-700",
   Pending: "text-yellow-500",
+  pending: "text-yellow-500",
+  active: "text-blue-600",
+  Active: "text-blue-600",
 };
+
+function formatActivityDate(iso: string) {
+  const d = new Date(iso);
+  return d.toLocaleDateString("en-US", { day: "2-digit", month: "short" }) +
+    " • " +
+    d.toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit" });
+}
+
+function formatFee(fee: number | string) {
+  const n = typeof fee === "string" ? parseFloat(fee) : fee;
+  if (isNaN(n)) return "$0.00";
+  return `$${n.toFixed(2)}`;
+}
 
 export const ActivityPanel = ({ onBack }: { onBack: () => void }) => {
   const [tab, setTab] = useState<Tab>("pending");
-  const [selectedRide, setSelectedRide] = useState<any | null>(null);
+  const [selectedRide, setSelectedRide] = useState<ActivityItem | null>(null);
   const navigate = useNavigate();
 
-  const rides = tab === "pending" ? mockPendingRides : mockPastRides;
+  const { data, isLoading, fetchNextPage, hasNextPage, isFetchingNextPage } = useActivities(tab);
+
+  const rides = useMemo(() => data?.pages.flat() ?? [], [data]);
 
   if (selectedRide) {
     return <RideDetail ride={selectedRide} onBack={() => setSelectedRide(null)} />;
@@ -134,7 +82,17 @@ export const ActivityPanel = ({ onBack }: { onBack: () => void }) => {
       {/* Content */}
       <div className="flex-1 overflow-y-auto">
         <AnimatePresence mode="wait">
-          {rides.length === 0 ? (
+          {isLoading ? (
+            <motion.div
+              key="loading"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="flex items-center justify-center py-16"
+            >
+              <Loader2 className="w-6 h-6 animate-spin text-primary" />
+            </motion.div>
+          ) : rides.length === 0 ? (
             <motion.div
               key="empty"
               initial={{ opacity: 0, y: 10 }}
@@ -165,45 +123,48 @@ export const ActivityPanel = ({ onBack }: { onBack: () => void }) => {
               className="space-y-3"
             >
               {rides.map((ride) => {
-                const iconSrc = serviceIconSrc[ride.type] || deliverIcon;
+                const iconSrc = serviceIconSrc[ride.serviceType] || serviceIconSrc[ride.type] || deliverIcon;
+                const destination = ride.deliveryInfo?.address || ride.deliveryInfo?.name || "—";
+                const isScheduled = ride.type?.toLowerCase() === "scheduled";
+                const vehicle = ride.transport_mode || ride.UserVehicle?.make || null;
+
                 return (
                   <div
-                    key={ride.id}
+                    key={ride.orderid}
                     onClick={() => setSelectedRide(ride)}
                     className="rounded-2xl border border-border bg-card p-4 hover:border-primary/30 transition-colors cursor-pointer"
                   >
                     <div className="flex items-start gap-3">
-                      {/* Service icon box */}
                       <div className="w-11 h-11 rounded-lg bg-muted-foreground/10 flex items-center justify-center shrink-0 overflow-hidden">
-                        <img src={iconSrc} alt={ride.type} className="w-7 h-7 object-contain" />
+                        <img src={iconSrc} alt={ride.serviceType} className="w-7 h-7 object-contain" />
                       </div>
 
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center justify-between gap-2 mb-1">
-                          <span className="text-sm font-bold text-foreground truncate">{ride.destination}</span>
+                          <span className="text-sm font-bold text-foreground truncate">{destination}</span>
                           <span className={`text-[11px] font-semibold shrink-0 ${statusBadgeBg[ride.status] || "text-muted-foreground"}`}>
                             {ride.status}
                           </span>
                         </div>
                         <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                          {ride.scheduled ? (
+                          {isScheduled ? (
                             <Calendar className="w-3 h-3 shrink-0 text-muted-foreground" />
                           ) : (
                             <Zap className="w-3 h-3 shrink-0 text-muted-foreground" />
                           )}
-                          <span>{ride.date}</span>
-                          {ride.vehicle && (
+                          <span>{formatActivityDate(ride.orderDateTime)}</span>
+                          {vehicle && (
                             <>
                               <span className="text-muted-foreground/40">•</span>
-                              <span>{ride.vehicle}</span>
+                              <span>{vehicle}</span>
                             </>
                           )}
                         </div>
                         <div className="flex items-center gap-2 mt-1.5">
-                          <span className="text-xs font-semibold text-foreground">{ride.price}</span>
+                          <span className="text-xs font-semibold text-foreground">{formatFee(ride.deliveryFee)}</span>
                           <span className="text-muted-foreground/40">•</span>
-                          <span className="text-xs font-medium text-muted-foreground">{ride.type}</span>
-                          {ride.status === "Cancelled" && (
+                          <span className="text-xs font-medium text-muted-foreground capitalize">{ride.serviceType}</span>
+                          {ride.status?.toLowerCase() === "cancelled" && (
                             <button
                               onClick={(e) => { e.stopPropagation(); }}
                               className="ml-auto flex items-center gap-1 text-[11px] font-medium text-muted-foreground hover:text-foreground transition-colors border border-border rounded-full px-3 py-0.5"
@@ -218,6 +179,21 @@ export const ActivityPanel = ({ onBack }: { onBack: () => void }) => {
                   </div>
                 );
               })}
+
+              {/* Load more */}
+              {hasNextPage && (
+                <button
+                  onClick={() => fetchNextPage()}
+                  disabled={isFetchingNextPage}
+                  className="w-full py-3 text-sm font-semibold text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  {isFetchingNextPage ? (
+                    <Loader2 className="w-4 h-4 animate-spin mx-auto" />
+                  ) : (
+                    "Load more"
+                  )}
+                </button>
+              )}
             </motion.div>
           )}
         </AnimatePresence>
@@ -227,14 +203,21 @@ export const ActivityPanel = ({ onBack }: { onBack: () => void }) => {
 };
 
 /* ── Detail View ── */
-const RideDetail = ({ ride, onBack }: { ride: any; onBack: () => void }) => {
-  const iconSrc = serviceIconSrc[ride.type] || deliverIcon;
+const RideDetail = ({ ride, onBack }: { ride: ActivityItem; onBack: () => void }) => {
+  const iconSrc = serviceIconSrc[ride.serviceType] || serviceIconSrc[ride.type] || deliverIcon;
+  const origin = ride.pickupInfo?.address || ride.pickupInfo?.name || "—";
+  const destination = ride.deliveryInfo?.address || ride.deliveryInfo?.name || "—";
+  const isScheduled = ride.type?.toLowerCase() === "scheduled";
+  const vehicle = ride.transport_mode || null;
+  const vehicleDetail = ride.UserVehicle
+    ? [ride.UserVehicle.year, ride.UserVehicle.make, ride.UserVehicle.model].filter(Boolean).join(" ")
+    : null;
 
   return (
     <div className="h-full flex flex-col">
       {/* Map */}
       <div className="relative mx-6 mt-10 h-48 rounded-2xl overflow-hidden bg-muted border border-border shadow-sm">
-        <ActivityDetailMap origin={ride.origin || ""} destination={ride.destination || ""} />
+        <ActivityDetailMap origin={origin} destination={destination} />
         <button
           onClick={onBack}
           className="absolute top-3 left-3 w-7 h-7 rounded-full bg-background/50 backdrop-blur-sm flex items-center justify-center shadow-md hover:bg-background/70 transition-colors z-10"
@@ -245,67 +228,60 @@ const RideDetail = ({ ride, onBack }: { ride: any; onBack: () => void }) => {
 
       {/* Details */}
       <div className="flex-1 p-6 space-y-3 overflow-y-auto">
-        {/* Title row: icon left, title center, status right */}
         <div className="flex items-center gap-3">
           <div className="w-11 h-11 rounded-lg bg-muted-foreground/10 flex items-center justify-center shrink-0 overflow-hidden">
-            <img src={iconSrc} alt={ride.type} className="w-7 h-7 object-contain" />
+            <img src={iconSrc} alt={ride.serviceType} className="w-7 h-7 object-contain" />
           </div>
           <div className="flex-1 min-w-0">
-            <h3 className="text-xl font-bold text-foreground">{ride.type}</h3>
+            <h3 className="text-xl font-bold text-foreground capitalize">{ride.serviceType}</h3>
             <p className="text-xs text-muted-foreground">
-              {ride.scheduled ? "Scheduled Ride" : "On-Demand"}
+              {isScheduled ? "Scheduled Ride" : "On-Demand"}
             </p>
           </div>
           <div className="text-right shrink-0">
             <span className={`text-[11px] font-semibold ${statusBadgeBg[ride.status] || "text-muted-foreground"}`}>
               {ride.status}
             </span>
-            {ride.orderNumber && (
-              <p className="text-[10px] text-muted-foreground mt-0.5">{ride.orderNumber}</p>
-            )}
+            <p className="text-[10px] text-muted-foreground mt-0.5">CRL-{ride.orderid}</p>
           </div>
         </div>
 
-        {/* Price & vehicle */}
         <div className="flex items-center gap-3 text-sm text-foreground">
-          <span className="font-bold">{ride.price}</span>
-          {ride.scheduled ? (
+          <span className="font-bold">{formatFee(ride.deliveryFee)}</span>
+          {isScheduled ? (
             <Calendar className="w-3.5 h-3.5 text-muted-foreground" />
           ) : (
             <Zap className="w-3.5 h-3.5 text-muted-foreground" />
           )}
-          {ride.vehicle && <span className="text-muted-foreground">{ride.vehicle}</span>}
-          {ride.vehicleDetail && (
+          {vehicle && <span className="text-muted-foreground">{vehicle}</span>}
+          {vehicleDetail && (
             <>
               <span className="text-muted-foreground/40">•</span>
-              <span className="text-muted-foreground">{ride.vehicleDetail}</span>
+              <span className="text-muted-foreground">{vehicleDetail}</span>
             </>
           )}
         </div>
 
-        {/* Date */}
-        <p className="text-sm text-muted-foreground">{ride.date}</p>
+        <p className="text-sm text-muted-foreground">{formatActivityDate(ride.orderDateTime)}</p>
 
-        {/* Addresses */}
         <div className="space-y-3 pt-2 border-t border-border">
           <div className="flex items-start gap-3">
             <div className="w-2.5 h-2.5 rounded-full bg-green-500 mt-1.5 shrink-0" />
             <div>
               <p className="text-xs text-muted-foreground">Pickup</p>
-              <p className="text-sm font-medium text-foreground">{ride.origin || "—"}</p>
+              <p className="text-sm font-medium text-foreground">{origin}</p>
             </div>
           </div>
           <div className="flex items-start gap-3">
             <div className="w-2.5 h-2.5 rounded-sm bg-red-500 mt-1.5 shrink-0" />
             <div>
               <p className="text-xs text-muted-foreground">Drop-off</p>
-              <p className="text-sm font-medium text-foreground">{ride.destination}</p>
+              <p className="text-sm font-medium text-foreground">{destination}</p>
             </div>
           </div>
         </div>
 
-        {/* Rebook if cancelled */}
-        {ride.status === "Cancelled" && (
+        {ride.status?.toLowerCase() === "cancelled" && (
           <button className="w-full mt-2 flex items-center justify-center gap-2 text-sm font-semibold text-background bg-foreground rounded-lg h-10 hover:bg-foreground/90 transition-colors">
             <RotateCcw className="w-4 h-4" />
             Rebook
