@@ -254,12 +254,16 @@ export function useCourialSocket({ token, enabled, acceptedDriverId, onAccepted,
           };
 
 
-          // Extract drop-off proof photo
-          if (onDropoffPhoto) {
-            const photo = flat?.takeDeliveryPhoto ?? flat?.take_delivery_photo ?? flat?.dropoffPhoto ?? flat?.dropoff_photo ?? flat?.deliveryPhoto ?? flat?.delivery_photo ?? null;
-            if (photo) {
-              console.log(`[CourialSocket] Dropoff photo extracted:`, photo);
+          // Extract drop-off / completion proof photo
+          const photo = flat?.takeDeliveryPhoto ?? flat?.take_delivery_photo ?? flat?.dropoffPhoto ?? flat?.dropoff_photo ?? flat?.deliveryPhoto ?? flat?.delivery_photo ?? flat?.completionPhoto ?? flat?.completion_photo ?? flat?.taskPhoto ?? flat?.task_photo ?? null;
+          if (photo) {
+            console.log(`[CourialSocket] Photo extracted from ${eventName}:`, photo);
+            if (onDropoffPhoto) {
               onDropoffPhoto(photo);
+            }
+            // Also set as completion photo so it shows on the completion screen
+            if (onCompletionPhoto) {
+              onCompletionPhoto(photo);
             }
           }
 
@@ -315,7 +319,7 @@ export function useCourialSocket({ token, enabled, acceptedDriverId, onAccepted,
       socketRef.current = null;
       setConnected(false);
     };
-  }, [enabled, token, acceptedDriverId, onAccepted, onLocationUpdate, onStatusChange, onCompletionPhoto, onDropoffPhoto]);
+  }, [enabled, token, acceptedDriverId, onAccepted, onLocationUpdate, onStatusChange, onCompletionPhoto, onDropoffPhoto, onPickupPhoto, onNumberOfPackages]);
 
   return { connected, disconnect, socketRef };
 }
