@@ -1,6 +1,6 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useMemo } from "react";
 import { motion } from "framer-motion";
-import { ArrowLeft, Star, Calendar, Zap, ChevronDown, Headset, MessageCircle, RotateCcw, Phone, Mail, ChevronLeft } from "lucide-react";
+import { ArrowLeft, Star, Calendar, Zap, ChevronDown, Headset, MessageCircle, RotateCcw, Phone, Mail, ChevronLeft, Check, X } from "lucide-react";
 import { RideChat } from "./RideChat";
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
@@ -123,15 +123,22 @@ const ActivityRideDetail = ({ ride, onBack, hasLiveSession, onBackToLive }: Prop
   const isLive = !isCancelled && !isComplete;
   const hasProvider = !!(ride.providerId || provider);
 
-  // Category info — from API or localStorage fallback
+  // Full booking details from localStorage
+  const storedDetails = useMemo(() => {
+    try {
+      const stored = JSON.parse(localStorage.getItem("courial_order_details") || "{}");
+      return stored[String(ride.orderid)] || null;
+    } catch { return null; }
+  }, [ride.orderid]);
+
   const storedCategories = (() => {
     try {
       const stored = JSON.parse(localStorage.getItem("courial_order_categories") || "{}");
       return stored[String(ride.orderid)] || null;
     } catch { return null; }
   })();
-  const categoryName = ride.category || storedCategories?.category || null;
-  const subCategoryName = ride.subCategory || ride.sub_category || storedCategories?.subCategory || null;
+  const categoryName = ride.category || storedDetails?.category || storedCategories?.category || null;
+  const subCategoryName = ride.subCategory || ride.sub_category || storedDetails?.subCategory || storedCategories?.subCategory || null;
   const categoryDisplay = [categoryName, subCategoryName].filter(Boolean).join(" • ") || null;
 
   // Format date
@@ -400,20 +407,248 @@ const ActivityRideDetail = ({ ride, onBack, hasLiveSession, onBackToLive }: Prop
           </button>
           {showOrderDetails && (
             <div className="mt-3 space-y-0 divide-y divide-border text-sm">
-              {/* Service Type */}
-              <div className="py-2.5">
-                <p className="text-xs font-medium text-foreground mb-0.5">Service</p>
-                <p className="text-[11px] text-muted-foreground capitalize">{ride.serviceType}</p>
-              </div>
-              {/* Vehicle / Mode */}
-              {(vehicle || ride.transport_mode) && (
+              {/* Language + Rate + Mode row */}
+              {(() => {
+                const lang = storedDetails?.language || null;
+                const rate = storedDetails?.rate || null;
+                const mode = storedDetails?.mode || vehicle || ride.transport_mode || null;
+                const isRoadside = storedDetails?.category?.toLowerCase()?.includes("roadside");
+                const isValet = st === "valet";
+                const providerLang = provider?.language || null;
+
+                // Valet: Rate + Mode + Language Prefs row
+                if (isValet && (rate || mode || lang)) {
+                  return (
+                    <div className="grid grid-cols-3 gap-4 py-2.5">
+                      {rate && (
+                        <div>
+                          <p className="text-xs font-medium text-foreground mb-0.5">Rate</p>
+                          <p className="text-[11px] text-muted-foreground">
+                            {rate === "hourly" ? "$65 per Hour" : rate === "daily" ? "$480 Daily" : rate}
+                          </p>
+                        </div>
+                      )}
+                      {mode && (
+                        <div>
+                          <p className="text-xs font-medium text-foreground mb-0.5">Mode</p>
+                          <p className="text-[11px] text-muted-foreground capitalize">{mode === "none" ? "None" : mode}</p>
+                        </div>
+                      )}
+                      {lang && (
+                        <div>
+                          <p className="text-xs font-medium text-foreground mb-0.5">Language Prefs</p>
+                          <p className="text-[11px] text-muted-foreground flex items-center gap-1">
+                            {lang}
+                            {providerLang && (
+                              providerLang.toLowerCase() === lang.toLowerCase()
+                                ? <Check className="w-3.5 h-3.5 text-green-500" />
+                                : <X className="w-3.5 h-3.5 text-red-500" />
+                            )}
+                          </p>
+                        </div>
+                      )}
+                    </div>
+                  );
+                }
+
+                // Concierge/Deliver: Language + Rate/Mode row
+                if (lang || (isConciergeStyle && (rate || mode))) {
+                  return (
+                    <div className="grid grid-cols-3 gap-4 py-2.5">
+                      {lang && (
+                        <div>
+                          <p className="text-xs font-medium text-foreground mb-0.5">Language</p>
+                          <p className="text-[11px] text-muted-foreground flex items-center gap-1">
+                            {lang}
+                            {providerLang && (
+                              providerLang.toLowerCase() === lang.toLowerCase()
+                                ? <Check className="w-3.5 h-3.5 text-green-500" />
+                                : <X className="w-3.5 h-3.5 text-red-500" />
+                            )}
+                          </p>
+                        </div>
+                      )}
+                      {isRoadside && rate && (
+                        <div>
+                          <p className="text-xs font-medium text-foreground mb-0.5">Rate</p>
+                          <p className="text-[11px] text-muted-foreground">
+                            {rate === "hourly" ? "$65 per Hour" : rate === "daily" ? "$480 Daily" : rate}
+                          </p>
+                        </div>
+                      )}
+                      {(isRoadside || !isConciergeStyle) && mode && (
+                        <div>
+                          <p className="text-xs font-medium text-foreground mb-0.5">{isConciergeStyle ? "Mode" : "Mode"}</p>
+                          <p className="text-[11px] text-muted-foreground capitalize">{mode === "none" ? "None" : mode}</p>
+                        </div>
+                      )}
+                    </div>
+                  );
+                }
+                return null;
+              })()}
+
+              {/* Extras (deliver) */}
+              {!isConciergeStyle && (storedDetails?.hasStairs || (storedDetails?.over70lbs && Number(storedDetails?.heavyWeight) >= 70) || storedDetails?.twoCourials) && (
+                <div className="py-2.5">
+                  <p className="text-xs font-medium text-foreground mb-0.5">Extras</p>
+                  <p className="text-[11px] text-muted-foreground">
+                    {[
+                      storedDetails.hasStairs ? "Stairs" : null,
+                      storedDetails.over70lbs && Number(storedDetails.heavyWeight) >= 70 ? `${storedDetails.heavyWeight} lbs / ${storedDetails.heavyItems} ${parseInt(storedDetails.heavyItems) === 1 ? "item" : "items"}` : null,
+                      storedDetails.twoCourials ? "2 Courials Required" : null,
+                    ].filter(Boolean).join(", ")}
+                  </p>
+                </div>
+              )}
+
+              {/* Rate & Mode (concierge non-roadside, non-valet) */}
+              {isConciergeStyle && st !== "valet" && !storedDetails?.category?.toLowerCase()?.includes("roadside") && (storedDetails?.rate || storedDetails?.mode) && (
+                <div className="grid grid-cols-3 gap-4 py-2.5">
+                  {storedDetails.rate && (
+                    <div>
+                      <p className="text-xs font-medium text-foreground mb-0.5">Rate</p>
+                      <p className="text-[11px] text-muted-foreground">
+                        {storedDetails.rate === "hourly" ? "$65 per Hour" : storedDetails.rate === "daily" ? "$480 Daily" : storedDetails.rate}
+                      </p>
+                    </div>
+                  )}
+                  {storedDetails.mode && (
+                    <div>
+                      <p className="text-xs font-medium text-foreground mb-0.5">Mode</p>
+                      <p className="text-[11px] text-muted-foreground capitalize">{storedDetails.mode === "none" ? "None" : storedDetails.mode}</p>
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {/* Service Description (concierge/valet) */}
+              {isConciergeStyle && (storedDetails?.description || ride.description) && (
+                <div className="py-2.5">
+                  <p className="text-xs font-medium text-foreground mb-0.5">Service Description</p>
+                  <p className="text-[11px] text-muted-foreground whitespace-pre-wrap">{storedDetails?.description || ride.description}</p>
+                </div>
+              )}
+
+              {/* Valet Service Details (vehicle info) */}
+              {st === "valet" && storedDetails?.vehicleDetails && (
+                <div className="py-2.5">
+                  <p className="text-xs font-medium text-foreground mb-0.5">Service Details</p>
+                  <p className="text-[11px] text-muted-foreground">
+                    {[storedDetails.vehicleDetails.year, storedDetails.vehicleDetails.color, storedDetails.vehicleDetails.make, storedDetails.vehicleDetails.model].filter(Boolean).join(" ")}
+                    {storedDetails.vehicleDetails.portType ? ` • ${storedDetails.vehicleDetails.portType} Port Type` : ""}
+                    {storedDetails.vehicleDetails.licensePlate ? ` • Plate #${storedDetails.vehicleDetails.licensePlate}` : ""}
+                  </p>
+                  {(storedDetails.vehicleDetails.currentCharge || storedDetails.vehicleDetails.targetCharge) && (
+                    <p className="text-[11px] text-muted-foreground">
+                      {storedDetails.vehicleDetails.currentCharge ? `Current Range of ${storedDetails.vehicleDetails.currentCharge}%` : ""}
+                      {storedDetails.vehicleDetails.currentCharge && storedDetails.vehicleDetails.targetCharge ? " • " : ""}
+                      {storedDetails.vehicleDetails.targetCharge ? `Charge to ${storedDetails.vehicleDetails.targetCharge}%` : ""}
+                    </p>
+                  )}
+                </div>
+              )}
+
+              {/* Roadside vehicle details (concierge roadside) */}
+              {st === "concierge" && storedDetails?.vehicleDetails && (storedDetails.vehicleDetails.make || storedDetails.vehicleDetails.model) && (
+                <div className="py-2.5">
+                  <p className="text-xs font-medium text-foreground mb-0.5">Service Vehicle</p>
+                  <p className="text-[11px] text-muted-foreground">
+                    {[storedDetails.vehicleDetails.color, storedDetails.vehicleDetails.make, storedDetails.vehicleDetails.model].filter(Boolean).join(" ")}
+                    {storedDetails.vehicleDetails.licensePlate ? ` • Plate #${storedDetails.vehicleDetails.licensePlate}` : ""}
+                  </p>
+                  {storedDetails.roadsideSafeLocation !== null && storedDetails.roadsideSafeLocation !== undefined && (
+                    <div className="mt-1">
+                      <p className="text-xs font-medium text-foreground mb-0.5">Safe Location</p>
+                      <p className="text-[11px] text-muted-foreground">{storedDetails.roadsideSafeLocation ? "Yes" : "No"}</p>
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {/* Concierge: Stairs & 2 Courials */}
+              {isConciergeStyle && (storedDetails?.twoCourials || storedDetails?.hasStairs) && (
+                <div className="grid grid-cols-2 gap-4 py-2.5">
+                  {storedDetails.twoCourials && (
+                    <div>
+                      <p className="text-xs font-medium text-foreground mb-0.5">2 Courials</p>
+                      <p className="text-[11px] text-muted-foreground">Yes</p>
+                    </div>
+                  )}
+                  {storedDetails.hasStairs && (
+                    <div>
+                      <p className="text-xs font-medium text-foreground mb-0.5">Stairs</p>
+                      <p className="text-[11px] text-muted-foreground">Yes</p>
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {/* Notes (deliver) */}
+              {!isConciergeStyle && (storedDetails?.notes || ride.notes) && (
+                <div className="py-2.5">
+                  <p className="text-xs font-medium text-foreground mb-0.5">Notes</p>
+                  <p className="text-[11px] text-muted-foreground whitespace-pre-wrap">{storedDetails?.notes || ride.notes}</p>
+                </div>
+              )}
+
+              {/* Expenses */}
+              {storedDetails?.expenses && storedDetails.expenses.items?.length > 0 && (
+                <div className="py-2.5">
+                  <div className="flex items-center justify-between mb-1">
+                    <p className="text-xs font-medium text-foreground">Expenses</p>
+                    <span className="text-[11px] text-muted-foreground">
+                      ${storedDetails.expenses.items.reduce((sum: number, e: any) => sum + Number(e.amount), 0).toLocaleString()}
+                      {storedDetails.expenses.allowOverage && Number(storedDetails.expenses.overageLimit) > 0 ? ` ($${storedDetails.expenses.overageLimit})` : ""}
+                    </span>
+                  </div>
+                  {storedDetails.expenses.items.map((e: any, i: number) => (
+                    <p key={i} className="text-[11px] text-muted-foreground leading-relaxed">{e.description}</p>
+                  ))}
+                </div>
+              )}
+
+              {/* Order Value & Protection */}
+              {storedDetails?.orderValue && (
+                <div className="grid grid-cols-3 gap-4 py-2.5">
+                  <div>
+                    <p className="text-xs font-medium text-foreground mb-0.5">Order Value</p>
+                    <p className="text-[11px] text-muted-foreground">${storedDetails.orderValue}</p>
+                  </div>
+                  {Number(storedDetails.orderValue) > 100 && (
+                    <div>
+                      <p className="text-xs font-medium text-foreground mb-0.5">Protection</p>
+                      <p className="text-[11px] text-muted-foreground">
+                        {storedDetails.declineProtection ? "Declined ($0)" : (() => {
+                          const val = Number(storedDetails.orderValue);
+                          if (val > 200) return "Accepted (Contact Support)";
+                          if (val > 100) return `Accepted ($${(val * 0.05).toFixed(0)})`;
+                          return "Accepted ($0)";
+                        })()}
+                      </p>
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {/* Fallback: Vehicle / Mode (from API when no stored details) */}
+              {!storedDetails && (vehicle || ride.transport_mode) && (
                 <div className="py-2.5">
                   <p className="text-xs font-medium text-foreground mb-0.5">{isConciergeStyle ? "Mode" : "Vehicle"}</p>
                   <p className="text-[11px] text-muted-foreground capitalize">{vehicle || ride.transport_mode}</p>
                 </div>
               )}
-              {/* Vehicle details (valet) */}
-              {ride.UserVehicle && (ride.UserVehicle.make || ride.UserVehicle.model) && (
+
+              {/* Fallback: Description (from API when no stored details) */}
+              {!storedDetails && (ride.description || ride.notes) && (
+                <div className="py-2.5">
+                  <p className="text-xs font-medium text-foreground mb-0.5">Description</p>
+                  <p className="text-[11px] text-muted-foreground whitespace-pre-wrap">{ride.description || ride.notes}</p>
+                </div>
+              )}
+
+              {/* Fallback: Vehicle details from API */}
+              {!storedDetails && ride.UserVehicle && (ride.UserVehicle.make || ride.UserVehicle.model) && (
                 <div className="py-2.5">
                   <p className="text-xs font-medium text-foreground mb-0.5">Vehicle Details</p>
                   <p className="text-[11px] text-muted-foreground">
@@ -421,23 +656,8 @@ const ActivityRideDetail = ({ ride, onBack, hasLiveSession, onBackToLive }: Prop
                   </p>
                 </div>
               )}
-              {/* Description */}
-              {(ride.description || ride.notes) && (
-                <div className="py-2.5">
-                  <p className="text-xs font-medium text-foreground mb-0.5">Description</p>
-                  <p className="text-[11px] text-muted-foreground whitespace-pre-wrap">{ride.description || ride.notes}</p>
-                </div>
-              )}
-              {/* Date */}
-              {orderDate instanceof Date && (
-                <div className="py-2.5">
-                  <p className="text-xs font-medium text-foreground mb-0.5">Date</p>
-                  <p className="text-[11px] text-muted-foreground">
-                    {format(orderDate, "d MMMM yyyy")} at {format(orderDate, "h:mm a")}
-                  </p>
-                </div>
-              )}
-              {/* Fee */}
+
+              {/* Estimated Fare */}
               <div className="flex items-center justify-between py-2.5">
                 <span className="text-sm font-bold text-foreground">Estimated Fare</span>
                 <span className="text-sm font-bold text-foreground">{formatFee(ride.deliveryFee)}</span>

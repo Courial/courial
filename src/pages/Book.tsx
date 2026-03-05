@@ -819,14 +819,58 @@ const Book = () => {
         setSocketEnabled(true);
         console.log("[book-delivery] Delivery created:", data.data.deliveryId, "orderId:", data.data.orderId, "— socket enabled");
 
-        // Persist category info for activity detail view
-        if (isConciergeStyle && data.data.orderId) {
-          const catLabel = activeCategories.find(c => c.id === conciergeCategory)?.label || conciergeCategory || "";
-          const subCatLabel = conciergeSubCategory === "__direct__" ? catLabel : (conciergeSubCategory || "");
+        // Persist full booking details for activity detail view
+        if (data.data.orderId) {
           try {
-            const stored = JSON.parse(localStorage.getItem("courial_order_categories") || "{}");
-            stored[String(data.data.orderId)] = { category: catLabel, subCategory: subCatLabel };
-            localStorage.setItem("courial_order_categories", JSON.stringify(stored));
+            const stored = JSON.parse(localStorage.getItem("courial_order_details") || "{}");
+            const catLabel = isConciergeStyle ? (activeCategories.find(c => c.id === conciergeCategory)?.label || conciergeCategory || "") : "";
+            const subCatLabel = isConciergeStyle ? (conciergeSubCategory === "__direct__" ? catLabel : (conciergeSubCategory || "")) : "";
+            stored[String(data.data.orderId)] = {
+              category: catLabel,
+              subCategory: subCatLabel,
+              serviceType: selectedService,
+              language: isConciergeStyle ? conciergeLanguage : deliverLanguage,
+              rate: conciergeServiceMode || null,
+              mode: isConciergeStyle ? (conciergeVehicle || null) : (selectedVehicle || null),
+              description: isConciergeStyle ? conciergeDescription : null,
+              notes: !isConciergeStyle ? notes : null,
+              isRemote: isConciergeStyle && conciergeIsRemote,
+              hasStairs: hasStairs || false,
+              twoCourials: twoCourials || false,
+              over70lbs: over70lbs || false,
+              heavyWeight: heavyWeight || null,
+              heavyItems: heavyItems || null,
+              orderValue: isConciergeStyle ? conciergeOrderValue : (deliverOrderValue || null),
+              declineProtection: declineProtection || false,
+              expenses: (() => {
+                const items = isConciergeStyle ? conciergeExpenseItems : deliverExpenseItems;
+                const hasExp = isConciergeStyle ? conciergeHasExpenses : deliverHasExpenses;
+                const allowOver = isConciergeStyle ? conciergeAllowOverage : deliverAllowOverage;
+                const overLimit = isConciergeStyle ? conciergeOverageLimit : deliverOverageLimit;
+                if (!hasExp || !items?.length) return null;
+                return { items: items.filter(e => e.description.trim()), allowOverage: allowOver, overageLimit: overLimit };
+              })(),
+              vehicleDetails: selectedService === "valet" || (selectedService === "concierge" && conciergeCategory === "roadside-assistance") ? {
+                make: roadsideVehicleMake, model: roadsideVehicleModel, year: roadsideVehicleYear,
+                color: roadsideVehicleColor, licensePlate: roadsideLicensePlate, portType: roadsidePortType,
+                currentCharge: batteryCurrentCharge, targetCharge: batteryTargetCharge,
+              } : null,
+              roadsideSafeLocation: roadsideSafeLocation ?? null,
+              pickup: { address: pickup, placeName: pickupPlaceName || null },
+              dropoff: { address: dropoff, placeName: dropoffPlaceName || null },
+              conciergeAddresses: isConciergeStyle ? {
+                start: conciergeStartAddress ? { address: conciergeStartAddress, placeName: conciergeStartPlaceName || null } : null,
+                stop: conciergeStopAddress ? { address: conciergeStopAddress, placeName: conciergeStopPlaceName || null } : null,
+                final: conciergeFinalAddress ? { address: conciergeFinalAddress, placeName: conciergeFinalPlaceName || null } : null,
+              } : null,
+              multiStop: !isConciergeStyle && deliverMultiStop && deliverExtraStops.length > 0 ? deliverExtraStops.filter(s => s.address).map(s => ({ address: s.address, placeName: s.placeName || null })) : null,
+              scheduled: timeMode === "later" ? { date: selectedDate?.toISOString() || null, time: selectedTime } : null,
+            };
+            localStorage.setItem("courial_order_details", JSON.stringify(stored));
+            // Also maintain legacy key
+            const catStored = JSON.parse(localStorage.getItem("courial_order_categories") || "{}");
+            catStored[String(data.data.orderId)] = { category: catLabel, subCategory: subCatLabel };
+            localStorage.setItem("courial_order_categories", JSON.stringify(catStored));
           } catch {}
         }
       } else {
@@ -1005,14 +1049,27 @@ const Book = () => {
         setSocketEnabled(true);
         console.log("[WFH cascade] Re-submitted with location:", loc.address, "deliveryId:", data.data.deliveryId, "orderId:", data.data.orderId);
 
-        // Persist category info for activity detail view
+        // Persist booking details for activity detail view (WFH cascade)
         if (data.data.orderId) {
-          const catLabel = activeCategories.find(c => c.id === conciergeCategory)?.label || conciergeCategory || "";
-          const subCatLabel = conciergeSubCategory === "__direct__" ? catLabel : (conciergeSubCategory || "");
           try {
-            const stored = JSON.parse(localStorage.getItem("courial_order_categories") || "{}");
-            stored[String(data.data.orderId)] = { category: catLabel, subCategory: subCatLabel };
-            localStorage.setItem("courial_order_categories", JSON.stringify(stored));
+            const stored = JSON.parse(localStorage.getItem("courial_order_details") || "{}");
+            const catLabel = activeCategories.find(c => c.id === conciergeCategory)?.label || conciergeCategory || "";
+            const subCatLabel = conciergeSubCategory === "__direct__" ? catLabel : (conciergeSubCategory || "");
+            stored[String(data.data.orderId)] = {
+              category: catLabel, subCategory: subCatLabel,
+              serviceType: "concierge", language: conciergeLanguage, rate: conciergeServiceMode || null,
+              mode: null, description: conciergeDescription, notes: null, isRemote: true,
+              orderValue: conciergeOrderValue || null, declineProtection: false,
+              expenses: conciergeHasExpenses && conciergeExpenseItems.length > 0 ? {
+                items: conciergeExpenseItems.filter(e => e.description.trim()),
+                allowOverage: conciergeAllowOverage, overageLimit: conciergeOverageLimit,
+              } : null,
+              scheduled: timeMode === "later" ? { date: selectedDate?.toISOString() || null, time: selectedTime } : null,
+            };
+            localStorage.setItem("courial_order_details", JSON.stringify(stored));
+            const catStored = JSON.parse(localStorage.getItem("courial_order_categories") || "{}");
+            catStored[String(data.data.orderId)] = { category: catLabel, subCategory: subCatLabel };
+            localStorage.setItem("courial_order_categories", JSON.stringify(catStored));
           } catch {}
         }
       }
