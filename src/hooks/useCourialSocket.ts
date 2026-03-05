@@ -319,7 +319,7 @@ export function useCourialSocket({ token, enabled, acceptedDriverId, onAccepted,
       socketRef.current = null;
       setConnected(false);
     };
-  }, [enabled, token, acceptedDriverId, onAccepted, onLocationUpdate, onStatusChange, onCompletionPhoto, onDropoffPhoto]);
+  }, [enabled, token, acceptedDriverId, onAccepted, onLocationUpdate, onStatusChange, onCompletionPhoto, onDropoffPhoto, onPickupPhoto, onNumberOfPackages]);
 
   return { connected, disconnect, socketRef };
 }
