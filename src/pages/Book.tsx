@@ -3351,7 +3351,7 @@ const Book = () => {
             {/* Heading — matches LIVE page */}
             <div className="text-center mb-6">
               <h2 className="text-lg font-bold text-foreground">
-                 {selectedService === "concierge" ? "Concierge Task" : selectedService === "valet" ? "Valet Service" : "Delivery"}
+                 {selectedService === "concierge" ? "Concierge Service" : selectedService === "valet" ? "Valet Service" : "Delivery"}
               </h2>
               <p className="text-sm text-muted-foreground mt-0.5">
                 {isConciergeStyle && conciergeCategory
@@ -3437,7 +3437,7 @@ const Book = () => {
               {/* Active header */}
               <div className="text-center mb-6">
                 <h2 className="text-lg font-bold text-foreground">
-                 {selectedService === "concierge" ? "Concierge Task" : selectedService === "valet" ? "Valet Service" : "Delivery"}
+                 {selectedService === "concierge" ? "Concierge Service" : selectedService === "valet" ? "Valet Service" : "Delivery"}
                 </h2>
                 {!isConciergeStyle && (
                   <p className="text-xs text-muted-foreground mt-0.5">
