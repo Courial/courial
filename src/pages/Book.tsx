@@ -3811,7 +3811,7 @@ const Book = () => {
               </div>
 
               {/* Completion Photo — shown on Service Complete */}
-              {deliveryStep >= (isWfhConcierge ? 3 : 5) && completionPhotoUrl && (
+              {deliveryStep >= maxStep && completionPhotoUrl && (
                 <div className="relative rounded-2xl overflow-hidden mb-3 border border-border">
                   <img
                     src={completionPhotoUrl}
@@ -3845,9 +3845,9 @@ const Book = () => {
                 >
                   <MessageCircle className="w-4.5 h-4.5 text-background" />
                 </button>
-                {deliveryStep < (isWfhConcierge ? 3 : 5) && (
+                {deliveryStep < maxStep && (
                   <button
-                    onClick={() => setDeliveryStep((s) => Math.min(s + 1, isWfhConcierge ? 3 : 5))}
+                    onClick={() => setDeliveryStep((s) => Math.min(s + 1, maxStep))}
                     className="flex-1 py-2.5 rounded-full text-sm font-semibold text-primary-foreground bg-primary hover:bg-primary/90 transition-colors"
                   >
                     {isWfhConcierge
@@ -3859,7 +3859,7 @@ const Book = () => {
                       : ["Arrive at Pickup", "Pick Up Package", "Arrive at Drop-off", "Drop Off Package", "Complete Service"][deliveryStep]}
                   </button>
                 )}
-                {deliveryStep >= (isWfhConcierge ? 3 : 5) && (
+                {deliveryStep >= maxStep && (
                   <div className="flex-1 flex justify-end">
                     <button
                       onClick={handleDoneBooking}
@@ -4121,7 +4121,7 @@ const Book = () => {
                       </div>
                     )}
                     {/* Estimated Fare */}
-                    {deliveryStep < (isWfhConcierge ? 3 : 5) && (
+                    {deliveryStep < maxStep && (
                       <div className="flex items-center justify-between py-2.5">
                         <span className="text-sm font-bold text-foreground">Estimated Fare</span>
                         <div className="flex items-center gap-2">
@@ -4135,7 +4135,7 @@ const Book = () => {
               </div>
 
               {/* Price / Receipt */}
-              {deliveryStep >= (isWfhConcierge ? 3 : 5) && (
+              {deliveryStep >= maxStep && (
                 <div className="rounded-xl border border-border bg-muted/50 p-4 mb-4">
                   <p className="text-xs font-bold uppercase tracking-wider text-muted-foreground mb-2">Receipt</p>
                   <div className="space-y-1.5 text-sm">
@@ -4186,7 +4186,7 @@ const Book = () => {
 
 
               {/* Cancel button */}
-              {deliveryStep < (isWfhConcierge ? 3 : 5) && (
+              {deliveryStep < maxStep && (
                 <div className="mb-3">
                   <button
                     onClick={handleCancelBooking}
