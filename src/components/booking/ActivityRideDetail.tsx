@@ -1,4 +1,4 @@
-import { ArrowLeft, Star, Calendar, Zap } from "lucide-react";
+import { Star, Calendar, Zap } from "lucide-react";
 import { format } from "date-fns";
 import ActivityDetailMap from "./ActivityDetailMap";
 import type { ActivityItem } from "@/hooks/useActivities";
