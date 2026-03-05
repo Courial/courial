@@ -468,8 +468,9 @@ const Book = () => {
     setRoadsideModelsLoading(true);
     setRoadsideModelSuggestions([]);
     try {
+      const isEvOnly = selectedService === "valet" && conciergeCategory === "charge";
       const { data, error } = await supabase.functions.invoke("vehicle-models", {
-        body: { make, evOnly: selectedService === "valet" },
+        body: { make, evOnly: isEvOnly },
       });
       if (error) throw error;
       if (data?.models && Array.isArray(data.models)) {
@@ -480,7 +481,7 @@ const Book = () => {
     } finally {
       setRoadsideModelsLoading(false);
     }
-  }, [roadsideCustomModel, selectedService]);
+  }, [roadsideCustomModel, selectedService, conciergeCategory]);
 
   const fetchVehiclePortTypes = useCallback(async (make: string, model: string) => {
     if (!make || !model || selectedService !== "valet") return;
