@@ -3940,7 +3940,13 @@ const Book = () => {
                     )}
                     {/* Pickup Date & Time — global for all services */}
                     <div className="py-2.5">
-                      <div className="grid grid-cols-2 gap-4">
+                      <div className="grid grid-cols-3 gap-4">
+                        <div>
+                          <p className="text-xs font-medium text-foreground mb-0.5">Type</p>
+                          <p className="text-[11px] text-muted-foreground">
+                            {timeMode === "later" ? "Scheduled" : "ASAP"}
+                          </p>
+                        </div>
                         <div>
                           <p className="text-xs font-medium text-foreground mb-0.5">Pickup Date</p>
                           <p className="text-[11px] text-muted-foreground">
