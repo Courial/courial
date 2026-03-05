@@ -3695,8 +3695,11 @@ const Book = () => {
                       );
                     })}
 
-                    {/* WFH Clock - circular arc timer */}
+                    {/* WFH Clock - circular arc timer (hidden on Service Completed) */}
                     {(selectedService === "concierge" || selectedService === "valet") && (() => {
+                      const isWfh = selectedService === "concierge" && conciergeIsRemote;
+                      const stopStep = isWfh ? 2 : 3;
+                      if (deliveryStep >= stopStep) return null;
                       const isActive = wfhTaskRunning && !wfhTaskPaused;
                       const size = 110;
                       const stroke = 6;
