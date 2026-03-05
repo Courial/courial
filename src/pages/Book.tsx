@@ -333,9 +333,9 @@ const Book = () => {
     const isWfh = selectedService === "concierge" && conciergeIsRemote;
     const statusStepMap: Record<string, number> = isWfh
       ? {
-          "Courial at Pickup": 1, // maps to "Task In Progress"
+          "Courial at Pickup": 1, // maps to "Service In Progress"
           "Courial Picked Up": 1,
-          "Courial at Drop-off": 2, // maps to "Task Completed"
+          "Courial at Drop-off": 2, // maps to "Service Completed"
           "Order Complete": 3,
         }
       : {
@@ -1031,12 +1031,12 @@ const Book = () => {
     };
   }, [bookingState, conciergeIsRemote, wfhSearchPhase, acceptedCourial, user, resubmitWithLocation, conciergeStartAddress, conciergeStartCoords, conciergeStopAddress, conciergeStopCoords, conciergeFinalAddress, conciergeFinalCoords]);
 
-   // Concierge/Valet task timer — start on "Task In Progress", stop on "Task Completed"
+   // Concierge/Valet service timer — start on "Service In Progress", stop on "Service Completed"
   useEffect(() => {
     if (selectedService !== "concierge" && selectedService !== "valet") return;
     const isWfh = selectedService === "concierge" && conciergeIsRemote;
-    // WFH: step 1 = Task In Progress, step 2 = completed
-    // In-person / valet: step 3 = Task In Progress, step 4 = completed
+    // WFH: step 1 = Service In Progress, step 2 = completed
+    // In-person / valet: step 3 = Service In Progress, step 4 = completed
     const startStep = isWfh ? 1 : 3;
     const stopStep = isWfh ? 2 : 4;
     if (deliveryStep >= startStep && deliveryStep < stopStep) {
@@ -1085,34 +1085,34 @@ const Book = () => {
 
   const deliveryStepsMap: Record<string, { label: string; desc: string; isComplete?: boolean }[]> = {
     deliver: [
-      { label: "Order Accepted", desc: "Your delivery request has been confirmed" },
+      { label: "Service Accepted", desc: "Your delivery request has been confirmed" },
       { label: "Courial at Pickup", desc: "Your courier has arrived at the pickup location" },
       { label: "Courial Picked Up", desc: "Package has been collected" },
       { label: "Courial at Drop-off", desc: "Your courier has arrived at the destination" },
       { label: "Courial Dropped Off", desc: "Package has been delivered" },
-      { label: "Order Complete", desc: "Invoice sent — thank you!", isComplete: true },
+      { label: "Service Complete", desc: "Invoice sent — thank you!", isComplete: true },
     ],
     concierge: [
-      { label: "Request Accepted", desc: "Concierge confirmed" },
+      { label: "Service Accepted", desc: "Your concierge request has been confirmed" },
       { label: "Concierge En Route", desc: "Your concierge is on the way" },
       { label: "Concierge Arrived", desc: "Your concierge has arrived" },
-      { label: "Task In Progress", desc: "Task has begun" },
-      { label: "Task Completed", desc: "Task completed" },
-      { label: "Order Complete", desc: "Invoice sent — thank you!", isComplete: true },
+      { label: "Service In Progress", desc: "Service has begun" },
+      { label: "Service Completed", desc: "Service completed" },
+      { label: "Service Complete", desc: "Invoice sent — thank you!", isComplete: true },
     ],
     concierge_wfh: [
       { label: "Request Accepted", desc: "Concierge confirmed" },
-      { label: "Task In Progress", desc: "Task has begun" },
-      { label: "Task Completed", desc: "Task completed" },
-      { label: "Order Complete", desc: "Invoice sent — thank you!", isComplete: true },
+      { label: "Service In Progress", desc: "Service has begun" },
+      { label: "Service Completed", desc: "Service completed" },
+      { label: "Service Complete", desc: "Invoice sent — thank you!", isComplete: true },
     ],
     valet: [
-      { label: "Request Accepted", desc: "Your valet request has been confirmed" },
+      { label: "Service Accepted", desc: "Your valet request has been confirmed" },
       { label: "Valet En Route", desc: "Your valet is on the way" },
       { label: "Valet Arrived", desc: "Your valet has arrived" },
-      { label: "Task In Progress", desc: "Service has begun" },
-      { label: "Task Completed", desc: "Service completed" },
-      { label: "Order Complete", desc: "Invoice sent — thank you!", isComplete: true },
+      { label: "Service In Progress", desc: "Service has begun" },
+      { label: "Service Completed", desc: "Service completed" },
+      { label: "Service Complete", desc: "Invoice sent — thank you!", isComplete: true },
     ],
   };
   const isWfhConcierge = selectedService === "concierge" && conciergeIsRemote;
@@ -2257,13 +2257,13 @@ const Book = () => {
                   <div className="flex items-center gap-2 px-4 py-3 border border-border rounded-xl bg-muted/50 mb-3">
                     <span className="text-sm">🏠</span>
                     <div>
-                      <p className="text-sm font-semibold text-foreground">Remote Task</p>
-                      <p className="text-xs text-muted-foreground">The Courial will complete this task from their own location — no travel required.</p>
+                      <p className="text-sm font-semibold text-foreground">Remote Service</p>
+                      <p className="text-xs text-muted-foreground">The Courial will complete this service from their own location — no travel required.</p>
                     </div>
                   </div>
                 )}
 
-                {/* Task Description Textarea with Redraft */}
+                {/* Service Description Textarea with Redraft */}
                 <div className="relative mb-1">
                   <div className="px-4 py-4 border border-border rounded-xl bg-background focus-within:border-border">
                     <textarea
@@ -2617,7 +2617,7 @@ const Book = () => {
                     </div>
                   </div>
                   <p className="text-[10px] text-muted-foreground mt-1 leading-relaxed">
-                    Estimated value of the task or items involved. Complimentary coverage is included for values up to $100.
+                    Estimated value of the service or items involved. Complimentary coverage is included for values up to $100.
                   </p>
 
                   <AnimatePresence>
@@ -3351,7 +3351,7 @@ const Book = () => {
             {/* Heading — matches LIVE page */}
             <div className="text-center mb-6">
               <h2 className="text-lg font-bold text-foreground">
-                 {selectedService === "concierge" ? "Concierge Task" : selectedService === "valet" ? "Valet Service" : "Delivery"}
+                 {selectedService === "concierge" ? "Concierge Service" : selectedService === "valet" ? "Valet Service" : "Delivery"}
               </h2>
               <p className="text-sm text-muted-foreground mt-0.5">
                 {isConciergeStyle && conciergeCategory
@@ -3437,7 +3437,7 @@ const Book = () => {
               {/* Active header */}
               <div className="text-center mb-6">
                 <h2 className="text-lg font-bold text-foreground">
-                 {selectedService === "concierge" ? "Concierge Task" : selectedService === "valet" ? "Valet Service" : "Delivery"}
+                 {selectedService === "concierge" ? "Concierge Service" : selectedService === "valet" ? "Valet Service" : "Delivery"}
                 </h2>
                 {!isConciergeStyle && (
                   <p className="text-xs text-muted-foreground mt-0.5">
@@ -3561,7 +3561,7 @@ const Book = () => {
                               )}
                             >
                               {step.isComplete && deliveryIdRef.current
-                                ? `Order ${deliveryIdRef.current} Complete`
+                                ? `Service ${deliveryIdRef.current} Complete`
                                 : step.label}
                               {isCompleted && <span className="ml-1.5 text-primary">✓</span>}
                             </p>
@@ -3577,8 +3577,8 @@ const Book = () => {
                                   </p>
                                 ) : (
                                   <p className="text-xs text-muted-foreground">
-                                    {step.label === "Task Completed" && wfhTaskElapsed > 0
-                                      ? `${Math.floor(wfhTaskElapsed / 3600) > 0 && Math.floor((wfhTaskElapsed % 3600) / 60) > 0 ? `${Math.floor(wfhTaskElapsed / 3600)} hrs • ${Math.floor((wfhTaskElapsed % 3600) / 60)} mins` : Math.floor(wfhTaskElapsed / 3600) > 0 ? `${Math.floor(wfhTaskElapsed / 3600)} hrs` : `${Math.floor((wfhTaskElapsed % 3600) / 60)} mins`} task`
+                                    {step.label === "Service Completed" && wfhTaskElapsed > 0
+                                      ? `${Math.floor(wfhTaskElapsed / 3600) > 0 && Math.floor((wfhTaskElapsed % 3600) / 60) > 0 ? `${Math.floor(wfhTaskElapsed / 3600)} hrs • ${Math.floor((wfhTaskElapsed % 3600) / 60)} mins` : Math.floor(wfhTaskElapsed / 3600) > 0 ? `${Math.floor(wfhTaskElapsed / 3600)} hrs` : `${Math.floor((wfhTaskElapsed % 3600) / 60)} mins`} service`
                                       : step.desc}
                                   </p>
                                 )}
@@ -3657,8 +3657,8 @@ const Book = () => {
                               </motion.div>
                             )}
 
-                            {/* Completion photo after "Task Completed" step (concierge/valet) */}
-                            {step.label === "Task Completed" && (isCompleted || isCurrent) && (selectedService === "concierge" || selectedService === "valet") && completionPhotoUrl && (
+                            {/* Completion photo after "Service Completed" step (concierge/valet) */}
+                            {step.label === "Service Completed" && (isCompleted || isCurrent) && (selectedService === "concierge" || selectedService === "valet") && completionPhotoUrl && (
                               <motion.div
                                 initial={{ opacity: 0, height: 0 }}
                                 animate={{ opacity: 1, height: "auto" }}
@@ -3667,7 +3667,7 @@ const Book = () => {
                                 <div className="relative w-full max-w-[200px] rounded-lg overflow-hidden border border-border shadow-sm">
                                   <img
                                     src={completionPhotoUrl}
-                                    alt="Task completion photo"
+                                    alt="Service completion photo"
                                     className="w-full h-auto object-cover rounded-lg"
                                   />
                                   <button
@@ -3811,12 +3811,12 @@ const Book = () => {
                 )}
               </div>
 
-              {/* Completion Photo — shown on Order Complete */}
+              {/* Completion Photo — shown on Service Complete */}
               {deliveryStep >= (isWfhConcierge ? 3 : 5) && completionPhotoUrl && (
                 <div className="relative rounded-2xl overflow-hidden mb-3 border border-border">
                   <img
                     src={completionPhotoUrl}
-                    alt="Order completion photo"
+                    alt="Service completion photo"
                     className="w-full h-auto object-cover cursor-pointer"
                     onClick={() => window.open(completionPhotoUrl, "_blank")}
                   />
@@ -3872,13 +3872,13 @@ const Book = () => {
                 )}
               </div>
 
-              {/* Order Details */}
+              {/* Service Details */}
               <div className="rounded-xl border border-border bg-background px-4 py-2.5 mb-4">
                 <button
                   onClick={() => setShowOrderDetails(p => !p)}
                   className="flex items-center justify-between w-full"
                 >
-                  <p className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Order Details</p>
+                  <p className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Service Details</p>
                   <ChevronDown className={cn("w-3.5 h-3.5 text-muted-foreground transition-transform", showOrderDetails && "rotate-180")} />
                 </button>
                 {showOrderDetails && (
@@ -3975,14 +3975,14 @@ const Book = () => {
                         </p>
                       </div>
                     )}
-                    {/* Concierge Task Description — right after Pickup Date & Time */}
+                    {/* Concierge Service Description */}
                     {isConciergeStyle && conciergeDescription.trim() && (
                       <div className="py-2.5">
-                        <p className="text-xs font-medium text-foreground mb-0.5">Task Description</p>
+                        <p className="text-xs font-medium text-foreground mb-0.5">Service Description</p>
                         <p className="text-[11px] text-muted-foreground whitespace-pre-wrap">{conciergeDescription}</p>
                       </div>
                     )}
-                    {/* Valet: Service Details — after Task Description */}
+                    {/* Valet: Service Details — after Service Description */}
                     {selectedService === "valet" && (roadsideVehicleColor || roadsideVehicleYear || roadsideVehicleMake || roadsideVehicleModel || roadsidePortType || batteryCurrentCharge || batteryTargetCharge) && (
                       <div className="py-2.5">
                         <p className="text-xs font-medium text-foreground mb-0.5">Service Details</p>
