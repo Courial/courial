@@ -21,6 +21,8 @@ const serviceIconSrc: Record<string, string> = {
   chauffeur: chauffeurIcon,
   Valet: valetIcon,
   valet: valetIcon,
+  "Scheduled Ride": deliverIcon,
+  "scheduled ride": deliverIcon,
 };
 
 const statusBadgeBg: Record<string, string> = {
@@ -36,8 +38,9 @@ const statusBadgeBg: Record<string, string> = {
 
 function formatActivityDate(iso: string | null | undefined) {
   if (!iso) return "—";
+  // If the API already returns a formatted string (e.g. "5 Mar • 07:03 AM"), use it directly
   const d = new Date(iso);
-  if (isNaN(d.getTime())) return "—";
+  if (isNaN(d.getTime())) return iso;
   return d.toLocaleDateString("en-US", { day: "2-digit", month: "short" }) +
     " • " +
     d.toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit" });
