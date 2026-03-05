@@ -3635,7 +3635,7 @@ const Book = () => {
                                     <img
                                       src={pickupPhotoUrl}
                                       alt="Pickup proof"
-                                      className="w-full h-auto object-cover rounded-lg"
+                                      className={`w-full h-auto object-cover rounded-lg transition-opacity duration-500 ${deliveryStep >= maxStep ? "opacity-100" : "opacity-25"}`}
                                       onLoad={() => setPickupPhotoLoading(false)}
                                       onError={() => { setPickupPhotoLoading(false); setPickupPhotoUrl(null); }}
                                     />
