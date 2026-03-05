@@ -354,7 +354,7 @@ const ActivityRideDetail = ({ ride, onBack, hasLiveSession, onBackToLive }: Prop
               "h-10 px-5 flex items-center justify-center rounded-lg text-sm font-semibold transition-colors",
               hasLiveSession
                 ? "bg-foreground text-background hover:bg-foreground/80"
-                : "bg-muted text-muted-foreground border border-foreground/50 cursor-not-allowed"
+                : "bg-muted text-muted-foreground border border-foreground/10 cursor-not-allowed"
             )}
           >
             Back to Live
@@ -446,11 +446,17 @@ const ActivityRideDetail = ({ ride, onBack, hasLiveSession, onBackToLive }: Prop
           </button>
         )}
 
-        {/* Cancel button for active */}
+        {/* Cancel button */}
         {!isCancelled && !isComplete && (
           <button
-            onClick={() => toast.info("To cancel, please contact support.")}
-            className="w-full py-3 rounded-full text-sm font-semibold text-white bg-destructive hover:bg-destructive/90 transition-colors"
+            onClick={() => hasLiveSession && toast.info("To cancel, please contact support.")}
+            disabled={!hasLiveSession}
+            className={cn(
+              "w-full py-3 rounded-full text-sm font-semibold transition-colors",
+              hasLiveSession
+                ? "text-white bg-destructive hover:bg-destructive/90"
+                : "bg-muted text-muted-foreground border border-foreground/10 cursor-not-allowed"
+            )}
           >
             Cancel {st === "concierge" ? "Concierge" : st === "valet" ? "Valet" : "Delivery"}
           </button>
