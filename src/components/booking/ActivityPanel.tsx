@@ -1,7 +1,7 @@
 import { useState, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Clock, RotateCcw, Calendar, MapPin, ArrowLeft, Zap, Loader2 } from "lucide-react";
-import ActivityDetailMap from "./ActivityDetailMap";
+import ActivityRideDetail from "./ActivityRideDetail";
 import noScheduledIllustration from "@/assets/no-scheduled-illustration.png";
 import { useNavigate } from "react-router-dom";
 import deliverIcon from "@/assets/service-icons/deliver.png";
@@ -62,7 +62,7 @@ export const ActivityPanel = ({ onBack }: { onBack: () => void }) => {
   const rides = useMemo(() => data?.pages.flat() ?? [], [data]);
 
   if (selectedRide) {
-    return <RideDetail ride={selectedRide} onBack={() => setSelectedRide(null)} />;
+    return <ActivityRideDetail ride={selectedRide} onBack={() => setSelectedRide(null)} />;
   }
 
   return (
@@ -202,96 +202,6 @@ export const ActivityPanel = ({ onBack }: { onBack: () => void }) => {
             </motion.div>
           )}
         </AnimatePresence>
-      </div>
-    </div>
-  );
-};
-
-/* ── Detail View ── */
-const RideDetail = ({ ride, onBack }: { ride: ActivityItem; onBack: () => void }) => {
-  const iconSrc = serviceIconSrc[ride.serviceType] || deliverIcon;
-  const origin = ride.pickupInfo?.placeName || ride.pickupInfo?.fullAddress || ride.pickupInfo?.address || "—";
-  const destination = ride.deliveryInfo?.placeName || ride.deliveryInfo?.fullAddress || ride.deliveryInfo?.address || "—";
-  const isScheduled = ride.scheduleType === "later";
-  const vehicle = ride.transport_mode || null;
-  const vehicleDetail = ride.UserVehicle
-    ? [ride.UserVehicle.year, ride.UserVehicle.make, ride.UserVehicle.model].filter(Boolean).join(" ")
-    : null;
-
-  return (
-    <div className="h-full flex flex-col">
-      {/* Map */}
-      <div className="relative mx-6 mt-10 h-48 rounded-2xl overflow-hidden bg-muted border border-border shadow-sm">
-        <ActivityDetailMap origin={origin} destination={destination} />
-        <button
-          onClick={onBack}
-          className="absolute top-3 left-3 w-7 h-7 rounded-full bg-background/50 backdrop-blur-sm flex items-center justify-center shadow-md hover:bg-background/70 transition-colors z-10"
-        >
-          <ArrowLeft className="w-3.5 h-3.5 text-foreground" />
-        </button>
-      </div>
-
-      {/* Details */}
-      <div className="flex-1 p-6 space-y-3 overflow-y-auto">
-        <div className="flex items-center gap-3">
-          <div className="w-11 h-11 rounded-lg bg-muted-foreground/10 flex items-center justify-center shrink-0 overflow-hidden">
-            <img src={iconSrc} alt={ride.serviceType} className="w-7 h-7 object-contain" />
-          </div>
-          <div className="flex-1 min-w-0">
-            <h3 className="text-xl font-bold text-foreground capitalize">{ride.serviceType}</h3>
-            <p className="text-xs text-muted-foreground">
-              {isScheduled ? "Scheduled Ride" : "On-Demand"}
-            </p>
-          </div>
-          <div className="text-right shrink-0">
-            <span className={`text-[11px] font-semibold ${statusBadgeBg[ride.status] || "text-muted-foreground"}`}>
-              {ride.status}
-            </span>
-            <p className="text-[10px] text-muted-foreground mt-0.5">CRL-{ride.orderid}</p>
-          </div>
-        </div>
-
-        <div className="flex items-center gap-3 text-sm text-foreground">
-          <span className="font-bold">{formatFee(ride.deliveryFee)}</span>
-          {isScheduled ? (
-            <Calendar className="w-3.5 h-3.5 text-muted-foreground" />
-          ) : (
-            <Zap className="w-3.5 h-3.5 text-muted-foreground" />
-          )}
-          {vehicle && <span className="text-muted-foreground">{vehicle}</span>}
-          {vehicleDetail && (
-            <>
-              <span className="text-muted-foreground/40">•</span>
-              <span className="text-muted-foreground">{vehicleDetail}</span>
-            </>
-          )}
-        </div>
-
-        <p className="text-sm text-muted-foreground">{formatActivityDate(ride.orderDateTime)}</p>
-
-        <div className="space-y-3 pt-2 border-t border-border">
-          <div className="flex items-start gap-3">
-            <div className="w-2.5 h-2.5 rounded-full bg-green-500 mt-1.5 shrink-0" />
-            <div>
-              <p className="text-xs text-muted-foreground">Pickup</p>
-              <p className="text-sm font-medium text-foreground">{origin}</p>
-            </div>
-          </div>
-          <div className="flex items-start gap-3">
-            <div className="w-2.5 h-2.5 rounded-sm bg-red-500 mt-1.5 shrink-0" />
-            <div>
-              <p className="text-xs text-muted-foreground">Drop-off</p>
-              <p className="text-sm font-medium text-foreground">{destination}</p>
-            </div>
-          </div>
-        </div>
-
-        {ride.status?.toLowerCase() === "cancelled" && (
-          <button className="w-full mt-2 flex items-center justify-center gap-2 text-sm font-semibold text-background bg-foreground rounded-lg h-10 hover:bg-foreground/90 transition-colors">
-            <RotateCcw className="w-4 h-4" />
-            Rebook
-          </button>
-        )}
       </div>
     </div>
   );
