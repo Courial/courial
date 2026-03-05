@@ -52,7 +52,7 @@ function formatFee(fee: number | string) {
   return `$${n.toFixed(2)}`;
 }
 
-export const ActivityPanel = ({ onBack }: { onBack: () => void }) => {
+export const ActivityPanel = ({ onBack, hasLiveSession, onBackToLive }: { onBack: () => void; hasLiveSession?: boolean; onBackToLive?: () => void }) => {
   const [tab, setTab] = useState<Tab>("pending");
   const [selectedRide, setSelectedRide] = useState<ActivityItem | null>(null);
   const navigate = useNavigate();
@@ -62,7 +62,7 @@ export const ActivityPanel = ({ onBack }: { onBack: () => void }) => {
   const rides = useMemo(() => data?.pages.flat() ?? [], [data]);
 
   if (selectedRide) {
-    return <ActivityRideDetail ride={selectedRide} onBack={() => setSelectedRide(null)} />;
+    return <ActivityRideDetail ride={selectedRide} onBack={() => setSelectedRide(null)} hasLiveSession={hasLiveSession} onBackToLive={onBackToLive} />;
   }
 
   return (
