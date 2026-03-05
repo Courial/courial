@@ -2035,8 +2035,8 @@ const Book = () => {
                       className={`${selectedService === "valet" ? "w-1/3" : "w-1/2"} min-w-0 px-2 py-2 rounded-lg border border-border/60 bg-background text-foreground text-xs placeholder:text-muted-foreground focus:outline-none focus:border-border transition-colors`}
                     />
                   </div>
-                  {/* Current Charge & Future Charge - Valet only, inside Vehicle Details */}
-                  {selectedService === "valet" && (
+                  {/* Current Charge & Future Charge - Valet only (hidden for Drive category), inside Vehicle Details */}
+                  {selectedService === "valet" && conciergeCategory !== "drive" && (
                     <div className="flex gap-1.5 w-full min-w-0 mt-1.5">
                       {/* Current Charge */}
                       <div className="w-1/2 min-w-0 relative">
