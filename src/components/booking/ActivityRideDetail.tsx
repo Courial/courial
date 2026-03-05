@@ -1,7 +1,6 @@
 import { useState, useRef } from "react";
 import { motion } from "framer-motion";
 import { ArrowLeft, Star, Calendar, Zap, ChevronDown, Headset, MessageCircle, RotateCcw, Phone, Mail, Radio } from "lucide-react";
-import { useNavigate } from "react-router-dom";
 import { RideChat } from "./RideChat";
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
