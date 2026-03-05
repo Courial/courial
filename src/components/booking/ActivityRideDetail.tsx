@@ -83,8 +83,7 @@ const ActivityRideDetail = ({ ride, onBack }: Props) => {
   const navigate = useNavigate();
   const socketRef = useRef<any>(null);
 
-  const isLive = !isCancelled && !isComplete;
-  const hasProvider = !!(ride.providerId || provider);
+  // moved below after declarations
 
   const st = ride.serviceType?.toLowerCase() || "deliver";
   const isConciergeStyle = st === "concierge" || st === "valet";
