@@ -347,14 +347,14 @@ const ActivityRideDetail = ({ ride, onBack, hasLiveSession, onBackToLive }: Prop
           </button>
           <button
             onClick={() => {
-              if (isLive) {
-                navigate("/book");
+              if (hasLiveSession && onBackToLive) {
+                onBackToLive();
               }
             }}
-            disabled={!isLive}
+            disabled={!hasLiveSession}
             className={cn(
               "h-10 px-4 flex items-center justify-center gap-1.5 rounded-full text-xs font-semibold transition-colors",
-              isLive
+              hasLiveSession
                 ? "bg-foreground text-background hover:bg-foreground/80"
                 : "bg-muted text-muted-foreground cursor-not-allowed"
             )}
