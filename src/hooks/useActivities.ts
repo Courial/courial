@@ -41,9 +41,10 @@ async function fetchActivities(type: "past" | "pending", page: number, token: st
   if (!res.ok) {
     throw new Error(`Failed to fetch activities: ${res.status}`);
   }
-  const data = await res.json();
-  // The API may return an array directly or wrap in a property
-  return Array.isArray(data) ? data : data.data ?? data.activities ?? [];
+  const raw = await res.json();
+  // The API wraps data in { success, code, msg, data: [...] }
+  const arr = Array.isArray(raw) ? raw : raw.data ?? raw.activities ?? [];
+  return Array.isArray(arr) ? arr : [];
 }
 
 export function useActivities(type: "past" | "pending") {
@@ -54,10 +55,17 @@ export function useActivities(type: "past" | "pending") {
     enabled: !!token,
     initialPageParam: 1,
     queryFn: ({ pageParam }) => fetchActivities(type, pageParam as number, token),
-    getNextPageParam: (lastPage, _allPages, lastPageParam) => {
-      // If the page returned items, assume there may be more
-      if (lastPage.length > 0) return (lastPageParam as number) + 1;
-      return undefined;
+    getNextPageParam: (lastPage, allPages, lastPageParam) => {
+      // Stop paginating if the page returned the same items as previous page or is empty
+      if (lastPage.length === 0) return undefined;
+      // Check for duplicate data (API returning same results for every page)
+      if (allPages.length >= 2) {
+        const prevPage = allPages[allPages.length - 2];
+        if (prevPage.length > 0 && prevPage[0]?.orderid === lastPage[0]?.orderid) {
+          return undefined;
+        }
+      }
+      return (lastPageParam as number) + 1;
     },
   });
 }

@@ -21,6 +21,8 @@ const serviceIconSrc: Record<string, string> = {
   chauffeur: chauffeurIcon,
   Valet: valetIcon,
   valet: valetIcon,
+  "Scheduled Ride": deliverIcon,
+  "scheduled ride": deliverIcon,
 };
 
 const statusBadgeBg: Record<string, string> = {
@@ -36,8 +38,9 @@ const statusBadgeBg: Record<string, string> = {
 
 function formatActivityDate(iso: string | null | undefined) {
   if (!iso) return "—";
+  // If the API already returns a formatted string (e.g. "5 Mar • 07:03 AM"), use it directly
   const d = new Date(iso);
-  if (isNaN(d.getTime())) return "—";
+  if (isNaN(d.getTime())) return iso;
   return d.toLocaleDateString("en-US", { day: "2-digit", month: "short" }) +
     " • " +
     d.toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit" });
@@ -124,15 +127,15 @@ export const ActivityPanel = ({ onBack }: { onBack: () => void }) => {
               exit={{ opacity: 0, y: -10 }}
               className="space-y-3"
             >
-              {rides.map((ride) => {
+              {rides.map((ride, idx) => {
                 const iconSrc = serviceIconSrc[ride.serviceType] || serviceIconSrc[ride.type] || deliverIcon;
-                const destination = ride.deliveryInfo?.address || ride.deliveryInfo?.name || "—";
-                const isScheduled = ride.type?.toLowerCase() === "scheduled";
+                const destination = ride.deliveryInfo?.address || ride.deliveryInfo?.name || ride.serviceType || "—";
+                const isScheduled = ride.type?.toLowerCase() === "scheduled" || ride.serviceType?.toLowerCase().includes("scheduled");
                 const vehicle = ride.transport_mode || ride.UserVehicle?.make || null;
 
                 return (
                   <div
-                    key={ride.orderid}
+                    key={`${ride.orderid}-${idx}`}
                     onClick={() => setSelectedRide(ride)}
                     className="rounded-2xl border border-border bg-card p-4 hover:border-primary/30 transition-colors cursor-pointer"
                   >
