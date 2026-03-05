@@ -2263,7 +2263,7 @@ const Book = () => {
                   </div>
                 )}
 
-                {/* Task Description Textarea with Redraft */}
+                {/* Service Description Textarea with Redraft */}
                 <div className="relative mb-1">
                   <div className="px-4 py-4 border border-border rounded-xl bg-background focus-within:border-border">
                     <textarea
@@ -3982,7 +3982,7 @@ const Book = () => {
                         <p className="text-[11px] text-muted-foreground whitespace-pre-wrap">{conciergeDescription}</p>
                       </div>
                     )}
-                    {/* Valet: Service Details — after Task Description */}
+                    {/* Valet: Service Details — after Service Description */}
                     {selectedService === "valet" && (roadsideVehicleColor || roadsideVehicleYear || roadsideVehicleMake || roadsideVehicleModel || roadsidePortType || batteryCurrentCharge || batteryTargetCharge) && (
                       <div className="py-2.5">
                         <p className="text-xs font-medium text-foreground mb-0.5">Service Details</p>
