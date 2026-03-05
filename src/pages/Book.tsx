@@ -2774,6 +2774,8 @@ const Book = () => {
                     </Button>
                   </div>
                 </div>
+                </>
+                )}
               </motion.div>
             )}
 
