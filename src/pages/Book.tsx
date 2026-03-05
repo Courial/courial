@@ -1828,7 +1828,7 @@ const Book = () => {
                             onClick={(e) => { e.stopPropagation(); setRoadsideMakeOpen(!roadsideMakeOpen); setRoadsideModelOpen(false); setRoadsideColorOpen(false); }}
                             className="w-full px-2 py-2 rounded-lg border border-border/60 bg-background text-foreground text-xs text-left flex items-center justify-between hover:border-foreground/30 transition-colors"
                           >
-                            <span className={roadsideVehicleMake ? "text-foreground" : "text-muted-foreground"}>{roadsideVehicleMake || "Make"}</span>
+                            <span className={roadsideVehicleMake ? "text-foreground" : vehicleFieldRedMap.make ? "text-destructive font-semibold" : "text-muted-foreground"}>{roadsideVehicleMake || (selectedService === "concierge" && conciergeCategory === "roadside-assistance" ? "Service Vehicle" : "Make")}</span>
                             <ChevronDown className="w-3 h-3 text-muted-foreground" />
                           </button>
                           {roadsideMakeOpen && (
@@ -1864,11 +1864,11 @@ const Book = () => {
                       <div className="w-1/2 min-w-0">
                         <input
                           type="text"
-                          placeholder="Year (e.g. 2023)"
+                          placeholder={vehicleFieldRedMap.year ? "⚠ Year (e.g. 2023)" : "Year (e.g. 2023)"}
                           value={roadsideVehicleYear}
                           onChange={(e) => setRoadsideVehicleYear(e.target.value.replace(/\D/g, "").slice(0, 4))}
                           maxLength={4}
-                          className="w-full min-w-0 px-2 py-2 rounded-lg border border-border/60 bg-background text-foreground text-xs placeholder:text-muted-foreground focus:outline-none focus:border-border transition-colors"
+                          className={`w-full min-w-0 px-2 py-2 rounded-lg border border-border/60 bg-background text-foreground text-xs focus:outline-none focus:border-border transition-colors ${vehicleFieldRedMap.year ? "placeholder:text-destructive placeholder:font-semibold" : "placeholder:text-muted-foreground"}`}
                         />
                       </div>
                     )}
@@ -1892,7 +1892,7 @@ const Book = () => {
                               onClick={(e) => { e.stopPropagation(); if (roadsideVehicleMake) { setRoadsideModelOpen(!roadsideModelOpen); setRoadsideMakeOpen(false); setRoadsideColorOpen(false); } }}
                               className={`w-full px-2 py-2 rounded-lg border border-border/60 bg-background text-xs text-left flex items-center justify-between transition-colors ${roadsideVehicleMake ? "text-foreground hover:border-foreground/30" : "text-muted-foreground opacity-60 cursor-not-allowed"}`}
                             >
-                              <span className={roadsideVehicleModel ? "text-foreground" : "text-muted-foreground"}>
+                              <span className={roadsideVehicleModel ? "text-foreground" : vehicleFieldRedMap.model ? "text-destructive font-semibold" : "text-muted-foreground"}>
                                 {roadsideModelsLoading ? "Loading..." : roadsideVehicleModel || "Model"}
                               </span>
                               <ChevronDown className="w-3 h-3 text-muted-foreground" />
@@ -1942,7 +1942,7 @@ const Book = () => {
                               onClick={(e) => { e.stopPropagation(); if (roadsideVehicleMake) { setRoadsideModelOpen(!roadsideModelOpen); setRoadsideMakeOpen(false); setRoadsideColorOpen(false); } }}
                               className={`w-full px-2 py-2 rounded-lg border border-border/60 bg-background text-xs text-left flex items-center justify-between transition-colors ${roadsideVehicleMake ? "text-foreground hover:border-foreground/30" : "text-muted-foreground opacity-60 cursor-not-allowed"}`}
                             >
-                              <span className={roadsideVehicleModel ? "text-foreground" : "text-muted-foreground"}>
+                              <span className={roadsideVehicleModel ? "text-foreground" : vehicleFieldRedMap.model ? "text-destructive font-semibold" : "text-muted-foreground"}>
                                 {roadsideModelsLoading ? "Loading..." : roadsideVehicleModel || "Model"}
                               </span>
                               <ChevronDown className="w-3 h-3 text-muted-foreground" />
@@ -1991,7 +1991,7 @@ const Book = () => {
                             onClick={(e) => { e.stopPropagation(); setRoadsideColorOpen(!roadsideColorOpen); setRoadsideMakeOpen(false); setRoadsideModelOpen(false); setRoadsidePortTypeOpen(false); }}
                             className="w-full px-2 py-2 rounded-lg border border-border/60 bg-background text-foreground text-xs text-left flex items-center justify-between hover:border-foreground/30 transition-colors"
                           >
-                            <span className={roadsideVehicleColor ? "text-foreground" : "text-muted-foreground"}>{roadsideVehicleColor || "Color"}</span>
+                            <span className={roadsideVehicleColor ? "text-foreground" : vehicleFieldRedMap.color ? "text-destructive font-semibold" : "text-muted-foreground"}>{roadsideVehicleColor || "Color"}</span>
                             <ChevronDown className="w-3 h-3 text-muted-foreground" />
                           </button>
                           {roadsideColorOpen && (
@@ -2023,7 +2023,7 @@ const Book = () => {
                           onClick={(e) => { e.stopPropagation(); if (roadsidePortTypeSuggestions.length > 0) { setRoadsidePortTypeOpen(!roadsidePortTypeOpen); setRoadsideMakeOpen(false); setRoadsideModelOpen(false); setRoadsideColorOpen(false); } }}
                           className={`w-full px-2 py-2 rounded-lg border border-border/60 bg-background text-xs text-left flex items-center justify-between transition-colors ${roadsidePortTypeSuggestions.length > 0 ? "text-foreground hover:border-foreground/30" : "text-muted-foreground opacity-60 cursor-not-allowed"}`}
                         >
-                          <span className={roadsidePortType ? "text-foreground" : "text-muted-foreground"}>
+                          <span className={roadsidePortType ? "text-foreground" : vehicleFieldRedMap.port ? "text-destructive font-semibold" : "text-muted-foreground"}>
                             {roadsidePortTypesLoading ? "Loading..." : roadsidePortType || "Port Type"}
                           </span>
                           <ChevronDown className="w-3 h-3 text-muted-foreground" />
@@ -2045,10 +2045,10 @@ const Book = () => {
                     )}
                     <input
                       type="text"
-                      placeholder="License Plate"
+                       placeholder={vehicleFieldRedMap.plate ? "⚠ License Plate" : "License Plate"}
                       value={roadsideLicensePlate}
                       onChange={(e) => setRoadsideLicensePlate(e.target.value)}
-                      className={`${selectedService === "valet" ? "w-1/3" : "w-1/2"} min-w-0 px-2 py-2 rounded-lg border border-border/60 bg-background text-foreground text-xs placeholder:text-muted-foreground focus:outline-none focus:border-border transition-colors`}
+                      className={`${selectedService === "valet" ? "w-1/3" : "w-1/2"} min-w-0 px-2 py-2 rounded-lg border border-border/60 bg-background text-foreground text-xs focus:outline-none focus:border-border transition-colors ${vehicleFieldRedMap.plate ? "placeholder:text-destructive placeholder:font-semibold" : "placeholder:text-muted-foreground"}`}
                     />
                   </div>
                   {/* Current Charge & Future Charge - Valet only (hidden for Drive category), inside Vehicle Details */}
@@ -2060,7 +2060,7 @@ const Book = () => {
                           onClick={(e) => { e.stopPropagation(); setBatteryCurrentOpen(!batteryCurrentOpen); setBatteryTargetOpen(false); }}
                           className="w-full px-2 py-2 rounded-lg border border-border/60 bg-background text-foreground text-xs text-left flex items-center justify-between hover:border-foreground/30 transition-colors"
                         >
-                          <span className={batteryCurrentCharge ? "text-foreground" : "text-muted-foreground"}>{batteryCurrentCharge ? `${batteryCurrentCharge}%` : "Current Charge"}</span>
+                          <span className={batteryCurrentCharge ? "text-foreground" : vehicleFieldRedMap.currentCharge ? "text-destructive font-semibold" : "text-muted-foreground"}>{batteryCurrentCharge ? `${batteryCurrentCharge}%` : "Current Charge"}</span>
                           <ChevronDown className="w-3 h-3 text-muted-foreground" />
                         </button>
                         {batteryCurrentOpen && (
@@ -2083,7 +2083,7 @@ const Book = () => {
                           onClick={(e) => { e.stopPropagation(); setBatteryTargetOpen(!batteryTargetOpen); setBatteryCurrentOpen(false); }}
                           className="w-full px-2 py-2 rounded-lg border border-border/60 bg-background text-foreground text-xs text-left flex items-center justify-between hover:border-foreground/30 transition-colors"
                         >
-                          <span className={batteryTargetCharge ? "text-foreground" : "text-muted-foreground"}>{batteryTargetCharge ? `${batteryTargetCharge}%` : "Final Charge Request"}</span>
+                          <span className={batteryTargetCharge ? "text-foreground" : vehicleFieldRedMap.finalCharge ? "text-destructive font-semibold" : "text-muted-foreground"}>{batteryTargetCharge ? `${batteryTargetCharge}%` : "Final Charge Request"}</span>
                           <ChevronDown className="w-3 h-3 text-muted-foreground" />
                         </button>
                         {batteryTargetOpen && (
