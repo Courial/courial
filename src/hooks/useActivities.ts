@@ -11,14 +11,23 @@ export interface ActivityItem {
   transport_mode: string | null;
   serviceType: string;
   type: string;
+  scheduleType: string;
   pickupInfo: {
+    fullAddress?: string;
+    placeName?: string;
     address?: string;
     name?: string;
+    latitude?: string;
+    longitude?: string;
     [key: string]: any;
   } | null;
   deliveryInfo: {
+    fullAddress?: string;
+    placeName?: string;
     address?: string;
     name?: string;
+    latitude?: string;
+    longitude?: string;
     [key: string]: any;
   } | null;
   UserVehicle?: {

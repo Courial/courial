@@ -128,9 +128,9 @@ export const ActivityPanel = ({ onBack }: { onBack: () => void }) => {
               className="space-y-3"
             >
               {rides.map((ride, idx) => {
-                const iconSrc = serviceIconSrc[ride.serviceType] || serviceIconSrc[ride.type] || deliverIcon;
-                const destination = ride.deliveryInfo?.address || ride.deliveryInfo?.name || ride.serviceType || "—";
-                const isScheduled = ride.type?.toLowerCase() === "scheduled" || ride.serviceType?.toLowerCase().includes("scheduled");
+                const iconSrc = serviceIconSrc[ride.serviceType] || deliverIcon;
+                const destination = ride.deliveryInfo?.placeName || ride.deliveryInfo?.address || ride.pickupInfo?.placeName || ride.serviceType || "—";
+                const isScheduled = ride.scheduleType === "later";
                 const vehicle = ride.transport_mode || ride.UserVehicle?.make || null;
 
                 return (
@@ -209,10 +209,10 @@ export const ActivityPanel = ({ onBack }: { onBack: () => void }) => {
 
 /* ── Detail View ── */
 const RideDetail = ({ ride, onBack }: { ride: ActivityItem; onBack: () => void }) => {
-  const iconSrc = serviceIconSrc[ride.serviceType] || serviceIconSrc[ride.type] || deliverIcon;
-  const origin = ride.pickupInfo?.address || ride.pickupInfo?.name || "—";
-  const destination = ride.deliveryInfo?.address || ride.deliveryInfo?.name || "—";
-  const isScheduled = ride.type?.toLowerCase() === "scheduled";
+  const iconSrc = serviceIconSrc[ride.serviceType] || deliverIcon;
+  const origin = ride.pickupInfo?.placeName || ride.pickupInfo?.fullAddress || ride.pickupInfo?.address || "—";
+  const destination = ride.deliveryInfo?.placeName || ride.deliveryInfo?.fullAddress || ride.deliveryInfo?.address || "—";
+  const isScheduled = ride.scheduleType === "later";
   const vehicle = ride.transport_mode || null;
   const vehicleDetail = ride.UserVehicle
     ? [ride.UserVehicle.year, ride.UserVehicle.make, ride.UserVehicle.model].filter(Boolean).join(" ")
