@@ -1,6 +1,8 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { motion } from "framer-motion";
-import { ArrowLeft, Star, Calendar, Zap, ChevronDown, Headset, MessageCircle, RotateCcw, Phone, Mail } from "lucide-react";
+import { ArrowLeft, Star, Calendar, Zap, ChevronDown, Headset, MessageCircle, RotateCcw, Phone, Mail, Radio } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { RideChat } from "./RideChat";
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
 import ActivityDetailMap from "./ActivityDetailMap";
@@ -12,6 +14,7 @@ import valetIcon from "@/assets/service-icons/valet.png";
 import noVehicleIcon from "@/assets/no-vehicle-icon.png";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { toast } from "sonner";
+import type { Socket } from "socket.io-client";
 
 const serviceIconSrc: Record<string, string> = {
   Deliver: deliverIcon, deliver: deliverIcon,
@@ -77,6 +80,11 @@ interface Props {
 const ActivityRideDetail = ({ ride, onBack }: Props) => {
   const [showOrderDetails, setShowOrderDetails] = useState(false);
   const [showContactSupport, setShowContactSupport] = useState(false);
+  const [showChat, setShowChat] = useState(false);
+  const navigate = useNavigate();
+  const socketRef = useRef<any>(null);
+
+  
 
   const st = ride.serviceType?.toLowerCase() || "deliver";
   const isConciergeStyle = st === "concierge" || st === "valet";
@@ -111,6 +119,9 @@ const ActivityRideDetail = ({ ride, onBack }: Props) => {
   const licensePlate = driverVehicle?.license_plate || driverVehicle?.licensePlate || null;
 
   const vehicle = ride.transport_mode || ride.conciergeVehicle || ride.concierge_vehicle || null;
+
+  const isLive = !isCancelled && !isComplete;
+  const hasProvider = !!(ride.providerId || provider);
 
   // Category info
   const category = ride.category || ride.subCategory || ride.sub_category || null;
@@ -323,24 +334,52 @@ const ActivityRideDetail = ({ ride, onBack }: Props) => {
           </div>
         )}
 
-        {/* Action buttons row */}
-        {!isCancelled && !isComplete && (
-          <div className="flex items-center justify-center gap-2">
-            <button
-              onClick={() => setShowContactSupport(true)}
-              className="w-10 h-10 flex items-center justify-center rounded-full bg-emerald-500 hover:bg-emerald-600 transition-colors"
-              aria-label="Contact Support"
-            >
-              <Headset className="w-4.5 h-4.5 text-white" />
-            </button>
-            <button
-              onClick={() => toast.info("Chat is available on the live tracking page")}
-              className="w-10 h-10 flex items-center justify-center rounded-full bg-foreground hover:bg-foreground/80 transition-colors"
-              aria-label="Message Courial"
-            >
-              <MessageCircle className="w-4.5 h-4.5 text-background" />
-            </button>
-          </div>
+        {/* Action buttons row — always visible */}
+        <div className="flex items-center justify-center gap-2">
+          <button
+            onClick={() => setShowContactSupport(true)}
+            className="w-10 h-10 flex items-center justify-center rounded-full bg-emerald-500 hover:bg-emerald-600 transition-colors"
+            aria-label="Contact Support"
+          >
+            <Headset className="w-4.5 h-4.5 text-white" />
+          </button>
+          <button
+            onClick={() => {
+              if (isLive) {
+                navigate("/book");
+              }
+            }}
+            disabled={!isLive}
+            className={cn(
+              "h-10 px-4 flex items-center justify-center gap-1.5 rounded-full text-xs font-semibold transition-colors",
+              isLive
+                ? "bg-foreground text-background hover:bg-foreground/80"
+                : "bg-muted text-muted-foreground cursor-not-allowed"
+            )}
+          >
+            <Radio className="w-3.5 h-3.5" />
+            Back to Live
+          </button>
+          <button
+            onClick={() => setShowChat(prev => !prev)}
+            className="w-10 h-10 flex items-center justify-center rounded-full bg-foreground hover:bg-foreground/80 transition-colors"
+            aria-label="Message"
+          >
+            <MessageCircle className="w-4.5 h-4.5 text-background" />
+          </button>
+        </div>
+
+        {/* Chat */}
+        {showChat && (
+          <RideChat
+            orderId={String(ride.orderid || "")}
+            numericOrderId={String(ride.orderid || "")}
+            senderId={String(ride.userId || "")}
+            receiverId={hasProvider ? String(ride.providerId || "") : "support"}
+            courialName={hasProvider && driverName ? driverName : "Courial Support"}
+            socketRef={socketRef}
+            visible={showChat}
+          />
         )}
 
         {/* Service Details accordion */}
