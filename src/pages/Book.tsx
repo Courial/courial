@@ -3938,7 +3938,28 @@ const Book = () => {
                         </p>
                       </div>
                     )}
-                    {/* Concierge Task Description — right after Language */}
+                    {/* Pickup Date & Time — global for all services */}
+                    <div className="py-2.5">
+                      <div className="grid grid-cols-2 gap-4">
+                        <div>
+                          <p className="text-xs font-medium text-foreground mb-0.5">Pickup Date</p>
+                          <p className="text-[11px] text-muted-foreground">
+                            {timeMode === "later" && selectedDate
+                              ? format(selectedDate, "MMM d, yyyy")
+                              : format(new Date(), "MMM d, yyyy")}
+                          </p>
+                        </div>
+                        <div>
+                          <p className="text-xs font-medium text-foreground mb-0.5">Pickup Time</p>
+                          <p className="text-[11px] text-muted-foreground">
+                            {timeMode === "later"
+                              ? (() => { const [h, m] = selectedTime.split(":"); const d = new Date(); d.setHours(Number(h), Number(m)); return d.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" }); })()
+                              : "Now"}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                    {/* Concierge Task Description — right after Pickup Date & Time */}
                     {isConciergeStyle && conciergeDescription.trim() && (
                       <div className="py-2.5">
                         <p className="text-xs font-medium text-foreground mb-0.5">Task Description</p>
