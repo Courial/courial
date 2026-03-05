@@ -62,7 +62,7 @@ export const ActivityPanel = ({ onBack }: { onBack: () => void }) => {
   const rides = useMemo(() => data?.pages.flat() ?? [], [data]);
 
   if (selectedRide) {
-    return <RideDetail ride={selectedRide} onBack={() => setSelectedRide(null)} />;
+    return <ActivityRideDetail ride={selectedRide} onBack={() => setSelectedRide(null)} />;
   }
 
   return (
