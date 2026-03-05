@@ -3597,8 +3597,8 @@ const Book = () => {
                             )}
 
 
-                            {/* Pickup photo + item count after "Courial Picked Up" step (deliver/concierge only) */}
-                            {step.label === "Courial Picked Up" && (isCompleted || isCurrent) && (selectedService === "deliver" || selectedService === "concierge") && (
+                            {/* Pickup photo + item count after "Courial Picked Up" / "Valet Arrived" step */}
+                            {((step.label === "Courial Picked Up" && (selectedService === "deliver" || selectedService === "concierge")) || (step.label === "Valet Arrived" && selectedService === "valet")) && (isCompleted || isCurrent) && (
                               <motion.div
                                 initial={{ opacity: 0, height: 0 }}
                                 animate={{ opacity: 1, height: "auto" }}
