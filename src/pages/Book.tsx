@@ -280,6 +280,31 @@ const Book = () => {
     if (driver.latitude && driver.longitude) {
       setCourialCoords({ lat: driver.latitude, lng: driver.longitude });
     }
+    // Persist provider info to localStorage so Pending detail view can display it
+    const oid = orderIdRef.current;
+    if (oid) {
+      try {
+        const stored = JSON.parse(localStorage.getItem("courial_order_details") || "{}");
+        if (stored[oid]) {
+          stored[oid].provider = {
+            first_name: driver.name?.split(" ")[0] || "",
+            last_name: driver.name?.split(" ").slice(1).join(" ") || "",
+            image: driver.image || null,
+            rating: driver.rating || null,
+            since_year: driver.memberSince || null,
+            language: driver.language || null,
+            UserVehicle: {
+              make: driver.vehicleMake || null,
+              model: driver.vehicleModel || null,
+              color: driver.vehicleColor || null,
+              year: driver.vehicleYear || null,
+              license_plate: driver.licensePlate || null,
+            },
+          };
+          localStorage.setItem("courial_order_details", JSON.stringify(stored));
+        }
+      } catch {}
+    }
     // Immediately transition to active tracking when a courial accepts
     setBookingState("active");
     setLoadingProgress(100);
