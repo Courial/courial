@@ -155,18 +155,19 @@ const ActivityRideDetail = ({ ride }: Props) => {
 
         {/* Receipt message — no horizontal dividers */}
         {isCompleted && (
-          <p className="text-sm text-muted-foreground text-center py-4 px-5">
-            A detailed receipt has been sent to your email.
-          </p>
+          <>
+            <div className="mx-5 border-t border-border" />
+            <p className="text-sm text-muted-foreground text-center py-4 px-5">
+              A detailed receipt has been sent to your email.
+            </p>
+            <div className="mx-5 border-t border-border" />
+          </>
         )}
 
         {/* Addresses — no horizontal lines */}
         {hasAddress && (
           <div className="px-5 pb-4">
             <div className="relative pl-6">
-              {(origin || originFull) && (destination || destinationFull) && (
-                <div className="absolute left-[5px] top-3 bottom-3 w-0.5 bg-border" />
-              )}
 
               {(origin || originFull) && (
                 <div className="relative flex items-start gap-3 pb-6">
@@ -198,7 +199,7 @@ const ActivityRideDetail = ({ ride }: Props) => {
       {/* Need help? — opens contact page in new window */}
       <button
         onClick={handleNeedHelp}
-        className="w-full mt-4 py-3.5 rounded-full border border-border text-sm font-semibold text-foreground hover:bg-muted transition-colors"
+        className="w-full mt-4 py-3.5 rounded-full bg-foreground text-background text-sm font-semibold hover:bg-foreground/90 transition-colors"
       >
         Need help?
       </button>
