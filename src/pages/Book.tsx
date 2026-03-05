@@ -4002,7 +4002,6 @@ const Book = () => {
                           </p>
                         </div>
                       </div>
-                      </div>
                     </div>
                     {/* Concierge Task Description — right after Pickup Date & Time */}
                     {isConciergeStyle && conciergeDescription.trim() && (
