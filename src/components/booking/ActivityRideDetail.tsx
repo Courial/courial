@@ -124,7 +124,9 @@ const ActivityRideDetail = ({ ride, onBack, hasLiveSession, onBackToLive }: Prop
   const hasProvider = !!(ride.providerId || provider);
 
   // Category info
-  const category = ride.category || ride.subCategory || ride.sub_category || null;
+  const categoryName = ride.category || null;
+  const subCategoryName = ride.subCategory || ride.sub_category || null;
+  const categoryDisplay = [categoryName, subCategoryName].filter(Boolean).join(" • ") || null;
 
   // Format date
   const orderDate = (() => {
@@ -167,9 +169,9 @@ const ActivityRideDetail = ({ ride, onBack, hasLiveSession, onBackToLive }: Prop
           <h2 className="text-lg font-bold text-foreground capitalize">
             {st === "concierge" ? "Concierge Service" : st === "valet" ? "Valet Service" : "Delivery"}
           </h2>
-          {category && (
+          {categoryDisplay && (
             <p className="text-sm font-medium text-muted-foreground mt-0.5">
-              {category}
+              {categoryDisplay}
             </p>
           )}
           {isScheduled ? (
