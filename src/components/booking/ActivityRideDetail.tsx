@@ -155,7 +155,7 @@ const ActivityRideDetail = ({ ride, onBack, hasLiveSession, onBackToLive }: Prop
         {!hasAddress && (
           <button
             onClick={onBack}
-            className="flex items-center gap-1 px-3 py-1.5 rounded-full bg-foreground text-background hover:bg-foreground/80 transition-colors mb-2 font-semibold text-xs"
+            className="flex items-center gap-1 pl-2 pr-3 py-1.5 rounded-full bg-foreground text-background hover:bg-foreground/80 transition-colors mb-2 font-semibold text-xs"
           >
             <ChevronLeft className="w-3.5 h-3.5" />
             Pending
