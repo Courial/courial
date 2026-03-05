@@ -36,15 +36,10 @@ function formatFee(fee: number | string) {
 }
 
 const statusColors: Record<string, string> = {
-  completed: "text-green-500",
-  Completed: "text-green-500",
-  cancelled: "text-red-500",
-  Cancelled: "text-red-500",
-  canceled: "text-red-500",
-  pending: "text-yellow-500",
-  Pending: "text-yellow-500",
-  active: "text-blue-500",
-  Active: "text-blue-500",
+  completed: "text-green-500", Completed: "text-green-500",
+  cancelled: "text-red-500", Cancelled: "text-red-500", canceled: "text-red-500",
+  pending: "text-yellow-500", Pending: "text-yellow-500",
+  active: "text-blue-500", Active: "text-blue-500",
 };
 
 /* ─── Featured card (first item) ─── */
@@ -65,23 +60,16 @@ function FeaturedCard({ ride, onClick }: { ride: ActivityItem; onClick: () => vo
   const st = (ride.serviceType || "").toLowerCase();
 
   return (
-    <div
-      onClick={onClick}
-      className="rounded-2xl border border-border bg-card p-4 cursor-pointer hover:border-primary/30 transition-colors"
-    >
-      {/* Mini map */}
+    <div onClick={onClick} className="rounded-2xl border border-border bg-card p-4 cursor-pointer hover:border-primary/30 transition-colors">
       {hasAddress && (
         <div className="h-40 rounded-xl overflow-hidden mb-4 bg-muted">
           <ActivityDetailMap origin={origin} destination={destination} />
         </div>
       )}
 
-      {/* Driver / Unassigned */}
       <div className="flex items-start justify-between mb-2">
         <div>
-          <h3 className="text-2xl font-bold text-foreground">
-            {driverName || "Unassigned"}
-          </h3>
+          <h3 className="text-2xl font-bold text-foreground">{driverName || "Unassigned"}</h3>
           <p className="text-sm text-muted-foreground mt-0.5">
             {ride.serviceType === "Scheduled Ride" ? "Scheduled Ride" : ride.serviceType || "Delivery"}
           </p>
@@ -98,36 +86,23 @@ function FeaturedCard({ ride, onClick }: { ride: ActivityItem; onClick: () => vo
         )}
       </div>
 
-      {/* Fee + mode */}
       <div className="flex items-center gap-2 text-sm font-bold text-foreground mb-1">
         <span>{formatFee(ride.deliveryFee)}</span>
-        {isScheduled ? (
-          <Calendar className="w-3.5 h-3.5 text-muted-foreground" />
-        ) : (
-          <Zap className="w-3.5 h-3.5 text-muted-foreground" />
-        )}
+        {isScheduled ? <Calendar className="w-3.5 h-3.5 text-muted-foreground" /> : <Zap className="w-3.5 h-3.5 text-muted-foreground" />}
         <span className="text-muted-foreground font-normal capitalize">{vehicle || st || "delivery"}</span>
       </div>
 
-      {/* Date */}
-      <p className="text-sm text-muted-foreground mb-2">
-        {formatActivityDate(ride.orderDateTime)}
-      </p>
+      <p className="text-sm text-muted-foreground mb-2">{formatActivityDate(ride.orderDateTime)}</p>
 
-      {/* Payment + Status */}
       <div className="flex items-center gap-2">
         <span className="text-sm">💵</span>
         <span className="text-sm text-muted-foreground">Cash</span>
         <span className="text-muted-foreground/40">•</span>
-        <span
-          className={`text-xs font-semibold px-2.5 py-0.5 rounded-full ${
-            isCompleted
-              ? "text-green-500 bg-green-500/10"
-              : isCancelled
-              ? "text-red-500 bg-red-500/10"
-              : "text-yellow-500 bg-yellow-500/10"
-          }`}
-        >
+        <span className={`text-xs font-semibold px-2.5 py-0.5 rounded-full ${
+          isCompleted ? "text-green-500 bg-green-500/10" :
+          isCancelled ? "text-red-500 bg-red-500/10" :
+          "text-yellow-500 bg-yellow-500/10"
+        }`}>
           {ride.status}
         </span>
       </div>
@@ -138,64 +113,38 @@ function FeaturedCard({ ride, onClick }: { ride: ActivityItem; onClick: () => vo
 /* ─── Compact list item ─── */
 function CompactCard({ ride, onClick }: { ride: ActivityItem; onClick: () => void }) {
   const iconSrc = serviceIconSrc[ride.serviceType] || deliverIcon;
-  const destination =
-    ride.deliveryInfo?.placeName ||
-    ride.deliveryInfo?.address ||
-    ride.pickupInfo?.placeName ||
-    ride.serviceType ||
-    "Unknown location";
+  const destination = ride.deliveryInfo?.placeName || ride.deliveryInfo?.address || ride.pickupInfo?.placeName || ride.serviceType || "Unknown location";
   const isScheduled = ride.scheduleType === "later";
-  const isCancelled =
-    ride.status?.toLowerCase() === "cancelled" || ride.status?.toLowerCase() === "canceled";
+  const isCancelled = ride.status?.toLowerCase() === "cancelled" || ride.status?.toLowerCase() === "canceled";
   const isCompleted = ride.status?.toLowerCase() === "completed";
 
   return (
-    <div
-      onClick={onClick}
-      className="flex items-center gap-3 p-3 rounded-xl border border-border bg-card cursor-pointer hover:border-primary/30 transition-colors"
-    >
-      {/* Thumbnail */}
+    <div onClick={onClick} className="flex items-center gap-3 p-3 rounded-xl border border-border bg-card cursor-pointer hover:border-primary/30 transition-colors">
       <div className="w-14 h-14 rounded-lg bg-muted flex items-center justify-center shrink-0 overflow-hidden">
         <img src={iconSrc} alt={ride.serviceType} className="w-9 h-9 object-contain" />
       </div>
 
-      {/* Info */}
       <div className="flex-1 min-w-0">
         <p className="text-sm font-bold text-foreground truncate">{destination}</p>
-        <p className="text-xs text-muted-foreground mt-0.5">
-          {formatActivityDate(ride.orderDateTime)}
-        </p>
+        <p className="text-xs text-muted-foreground mt-0.5">{formatActivityDate(ride.orderDateTime)}</p>
         <div className="flex items-center gap-1.5 mt-0.5">
-          {isScheduled ? (
-            <Calendar className="w-3 h-3 text-muted-foreground" />
-          ) : (
-            <Zap className="w-3 h-3 text-muted-foreground" />
-          )}
-          <span className="text-xs font-semibold text-foreground">
-            {formatFee(ride.deliveryFee)}
-          </span>
+          {isScheduled ? <Calendar className="w-3 h-3 text-muted-foreground" /> : <Zap className="w-3 h-3 text-muted-foreground" />}
+          <span className="text-xs font-semibold text-foreground">{formatFee(ride.deliveryFee)}</span>
         </div>
       </div>
 
-      {/* Status + Action */}
       <div className="flex flex-col items-end gap-1.5 shrink-0">
         <span className={`text-xs font-semibold ${statusColors[ride.status] || "text-muted-foreground"}`}>
           {ride.status}
         </span>
         {isCancelled && (
-          <button
-            onClick={(e) => e.stopPropagation()}
-            className="flex items-center gap-1 text-[11px] font-medium text-muted-foreground hover:text-foreground border border-border rounded-full px-2.5 py-0.5 transition-colors"
-          >
+          <button onClick={(e) => e.stopPropagation()} className="flex items-center gap-1 text-[11px] font-medium text-muted-foreground hover:text-foreground border border-border rounded-full px-2.5 py-0.5 transition-colors">
             <RotateCcw className="w-3 h-3" />
             Rebook
           </button>
         )}
         {isCompleted && (
-          <button
-            onClick={(e) => e.stopPropagation()}
-            className="flex items-center gap-1 text-[11px] font-medium text-primary border border-primary/30 rounded-full px-2.5 py-0.5 transition-colors"
-          >
+          <button onClick={(e) => e.stopPropagation()} className="flex items-center gap-1 text-[11px] font-medium text-primary border border-primary/30 rounded-full px-2.5 py-0.5 transition-colors">
             <Star className="w-3 h-3" />
             Rate
           </button>
@@ -206,15 +155,7 @@ function CompactCard({ ride, onClick }: { ride: ActivityItem; onClick: () => voi
 }
 
 /* ─── Main Panel ─── */
-export const ActivityPanel = ({
-  onBack,
-  hasLiveSession,
-  onBackToLive,
-}: {
-  onBack: () => void;
-  hasLiveSession?: boolean;
-  onBackToLive?: () => void;
-}) => {
+export const ActivityPanel = ({ onBack }: { onBack: () => void; hasLiveSession?: boolean; onBackToLive?: () => void }) => {
   const [tab, setTab] = useState<Tab>("pending");
   const [selectedRide, setSelectedRide] = useState<ActivityItem | null>(null);
 
@@ -222,19 +163,11 @@ export const ActivityPanel = ({
   const rides = useMemo(() => data?.pages.flat() ?? [], [data]);
 
   if (selectedRide) {
-    return (
-      <ActivityRideDetail
-        ride={selectedRide}
-        onBack={() => setSelectedRide(null)}
-        hasLiveSession={hasLiveSession}
-        onBackToLive={onBackToLive}
-      />
-    );
+    return <ActivityRideDetail ride={selectedRide} onBack={() => setSelectedRide(null)} />;
   }
 
   return (
     <div className="p-6 h-full flex flex-col">
-      {/* Tabs */}
       <div className="flex gap-2 mb-6">
         {(["pending", "past"] as Tab[]).map((t) => (
           <button
@@ -251,73 +184,31 @@ export const ActivityPanel = ({
         ))}
       </div>
 
-      {/* Content */}
       <div className="flex-1 overflow-y-auto">
         <AnimatePresence mode="wait">
           {isLoading ? (
-            <motion.div
-              key="loading"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              className="flex items-center justify-center py-16"
-            >
+            <motion.div key="loading" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="flex items-center justify-center py-16">
               <Loader2 className="w-6 h-6 animate-spin text-primary" />
             </motion.div>
           ) : rides.length === 0 ? (
-            <motion.div
-              key="empty"
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -10 }}
-              className="flex flex-col items-center justify-center py-16 text-center"
-            >
-              <img
-                src={noScheduledIllustration}
-                alt="No services"
-                className="w-48 h-auto mb-6 opacity-80"
-              />
+            <motion.div key="empty" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} className="flex flex-col items-center justify-center py-16 text-center">
+              <img src={noScheduledIllustration} alt="No services" className="w-48 h-auto mb-6 opacity-80" />
               <h3 className="text-xl font-bold text-foreground mb-2">
                 {tab === "pending" ? "No Scheduled Services" : "No Past Activity"}
               </h3>
               <p className="text-sm text-muted-foreground max-w-[260px]">
-                {tab === "pending"
-                  ? "You don't have any upcoming services scheduled."
-                  : "You haven't completed any services yet."}
+                {tab === "pending" ? "You don't have any upcoming services scheduled." : "You haven't completed any services yet."}
               </p>
             </motion.div>
           ) : (
-            <motion.div
-              key="list"
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -10 }}
-              className="space-y-3"
-            >
-              {/* Featured first item */}
+            <motion.div key="list" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} className="space-y-3">
               <FeaturedCard ride={rides[0]} onClick={() => setSelectedRide(rides[0])} />
-
-              {/* Compact list items */}
               {rides.slice(1).map((ride, idx) => (
-                <CompactCard
-                  key={`${ride.orderid}-${idx}`}
-                  ride={ride}
-                  onClick={() => setSelectedRide(ride)}
-                />
+                <CompactCard key={`${ride.orderid}-${idx}`} ride={ride} onClick={() => setSelectedRide(ride)} />
               ))}
-
-              {/* Load more */}
               {hasNextPage && (
-                <button
-                  onClick={() => fetchNextPage()}
-                  disabled={isFetchingNextPage}
-                  className="w-full py-3 text-sm font-semibold text-muted-foreground hover:text-foreground transition-colors"
-                >
-                  {isFetchingNextPage ? (
-                    <Loader2 className="w-4 h-4 animate-spin mx-auto" />
-                  ) : (
-                    "Load more"
-                  )}
+                <button onClick={() => fetchNextPage()} disabled={isFetchingNextPage} className="w-full py-3 text-sm font-semibold text-muted-foreground hover:text-foreground transition-colors">
+                  {isFetchingNextPage ? <Loader2 className="w-4 h-4 animate-spin mx-auto" /> : "Load more"}
                 </button>
               )}
             </motion.div>
