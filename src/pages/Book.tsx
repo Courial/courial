@@ -1134,7 +1134,7 @@ const Book = () => {
       { label: "Service Complete", desc: "Invoice sent — thank you!", isComplete: true },
     ],
     valet: [
-      { label: "Service Accepted", desc: "Your valet request has been confirmed" },
+      { label: "Service Accepted", desc: "Your valet service is confirmed" },
       { label: "Valet Arrived", desc: "Your valet has arrived" },
       { label: "Service In Progress", desc: "Service has begun" },
       { label: "Service Completed", desc: "Service completed" },
