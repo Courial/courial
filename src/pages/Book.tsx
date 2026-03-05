@@ -1031,12 +1031,12 @@ const Book = () => {
     };
   }, [bookingState, conciergeIsRemote, wfhSearchPhase, acceptedCourial, user, resubmitWithLocation, conciergeStartAddress, conciergeStartCoords, conciergeStopAddress, conciergeStopCoords, conciergeFinalAddress, conciergeFinalCoords]);
 
-   // Concierge task timer — start on "Task In Progress", stop on "Task Completed"
+   // Concierge/Valet task timer — start on "Task In Progress", stop on "Task Completed"
   useEffect(() => {
-    if (selectedService !== "concierge") return;
-    const isWfh = conciergeIsRemote;
+    if (selectedService !== "concierge" && selectedService !== "valet") return;
+    const isWfh = selectedService === "concierge" && conciergeIsRemote;
     // WFH: step 1 = Task In Progress, step 2 = completed
-    // In-person: step 3 = Task In Progress, step 4 = completed
+    // In-person / valet: step 3 = Task In Progress, step 4 = completed
     const startStep = isWfh ? 1 : 3;
     const stopStep = isWfh ? 2 : 4;
     if (deliveryStep >= startStep && deliveryStep < stopStep) {
