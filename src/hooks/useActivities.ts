@@ -68,10 +68,15 @@ export function useActivities(type: "past" | "pending") {
   const token = localStorage.getItem("courial_api_token") || "";
 
   return useInfiniteQuery<ActivityItem[]>({
-    queryKey: ["activities", type],
+    queryKey: ["activities", type, token],
     enabled: !!token,
     initialPageParam: 1,
-    queryFn: ({ pageParam }) => fetchActivities(type, pageParam as number, token),
+    queryFn: ({ pageParam }) => {
+      // Re-read token at query time to avoid stale closures
+      const freshToken = localStorage.getItem("courial_api_token") || "";
+      if (!freshToken) throw new Error("No courial_api_token available");
+      return fetchActivities(type, pageParam as number, freshToken);
+    },
     getNextPageParam: (lastPage, allPages, lastPageParam) => {
       // Stop paginating if the page returned the same items as previous page or is empty
       if (lastPage.length === 0) return undefined;
