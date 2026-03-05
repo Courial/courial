@@ -14,6 +14,7 @@ import valetIcon from "@/assets/service-icons/valet.png";
 import noVehicleIcon from "@/assets/no-vehicle-icon.png";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { toast } from "sonner";
+import type { Socket } from "socket.io-client";
 
 const serviceIconSrc: Record<string, string> = {
   Deliver: deliverIcon, deliver: deliverIcon,
