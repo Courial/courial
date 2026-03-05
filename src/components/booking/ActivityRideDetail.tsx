@@ -166,7 +166,7 @@ const ActivityRideDetail = ({ ride }: Props) => {
 
         {/* Addresses — no horizontal lines */}
         {hasAddress && (
-          <div className="px-5 pb-4">
+          <div className="px-5 pt-6 pb-4">
             <div className="relative pl-6">
 
               {(origin || originFull) && (
