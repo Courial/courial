@@ -58,15 +58,7 @@ const ActivityRideDetail = ({ ride }: Props) => {
   })();
 
   return (
-    <div className="h-full overflow-y-auto p-6">
-      {/* Back */}
-      <button
-        onClick={onBack}
-        className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors mb-4"
-      >
-        <ArrowLeft className="w-4 h-4" />
-        Back
-      </button>
+    <div>
 
       {/* Card */}
       <div className="rounded-2xl border border-border bg-card overflow-hidden">
