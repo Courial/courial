@@ -36,10 +36,10 @@ serve(async (req) => {
 
     // Validate required fields
     const { pickup, dropoff, vehicleType, userId, serviceType } = payload;
-    const isConcierge = serviceType === "concierge";
+    const isConciergeStyle = serviceType === "concierge" || serviceType === "valet";
 
-    // For concierge, addresses/coords are optional; for deliver/valet they're required
-    if (!isConcierge) {
+    // For concierge/valet, addresses/coords are optional; for deliver they're required
+    if (!isConciergeStyle) {
       if (!pickup?.address || !pickup?.lat || !pickup?.lng) {
         return new Response(
           JSON.stringify({ error: "Missing pickup address or coordinates" }),
