@@ -79,6 +79,12 @@ interface Props {
 const ActivityRideDetail = ({ ride, onBack }: Props) => {
   const [showOrderDetails, setShowOrderDetails] = useState(false);
   const [showContactSupport, setShowContactSupport] = useState(false);
+  const [showChat, setShowChat] = useState(false);
+  const navigate = useNavigate();
+  const socketRef = useRef<any>(null);
+
+  const isLive = !isCancelled && !isComplete;
+  const hasProvider = !!(ride.providerId || provider);
 
   const st = ride.serviceType?.toLowerCase() || "deliver";
   const isConciergeStyle = st === "concierge" || st === "valet";
