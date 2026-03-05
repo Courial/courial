@@ -15,8 +15,6 @@ export interface ActivityItem {
   pickupInfo: {
     fullAddress?: string;
     placeName?: string;
-    fullAddress?: string;
-    placeName?: string;
     address?: string;
     name?: string;
     latitude?: string;
