@@ -3444,14 +3444,11 @@ const Book = () => {
                     {deliverMultiStop && deliverExtraStops.length > 0 ? "Multiple Stops" : "Single Pick-up and Drop-off"}
                   </p>
                 )}
-                <p className="text-sm font-medium text-muted-foreground mt-0.5 flex items-center justify-center gap-1.5">
-                  {isConciergeStyle && conciergeCategory
-                    ? `${conciergeCategory.replace(/-/g, " ").replace(/\b\w/g, c => c.toUpperCase())}${conciergeSubCategory ? ` • ${conciergeSubCategory}` : ""}${isWfhConcierge ? " • WFH Service" : ""}`
-                    : !isWfhConcierge
-                      ? (deliverMultiStop && deliverExtraStops.length > 0 ? "Multiple Stops" : "Single Pick-up and Drop-off")
-                      : "WFH Service"
-                  }
-                </p>
+                {isConciergeStyle && conciergeCategory && (
+                  <p className="text-sm font-medium text-muted-foreground mt-0.5 flex items-center justify-center gap-1.5">
+                    {`${conciergeCategory.replace(/-/g, " ").replace(/\b\w/g, c => c.toUpperCase())}${conciergeSubCategory ? ` • ${conciergeSubCategory}` : ""}${isWfhConcierge ? " • WFH Service" : ""}`}
+                  </p>
+                )}
                 {timeMode === "later" ? (
                   <div className="flex items-center justify-center gap-2 mt-1">
                     <span className="px-2.5 py-0.5 rounded-full border border-border bg-muted/50 text-foreground text-[11px] font-normal">Scheduled</span>
