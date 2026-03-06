@@ -658,8 +658,8 @@ const Book = () => {
       const isConcierge = selectedService === "concierge" || selectedService === "valet";
 
       // For concierge: resolve best pickup/dropoff from available addresses, duplicating if only one exists
-      let concPickup = { address: "N/A", lat: 0, lng: 0 };
-      let concDropoff = { address: "N/A", lat: 0, lng: 0 };
+      let concPickup = { address: "N/A", lat: 0, lng: 0, placeName: "" };
+      let concDropoff = { address: "N/A", lat: 0, lng: 0, placeName: "" };
       if (isConcierge) {
          if (conciergeIsRemote) {
            // Remote/WFH — refresh addresses from DB first, then cascade: Home → Work → Area Code
@@ -668,25 +668,26 @@ const Book = () => {
            const workAddr = freshAddresses.find(a => a.type === "work");
            
            if (homeAddr && homeAddr.lat && homeAddr.lng) {
-             concPickup = { address: `Remote / WFH — ${homeAddr.name}`, lat: homeAddr.lat, lng: homeAddr.lng };
+             concPickup = { address: `Remote / WFH — ${homeAddr.name}`, lat: homeAddr.lat, lng: homeAddr.lng, placeName: homeAddr.name || "" };
              concDropoff = { ...concPickup };
              setWfhSearchPhase("home");
            } else if (workAddr && workAddr.lat && workAddr.lng) {
-             concPickup = { address: `Remote / WFH — ${workAddr.name}`, lat: workAddr.lat, lng: workAddr.lng };
+             concPickup = { address: `Remote / WFH — ${workAddr.name}`, lat: workAddr.lat, lng: workAddr.lng, placeName: workAddr.name || "" };
              concDropoff = { ...concPickup };
              setWfhSearchPhase("work");
            } else {
              // Fallback to area code / user location
-             concPickup = { address: "Remote / WFH", lat: 0, lng: 0 };
-             concDropoff = { address: "Remote / WFH", lat: 0, lng: 0 };
+             concPickup = { address: "Remote / WFH", lat: 0, lng: 0, placeName: "" };
+             concDropoff = { address: "Remote / WFH", lat: 0, lng: 0, placeName: "" };
              setWfhSearchPhase("area_code");
            }
         } else {
           // In-person concierge — collect addresses and start address-based search
-          const available: { address: string; lat: number; lng: number }[] = [];
-          if (conciergeStartAddress && conciergeStartCoords) available.push({ address: conciergeStartAddress, ...conciergeStartCoords });
-          if (conciergeStopAddress && conciergeStopCoords) available.push({ address: conciergeStopAddress, ...conciergeStopCoords });
-          if (conciergeFinalAddress && conciergeFinalCoords) available.push({ address: conciergeFinalAddress, ...conciergeFinalCoords });
+          const placeNames = [conciergeStartPlaceName, conciergeStopPlaceName, conciergeFinalPlaceName];
+          const available: { address: string; lat: number; lng: number; placeName: string }[] = [];
+          if (conciergeStartAddress && conciergeStartCoords) available.push({ address: conciergeStartAddress, ...conciergeStartCoords, placeName: conciergeStartPlaceName || "" });
+          if (conciergeStopAddress && conciergeStopCoords) available.push({ address: conciergeStopAddress, ...conciergeStopCoords, placeName: conciergeStopPlaceName || "" });
+          if (conciergeFinalAddress && conciergeFinalCoords) available.push({ address: conciergeFinalAddress, ...conciergeFinalCoords, placeName: conciergeFinalPlaceName || "" });
 
           if (available.length >= 2) {
             concPickup = available[0];
