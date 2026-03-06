@@ -711,6 +711,12 @@ const Book = () => {
         dropoff: isConcierge ? concDropoff : { address: dropoff, lat: dropoffCoords?.lat, lng: dropoffCoords?.lng },
         userId: user.user_metadata?.courial_id || user.id,
       };
+      if (tripInfo) {
+        payload.distanceMeters = tripInfo.distanceMeters;
+        payload.durationSeconds = tripInfo.durationSeconds;
+        payload.distanceText = tripInfo.distanceText;
+        payload.durationText = tripInfo.durationText;
+      }
       if (isConcierge && conciergeIsRemote) {
         payload.isRemote = true;
       }
