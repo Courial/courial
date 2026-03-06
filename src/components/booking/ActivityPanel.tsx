@@ -51,7 +51,7 @@ function FeaturedCard({ ride, onClick }: { ride: ActivityItem; onClick: () => vo
   const destLat = ride.deliveryInfo?.latitude ? parseFloat(ride.deliveryInfo.latitude) : undefined;
   const destLng = ride.deliveryInfo?.longitude ? parseFloat(ride.deliveryInfo.longitude) : undefined;
   const hasCoords = (originLat != null && originLng != null) || (destLat != null && destLng != null);
-  const hasAddress = !!(origin || destination);
+  const isScheduled = ride.scheduleType === "later";
   const isCancelled = ride.status?.toLowerCase() === "cancelled" || ride.status?.toLowerCase() === "canceled";
   const isCompleted = ride.status?.toLowerCase() === "completed";
 
@@ -65,9 +65,9 @@ function FeaturedCard({ ride, onClick }: { ride: ActivityItem; onClick: () => vo
 
   return (
     <div onClick={onClick} className="rounded-2xl border border-border bg-card p-4 cursor-pointer hover:border-primary/30 transition-colors">
-      {hasAddress && (
+      {hasCoords && (
         <div className="h-40 rounded-xl overflow-hidden mb-4 bg-muted">
-          <ActivityDetailMap origin={mapOrigin} destination={mapDest} />
+          <ActivityDetailMap originLat={originLat} originLng={originLng} destLat={destLat} destLng={destLng} />
         </div>
       )}
 
