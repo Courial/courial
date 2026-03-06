@@ -7,6 +7,10 @@ import deliverIcon from "@/assets/service-icons/deliver.png";
 import conciergeIcon from "@/assets/service-icons/concierge.png";
 import chauffeurIcon from "@/assets/service-icons/chauffeur.png";
 import valetIcon from "@/assets/service-icons/valet.png";
+import visaIcon from "@/assets/card-icons/visa.svg";
+import mastercardIcon from "@/assets/card-icons/mastercard.svg";
+import amexIcon from "@/assets/card-icons/amex.svg";
+import discoverIcon from "@/assets/card-icons/discover.svg";
 import { useActivities, type ActivityItem } from "@/hooks/useActivities";
 import ActivityDetailMap from "./ActivityDetailMap";
 
@@ -41,6 +45,17 @@ const statusColors: Record<string, string> = {
   pending: "text-yellow-500", Pending: "text-yellow-500",
   active: "text-blue-500", Active: "text-blue-500",
 };
+
+function getPaymentInfo(ride: ActivityItem): { label: string; icon: string | null } {
+  const payType = (ride.paymentType || ride.payment_type || "").toLowerCase();
+  const cardType = (ride.cardType || ride.card_type || "").toLowerCase();
+  if (cardType.includes("visa") || payType.includes("visa")) return { label: "Visa", icon: visaIcon };
+  if (cardType.includes("master") || payType.includes("master")) return { label: "Mastercard", icon: mastercardIcon };
+  if (cardType.includes("amex") || payType.includes("amex")) return { label: "Amex", icon: amexIcon };
+  if (cardType.includes("discover") || payType.includes("discover")) return { label: "Discover", icon: discoverIcon };
+  if (payType.includes("card") || cardType) return { label: cardType || "Card", icon: null };
+  return { label: "Cash", icon: null };
+}
 
 /* ─── Featured card (first item) ─── */
 function FeaturedCard({ ride, onClick }: { ride: ActivityItem; onClick: () => void }) {
