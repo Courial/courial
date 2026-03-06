@@ -22,9 +22,9 @@ function getServiceTypeLabel(ride: ActivityItem): string {
   return "Deliver";
 }
 
-/** Get the sub-category label */
-function getSubCategoryLabel(ride: ActivityItem): string {
-  return ride.subCategory || ride.sub_category || ride.category || "";
+/** Get category label (e.g. "Drive", "EV Charging") */
+function getCategoryLabel(ride: ActivityItem): string {
+  return ride.conciergeCategory || ride.subCategory || ride.sub_category || ride.category || "";
 }
 
 /** Get the transport mode / vehicle label */
@@ -74,13 +74,13 @@ const ActivityRideDetail = ({ ride, onBackToLive }: Props) => {
 
   const provider = ride.Provider || ride.provider || null;
   const driverName = provider
-    ? `${provider.first_name || ""} ${provider.last_name || ""}`.trim()
+    ? (provider.firstName || provider.first_name || "").trim()
     : null;
   const driverImage = provider?.image || provider?.profile_image || null;
-  const driverRating = provider?.rating ? parseFloat(String(provider.rating)) : null;
+  const driverRating = provider?.mrating ? parseFloat(String(provider.mrating)) : (provider?.rating ? parseFloat(String(provider.rating)) : null);
 
   const serviceTypeLabel = getServiceTypeLabel(ride);
-  const subCategoryLabel = getSubCategoryLabel(ride);
+  const categoryLabel = getCategoryLabel(ride);
   const transportLabel = getTransportLabel(ride);
   const payment = getPaymentInfo(ride);
 
@@ -132,16 +132,16 @@ const ActivityRideDetail = ({ ride, onBackToLive }: Props) => {
             )}
           </div>
 
-          {/* Sub-category line */}
-          {subCategoryLabel && (
-            <p className="text-sm text-muted-foreground mb-1 capitalize">{serviceTypeLabel} • {subCategoryLabel}</p>
-          )}
+          {/* Transport mode line */}
+          <p className="text-sm text-muted-foreground mb-1 capitalize">{transportLabel}</p>
 
-          {/* Fee + icon + transport mode */}
+          {/* Fee + icon + service/category */}
           <div className="flex items-center gap-2 text-sm font-bold text-foreground mb-0.5">
             <span>{formatFee(ride.deliveryFee)}</span>
             {isScheduled ? <Calendar className="w-3.5 h-3.5 text-muted-foreground" /> : <Zap className="w-3.5 h-3.5 text-muted-foreground" />}
-            <span className="text-muted-foreground font-normal capitalize">{transportLabel}</span>
+            <span className="text-muted-foreground font-normal capitalize">
+              {serviceTypeLabel}{categoryLabel ? ` • ${categoryLabel}` : ""}
+            </span>
           </div>
 
           {/* Date + Order ID */}

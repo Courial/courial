@@ -40,9 +40,12 @@ export interface ActivityItem {
   Provider?: {
     first_name?: string;
     last_name?: string;
+    firstName?: string;
+    lastName?: string;
     image?: string;
     profile_image?: string;
     rating?: number | string;
+    mrating?: number | string;
     since_year?: string;
     latitude?: number | string;
     longitude?: number | string;
@@ -58,6 +61,8 @@ export interface ActivityItem {
     [key: string]: any;
   } | null;
   provider?: ActivityItem["Provider"];
+  conciergeCategory?: string;
+  conciergeSubCategory?: string;
   category?: string;
   subCategory?: string;
   sub_category?: string;
