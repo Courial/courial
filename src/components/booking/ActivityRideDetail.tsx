@@ -86,8 +86,8 @@ const ActivityRideDetail = ({ ride }: Props) => {
       <div className="rounded-2xl border border-border bg-card overflow-hidden">
         {/* Map frame — no header, always visible */}
         <div className="mx-4 mt-4 h-44 rounded-xl overflow-hidden bg-muted mb-4">
-          {hasAddress && (
-            <ActivityDetailMap origin={mapOrigin} destination={mapDest} />
+          {hasCoords && (
+            <ActivityDetailMap originLat={originLat} originLng={originLng} destLat={destLat} destLng={destLng} />
           )}
         </div>
 
