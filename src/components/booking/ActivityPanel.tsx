@@ -175,10 +175,11 @@ function FeaturedCard({ ride, onClick }: { ride: ActivityItem; onClick: () => vo
 /* ─── Compact list item ─── */
 function CompactCard({ ride, onClick }: { ride: ActivityItem; onClick: () => void }) {
   const iconSrc = serviceIconSrc[ride.serviceType] || deliverIcon;
-  const destination = ride.deliveryInfo?.placeName || ride.deliveryInfo?.address || ride.pickupInfo?.placeName || ride.serviceType || "Unknown location";
   const isScheduled = ride.scheduleType === "later";
   const isCancelled = ride.status?.toLowerCase() === "cancelled" || ride.status?.toLowerCase() === "canceled";
   const isCompleted = ride.status?.toLowerCase() === "completed";
+  const serviceType = ride.serviceType || "Delivery";
+  const category = ride.conciergeCategory || ride.category || "";
 
   return (
     <div onClick={onClick} className="flex items-center gap-3 p-3 rounded-xl border border-border bg-card cursor-pointer hover:border-primary/30 transition-colors">
@@ -187,7 +188,10 @@ function CompactCard({ ride, onClick }: { ride: ActivityItem; onClick: () => voi
       </div>
 
       <div className="flex-1 min-w-0">
-        <p className="text-sm font-bold text-foreground truncate">{destination}</p>
+        <p className="text-sm font-bold text-foreground truncate capitalize">
+          {serviceType}
+          {category && <span className="font-normal text-muted-foreground"> • {category}</span>}
+        </p>
         <p className="text-xs text-muted-foreground mt-0.5">{formatActivityDate(ride.orderDateTime)}</p>
         <div className="flex items-center gap-1.5 mt-0.5">
           {isScheduled ? <Calendar className="w-3 h-3 text-muted-foreground" /> : <Zap className="w-3 h-3 text-muted-foreground" />}
@@ -196,8 +200,8 @@ function CompactCard({ ride, onClick }: { ride: ActivityItem; onClick: () => voi
       </div>
 
       <div className="flex flex-col items-end gap-1.5 shrink-0">
-        <span className={`text-xs font-semibold ${statusColors[ride.status] || "text-muted-foreground"}`}>
-          {ride.status}
+        <span className={`text-xs font-semibold ${statusColors[ride.status] || statusColors[ride.status?.toLowerCase()] || "text-muted-foreground"}`}>
+          {titleCase(ride.status)}
         </span>
         {isCancelled && (
           <button onClick={(e) => e.stopPropagation()} className="flex items-center gap-1 text-[11px] font-medium text-muted-foreground hover:text-foreground border border-border rounded-full px-2.5 py-0.5 transition-colors">
