@@ -200,7 +200,11 @@ function CompactCard({ ride, onClick }: { ride: ActivityItem; onClick: () => voi
       </div>
 
       <div className="flex flex-col items-end gap-1.5 shrink-0">
-        <span className={`text-xs font-semibold ${statusColors[ride.status] || statusColors[ride.status?.toLowerCase()] || "text-muted-foreground"}`}>
+        <span className={`text-xs font-semibold px-2.5 py-0.5 rounded-full ${
+          isCompleted ? "text-green-500 bg-green-500/10" :
+          isCancelled ? "text-red-500 bg-red-500/10" :
+          "text-yellow-500 bg-yellow-500/10"
+        }`}>
           {titleCase(ride.status)}
         </span>
         {isCancelled && (
