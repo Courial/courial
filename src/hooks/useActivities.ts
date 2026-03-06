@@ -35,6 +35,7 @@ export interface ActivityItem {
     model?: string;
     color?: string;
     year?: string | number;
+    transport_mode?: string;
     [key: string]: any;
   } | null;
   Provider?: {
