@@ -244,7 +244,16 @@ const Book = () => {
       }
     }
   }, [over70lbs, heavyWeight, heavyItems]);
-  const [bookingState, setBookingState] = useState<"input" | "loading" | "active">("input");
+  const [bookingState, setBookingState] = useState<"input" | "loading" | "active">(() => {
+    // Restore active session from localStorage on mount
+    try {
+      const session = JSON.parse(localStorage.getItem("courial_active_session") || "null");
+      if (session?.bookingState === "active" || session?.bookingState === "loading") {
+        return session.bookingState;
+      }
+    } catch {}
+    return "input";
+  });
   const [loadingProgress, setLoadingProgress] = useState(0);
   const [deliveryStep, setDeliveryStep] = useState(0);
   const [nearbyCourials, setNearbyCourials] = useState<{ id: number; name: string; image: string; distance: string }[]>([]);
