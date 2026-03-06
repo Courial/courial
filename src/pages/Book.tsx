@@ -707,8 +707,8 @@ const Book = () => {
         serviceType: selectedService || "deliver",
         vehicleType: selectedVehicle || undefined,
         notes: isConcierge ? conciergeDescription : notes,
-        pickup: isConcierge ? concPickup : { address: pickup, lat: pickupCoords?.lat, lng: pickupCoords?.lng },
-        dropoff: isConcierge ? concDropoff : { address: dropoff, lat: dropoffCoords?.lat, lng: dropoffCoords?.lng },
+        pickup: isConcierge ? concPickup : { address: pickup, lat: pickupCoords?.lat, lng: pickupCoords?.lng, placeName: pickupPlaceName || "" },
+        dropoff: isConcierge ? concDropoff : { address: dropoff, lat: dropoffCoords?.lat, lng: dropoffCoords?.lng, placeName: dropoffPlaceName || "" },
         userId: user.user_metadata?.courial_id || user.id,
       };
       if (tripInfo) {
