@@ -342,6 +342,19 @@ const Book = () => {
     setBookingState("active");
     setLoadingProgress(100);
     setDeliveryStep(0);
+    // Persist active session
+    try {
+      localStorage.setItem("courial_active_session", JSON.stringify({
+        bookingState: "active",
+        deliveryId: deliveryIdRef.current,
+        orderId: orderIdRef.current,
+        acceptedCourial: driver,
+        selectedService,
+        pickup: { address: pickup, lat: pickupCoords?.lat, lng: pickupCoords?.lng, placeName: pickupPlaceName },
+        dropoff: { address: dropoff, lat: dropoffCoords?.lat, lng: dropoffCoords?.lng, placeName: dropoffPlaceName },
+        deliveryStep: 0,
+      }));
+    } catch {}
     toast.success(`${driver.name} accepted your order!`);
   }, []);
 
