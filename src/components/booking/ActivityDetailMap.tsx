@@ -22,11 +22,13 @@ function loadGoogleMaps(): Promise<void> {
 }
 
 interface ActivityDetailMapProps {
-  origin: string;
-  destination: string;
+  originLat?: number;
+  originLng?: number;
+  destLat?: number;
+  destLng?: number;
 }
 
-const ActivityDetailMap: React.FC<ActivityDetailMapProps> = ({ origin, destination }) => {
+const ActivityDetailMap: React.FC<ActivityDetailMapProps> = ({ originLat, originLng, destLat, destLng }) => {
   const mapRef = useRef<HTMLDivElement>(null);
   const mapInstanceRef = useRef<google.maps.Map | null>(null);
   const [ready, setReady] = useState(false);
@@ -51,13 +53,48 @@ const ActivityDetailMap: React.FC<ActivityDetailMapProps> = ({ origin, destinati
     });
     mapInstanceRef.current = map;
 
-    const geocoder = new google.maps.Geocoder();
     const bounds = new google.maps.LatLngBounds();
-    let pickupPos: google.maps.LatLng | null = null;
-    let dropoffPos: google.maps.LatLng | null = null;
+    const hasOrigin = originLat != null && originLng != null;
+    const hasDest = destLat != null && destLng != null;
 
-    const tryDrawRoute = () => {
-      if (!pickupPos || !dropoffPos) return;
+    const pickupPos = hasOrigin ? new google.maps.LatLng(originLat, originLng) : null;
+    const dropoffPos = hasDest ? new google.maps.LatLng(destLat, destLng) : null;
+
+    if (pickupPos) {
+      new google.maps.Marker({
+        position: pickupPos,
+        map,
+        icon: {
+          path: google.maps.SymbolPath.CIRCLE,
+          scale: 10,
+          fillColor: "#22c55e",
+          fillOpacity: 1,
+          strokeColor: "#ffffff",
+          strokeWeight: 1,
+        },
+      });
+      bounds.extend(pickupPos);
+    }
+
+    if (dropoffPos) {
+      new google.maps.Marker({
+        position: dropoffPos,
+        map,
+        icon: {
+          path: "M -6 -6 L 6 -6 L 6 6 L -6 6 Z",
+          scale: 1.24,
+          fillColor: "#ef4444",
+          fillOpacity: 1,
+          strokeColor: "#ffffff",
+          strokeWeight: 1,
+        },
+      });
+      bounds.extend(dropoffPos);
+    }
+
+    if (pickupPos && dropoffPos) {
+      map.fitBounds(bounds, { top: 40, bottom: 40, left: 40, right: 40 });
+
       const renderer = new google.maps.DirectionsRenderer({
         map,
         suppressMarkers: true,
@@ -77,66 +114,14 @@ const ActivityDetailMap: React.FC<ActivityDetailMapProps> = ({ origin, destinati
           if (status === "OK" && result) renderer.setDirections(result);
         }
       );
-    };
-
-    // Geocode origin
-    if (origin) {
-      geocoder.geocode({ address: origin }, (results, status) => {
-        if (status === "OK" && results?.[0]) {
-          pickupPos = results[0].geometry.location;
-          new google.maps.Marker({
-            position: pickupPos,
-            map,
-            icon: {
-              path: google.maps.SymbolPath.CIRCLE,
-              scale: 10,
-              fillColor: "#22c55e",
-              fillOpacity: 1,
-              strokeColor: "#ffffff",
-              strokeWeight: 1,
-            },
-          });
-          bounds.extend(pickupPos);
-          if (dropoffPos) {
-            map.fitBounds(bounds, { top: 40, bottom: 40, left: 40, right: 40 });
-          } else {
-            map.setCenter(pickupPos);
-            map.setZoom(14);
-          }
-          tryDrawRoute();
-        }
-      });
+    } else if (pickupPos) {
+      map.setCenter(pickupPos);
+      map.setZoom(14);
+    } else if (dropoffPos) {
+      map.setCenter(dropoffPos);
+      map.setZoom(14);
     }
-
-    // Geocode destination
-    if (destination) {
-      geocoder.geocode({ address: destination }, (results, status) => {
-        if (status === "OK" && results?.[0]) {
-          dropoffPos = results[0].geometry.location;
-          new google.maps.Marker({
-            position: dropoffPos,
-            map,
-            icon: {
-              path: "M -6 -6 L 6 -6 L 6 6 L -6 6 Z",
-              scale: 1.24,
-              fillColor: "#ef4444",
-              fillOpacity: 1,
-              strokeColor: "#ffffff",
-              strokeWeight: 1,
-            },
-          });
-          bounds.extend(dropoffPos);
-          if (pickupPos) {
-            map.fitBounds(bounds, { top: 40, bottom: 40, left: 40, right: 40 });
-          } else {
-            map.setCenter(dropoffPos);
-            map.setZoom(14);
-          }
-          tryDrawRoute();
-        }
-      });
-    }
-  }, [ready, origin, destination]);
+  }, [ready, originLat, originLng, destLat, destLng]);
 
   return (
     <div ref={mapRef} className="w-full h-full [&_.gm-style-cc]:!hidden [&_.gmnoprint]:!hidden [&_a[href*='google']]:!hidden [&_.gm-style>div>a]:!hidden" />
