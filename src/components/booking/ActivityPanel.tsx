@@ -112,7 +112,7 @@ function FeaturedCard({ ride, onClick }: { ride: ActivityItem; onClick: () => vo
               </span>
             )}
           </div>
-          <p className="text-sm text-muted-foreground mt-0.5">
+          <p className="text-[0.9375rem] text-muted-foreground mt-0.5">
             <span className="font-medium capitalize">{serviceType}</span>
             {category && <span className="capitalize"> • {category}</span>}
             {ride.conciergeSubCategory && <span className="capitalize"> • {ride.conciergeSubCategory}</span>}
