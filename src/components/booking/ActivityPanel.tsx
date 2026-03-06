@@ -106,9 +106,9 @@ function FeaturedCard({ ride, onClick }: { ride: ActivityItem; onClick: () => vo
           <div className="flex items-center gap-2">
             <h3 className="text-2xl font-bold text-foreground">{driverName || "Unassigned"}</h3>
             {driverRating && (
-              <span className="flex items-center gap-0.5 text-sm">
-                <Star className="w-3.5 h-3.5 fill-orange-400 text-orange-400" />
-                <span className="font-semibold text-foreground">{driverRating}</span>
+              <span className="flex items-center gap-1 text-2xl">
+                <Star className="w-5 h-5 fill-orange-400 text-orange-400" />
+                <span className="font-bold text-foreground">{driverRating}</span>
               </span>
             )}
           </div>
