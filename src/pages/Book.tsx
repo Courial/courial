@@ -418,9 +418,18 @@ const Book = () => {
     const stepIndex = statusStepMap[status];
     if (stepIndex !== undefined) {
       setDeliveryStep(stepIndex);
+      // Update persisted session with new step
+      try {
+        const session = JSON.parse(localStorage.getItem("courial_active_session") || "null");
+        if (session) {
+          session.deliveryStep = stepIndex;
+          localStorage.setItem("courial_active_session", JSON.stringify(session));
+        }
+      } catch {}
       toast.info(status);
       if (status === "Order Complete") {
         setCompletionDate(new Date());
+        localStorage.removeItem("courial_active_session");
       }
     }
   }, [selectedService, conciergeIsRemote]);
