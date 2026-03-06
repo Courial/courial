@@ -46,14 +46,12 @@ const statusColors: Record<string, string> = {
 function FeaturedCard({ ride, onClick }: { ride: ActivityItem; onClick: () => void }) {
   const origin = ride.pickupInfo?.placeName || ride.pickupInfo?.fullAddress || ride.pickupInfo?.address || "";
   const destination = ride.deliveryInfo?.placeName || ride.deliveryInfo?.fullAddress || ride.deliveryInfo?.address || "";
-  const originLatLng = ride.pickupInfo?.latitude && ride.pickupInfo?.longitude
-    ? `${ride.pickupInfo.latitude},${ride.pickupInfo.longitude}` : "";
-  const destLatLng = ride.deliveryInfo?.latitude && ride.deliveryInfo?.longitude
-    ? `${ride.deliveryInfo.latitude},${ride.deliveryInfo.longitude}` : "";
-  const mapOrigin = origin || originLatLng;
-  const mapDest = destination || destLatLng;
-  const hasAddress = !!(mapOrigin || mapDest);
-  const isScheduled = ride.scheduleType === "later";
+  const originLat = ride.pickupInfo?.latitude ? parseFloat(ride.pickupInfo.latitude) : undefined;
+  const originLng = ride.pickupInfo?.longitude ? parseFloat(ride.pickupInfo.longitude) : undefined;
+  const destLat = ride.deliveryInfo?.latitude ? parseFloat(ride.deliveryInfo.latitude) : undefined;
+  const destLng = ride.deliveryInfo?.longitude ? parseFloat(ride.deliveryInfo.longitude) : undefined;
+  const hasCoords = (originLat != null && originLng != null) || (destLat != null && destLng != null);
+  const hasAddress = !!(origin || destination);
   const isCancelled = ride.status?.toLowerCase() === "cancelled" || ride.status?.toLowerCase() === "canceled";
   const isCompleted = ride.status?.toLowerCase() === "completed";
 
