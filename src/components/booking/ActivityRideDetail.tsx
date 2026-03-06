@@ -46,14 +46,13 @@ const ActivityRideDetail = ({ ride }: Props) => {
   const destination = ride.deliveryInfo?.placeName || ride.deliveryInfo?.fullAddress || ride.deliveryInfo?.address || "";
   const destinationFull = ride.deliveryInfo?.fullAddress || ride.deliveryInfo?.address || "";
 
-  const originLatLng = ride.pickupInfo?.latitude && ride.pickupInfo?.longitude
-    ? `${ride.pickupInfo.latitude},${ride.pickupInfo.longitude}` : "";
-  const destLatLng = ride.deliveryInfo?.latitude && ride.deliveryInfo?.longitude
-    ? `${ride.deliveryInfo.latitude},${ride.deliveryInfo.longitude}` : "";
+  const originLat = ride.pickupInfo?.latitude ? parseFloat(ride.pickupInfo.latitude) : undefined;
+  const originLng = ride.pickupInfo?.longitude ? parseFloat(ride.pickupInfo.longitude) : undefined;
+  const destLat = ride.deliveryInfo?.latitude ? parseFloat(ride.deliveryInfo.latitude) : undefined;
+  const destLng = ride.deliveryInfo?.longitude ? parseFloat(ride.deliveryInfo.longitude) : undefined;
 
-  const mapOrigin = origin || originFull || originLatLng;
-  const mapDest = destination || destinationFull || destLatLng;
-  const hasAddress = !!(mapOrigin || mapDest);
+  const hasCoords = (originLat != null && originLng != null) || (destLat != null && destLng != null);
+  const hasAddress = !!(origin || originFull || destination || destinationFull);
 
   const isScheduled = ride.scheduleType === "later";
   const isCancelled = ride.status?.toLowerCase() === "cancelled" || ride.status?.toLowerCase() === "canceled";
@@ -87,8 +86,8 @@ const ActivityRideDetail = ({ ride }: Props) => {
       <div className="rounded-2xl border border-border bg-card overflow-hidden">
         {/* Map frame — no header, always visible */}
         <div className="mx-4 mt-4 h-44 rounded-xl overflow-hidden bg-muted mb-4">
-          {hasAddress && (
-            <ActivityDetailMap origin={mapOrigin} destination={mapDest} />
+          {hasCoords && (
+            <ActivityDetailMap originLat={originLat} originLng={originLng} destLat={destLat} destLng={destLng} />
           )}
         </div>
 
