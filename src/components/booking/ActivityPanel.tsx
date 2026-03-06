@@ -225,7 +225,7 @@ function CompactCard({ ride, onClick }: { ride: ActivityItem; onClick: () => voi
 }
 
 /* ─── Main Panel ─── */
-export const ActivityPanel = ({ onBack, onBackToLive }: { onBack: () => void; hasLiveSession?: boolean; onBackToLive?: () => void }) => {
+export const ActivityPanel = ({ onBack, hasLiveSession, onBackToLive }: { onBack: () => void; hasLiveSession?: boolean; onBackToLive?: () => void }) => {
   const [tab, setTab] = useState<Tab>("pending");
   const [selectedRide, setSelectedRide] = useState<ActivityItem | null>(null);
 
