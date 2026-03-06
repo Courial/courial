@@ -190,7 +190,7 @@ export const ActivityPanel = ({ onBack, onBackToLive }: { onBack: () => void; ha
         <AnimatePresence mode="wait">
           {selectedRide ? (
             <motion.div key="detail" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }}>
-              <ActivityRideDetail ride={selectedRide} onBack={() => setSelectedRide(null)} />
+              <ActivityRideDetail ride={selectedRide} onBack={() => setSelectedRide(null)} onBackToLive={onBackToLive} />
             </motion.div>
           ) : isLoading ? (
             <motion.div key="loading" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="flex items-center justify-center py-16">
