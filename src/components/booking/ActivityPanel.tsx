@@ -75,7 +75,7 @@ function FeaturedCard({ ride, onClick }: { ride: ActivityItem; onClick: () => vo
     ? (provider.firstName || provider.first_name || "").trim()
     : null;
   const driverImage = provider?.image || provider?.profile_image || null;
-  const transportMode = ride.transport_mode || ride.conciergeVehicle || ride.concierge_vehicle || null;
+  const transportMode = ride.UserVehicle?.transport_mode || ride.transport_mode || ride.conciergeVehicle || ride.concierge_vehicle || null;
   const serviceType = ride.serviceType || "Delivery";
   const category = ride.conciergeCategory || ride.category || "";
   const payment = getPaymentInfo(ride);
