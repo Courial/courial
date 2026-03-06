@@ -1405,7 +1405,7 @@ const Book = () => {
         {/* Left Column — Booking Card */}
         <div ref={sidebarRef} className="w-full max-w-[440px] flex-shrink-0 border-r border-border overflow-y-auto bg-black/[0.025]">
           {showActivity ? (
-            <ActivityPanel onBack={() => setSearchParams({})} hasLiveSession={bookingState === "active"} onBackToLive={() => setSearchParams({})} />
+            <ActivityPanel onBack={() => setSearchParams({})} hasLiveSession={bookingState === "active" || bookingState === "loading"} onBackToLive={() => setSearchParams({})} />
           ) : bookingState === "input" && (
           <div className="p-8">
             {/* Service Bento Grid */}
