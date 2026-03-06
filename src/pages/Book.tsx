@@ -1017,6 +1017,7 @@ const Book = () => {
   const handleDoneBooking = useCallback(() => {
     deliveryIdRef.current = null;
     orderIdRef.current = null;
+    localStorage.removeItem("courial_active_session");
     setBookingState("input");
     setLoadingProgress(0);
     setDeliveryStep(0);
