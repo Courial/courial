@@ -244,7 +244,16 @@ const Book = () => {
       }
     }
   }, [over70lbs, heavyWeight, heavyItems]);
-  const [bookingState, setBookingState] = useState<"input" | "loading" | "active">("input");
+  const [bookingState, setBookingState] = useState<"input" | "loading" | "active">(() => {
+    // Restore active session from localStorage on mount
+    try {
+      const session = JSON.parse(localStorage.getItem("courial_active_session") || "null");
+      if (session?.bookingState === "active" || session?.bookingState === "loading") {
+        return session.bookingState;
+      }
+    } catch {}
+    return "input";
+  });
   const [loadingProgress, setLoadingProgress] = useState(0);
   const [deliveryStep, setDeliveryStep] = useState(0);
   const [nearbyCourials, setNearbyCourials] = useState<{ id: number; name: string; image: string; distance: string }[]>([]);
@@ -261,6 +270,29 @@ const Book = () => {
 
   const isConciergeStyle = selectedService === "concierge" || selectedService === "valet";
   const activeCategories = selectedService === "valet" ? valetCategories : conciergeCategories;
+
+  // Restore active session from localStorage on mount
+  useEffect(() => {
+    try {
+      const session = JSON.parse(localStorage.getItem("courial_active_session") || "null");
+      if (session && (session.bookingState === "active" || session.bookingState === "loading")) {
+        deliveryIdRef.current = session.deliveryId || null;
+        orderIdRef.current = session.orderId || null;
+        if (session.acceptedCourial) {
+          setAcceptedCourial(session.acceptedCourial);
+          if (session.acceptedCourial.latitude && session.acceptedCourial.longitude) {
+            setCourialCoords({ lat: session.acceptedCourial.latitude, lng: session.acceptedCourial.longitude });
+          }
+        }
+        if (session.selectedService) setSelectedService(session.selectedService);
+        if (session.pickup) { setPickup(session.pickup.address || ""); if (session.pickup.lat) setPickupCoords({ lat: session.pickup.lat, lng: session.pickup.lng }); if (session.pickup.placeName) setPickupPlaceName(session.pickup.placeName); }
+        if (session.dropoff) { setDropoff(session.dropoff.address || ""); if (session.dropoff.lat) setDropoffCoords({ lat: session.dropoff.lat, lng: session.dropoff.lng }); if (session.dropoff.placeName) setDropoffPlaceName(session.dropoff.placeName); }
+        if (session.deliveryStep != null) setDeliveryStep(session.deliveryStep);
+        setSocketEnabled(true);
+        console.log("[Book] Restored active session:", session.orderId, session.bookingState);
+      }
+    } catch {}
+  }, []);
 
   useEffect(() => {
     chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -310,6 +342,19 @@ const Book = () => {
     setBookingState("active");
     setLoadingProgress(100);
     setDeliveryStep(0);
+    // Persist active session
+    try {
+      localStorage.setItem("courial_active_session", JSON.stringify({
+        bookingState: "active",
+        deliveryId: deliveryIdRef.current,
+        orderId: orderIdRef.current,
+        acceptedCourial: driver,
+        selectedService,
+        pickup: { address: pickup, lat: pickupCoords?.lat, lng: pickupCoords?.lng, placeName: pickupPlaceName },
+        dropoff: { address: dropoff, lat: dropoffCoords?.lat, lng: dropoffCoords?.lng, placeName: dropoffPlaceName },
+        deliveryStep: 0,
+      }));
+    } catch {}
     toast.success(`${driver.name} accepted your order!`);
   }, []);
 
@@ -373,9 +418,18 @@ const Book = () => {
     const stepIndex = statusStepMap[status];
     if (stepIndex !== undefined) {
       setDeliveryStep(stepIndex);
+      // Update persisted session with new step
+      try {
+        const session = JSON.parse(localStorage.getItem("courial_active_session") || "null");
+        if (session) {
+          session.deliveryStep = stepIndex;
+          localStorage.setItem("courial_active_session", JSON.stringify(session));
+        }
+      } catch {}
       toast.info(status);
       if (status === "Order Complete") {
         setCompletionDate(new Date());
+        localStorage.removeItem("courial_active_session");
       }
     }
   }, [selectedService, conciergeIsRemote]);
@@ -851,6 +905,18 @@ const Book = () => {
         // Enable socket connection to listen for courial acceptance
         setSocketEnabled(true);
         console.log("[book-delivery] Delivery created:", data.data.deliveryId, "orderId:", data.data.orderId, "— socket enabled");
+        // Persist active session for resume on page reload
+        try {
+          localStorage.setItem("courial_active_session", JSON.stringify({
+            bookingState: "loading",
+            deliveryId: data.data.deliveryId,
+            orderId: data.data.orderId ? String(data.data.orderId) : null,
+            selectedService,
+            pickup: isConciergeStyle ? null : { address: pickup, lat: pickupCoords?.lat, lng: pickupCoords?.lng, placeName: pickupPlaceName },
+            dropoff: isConciergeStyle ? null : { address: dropoff, lat: dropoffCoords?.lat, lng: dropoffCoords?.lng, placeName: dropoffPlaceName },
+            deliveryStep: 0,
+          }));
+        } catch {}
 
         // Persist full booking details for activity detail view
         if (data.data.orderId) {
@@ -960,6 +1026,7 @@ const Book = () => {
   const handleDoneBooking = useCallback(() => {
     deliveryIdRef.current = null;
     orderIdRef.current = null;
+    localStorage.removeItem("courial_active_session");
     setBookingState("input");
     setLoadingProgress(0);
     setDeliveryStep(0);
@@ -1338,7 +1405,7 @@ const Book = () => {
         {/* Left Column — Booking Card */}
         <div ref={sidebarRef} className="w-full max-w-[440px] flex-shrink-0 border-r border-border overflow-y-auto bg-black/[0.025]">
           {showActivity ? (
-            <ActivityPanel onBack={() => setSearchParams({})} hasLiveSession={bookingState === "active"} onBackToLive={() => setSearchParams({})} />
+            <ActivityPanel onBack={() => setSearchParams({})} hasLiveSession={bookingState === "active" || bookingState === "loading"} onBackToLive={() => setSearchParams({})} />
           ) : bookingState === "input" && (
           <div className="p-8">
             {/* Service Bento Grid */}

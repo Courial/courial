@@ -225,7 +225,7 @@ function CompactCard({ ride, onClick }: { ride: ActivityItem; onClick: () => voi
 }
 
 /* ─── Main Panel ─── */
-export const ActivityPanel = ({ onBack, onBackToLive }: { onBack: () => void; hasLiveSession?: boolean; onBackToLive?: () => void }) => {
+export const ActivityPanel = ({ onBack, hasLiveSession, onBackToLive }: { onBack: () => void; hasLiveSession?: boolean; onBackToLive?: () => void }) => {
   const [tab, setTab] = useState<Tab>("pending");
   const [selectedRide, setSelectedRide] = useState<ActivityItem | null>(null);
 
@@ -274,6 +274,15 @@ export const ActivityPanel = ({ onBack, onBackToLive }: { onBack: () => void; ha
             </motion.div>
           ) : (
             <motion.div key="list" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} className="space-y-3">
+              {hasLiveSession && onBackToLive && (
+                <button
+                  onClick={onBackToLive}
+                  className="w-full py-3 rounded-lg bg-foreground text-background text-sm font-semibold hover:bg-foreground/90 transition-colors flex items-center justify-center gap-2"
+                >
+                  <Zap className="w-4 h-4" />
+                  Back to Live
+                </button>
+              )}
               <FeaturedCard ride={rides[0]} onClick={() => setSelectedRide(rides[0])} />
               {rides.slice(1).map((ride, idx) => (
                 <CompactCard key={`${ride.orderid}-${idx}`} ride={ride} onClick={() => setSelectedRide(ride)} />
