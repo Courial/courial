@@ -1,7 +1,11 @@
-import { Star, Calendar, Zap } from "lucide-react";
+import { Star, Calendar, Zap, Car } from "lucide-react";
 import { format } from "date-fns";
 import ActivityDetailMap from "./ActivityDetailMap";
 import type { ActivityItem } from "@/hooks/useActivities";
+import visaIcon from "@/assets/card-icons/visa.svg";
+import mastercardIcon from "@/assets/card-icons/mastercard.svg";
+import amexIcon from "@/assets/card-icons/amex.svg";
+import discoverIcon from "@/assets/card-icons/discover.svg";
 
 function formatFee(fee: number | string) {
   const n = typeof fee === "string" ? parseFloat(fee) : fee;
@@ -9,38 +13,48 @@ function formatFee(fee: number | string) {
   return `$${n.toFixed(2)}`;
 }
 
-/** Derive the primary service type label: Deliver, Valet, or Concierge */
+/** Derive the primary service type label */
 function getServiceTypeLabel(ride: ActivityItem): string {
   const st = (ride.serviceType || "").toLowerCase();
   if (st.includes("valet")) return "Valet";
   if (st.includes("concierge")) return "Concierge";
+  if (st.includes("chauffeur")) return "Chauffeur";
   return "Deliver";
 }
 
-/** Derive category • subcategory line, e.g. "Drive • Drive my Car" */
-function getCategoryLine(ride: ActivityItem): string {
-  const cat = ride.category || ride.serviceType || "";
-  const sub = ride.subCategory || ride.sub_category || ride.description || "";
-  if (cat && sub) return `${cat} • ${sub}`;
-  if (cat) return cat;
-  return "";
+/** Get the sub-category label */
+function getSubCategoryLabel(ride: ActivityItem): string {
+  return ride.subCategory || ride.sub_category || ride.category || "";
 }
 
-/** Derive the option-category label (e.g. "Roadside Assistance", "Single Pick-up / Drop") */
-function getOptionCategoryLabel(ride: ActivityItem): string {
-  const sub = ride.subCategory || ride.sub_category || "";
-  if (sub) return sub;
-  const cat = ride.category || "";
-  if (cat) return cat;
-  return ride.description || "Delivery";
+/** Get the transport mode / vehicle label */
+function getTransportLabel(ride: ActivityItem): string {
+  if (ride.transport_mode) return ride.transport_mode;
+  if (ride.conciergeVehicle || ride.concierge_vehicle) return ride.conciergeVehicle || ride.concierge_vehicle || "";
+  return "No Vehicle";
+}
+
+/** Get payment display info */
+function getPaymentInfo(ride: ActivityItem): { label: string; icon: string | null } {
+  const payType = (ride.paymentType || ride.payment_type || "").toLowerCase();
+  const cardType = (ride.cardType || ride.card_type || "").toLowerCase();
+
+  if (cardType.includes("visa") || payType.includes("visa")) return { label: "Visa", icon: visaIcon };
+  if (cardType.includes("master") || payType.includes("master")) return { label: "Mastercard", icon: mastercardIcon };
+  if (cardType.includes("amex") || payType.includes("amex")) return { label: "Amex", icon: amexIcon };
+  if (cardType.includes("discover") || payType.includes("discover")) return { label: "Discover", icon: discoverIcon };
+  if (payType.includes("card") || cardType) return { label: cardType || "Card", icon: null };
+  if (payType.includes("cash") || payType === "") return { label: "Cash", icon: null };
+  return { label: payType || "Cash", icon: null };
 }
 
 interface Props {
   ride: ActivityItem;
   onBack: () => void;
+  onBackToLive?: () => void;
 }
 
-const ActivityRideDetail = ({ ride }: Props) => {
+const ActivityRideDetail = ({ ride, onBackToLive }: Props) => {
   const origin = ride.pickupInfo?.placeName || ride.pickupInfo?.fullAddress || ride.pickupInfo?.address || "";
   const originFull = ride.pickupInfo?.fullAddress || ride.pickupInfo?.address || "";
   const destination = ride.deliveryInfo?.placeName || ride.deliveryInfo?.fullAddress || ride.deliveryInfo?.address || "";
@@ -66,8 +80,9 @@ const ActivityRideDetail = ({ ride }: Props) => {
   const driverRating = provider?.rating ? parseFloat(String(provider.rating)) : null;
 
   const serviceTypeLabel = getServiceTypeLabel(ride);
-  const categoryLine = getCategoryLine(ride);
-  const optionCategory = getOptionCategoryLabel(ride);
+  const subCategoryLabel = getSubCategoryLabel(ride);
+  const transportLabel = getTransportLabel(ride);
+  const payment = getPaymentInfo(ride);
 
   const orderDate = (() => {
     if (!ride.orderDateTime) return null;
@@ -84,7 +99,7 @@ const ActivityRideDetail = ({ ride }: Props) => {
     <div>
       {/* Card */}
       <div className="rounded-2xl border border-border bg-card overflow-hidden">
-        {/* Map frame — no header, always visible */}
+        {/* Map frame */}
         <div className="mx-4 mt-4 h-44 rounded-xl overflow-hidden bg-muted mb-4">
           {hasCoords && (
             <ActivityDetailMap originLat={originLat} originLng={originLng} destLat={destLat} destLng={destLng} />
@@ -117,16 +132,16 @@ const ActivityRideDetail = ({ ride }: Props) => {
             )}
           </div>
 
-          {/* Category • Subcategory line */}
-          {categoryLine && (
-            <p className="text-sm text-muted-foreground mb-1 capitalize">{categoryLine}</p>
+          {/* Sub-category line */}
+          {subCategoryLabel && (
+            <p className="text-sm text-muted-foreground mb-1 capitalize">{serviceTypeLabel} • {subCategoryLabel}</p>
           )}
 
           {/* Fee + icon + transport mode */}
           <div className="flex items-center gap-2 text-sm font-bold text-foreground mb-0.5">
             <span>{formatFee(ride.deliveryFee)}</span>
             {isScheduled ? <Calendar className="w-3.5 h-3.5 text-muted-foreground" /> : <Zap className="w-3.5 h-3.5 text-muted-foreground" />}
-            <span className="text-muted-foreground font-normal capitalize">{optionCategory}</span>
+            <span className="text-muted-foreground font-normal capitalize">{transportLabel}</span>
           </div>
 
           {/* Date + Order ID */}
@@ -139,8 +154,12 @@ const ActivityRideDetail = ({ ride }: Props) => {
 
           {/* Payment + Status */}
           <div className="flex items-center gap-2">
-            <span className="text-sm">💵</span>
-            <span className="text-sm text-muted-foreground">Cash</span>
+            {payment.icon ? (
+              <img src={payment.icon} alt={payment.label} className="w-6 h-4 object-contain" />
+            ) : (
+              <span className="text-sm">💵</span>
+            )}
+            <span className="text-sm text-muted-foreground capitalize">{payment.label}</span>
             <span className="text-muted-foreground/40">•</span>
             <span className={`text-xs font-semibold px-2.5 py-0.5 rounded-full ${
               isCompleted ? "text-green-500 bg-green-500/10" :
@@ -152,7 +171,7 @@ const ActivityRideDetail = ({ ride }: Props) => {
           </div>
         </div>
 
-        {/* Receipt message — no horizontal dividers */}
+        {/* Receipt message */}
         {isCompleted && (
           <>
             <div className="mx-5 border-t border-border" />
@@ -163,11 +182,10 @@ const ActivityRideDetail = ({ ride }: Props) => {
           </>
         )}
 
-        {/* Addresses — no horizontal lines */}
+        {/* Addresses */}
         {hasAddress && (
           <div className="px-5 pt-6 pb-4">
             <div className="relative pl-6">
-
               {(origin || originFull) && (
                 <div className="relative flex items-start gap-3 pb-6">
                   <div className="absolute left-[-18px] top-1 w-3 h-3 rounded-full bg-green-500" />
@@ -195,13 +213,23 @@ const ActivityRideDetail = ({ ride }: Props) => {
         )}
       </div>
 
-      {/* Need help? — opens contact page in new window */}
-      <button
-        onClick={handleNeedHelp}
-        className="w-full mt-4 py-3.5 rounded-full bg-foreground text-background text-sm font-semibold hover:bg-foreground/90 transition-colors"
-      >
-        Need help?
-      </button>
+      {/* Action buttons */}
+      <div className="flex gap-3 mt-4">
+        {onBackToLive && (
+          <button
+            onClick={onBackToLive}
+            className="flex-1 py-3.5 rounded-full border border-border bg-card text-foreground text-sm font-semibold hover:bg-muted transition-colors"
+          >
+            Back to Live
+          </button>
+        )}
+        <button
+          onClick={handleNeedHelp}
+          className={`${onBackToLive ? 'flex-1' : 'w-full'} py-3.5 rounded-full bg-foreground text-background text-sm font-semibold hover:bg-foreground/90 transition-colors`}
+        >
+          Need help?
+        </button>
+      </div>
     </div>
   );
 };

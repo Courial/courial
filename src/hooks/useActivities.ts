@@ -69,6 +69,10 @@ export interface ActivityItem {
   scheduled_time?: string;
   concierge_vehicle?: string;
   conciergeVehicle?: string;
+  paymentType?: string;
+  payment_type?: string;
+  cardType?: string;
+  card_type?: string;
   [key: string]: any;
 }
 
