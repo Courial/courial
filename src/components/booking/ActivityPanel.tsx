@@ -39,6 +39,18 @@ function formatFee(fee: number | string) {
   return `$${n.toFixed(2)}`;
 }
 
+function titleCase(s: string) {
+  if (!s) return "";
+  return s.charAt(0).toUpperCase() + s.slice(1).toLowerCase();
+}
+
+function formatRating(r: number | string | undefined | null): string | null {
+  if (r == null) return null;
+  const n = typeof r === "string" ? parseFloat(r) : r;
+  if (isNaN(n) || n <= 0) return null;
+  return n.toFixed(1);
+}
+
 const statusColors: Record<string, string> = {
   completed: "text-green-500", Completed: "text-green-500",
   cancelled: "text-red-500", Cancelled: "text-red-500", canceled: "text-red-500",
@@ -75,6 +87,7 @@ function FeaturedCard({ ride, onClick }: { ride: ActivityItem; onClick: () => vo
     ? (provider.firstName || provider.first_name || "").trim()
     : null;
   const driverImage = provider?.image || provider?.profile_image || null;
+  const driverRating = formatRating(provider?.mrating || provider?.rating);
   const transportMode = ride.UserVehicle?.transport_mode || ride.transport_mode || ride.conciergeVehicle || ride.concierge_vehicle || null;
   const serviceType = ride.serviceType || "Delivery";
   const category = ride.conciergeCategory || ride.category || "";
@@ -90,7 +103,15 @@ function FeaturedCard({ ride, onClick }: { ride: ActivityItem; onClick: () => vo
 
       <div className="flex items-start justify-between mb-2">
         <div>
-          <h3 className="text-2xl font-bold text-foreground">{driverName || "Unassigned"}</h3>
+          <div className="flex items-center gap-2">
+            <h3 className="text-2xl font-bold text-foreground">{driverName || "Unassigned"}</h3>
+            {driverRating && (
+              <span className="flex items-center gap-0.5 text-sm">
+                <Star className="w-3.5 h-3.5 fill-orange-400 text-orange-400" />
+                <span className="font-semibold text-foreground">{driverRating}</span>
+              </span>
+            )}
+          </div>
           <p className="text-sm text-muted-foreground mt-0.5">
             <span className="font-medium capitalize">{serviceType}</span>
             {category && <span className="capitalize"> • {category}</span>}
@@ -119,7 +140,7 @@ function FeaturedCard({ ride, onClick }: { ride: ActivityItem; onClick: () => vo
 
       <p className="text-sm text-muted-foreground mb-2">{formatActivityDate(ride.orderDateTime)}</p>
 
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-2 flex-wrap">
         {payment.icon ? (
           <img src={payment.icon} alt={payment.label} className="w-6 h-4 object-contain" />
         ) : (
@@ -132,8 +153,20 @@ function FeaturedCard({ ride, onClick }: { ride: ActivityItem; onClick: () => vo
           isCancelled ? "text-red-500 bg-red-500/10" :
           "text-yellow-500 bg-yellow-500/10"
         }`}>
-          {ride.status}
+          {titleCase(ride.status)}
         </span>
+        {isCompleted && (
+          <button onClick={(e) => e.stopPropagation()} className="flex items-center gap-1 text-[11px] font-medium text-primary border border-primary/30 rounded-full px-2.5 py-0.5 transition-colors">
+            <Star className="w-3 h-3" />
+            Rate
+          </button>
+        )}
+        {isCancelled && (
+          <button onClick={(e) => e.stopPropagation()} className="flex items-center gap-1 text-[11px] font-medium text-muted-foreground hover:text-foreground border border-border rounded-full px-2.5 py-0.5 transition-colors">
+            <RotateCcw className="w-3 h-3" />
+            Rebook
+          </button>
+        )}
       </div>
     </div>
   );
