@@ -373,6 +373,9 @@ const BookingMap: React.FC<BookingMapProps> = ({ pickupCoords, dropoffCoords, st
               totalDurSeconds += leg.duration?.value || 0;
             });
             const mins = Math.round(totalDurSeconds / 60);
+            const miles = Math.round(totalDistMeters / 1609.34);
+
+            onTripInfo?.({ distanceMeters: totalDistMeters, durationSeconds: totalDurSeconds, distanceText: `${miles} mi`, durationText: `${mins} mins` });
 
             const overviewPath = result.routes[0].overview_path;
             const midIdx = Math.floor(overviewPath.length / 2);
