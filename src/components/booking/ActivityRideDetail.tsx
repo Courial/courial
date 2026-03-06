@@ -1,4 +1,4 @@
-import { Star, Calendar, Zap, Car } from "lucide-react";
+import { Star, Calendar, Zap, RotateCcw } from "lucide-react";
 import { format } from "date-fns";
 import ActivityDetailMap from "./ActivityDetailMap";
 import type { ActivityItem } from "@/hooks/useActivities";
@@ -29,9 +29,22 @@ function getCategoryLabel(ride: ActivityItem): string {
 
 /** Get the transport mode / vehicle label */
 function getTransportLabel(ride: ActivityItem): string {
+  if (ride.UserVehicle?.transport_mode) return ride.UserVehicle.transport_mode;
   if (ride.transport_mode) return ride.transport_mode;
   if (ride.conciergeVehicle || ride.concierge_vehicle) return ride.conciergeVehicle || ride.concierge_vehicle || "";
-  return "No Vehicle";
+  return "";
+}
+
+function titleCase(s: string) {
+  if (!s) return "";
+  return s.charAt(0).toUpperCase() + s.slice(1).toLowerCase();
+}
+
+function formatRating(r: number | string | undefined | null): string | null {
+  if (r == null) return null;
+  const n = typeof r === "string" ? parseFloat(r) : r;
+  if (isNaN(n) || n <= 0) return null;
+  return n.toFixed(1);
 }
 
 /** Get payment display info */
@@ -77,7 +90,7 @@ const ActivityRideDetail = ({ ride, onBackToLive }: Props) => {
     ? (provider.firstName || provider.first_name || "").trim()
     : null;
   const driverImage = provider?.image || provider?.profile_image || null;
-  const driverRating = provider?.mrating ? parseFloat(String(provider.mrating)) : (provider?.rating ? parseFloat(String(provider.rating)) : null);
+  const driverRating = formatRating(provider?.mrating || provider?.rating);
 
   const serviceTypeLabel = getServiceTypeLabel(ride);
   const categoryLabel = getCategoryLabel(ride);
@@ -107,18 +120,25 @@ const ActivityRideDetail = ({ ride, onBackToLive }: Props) => {
         </div>
 
         <div className="px-5 pb-5">
-          {/* Service type label + rating + Courial profile photo */}
+          {/* Courial name + rating + profile photo */}
           <div className="flex items-start justify-between mb-1">
-            <div className="flex items-center gap-3">
-              <h3 className="text-2xl font-bold text-foreground">
-                {driverName?.split(" ")[0] || serviceTypeLabel}
-              </h3>
-              {driverRating && (
-                <div className="flex items-center gap-1">
-                  <Star className="w-4 h-4 text-primary fill-primary" />
-                  <span className="text-lg font-bold text-foreground">{driverRating.toFixed(1)}</span>
-                </div>
-              )}
+            <div>
+              <div className="flex items-center gap-2">
+                <h3 className="text-2xl font-bold text-foreground">
+                  {driverName || "Unassigned"}
+                </h3>
+                {driverRating && (
+                  <span className="flex items-center gap-1 text-2xl">
+                    <Star className="w-5 h-5 fill-orange-400 text-orange-400" />
+                    <span className="font-bold text-foreground">{driverRating}</span>
+                  </span>
+                )}
+              </div>
+              <p className="text-[0.9375rem] text-muted-foreground mt-0.5">
+                <span className="font-medium capitalize">{serviceTypeLabel}</span>
+                {categoryLabel && <span className="capitalize"> • {categoryLabel}</span>}
+                {ride.conciergeSubCategory && <span className="capitalize"> • {ride.conciergeSubCategory}</span>}
+              </p>
             </div>
             {driverImage ? (
               <img src={driverImage} alt={driverName || "Courial"} className="w-12 h-12 rounded-full object-cover border border-border" />
@@ -132,15 +152,12 @@ const ActivityRideDetail = ({ ride, onBackToLive }: Props) => {
             )}
           </div>
 
-          {/* Transport mode line */}
-          <p className="text-sm text-muted-foreground mb-1 capitalize">{transportLabel}</p>
-
-          {/* Fee + icon + service/category */}
-          <div className="flex items-center gap-2 text-sm font-bold text-foreground mb-0.5">
+          {/* Fee + icon + Via transport */}
+          <div className="flex items-center gap-2 text-sm font-bold text-foreground mb-1">
             <span>{formatFee(ride.deliveryFee)}</span>
             {isScheduled ? <Calendar className="w-3.5 h-3.5 text-muted-foreground" /> : <Zap className="w-3.5 h-3.5 text-muted-foreground" />}
             <span className="text-muted-foreground font-normal capitalize">
-              {serviceTypeLabel}{categoryLabel ? ` • ${categoryLabel}` : ""}
+              Via {transportLabel || serviceTypeLabel}
             </span>
           </div>
 
@@ -152,8 +169,8 @@ const ActivityRideDetail = ({ ride, onBackToLive }: Props) => {
             {ride.orderid && ` • Order ID ${ride.orderid}`}
           </p>
 
-          {/* Payment + Status */}
-          <div className="flex items-center gap-2">
+          {/* Payment + Status + Actions */}
+          <div className="flex items-center gap-2 flex-wrap">
             {payment.icon ? (
               <img src={payment.icon} alt={payment.label} className="w-6 h-4 object-contain" />
             ) : (
@@ -166,8 +183,20 @@ const ActivityRideDetail = ({ ride, onBackToLive }: Props) => {
               isCancelled ? "text-red-500 bg-red-500/10" :
               "text-yellow-500 bg-yellow-500/10"
             }`}>
-              {ride.status}
+              {titleCase(ride.status)}
             </span>
+            {isCompleted && (
+              <button className="flex items-center gap-1 text-[11px] font-medium text-primary border border-primary/30 rounded-full px-2.5 py-0.5 transition-colors">
+                <Star className="w-3 h-3" />
+                Rate
+              </button>
+            )}
+            {isCancelled && (
+              <button className="flex items-center gap-1 text-[11px] font-medium text-muted-foreground hover:text-foreground border border-border rounded-full px-2.5 py-0.5 transition-colors">
+                <RotateCcw className="w-3 h-3" />
+                Rebook
+              </button>
+            )}
           </div>
         </div>
 
