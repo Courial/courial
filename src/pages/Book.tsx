@@ -896,6 +896,18 @@ const Book = () => {
         // Enable socket connection to listen for courial acceptance
         setSocketEnabled(true);
         console.log("[book-delivery] Delivery created:", data.data.deliveryId, "orderId:", data.data.orderId, "— socket enabled");
+        // Persist active session for resume on page reload
+        try {
+          localStorage.setItem("courial_active_session", JSON.stringify({
+            bookingState: "loading",
+            deliveryId: data.data.deliveryId,
+            orderId: data.data.orderId ? String(data.data.orderId) : null,
+            selectedService,
+            pickup: isConciergeStyle ? null : { address: pickup, lat: pickupCoords?.lat, lng: pickupCoords?.lng, placeName: pickupPlaceName },
+            dropoff: isConciergeStyle ? null : { address: dropoff, lat: dropoffCoords?.lat, lng: dropoffCoords?.lng, placeName: dropoffPlaceName },
+            deliveryStep: 0,
+          }));
+        } catch {}
 
         // Persist full booking details for activity detail view
         if (data.data.orderId) {
