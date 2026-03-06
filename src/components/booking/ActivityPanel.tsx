@@ -7,6 +7,10 @@ import deliverIcon from "@/assets/service-icons/deliver.png";
 import conciergeIcon from "@/assets/service-icons/concierge.png";
 import chauffeurIcon from "@/assets/service-icons/chauffeur.png";
 import valetIcon from "@/assets/service-icons/valet.png";
+import visaIcon from "@/assets/card-icons/visa.svg";
+import mastercardIcon from "@/assets/card-icons/mastercard.svg";
+import amexIcon from "@/assets/card-icons/amex.svg";
+import discoverIcon from "@/assets/card-icons/discover.svg";
 import { useActivities, type ActivityItem } from "@/hooks/useActivities";
 import ActivityDetailMap from "./ActivityDetailMap";
 
@@ -42,6 +46,17 @@ const statusColors: Record<string, string> = {
   active: "text-blue-500", Active: "text-blue-500",
 };
 
+function getPaymentInfo(ride: ActivityItem): { label: string; icon: string | null } {
+  const payType = (ride.paymentType || ride.payment_type || "").toLowerCase();
+  const cardType = (ride.cardType || ride.card_type || "").toLowerCase();
+  if (cardType.includes("visa") || payType.includes("visa")) return { label: "Visa", icon: visaIcon };
+  if (cardType.includes("master") || payType.includes("master")) return { label: "Mastercard", icon: mastercardIcon };
+  if (cardType.includes("amex") || payType.includes("amex")) return { label: "Amex", icon: amexIcon };
+  if (cardType.includes("discover") || payType.includes("discover")) return { label: "Discover", icon: discoverIcon };
+  if (payType.includes("card") || cardType) return { label: cardType || "Card", icon: null };
+  return { label: "Cash", icon: null };
+}
+
 /* ─── Featured card (first item) ─── */
 function FeaturedCard({ ride, onClick }: { ride: ActivityItem; onClick: () => void }) {
   const origin = ride.pickupInfo?.placeName || ride.pickupInfo?.fullAddress || ride.pickupInfo?.address || "";
@@ -57,11 +72,13 @@ function FeaturedCard({ ride, onClick }: { ride: ActivityItem; onClick: () => vo
 
   const provider = ride.Provider || ride.provider || null;
   const driverName = provider
-    ? `${provider.first_name || ""} ${provider.last_name || ""}`.trim()
+    ? (provider.firstName || provider.first_name || "").trim()
     : null;
   const driverImage = provider?.image || provider?.profile_image || null;
-  const vehicle = ride.transport_mode || ride.conciergeVehicle || ride.concierge_vehicle || null;
-  const st = (ride.serviceType || "").toLowerCase();
+  const transportMode = ride.transport_mode || ride.conciergeVehicle || ride.concierge_vehicle || null;
+  const serviceType = ride.serviceType || "Delivery";
+  const category = ride.conciergeCategory || ride.category || "";
+  const payment = getPaymentInfo(ride);
 
   return (
     <div onClick={onClick} className="rounded-2xl border border-border bg-card p-4 cursor-pointer hover:border-primary/30 transition-colors">
@@ -74,8 +91,8 @@ function FeaturedCard({ ride, onClick }: { ride: ActivityItem; onClick: () => vo
       <div className="flex items-start justify-between mb-2">
         <div>
           <h3 className="text-2xl font-bold text-foreground">{driverName || "Unassigned"}</h3>
-          <p className="text-sm text-muted-foreground mt-0.5">
-            {ride.serviceType === "Scheduled Ride" ? "Scheduled Ride" : ride.serviceType || "Delivery"}
+          <p className="text-sm text-muted-foreground mt-0.5 capitalize">
+            {transportMode || serviceType}
           </p>
         </div>
         {driverImage ? (
@@ -93,14 +110,20 @@ function FeaturedCard({ ride, onClick }: { ride: ActivityItem; onClick: () => vo
       <div className="flex items-center gap-2 text-sm font-bold text-foreground mb-1">
         <span>{formatFee(ride.deliveryFee)}</span>
         {isScheduled ? <Calendar className="w-3.5 h-3.5 text-muted-foreground" /> : <Zap className="w-3.5 h-3.5 text-muted-foreground" />}
-        <span className="text-muted-foreground font-normal capitalize">{vehicle || st || "delivery"}</span>
+        <span className="text-muted-foreground font-normal capitalize">
+          {serviceType}{category ? ` • ${category}` : ""}
+        </span>
       </div>
 
       <p className="text-sm text-muted-foreground mb-2">{formatActivityDate(ride.orderDateTime)}</p>
 
       <div className="flex items-center gap-2">
-        <span className="text-sm">💵</span>
-        <span className="text-sm text-muted-foreground">Cash</span>
+        {payment.icon ? (
+          <img src={payment.icon} alt={payment.label} className="w-6 h-4 object-contain" />
+        ) : (
+          <span className="text-sm">💵</span>
+        )}
+        <span className="text-sm text-muted-foreground capitalize">{payment.label}</span>
         <span className="text-muted-foreground/40">•</span>
         <span className={`text-xs font-semibold px-2.5 py-0.5 rounded-full ${
           isCompleted ? "text-green-500 bg-green-500/10" :
