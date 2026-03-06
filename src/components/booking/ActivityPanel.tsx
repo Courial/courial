@@ -111,7 +111,7 @@ function FeaturedCard({ ride, onClick }: { ride: ActivityItem; onClick: () => vo
         <span>{formatFee(ride.deliveryFee)}</span>
         {isScheduled ? <Calendar className="w-3.5 h-3.5 text-muted-foreground" /> : <Zap className="w-3.5 h-3.5 text-muted-foreground" />}
         <span className="text-muted-foreground font-normal capitalize">
-          {serviceType}{category ? ` • ${category}` : ""}
+          Via {transportMode || serviceType}
         </span>
       </div>
 
