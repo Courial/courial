@@ -159,7 +159,7 @@ function CompactCard({ ride, onClick }: { ride: ActivityItem; onClick: () => voi
 }
 
 /* ─── Main Panel ─── */
-export const ActivityPanel = ({ onBack }: { onBack: () => void; hasLiveSession?: boolean; onBackToLive?: () => void }) => {
+export const ActivityPanel = ({ onBack, onBackToLive }: { onBack: () => void; hasLiveSession?: boolean; onBackToLive?: () => void }) => {
   const [tab, setTab] = useState<Tab>("pending");
   const [selectedRide, setSelectedRide] = useState<ActivityItem | null>(null);
 
@@ -190,7 +190,7 @@ export const ActivityPanel = ({ onBack }: { onBack: () => void; hasLiveSession?:
         <AnimatePresence mode="wait">
           {selectedRide ? (
             <motion.div key="detail" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }}>
-              <ActivityRideDetail ride={selectedRide} onBack={() => setSelectedRide(null)} />
+              <ActivityRideDetail ride={selectedRide} onBack={() => setSelectedRide(null)} onBackToLive={onBackToLive} />
             </motion.div>
           ) : isLoading ? (
             <motion.div key="loading" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="flex items-center justify-center py-16">
