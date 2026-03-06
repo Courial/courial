@@ -92,7 +92,7 @@ function FeaturedCard({ ride, onClick }: { ride: ActivityItem; onClick: () => vo
         <div>
           <h3 className="text-2xl font-bold text-foreground">{driverName || "Unassigned"}</h3>
           <p className="text-sm text-muted-foreground mt-0.5 capitalize">
-            {transportMode || serviceType}
+            {serviceType}
           </p>
         </div>
         {driverImage ? (
