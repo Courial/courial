@@ -22,6 +22,7 @@ interface BookingMapProps {
   bookingState?: "input" | "loading" | "active";
   vehicleType?: string | null;
   courialCoords?: LatLng | null;
+  onTripInfo?: (info: { distanceMeters: number; durationSeconds: number; distanceText: string; durationText: string }) => void;
 }
 
 function buildInfoContent(address: string, placeName?: string | null): string {
@@ -142,7 +143,7 @@ function generateRandomPositions(center: LatLng, count: number, radiusKm: number
   return positions;
 }
 
-const BookingMap: React.FC<BookingMapProps> = ({ pickupCoords, dropoffCoords, stopCoords, extraStops, pickupAddress, dropoffAddress, stopAddress, pickupPlaceName, dropoffPlaceName, stopPlaceName, bookingState = "input", vehicleType, courialCoords }) => {
+const BookingMap: React.FC<BookingMapProps> = ({ pickupCoords, dropoffCoords, stopCoords, extraStops, pickupAddress, dropoffAddress, stopAddress, pickupPlaceName, dropoffPlaceName, stopPlaceName, bookingState = "input", vehicleType, courialCoords, onTripInfo }) => {
   const mapRef = useRef<HTMLDivElement>(null);
   const mapInstanceRef = useRef<google.maps.Map | null>(null);
   const markersRef = useRef<google.maps.Marker[]>([]);
@@ -372,6 +373,9 @@ const BookingMap: React.FC<BookingMapProps> = ({ pickupCoords, dropoffCoords, st
               totalDurSeconds += leg.duration?.value || 0;
             });
             const mins = Math.round(totalDurSeconds / 60);
+            const miles = Math.round(totalDistMeters / 1609.34);
+
+            onTripInfo?.({ distanceMeters: totalDistMeters, durationSeconds: totalDurSeconds, distanceText: `${miles} mi`, durationText: `${mins} mins` });
 
             const overviewPath = result.routes[0].overview_path;
             const midIdx = Math.floor(overviewPath.length / 2);

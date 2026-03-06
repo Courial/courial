@@ -271,6 +271,7 @@ const Book = () => {
   const [socketEnabled, setSocketEnabled] = useState(false);
   const [courialCoords, setCourialCoords] = useState<{ lat: number; lng: number } | null>(null);
   const [courialEta, setCourialEta] = useState<{ duration: string; distance: string } | null>(null);
+  const [tripInfo, setTripInfo] = useState<{ distanceMeters: number; durationSeconds: number; distanceText: string; durationText: string } | null>(null);
 
   // Socket: connect after successful booking, listen for courial acceptance
   const handleCourialAccepted = useCallback((driver: CourialDriver) => {
@@ -710,6 +711,12 @@ const Book = () => {
         dropoff: isConcierge ? concDropoff : { address: dropoff, lat: dropoffCoords?.lat, lng: dropoffCoords?.lng },
         userId: user.user_metadata?.courial_id || user.id,
       };
+      if (tripInfo) {
+        payload.distanceMeters = tripInfo.distanceMeters;
+        payload.durationSeconds = tripInfo.durationSeconds;
+        payload.distanceText = tripInfo.distanceText;
+        payload.durationText = tripInfo.durationText;
+      }
       if (isConcierge && conciergeIsRemote) {
         payload.isRemote = true;
       }
@@ -4419,7 +4426,7 @@ const Book = () => {
                 const hasCoords = mapPickup || mapDropoff || mapStop;
                return hasCoords ? (
              <div className="flex-1 relative">
-               <BookingMap pickupCoords={mapPickup} dropoffCoords={mapPickup !== mapDropoff ? mapDropoff : null} stopCoords={mapStop} extraStops={mapExtraStops} pickupAddress={mapPickupAddr} dropoffAddress={mapDropoffAddr} stopAddress={mapStopAddr} pickupPlaceName={mapPickupName} dropoffPlaceName={mapDropoffName} stopPlaceName={mapStopName} bookingState={bookingState} vehicleType={mapVehicle} courialCoords={courialCoords} />
+               <BookingMap pickupCoords={mapPickup} dropoffCoords={mapPickup !== mapDropoff ? mapDropoff : null} stopCoords={mapStop} extraStops={mapExtraStops} pickupAddress={mapPickupAddr} dropoffAddress={mapDropoffAddr} stopAddress={mapStopAddr} pickupPlaceName={mapPickupName} dropoffPlaceName={mapDropoffName} stopPlaceName={mapStopName} bookingState={bookingState} vehicleType={mapVehicle} courialCoords={courialCoords} onTripInfo={setTripInfo} />
               
                 {/* Chat — single instance always mounted to preserve messages */}
                 {acceptedCourial && deliveryIdRef.current && (
